@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    
+    <item name="BASEURL">/architect/</item>
+    <item name="THEME">default</item>
+    
+    <item name="DBDSN">mysql:host=localhost;dbname=test</item>
+    <item name="DBUSER">root</item>
+    <item name="DBPASS">toor</item>
+    
+    <item name="MAILFROM">no-reply@domail.com</item>
+    <item name="MAILFROMNAME">Application Name</item>
+    <item name="MAILREPLY">admin@domain.com</item>
+    <item name="MAILREPLYNAME">Application Name</item>
+    <item name="MAILSUBJECT"></item>
+    <item name="MAILTEMPLATE">theme/default/mail.php</item>
+    
+    <item name="IDIOM">en</item>
+    
+</config>

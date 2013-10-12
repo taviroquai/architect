@@ -105,10 +105,10 @@ class App implements Messenger {
      * Gets application instance
      * @return App
      */
-    public static function Instance()
+    public static function Instance($configPath = null)
     {
         if (self::$inst === null) {
-            self::$inst = new App();
+            self::$inst = new App($configPath);
         }
         return self::$inst;
     }
@@ -116,8 +116,18 @@ class App implements Messenger {
     /**
      * Initialize application
      */
-    private function __construct()
+    private function __construct($configPath = null)
     {
+        
+        // load configuration
+        if (!file_exists($configPath)) die('The file config.xml was not found.');
+        $xml = @simplexml_load_file($configPath);
+        if (!$xml) die('Invalid config.xml file');
+        foreach ($xml->item as $item) {
+            $name = (string) $item['name'];
+            define($name, (string) $item);
+        }
+        
         // set session handler
         $this->session = new Session();
 

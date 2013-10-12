@@ -1,10 +1,19 @@
 <?php
 
-require_once 'config.php';
+// Default PHP configuration
+error_reporting(E_ALL | E_NOTICE);
+ini_set('display_errors', true);
+define('DS', DIRECTORY_SEPARATOR);
+define('BASEPATH', __DIR__);
+
+// Set configuration file path
+$filename = BASEPATH.'/config/development.xml';
+
+// Require class autoloader
 require_once 'autoload.php';
 
-// get application
-$app = App::Instance();
+// Get application
+$app = App::Instance($filename);
 
-// runs the application
+// Run application
 $app->run();
