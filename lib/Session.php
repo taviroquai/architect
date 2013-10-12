@@ -1,36 +1,64 @@
 <?php
 
+/**
+ * Session class
+ * This uses native PHP $_SESSION
+ */
 class Session implements Messenger {
 
     protected $storage;
     
+    /**
+     * Loads data from $_SESSION into storage
+     * Initiates _message and login values
+     */
     public function load() {
         $this->storage = array();
-        if (empty($storage)) session_start();
+        if (empty($this->storage)) session_start();
         if (!isset($this->storage['_message'])) $this->storage['_message'] = array();
         if (empty($_SESSION['login'])) $_SESSION['login'] = null;
         $this->storage = $_SESSION;
     }
     
+    /**
+     * Saves current storage to $_SESSION and close session
+     */
     public function save() {
         foreach ($this->storage as $prop => $value) $_SESSION[$prop] = $value;
         session_write_close();
     }
 
+    /**
+     * Destroys $_SESSION and reset storage
+     */
     public function destroy() {
-        foreach ($properies as $prop) $this->storage = array();
+        $this->storage = array();
         session_destroy();
     }
     
+    /**
+     * Adds a screen message
+     * To display messages use: app()->showMessages($template);
+     * 
+     * @param string $text
+     * @param string $cssClass
+     */
     public function addMessage($text, $cssClass = 'alert alert-success') {
         $this->storage['_message'][] = new Message($text, $cssClass);
     }
     
+    /**
+     * Returns all messages
+     * @return array
+     */
     public function getMessages() {
         if (!isset($this->storage['_message'])) $this->storage['_message'] = array();
         return $this->storage['_message'];
     }
     
+    /**
+     * Clears all messages from session
+     */
     public function clearMessages() {
         $this->storage['_message'] = array();
     }
