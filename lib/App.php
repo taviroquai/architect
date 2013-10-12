@@ -284,7 +284,8 @@ class App implements Messenger {
      * @param string $url
      * @param boolean $now
      */
-    public function redirect($url, $now = true) {
+    public function redirect($url = null, $now = true) {
+        if (empty($url)) $url = app()->url('/');
         $output = new Output();
         $output->setHeaders(array('Location: '.$url));
         $output->send();

@@ -49,7 +49,7 @@ app()->router->addRoute('/logout', function() {
     
     // destroy current session and redirect
     app()->session->destroy();
-    app()->redirect(BASEURL);
+    app()->redirect();
 });
 
 
@@ -100,7 +100,7 @@ app()->addEvent('login.form.before.view', function() {
         }
         else {
             app()->session->login = $target->email;
-            app()->redirect(BASEURL);
+            app()->redirect();
         }
         
         // trigger after login
