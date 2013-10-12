@@ -7,7 +7,7 @@ class DatepickerView extends View {
 		parent::__construct($tmpl);
         
         // add view resources
-        app()->theme->addContent(BASEURL.'theme/default/datepicker/bootstrap-datetimepicker.min.css', 'css');
-        app()->theme->addContent(BASEURL.'theme/default/datepicker/bootstrap-datetimepicker.min.js', 'js');
+        app()->addContent(BASEURL.'theme/default/datepicker/bootstrap-datetimepicker.min.css', 'css');
+        app()->addContent(BASEURL.'theme/default/datepicker/bootstrap-datetimepicker.min.js', 'js');
 	}
 }

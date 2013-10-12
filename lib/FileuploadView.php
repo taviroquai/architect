@@ -7,7 +7,7 @@ class FileuploadView extends View {
 		parent::__construct($tmpl);
         
         // add view resources
-        app()->theme->addContent(BASEURL.'theme/default/fileupload/bootstrap-fileupload.min.css', 'css');
-        app()->theme->addContent(BASEURL.'theme/default/fileupload/bootstrap-fileupload.min.js', 'js');
+        app()->addContent(BASEURL.'theme/default/fileupload/bootstrap-fileupload.min.css', 'css');
+        app()->addContent(BASEURL.'theme/default/fileupload/bootstrap-fileupload.min.js', 'js');
 	}
 }
