@@ -19,4 +19,8 @@ app()->addRoute('/hello', function() {
       <li>Go to <a href="<?=app()->url('/hello')?>">hello</a> page</li>
       <li>Also take a look at <a href="<?=app()->url('/demo')?>">demo</a> page</li>
   </ol>
+  
+  <h2>Documentation</h2>
+  The documentation is in development. Take a look in 
+  <a href="https://github.com/taviroquai/architect" title="Architect">GitHub</a>.
 </div>
