@@ -11,12 +11,13 @@ Install
 1. Edit config/development.xml
 2. Open in browser http://localhost/architect
 
-Some features
+Main features
 -------------
 
-* Small API - You should not need to learn another language
-* Modular architecture
-* Theme and Idiom configuration (no programming skills required)
+* Small API - You should not need to learn another language. All features can be
+called in the form **app()->featureName()**. Use IDE type hinting.
+* Modular and Events architecture
+* Theme and Idiom strings are XML files (no programming skills required)
 
 Common features
 ----------------------------------------------------
