@@ -2,7 +2,14 @@ Architect PHP Framework
 =======================
 
 Architect PHP Framework uses a pragmatic and modular Web development approach. 
-The idea is to create a small API but with the most common features in web development.
+The idea is to create a small API but with the most common features in web 
+development.
+
+Install
+-------
+
+1. Edit config/development.xml
+2. Open in browser http://localhost/architect
 
 Some features
 -------------

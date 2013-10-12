@@ -150,11 +150,11 @@ class App implements Messenger {
     
     public function run() {
         
-        // initialize default database
-        $this->initDatabase();
-
         // load session
         $this->session->load();
+        
+        // initialize default database
+        $this->initDatabase();
 
         // load user input
         $this->loadInput();
@@ -187,7 +187,8 @@ class App implements Messenger {
             $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
         catch (PDOException $e)  {
-            die($e);
+            $this->addMessage('Check database configuration: '.$e->getMessage(),
+                    'alert alert-error');
         }
     }
     
