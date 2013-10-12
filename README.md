@@ -112,86 +112,78 @@ All code has type hinting in ie. NetBeans IDE, so it's easy to start.
 
 ### CONSTANTS
 
-BASEPATH // constant base path
-
-BASEURL  // constant base url
+    BASEPATH // constant base path
+    BASEURL  // constant base url
 
 ### APP
-app() // return the application singleton
+    app() // return the application singleton
 
 ### ROUTER
-app()->addRoute('/my/path', function() { ... }); // PHP5 anonymous function
+    app()->addRoute('/my/path', function() { ... }); // PHP5 anonymous function
 
 ### THEME
-app()->addContent('Any string or View instance', 'optional slot name');
+    app()->addContent('Any string or View instance', 'optional slot name');
 
 ### URL
-app()->url('/demo', array('param1' => 'World'); // creates an application URL
+    app()->url('/demo', array('param1' => 'World'); // creates an application URL
  
 ### INPUT (GET / POST / RAW / FILES / CLI ARGS)
-app()->input->post('optional post param');
+    app()->input->post('optional post param');
 
 ### EVENTS
-app()->register('event.name', function() { ... }); // Register an event listener
-
-app()->trigger('event.name', $optional);           // call event listener, pass an optional target variable
+    app()->register('event.name', function() { ... }); // Register listener
+    app()->trigger('event.name', $optional);           // call listener
 
 ### DATABASE
-app()->db // Gets a PDO instance
+    app()->db // Gets a PDO instance
 
 ### MAIL
-app()->mail('test@isp.com', 'subject', $view);
+    app()->mail('test@isp.com', 'subject', $view);
 
 ### IDIOM
-app()->loadIdiom('filename', 'optional module name'); // loads idiom strings
-
-app()->translate('key'); // returns translated key in filename
-
-t('TITLE'); // An small alias to use in views
+    app()->loadIdiom('filename', 'optional module name'); // loads idiom strings
+    app()->translate('key'); // returns translated key in filename
+    t('TITLE'); // An small alias to use in views
 
 ### SCREEN MESSAGES
-app()->addMessage('An error has occurred', 'alert alert-error');
+    app()->addMessage('An error has occurred', 'alert alert-error');
 
 ### CAPTCHA
-app()->createCaptcha(); // returns an HTML form element with a captcha code
-
-app()->getCaptcha(); // validates input captcha code
+    app()->createCaptcha(); // returns an HTML form element with a captcha code
+    app()->getCaptcha(); // validates input captcha code
  
 ### ENCRYPTION
-app()->encrypt('my password', 'sha256'); // returns an hash of a string
+    app()->encrypt('my password', 'sha256'); // returns an hash of a string
 
 ### REDIRECT
-app()->redirect('http://www.google.com'); // redirects to an url
+    app()->redirect('http://www.google.com'); // redirects to an url
 
 ### DATEPICKER
-app()->createDatepicker(); // returns a HTML date picker view
+    app()->createDatepicker(); // returns a HTML date picker view
  
 ### FILE UPLOAD
-app()->createFileupload()); // returns HTML file upload view
+    app()->createFileupload()); // returns HTML file upload view
  
 ### PAGINATION
-app()->createPagination(); // returns HTML pagination view
+    app()->createPagination(); // returns HTML pagination view
 
 ### TEXT EDITOR
-app()->createTexteditor(); // returns HTML text editor view
+    app()->createTexteditor(); // returns HTML text editor view
 
 ### SHOPPING CART (only use session)
-$item = (object) array('name' => 'Product1', 'price' => 30);
-
-$cart = app()->createCart(); // loads or creates a Shopping Cart from session
-
-$cart->model->insertItem($item, 1, 2, 0.2);
+    $item = (object) array('name' => 'Product1', 'price' => 30);
+    $cart = app()->createCart(); // loads or creates a Shopping Cart from session
+    $cart->model->insertItem($item, 1, 2, 0.2);
 
 ### HTTP
-app()->httpGet('http://google.com'); // gets the url content
-
-app()->httpPost('http://google.com', array('param1' => 'value'));
+    app()->httpGet('http://google.com'); // gets the url content
+    app()->httpPost('http://google.com', array('param1' => 'value'));
 
 ### UPLOAD
-app()->upload($index, '/var/www/architect/theme/data'); // uploads a file
+    app()->upload($index, '/var/www/architect/theme/data'); // uploads a file
 
 ### DOWNLOAD
-app()->download('/var/www/architect/theme/data/image.jpg'); // force file download
+    app()->download('/var/www/architect/theme/data/image.jpg'); // force file download
 
 
 ROAD MAP (TODO)
