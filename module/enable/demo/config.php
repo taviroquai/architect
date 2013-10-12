@@ -1,8 +1,5 @@
 <?php
 
-// adding a js here, will be available in every page
-// app()->addContent(BASEURL.'/module/enable/demo/demo.js', 'js');
-
 // add main route
 app()->addRoute('/', function() {
 
@@ -18,9 +15,6 @@ app()->addRoute('/404', function()  {
 });
 
 app()->addRoute('/demo', function() {
-    
-    // adding a js here will be available only for /demo route
-    // app()->addContent(BASEURL.'/module/enable/demo/demo.js', 'js');
 
 	// demo of date picker
 	app()->addContent(app()->createDatepicker());
@@ -58,11 +52,15 @@ app()->addRoute('/demo', function() {
     
     // demo of the shopping cart
     $cart = app()->createCart();
+    // if you use other item attributes please extend CartModel, CartView, copy 
+    // template theme/default/cart.php and change attributes
     $item = (object) array('name' => 'Product1', 'price' => 30, 'tax' => 0.21);
-    $cart->model->insertItem($item, 1, 2);
-    $cart->model->updateQuantity(1, 3);
-    $cart->model->updateShippingCost(5);
+    $cart->model->insertItem($item, 1, 2); // inserts on id 1 and quantity 2
+    $cart->model->updateQuantity(1, 3); // updates item 1 quantity to 3
+    $cart->model->updateShippingCost(5); // updates shipping cost to 5
+    // deletes an item with id = 1
     if (app()->input->get('del')) $cart->model->updateQuantity(1, 0);
+    // finally add cart to content
     app()->addContent($cart);
 
 });
