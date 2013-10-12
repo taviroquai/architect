@@ -31,6 +31,12 @@ app()->addRoute('/register', function() {
     app()->addContent($view);
 });
 
+// add routes
+app()->addRoute('/register-success', function() {
+    
+    app()->addContent('<p>Thank you for registering</p>');
+});
+
 // add login route
 app()->addRoute('/login', function() {
     
@@ -73,7 +79,10 @@ app()->addEvent('register.form.before.view', function() {
                 app()->addMessage("Registration has failed. Could not send email. Try again.", 'alert alert-error');
                 $model->unregister($post['email']);
             }
-            else app()->addMessage("Mail Sent OK");
+            else {
+                app()->addMessage("Mail Sent OK");
+                app()->redirect(app()->url('/register-success'));
+            }
         }
         else sleep(2);
         
