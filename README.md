@@ -12,8 +12,9 @@ Some features
 * Modular architecture
 * Theme and Idiom configuration (no programming skills required)
 
-Commom features (most can be done in 1 line of code)
+Commom features
 ----------------------------------------------------
+(most features can be called in 1 line of code)
 
 * Supports multiple themes
 * Supports multiple idiom
