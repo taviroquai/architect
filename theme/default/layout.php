@@ -40,7 +40,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="<?=BASEURL?>"><?=t('TITLE')?></a>
+          <a class="brand" href="<?=app()->url('/')?>"><?=t('TITLE')?></a>
           
           <div class="nav-collapse collapse">
             <?php $this->slot('topbar', function($item) { ?>
