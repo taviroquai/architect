@@ -42,7 +42,7 @@ class DemoView extends View {
 
         // demo of the shopping cart
         $cart = app()->createCart();
-        // if you use other item attributes please extend CartModel, CartView, copy 
+        // if you use other item attributes please extend Model_Cart, View_Cart, copy 
         // template theme/default/cart.php and change attributes
         $item = (object) array('name' => 'Product1', 'price' => 30, 'tax' => 0.21);
         $cart->model->insertItem($item, 1, 2); // inserts on id 1 and quantity 2

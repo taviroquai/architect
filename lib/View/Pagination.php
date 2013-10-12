@@ -1,6 +1,6 @@
 <?php
 
-class PaginationView extends View {
+class View_Pagination extends View {
     
     public $id = 1;
     public $total = 3;

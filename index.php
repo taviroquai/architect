@@ -10,7 +10,7 @@ define('BASEPATH', __DIR__);
 $filename = BASEPATH.'/config/development.xml';
 
 // Require class autoloader
-require_once 'autoload.php';
+require_once 'lib/autoload.php';
 
 // Get application
 $app = App::Instance($filename);

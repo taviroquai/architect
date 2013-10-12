@@ -3,7 +3,7 @@
 /**
  * Carousel view class
  */
-class CarouselView extends View {
+class View_Carousel extends View {
     
 	public function __construct($tmpl = null) {
         if ($tmpl === null) $tmpl = BASEPATH.'/theme/default/carousel.php';

@@ -1,6 +1,6 @@
 <?php
 
-class MenuView extends View {
+class View_Menu extends View {
 
     public function __construct($tmpl = null) {
         if ($tmpl === null) $tmpl = BASEPATH.'/theme/demo/main_menu.php';

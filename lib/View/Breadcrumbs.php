@@ -3,7 +3,7 @@
 /**
  * Breadcrumbs class
  */
-class BreadcrumbsView extends View {
+class View_Breadcrumbs extends View {
     
 	public function __construct($tmpl = null) {
         if ($tmpl === null) $tmpl = BASEPATH.'/theme/default/breadcrumbs.php';

@@ -1,6 +1,6 @@
 <?php
 
-class FileuploadView extends View {
+class View_Fileupload extends View {
 	
 	public function __construct($tmpl = null) {
         if ($tmpl === null) $tmpl = BASEPATH.'/theme/default/fileupload.php';

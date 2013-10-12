@@ -1,16 +1,16 @@
 <?php
 
-class CartView extends View {
+class View_Cart extends View {
     
     /**
      * the cart model
-     * @var CartModel
+     * @var Model_Cart
      */
 	public $model;
 
-	public function __construct($tmpl = null, CartModel $model = null) {
+	public function __construct($tmpl = null, Model_Cart $model = null) {
         if ($tmpl === null) $tmpl = BASEPATH.'/theme/default/cart.php';
-		if ($model === null) $model = new CartModel();
+		if ($model === null) $model = new Model_Cart();
         $this->model = $model;
 		parent::__construct($tmpl);
 

@@ -1,6 +1,6 @@
 <?php
 
-class DatepickerView extends View {
+class View_Datepicker extends View {
 	
 	public function __construct($tmpl = null) {
         if ($tmpl === null) $tmpl = BASEPATH.'/theme/default/datepicker.php';

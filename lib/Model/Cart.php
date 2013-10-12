@@ -1,6 +1,6 @@
 <?php
 
-class CartModel {
+class Model_Cart {
 
     public $currency_options;
     public $shipping_options;

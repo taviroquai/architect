@@ -668,48 +668,48 @@ class App implements Messenger {
     /**
      * Returns a new datepicker view
      * @param string $tmpl
-     * @return \DatepickerView
+     * @return \View_Datepicker
      */
     public function createDatepicker($tmpl = null) {
-        return new DatepickerView($tmpl);
+        return new View_Datepicker($tmpl);
     }
     
     /**
      * Returns a new file upload view
      * @param string $tmpl
-     * @return \FileuploadView
+     * @return \View_Fileupload
      */
     public function createFileupload($tmpl = null) {
-        return new FileuploadView($tmpl);
+        return new View_Fileupload($tmpl);
     }
     
     /**
      * Returns a new pagination view
      * @param string $id
      * @param string $tmpl
-     * @return \PaginationView
+     * @return \View_Pagination
      */
     public function createPagination($id = 1, $tmpl = null) {
-        return new PaginationView($id, $tmpl);
+        return new View_Pagination($id, $tmpl);
     }
     
     /**
      * Creates a new text editor view
      * @param string $tmpl
-     * @return \TexteditorView
+     * @return \View_Texteditor
      */
     public function createTexteditor($tmpl = null) {
-        return new TexteditorView($tmpl);
+        return new View_Texteditor($tmpl);
     }
     
     /**
      * Creates a new shopping cart view
      * @param string $tmpl
-     * @param CartModel $model
-     * @return \CartView
+     * @param Model_Cart $model
+     * @return \View_Cart
      */
-    public function createCart($tmpl = null, CartModel $model = null) {
-        return new CartView($tmpl, $model);
+    public function createCart($tmpl = null, Model_Cart $model = null) {
+        return new View_Cart($tmpl, $model);
     }
     
     /**
@@ -730,18 +730,18 @@ class App implements Messenger {
     /**
      * Returns a new breadcrumb view
      * @param string $tmpl
-     * @return \BreadcrumbsView
+     * @return \View_Breadcrumbs
      */
     public function createBreadcrumbs($tmpl = null) {
-        return new BreadcrumbsView($tmpl);
+        return new View_Breadcrumbs($tmpl);
     }
     
     /**
      * Returns a new carousel view
      * @param type $tmpl
-     * @return \CarouselView
+     * @return \View_Carousel
      */
     public function createCarousel($tmpl = null) {
-        return new CarouselView($tmpl);
+        return new View_Carousel($tmpl);
     }
 }
