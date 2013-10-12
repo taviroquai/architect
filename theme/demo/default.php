@@ -2,8 +2,6 @@
 <div class="hero-unit">
   <h1><?=t('TITLE')?></h1>
   
-  <p>Architect PHP Framework uses a pragmatic and modular Web development approuch. The idea is to create a small API but with the most common features in web development.</p>
-  
   <h2>Quick Start</h2>
   <ol>
       <li>Create a new folder in <strong>module/enable/hello</strong></li>
