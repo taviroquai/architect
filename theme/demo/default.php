@@ -6,7 +6,7 @@
   <ol>
       <li>Create a new folder in <strong>module/enable/hello</strong></li>
       <li>Create a new file in <strong>module/enable/hello/config.php</strong></li>
-      <li>Add the following content to config.php
+      <li>Add the following content
           <pre>
 &lt;?php
 
