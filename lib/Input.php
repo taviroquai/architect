@@ -1,46 +1,106 @@
 <?php
 
+/**
+ * Input class
+ */
 class Input {
 
     protected $get = array();
     protected $post = array();
     protected $files = array();
     protected $raw;
+    protected $api;
+    protected $params = array();
+    protected $action;
     
+    /**
+     * Constructor
+     * Default $_GET, $_POST, $_FILES and 'php://input' is parsed
+     */
     public function __construct() {
+        
+        $this->api = php_sapi_name();
         if (!empty($_GET))      $this->get = $_GET;
         if (!empty($_POST))     $this->post = $_POST;
         if (!empty($_FILES))    {
             $this->remapFiles($_FILES);
         }
         $this->raw = file_get_contents("php://input");
+        $this->getAction();
     }
     
-    public function get($key = null) {
-        if (!empty($key)) {
-            if (empty($this->get[$key])) return false;
-            return $this->get[$key];
+    /**
+     * Returns a $_GET param
+     * If using command line, will return all parameters
+     * 
+     * @param string $param
+     * @return boolean|string
+     */
+    public function get($param = null) {
+        if ($this->api == 'cli') {
+            return $this->params;
         }
-        return $this->get;
+        else {
+            if (!empty($param)) {
+                if (empty($this->get[$param])) return false;
+                return $this->get[$param];
+            }
+            return $this->get;
+        }
     }
     
-    public function post($key = null) {
-        if (!empty($key)) {
-            if (empty($this->post[$key])) return false;
-            return $this->post[$key];
+    /**
+     * Returns a $_POST param
+     * 
+     * @param string $param
+     * @return boolean|string
+     */
+    public function post($param = null) {
+        if (!empty($param)) {
+            if (empty($this->post[$param])) return false;
+            return $this->post[$param];
         }
         return $this->post;
     }
     
+    /**
+     * Return an entry from $_FILES
+     * 
+     * Example:
+     * file(0) will return the first file uploaded result
+     * 
+     * @param int $index
+     * @return boolean
+     */
     public function file($index) {
         if (empty($this->files[$index])) return false;
         if (!empty($this->files[$index]['error'])) return false;
         return $this->files[$index];
     }
     
-    public function getAction($key) {
-        if (empty($this->route[$key])) return false;
-        return $this->route[$key];
+    /**
+     * Gets user input action
+     * If using command line, will return the first parameter
+     * 
+     * @return type
+     */
+    public function getAction() {
+        
+        // parse action if no action is set
+        if (empty($this->action)) {
+            $this->action = '/';
+            if ($this->api != 'cli') {
+                $uri = str_replace(array(BASEURL,'index.php'), '', $_SERVER['REQUEST_URI']);
+                $end = strpos($uri, '?') === false ? strlen($uri) : strpos($uri, '?');
+                $uri = substr($uri, 0, $end);
+                if (!empty($uri)) $this->action = $uri;
+            }
+            else {
+                $this->params = $_SERVER['argv'];
+                if (!empty($params[1])) $this->action = $params[1];
+            }
+        }
+        return $this->action;
     }
     
     private function remapFiles($files) {

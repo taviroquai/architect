@@ -183,10 +183,7 @@ class App implements Messenger {
     
     private function loadInput() {
         $this->input = new Input();
-        $uri = str_replace(array(BASEURL,'index.php'), '', $_SERVER['REQUEST_URI']);
-        $end = strpos($uri, '?') === false ? strlen($uri) : strpos($uri, '?');
-        $uri = substr($uri, 0, $end);
-        $this->action = empty($uri) ? '/' : $uri;
+        $this->action = $this->input->getAction();
         $this->idiom = new Idiom();
         $this->loadIdiom('default.xml');
     }
