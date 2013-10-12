@@ -65,7 +65,6 @@ class Model_Cart {
     public function getTotal() {
         $subtotal = 0;
         $tax = 0;
-        //var_dump(app()->session->_cart->items);
         foreach (app()->session->_cart->items as $item) {
             $subtotal += $item->quantity * $item->product->price;
             $tax += ($item->product->tax * $item->product->price);
