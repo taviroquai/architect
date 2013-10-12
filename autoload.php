@@ -18,7 +18,7 @@ require_once 'lib/MenuView.php';
 require_once 'lib/DatepickerView.php';
 require_once 'lib/FileuploadView.php';
 require_once 'lib/PaginationView.php';
-require_once 'lib/TextareaView.php';
+require_once 'lib/TexteditorView.php';
 require_once 'lib/CartView.php';
 
 require_once 'lib/App.php';

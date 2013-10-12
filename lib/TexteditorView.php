@@ -1,6 +1,6 @@
 <?php
 
-class TextareaView extends View {
+class TexteditorView extends View {
 	
 	public function __construct($tmpl = null) {
         if ($tmpl === null) $tmpl = BASEPATH.'/theme/default/wysiwyg.php';

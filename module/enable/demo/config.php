@@ -6,9 +6,8 @@
 // add main route
 app()->addRoute('/', function() {
 
-	// add view to theme
-	$view = new View(BASEPATH.'/theme/demo/default.php');
-    app()->addContent($view);
+	// add content
+    app()->addContent(new View(BASEPATH.'/theme/demo/default.php'));
 });
 
 // add 404 route
@@ -24,7 +23,7 @@ app()->addRoute('/demo', function() {
     // app()->addContent(BASEURL.'/module/enable/demo/demo.js', 'js');
 
 	// demo of date picker
-	app()->addContent(new DatepickerView());
+	app()->addContent(app()->createDatepicker());
     
     // demo of file upload
     if ($file = app()->input->file(0)) {
@@ -32,15 +31,15 @@ app()->addRoute('/demo', function() {
         app()->addContent('<p>File upload result: '.$result.'</p>');
         if ($result) app()->download($result);
     }
-    $fileuploadView = new FileuploadView();
+    $fileuploadView = app()->createFileupload();
     $fileuploadView->set('name', 'upload');
 	app()->addContent($fileuploadView);
     
     // demo of pagination
-	app()->addContent(new PaginationView());
+	app()->addContent(app()->createPagination());
     
     // demo of texarea editor
-	app()->addContent(new TextareaView());
+	app()->addContent(app()->createTexteditor());
 
     // demo of download file
     if (app()->input->get('download')) {
@@ -50,15 +49,15 @@ app()->addRoute('/demo', function() {
         exit();
     }
     $url = 'http://localhost'.app()->url('/demo?download=1');
-    $download = app()->curlGet($url);
+    $download = app()->httpGet($url);
     app()->addContent(
         '<div class="well">'.
-            '<p>cURL POST Demo<br /><em>app()->curl("url", array("demo" => 1));</em></p>'.
+            '<p>HTTP POST Demo<br /><em>app()->httpPost("url", array("demo" => 1));</em></p>'.
             '<pre>'.$download.'</pre>
         </div>');
     
     // demo of the shopping cart
-    $cart = new CartView();
+    $cart = app()->createCart();
     $item = (object) array('name' => 'Product1', 'price' => 30, 'tax' => 0.21);
     $cart->model->insertItem($item, 1, 2);
     $cart->model->updateQuantity(1, 3);

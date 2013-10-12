@@ -417,13 +417,13 @@ class App implements Messenger {
      * app()->addContent('/path/to/template.php');
      * app()->addContent(new View('/path/to/template.php');
      * 
-     * @param mixed $item
+     * @param mixed $content
      * @param string $slotName
      * @param boolean $unique
      * @return \App
      */
-    public function addContent($item, $slotName = 'content', $unique = false) {
-        $this->theme->addContent($item, $slotName, $unique);
+    public function addContent($content, $slotName = 'content', $unique = false) {
+        $this->theme->addContent($content, $slotName, $unique);
         return $this;
     }
 
@@ -583,14 +583,14 @@ class App implements Messenger {
      * Almost no configuration is needed.
      * 
      * Example:
-     * $page = app()->curlGet('http://google.com');
+     * $page = app()->httpGet('http://google.com');
      * 
      * @param string $url
      * @param boolean $debug
      * @return string
      */
-    public function curlGet($url, $debug = false) {
-        return $this->curlPost($url, array(), $debug);
+    public function httpGet($url, $debug = false) {
+        return $this->httpPost($url, array(), $debug);
     }
 
     /**
@@ -598,14 +598,14 @@ class App implements Messenger {
      * This is a POST request
      * 
      * Example:
-     * $page = app()->curlPost('http://google.com', array('param' => 1));
+     * $page = app()->httpPost('http://google.com', array('param' => 1));
      * 
      * @param string $url
      * @param array $post
      * @param boolean $debug
      * @return string
      */
-    public function curlPost($url, $post = array(), $debug = false) {
+    public function httpPost($url, $post = array(), $debug = false) {
         $ch = curl_init();
         $timeout = 5;
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -667,5 +667,25 @@ class App implements Messenger {
         // save session
         $this->session->save();
         exit();
+    }
+    
+    public function createDatepicker($tmpl = null) {
+        return new DatepickerView($tmpl);
+    }
+    
+    public function createFileupload($tmpl = null) {
+        return new FileuploadView($tmpl);
+    }
+    
+    public function createPagination($id = 1, $tmpl = null) {
+        return new PaginationView($id, $tmpl);
+    }
+    
+    public function createTexteditor($tmpl = null) {
+        return new TexteditorView($tmpl);
+    }
+    
+    public function createCart($tmpl = null, CartModel $model = null) {
+        return new CartView($tmpl, $model);
     }
 }

@@ -180,8 +180,8 @@ app()->addEvent('register.form.before.view', function() {
  * app()->theme->addContent($cart); // adds HTML shopping cart
  *
  * CURL USAGE
- * app()->curlGet('http://google.com'); // gets the url content
- * app()->curlPost('http://google.com', array('param1' => 'value'));
+ * app()->httpGet('http://google.com'); // gets the url content
+ * app()->httpPost('http://google.com', array('param1' => 'value'));
  *
  * UPLOAD USAGE
  * app()->upload($index, '/var/www/architect/theme/data'); // uploads a file
