@@ -2,7 +2,7 @@
 Architect PHP Framework
 =======================
 
-Architect PHP Framework uses a pragmatic and modular Web development approuch. 
+Architect PHP Framework uses a pragmatic and modular Web development approach. 
 The idea is to create a small API but with the most common features in web development.
 
 Some features
@@ -12,13 +12,13 @@ Some features
 * Modular architecture
 * Theme and Idiom configuration (no programming skills required)
 
-Commom features
+Common features
 ----------------------------------------------------
-(most features can be called in 1 line of code)
+(most features can be called in 1 line of code, ie. **app()->featureName()**)
 
 * Supports multiple themes
 * Supports multiple idiom
-* Plugin in routes callbacks with anonymous functions
+* Plugin routes with PHP5 anonymous functions
 * Supports events for inter-module actions
 * Supports screen messages
 * Generate consistent URLs
