@@ -12,7 +12,7 @@ class UserModel {
         try {
             $this->db->query("SELECT 1 FROM `{$this->tablename}`");
         } catch(PDOException $e) {
-            die($e);
+            $this->install();
         }
     }
     
@@ -139,6 +139,16 @@ class UserModel {
         }
         catch(PDOException $e) {
             die($e);
+        }
+    }
+    
+    private function install() {
+        $engine = reset(explode(':', DBDSN));
+        $sql = file_get_contents(BASEPATH.'/module/enable/demo/db/'.$engine.'.sql');
+        try {
+            if (app()->db->exec($sql) === false) throw new Exception();
+        } catch (PDOException $e) {
+            die(print_r(app()->db->errorInfo(), true));
         }
     }
 }

@@ -637,6 +637,7 @@ class App implements Messenger {
      * @param string $filename
      */
     public function download($filename) {
+        if (!file_exists($filename)) app()->redirect (app()->url('/404'));
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $type = finfo_file($finfo, $filename);
         $name = basename($filename);

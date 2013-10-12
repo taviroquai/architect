@@ -10,7 +10,6 @@ require_once 'lib/Session.php';
 require_once 'lib/Event.php';
 require_once 'lib/Idiom.php';
 
-require_once 'lib/UserModel.php';
 require_once 'lib/CartModel.php';
 
 require_once 'lib/View.php';

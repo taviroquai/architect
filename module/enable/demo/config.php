@@ -19,36 +19,26 @@ app()->addRoute('/demo', function() {
 	// demo of date picker
 	app()->addContent(app()->createDatepicker());
     
+    // demo of download file
+    if (app()->input->get('dl')) {
+        app()->download(BASEPATH.'/theme/default/img/'.app()->input->get('dl'));
+    }
+    $url = app()->url('/demo?dl=glyphicons-halflings.png');
+    app()->addContent(
+    '<div class="well">Download attachment Demo<br />
+        <a href="'.$url.'">Download</a></div>');
+    
     // demo of file upload
     if ($file = app()->input->file(0)) {
-        $result = app()->upload($file, BASEPATH.'/theme/data');
-        app()->addContent('<p>File upload result: '.$result.'</p>');
-        if ($result) app()->download($result);
+        app()->upload($file, BASEPATH.'/theme/data');
     }
-    $fileuploadView = app()->createFileupload();
-    $fileuploadView->set('name', 'upload');
-	app()->addContent($fileuploadView);
+	app()->addContent(app()->createFileupload());
     
     // demo of pagination
 	app()->addContent(app()->createPagination());
     
     // demo of texarea editor
 	app()->addContent(app()->createTexteditor());
-
-    // demo of download file
-    if (app()->input->get('download')) {
-        app()->output->setContent('{"download": "demo"}');
-        app()->output->setHeaders(array('Content-type: application/json'));
-        app()->output->send();
-        exit();
-    }
-    $url = 'http://localhost'.app()->url('/demo?download=1');
-    $download = app()->httpGet($url);
-    app()->addContent(
-        '<div class="well">'.
-            '<p>HTTP POST Demo<br /><em>app()->httpPost("url", array("demo" => 1));</em></p>'.
-            '<pre>'.$download.'</pre>
-        </div>');
     
     // demo of the shopping cart
     $cart = app()->createCart();

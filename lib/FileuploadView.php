@@ -9,5 +9,7 @@ class FileuploadView extends View {
         // add view resources
         app()->addContent(BASEURL.'theme/default/fileupload/bootstrap-fileupload.min.css', 'css');
         app()->addContent(BASEURL.'theme/default/fileupload/bootstrap-fileupload.min.js', 'js');
+        
+        $this->set('name', 'upload');
 	}
 }
