@@ -9,5 +9,9 @@
         <module>
             <classname>LoginNavView</classname>
         </module>
+        <module>
+            <classname>View</classname>
+            <content><![CDATA[<ul class="nav"><li><a href="#">Module example</a></li></ul>]]></content>
+        </module>
     </slot>
 </config>
