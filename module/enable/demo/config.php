@@ -1,7 +1,7 @@
 <?php
 
 // adding a js here, will be available in every page
-// app()->theme->addContent(BASEURL.'/module/enable/demo/demo.js', 'js');
+// app()->addContent(BASEURL.'/module/enable/demo/demo.js', 'js');
 
 // add main route
 app()->addRoute('/', function() {
@@ -21,7 +21,7 @@ app()->addRoute('/404', function()  {
 app()->addRoute('/demo', function() {
     
     // adding a js here will be available only for /demo route
-    // app()->theme->addContent(BASEURL.'/module/enable/demo/demo.js', 'js');
+    // app()->addContent(BASEURL.'/module/enable/demo/demo.js', 'js');
 
 	// demo of date picker
 	app()->addContent(new DatepickerView());
@@ -29,7 +29,7 @@ app()->addRoute('/demo', function() {
     // demo of file upload
     if ($file = app()->input->file(0)) {
         $result = app()->upload($file, BASEPATH.'/theme/data');
-        app()->theme->addContent('<p>File upload result: '.$result.'</p>');
+        app()->addContent('<p>File upload result: '.$result.'</p>');
         if ($result) {
             app()->download($result);
         }
@@ -92,7 +92,7 @@ app()->addRoute('/login', function() {
     $view = new LoginView();
     $view->set('loginUrl', app()->url('/login'));
     $view->set('logoutUrl', app()->url('/logout'));
-    app()->theme->addContent($view);
+    app()->addContent($view);
 });
 
 // add logout route
