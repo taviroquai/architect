@@ -30,6 +30,14 @@ class Input {
     }
     
     /**
+     * Returnr whether input is cli or not
+     * @return boolean
+     */
+    public function isCli() {
+        return $this->api === 'cli' ? true : false;
+    }
+    
+    /**
      * Returns a $_GET param
      * If using command line, will return all parameters
      * 
