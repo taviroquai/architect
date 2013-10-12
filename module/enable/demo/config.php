@@ -57,7 +57,7 @@ app()->router->addRoute('/logout', function() {
 app()->addEvent('register.form.before.view', function() {
 
     $post = app()->input->post();
-    if (!empty($post) && app()->getCaptcha()) {
+    if (!empty($post['register']) && app()->getCaptcha()) {
 
         // save post
         $model = new UserModel();
@@ -86,7 +86,7 @@ app()->addEvent('register.form.before.view', function() {
 app()->addEvent('login.form.before.view', function() {
 
     $post = app()->input->post();
-    if (!empty($post)) {
+    if (!empty($post['login'])) {
         
         // login user
         $email      = filter_var($post['email']);
@@ -96,7 +96,7 @@ app()->addEvent('login.form.before.view', function() {
         $target = $model->find('email = ? and password = ?', array($email, $password));
         
         if (!$target) {
-            app()->addMessage('Invalid email email/password', 'alert alert-error');
+            app()->addMessage('Invalid email/password', 'alert alert-error');
         }
         else {
             app()->session->login = $target->email;

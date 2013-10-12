@@ -38,9 +38,10 @@ class UserModel {
     
     public function validateCreate($input) {
 
-        $result = true & $this->validateEmail($input);
-        $result = true & $this->validatePassword($input);
-        $result = true & $this->validateNewEmail($input);
+        $email = $this->validateEmail($input);
+        $pass = true & $this->validatePassword($input);
+        $new = true & $this->validateNewEmail($input);
+        $result = $email & $pass & $new;
         return $result;
     }
     

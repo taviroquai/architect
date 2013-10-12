@@ -6,6 +6,7 @@
     <input name="password" type="password" placeholder="Password" /><br />
     <label>Confirm Password</label>
     <input name="password_confirm" type="password" placeholder="Confirm password" /><br />
+    <input type="hidden" name="register" value="1" />
     <button>Register</button>
     
     <!-- add captcha -->
