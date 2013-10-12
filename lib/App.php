@@ -622,7 +622,7 @@ class App implements Messenger {
      */
     public function upload($file, $targetDir) {
         if ($file['error']) return false;
-        if (!is_dir($targetDir)) return false;
+        if (!is_dir($targetDir) || !is_writable($targetDir)) return false;
         $destination = $targetDir.'/'.$file['name'];
         if (!move_uploaded_file($file['tmp_name'], $destination)) return false;
         return $destination;
