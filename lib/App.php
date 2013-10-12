@@ -545,21 +545,6 @@ class App implements Messenger {
     }
 
     /**
-     * Returns an anti-spam form field
-     * 
-     * Example:
-     * echo app()->setCaptcha();
-     * 
-     * @return View
-     */
-    public function setCaptcha() {
-        $this->session->_captcha = " ";
-        $view = new View(BASEPATH.'/theme/default/captcha.php');
-        $view->set('code', $this->session->_captcha);
-        return $view;
-    }
-
-    /**
      * Verifies the submitted anti-span code
      * Returns false if the code does not match
      * 
@@ -669,23 +654,65 @@ class App implements Messenger {
         exit();
     }
     
+    /**
+     * Returns a new datepicker view
+     * @param string $tmpl
+     * @return \DatepickerView
+     */
     public function createDatepicker($tmpl = null) {
         return new DatepickerView($tmpl);
     }
     
+    /**
+     * Returns a new file upload view
+     * @param string $tmpl
+     * @return \FileuploadView
+     */
     public function createFileupload($tmpl = null) {
         return new FileuploadView($tmpl);
     }
     
+    /**
+     * Returns a new pagination view
+     * @param string $id
+     * @param string $tmpl
+     * @return \PaginationView
+     */
     public function createPagination($id = 1, $tmpl = null) {
         return new PaginationView($id, $tmpl);
     }
     
+    /**
+     * Creates a new text editor view
+     * @param string $tmpl
+     * @return \TexteditorView
+     */
     public function createTexteditor($tmpl = null) {
         return new TexteditorView($tmpl);
     }
     
+    /**
+     * Creates a new shopping cart view
+     * @param string $tmpl
+     * @param CartModel $model
+     * @return \CartView
+     */
     public function createCart($tmpl = null, CartModel $model = null) {
         return new CartView($tmpl, $model);
+    }
+    
+    /**
+     * Returns an anti-spam view
+     * 
+     * Example:
+     * echo app()->createCaptcha();
+     * 
+     * @return View
+     */
+    public function createCaptcha() {
+        $this->session->_captcha = " ";
+        $view = new View(BASEPATH.'/theme/default/captcha.php');
+        $view->set('code', $this->session->_captcha);
+        return $view;
     }
 }

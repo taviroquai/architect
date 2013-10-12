@@ -9,5 +9,5 @@
     <button>Register</button>
     
     <!-- add captcha -->
-    <?=app()->setCaptcha()?>
+    <?=app()->createCaptcha()?>
 </form>

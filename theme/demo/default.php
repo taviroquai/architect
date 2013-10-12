@@ -155,7 +155,7 @@ app()->addEvent('register.form.before.view', function() {
  * app()->addMessage('An error has occurred', 'alert alert-error');
  * 
  * CAPTCHA USAGE
- * app()->setCaptcha(); // returns an HTML form element with a captcha code
+ * app()->createCaptcha(); // returns an HTML form element with a captcha code
  * app()->getCaptcha(); // validates input captcha code
  * 
  * ENCRYPTION USAGE
