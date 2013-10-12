@@ -1,7 +1,7 @@
 <config>
     <slot name="topbar">
         <module>
-            <classname>MenuView</classname>
+            <classname>DemoMenuNavView</classname>
         </module>
         <module>
             <classname>RegisterNavView</classname>

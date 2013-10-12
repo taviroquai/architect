@@ -7,9 +7,6 @@ class MenuView extends View {
         
         // init items
         $this->data['items'] = array();
-        
-        // add demo menu item
-        $this->addItem('Demo', app()->url('/demo'));
     }
     
     public function addItem($text, $url, $class = '') {
