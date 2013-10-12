@@ -1,0 +1,13 @@
+<config>
+    <slot name="topbar">
+        <module>
+            <classname>MenuView</classname>
+        </module>
+        <module>
+            <classname>RegisterNavView</classname>
+        </module>
+        <module>
+            <classname>LoginNavView</classname>
+        </module>
+    </slot>
+</config>
