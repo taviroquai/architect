@@ -23,12 +23,14 @@ Common features
 * Generate consistent URLs
 * Centralized encryption
 * Built-in sending email
-* Built-in shooping cart
+* Built-in shopping cart
 * Built-in anti-span field
 * Built-in GET/POST cURL requests
 * Built-in file uploads and download attachments
 * Built-in datepicker field
 * Built-in pagination
+* Built-in breadcrumbs
+* Built-in carousel
 * More to come...
 
 This is on going and there is not a stable version yet

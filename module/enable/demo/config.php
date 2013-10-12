@@ -15,44 +15,8 @@ app()->addRoute('/404', function()  {
 });
 
 app()->addRoute('/demo', function() {
-
-	// demo of date picker
-	app()->addContent(app()->createDatepicker());
     
-    // demo of download file
-    if (app()->input->get('dl')) {
-        app()->download(BASEPATH.'/theme/default/img/'.app()->input->get('dl'));
-    }
-    $url = app()->url('/demo?dl=glyphicons-halflings.png');
-    app()->addContent(
-    '<div class="well">Download attachment Demo<br />
-        <a href="'.$url.'">Download</a></div>');
-    
-    // demo of file upload
-    if ($file = app()->input->file(0)) {
-        app()->upload($file, BASEPATH.'/theme/data');
-    }
-	app()->addContent(app()->createFileupload());
-    
-    // demo of pagination
-	app()->addContent(app()->createPagination());
-    
-    // demo of texarea editor
-	app()->addContent(app()->createTexteditor());
-    
-    // demo of the shopping cart
-    $cart = app()->createCart();
-    // if you use other item attributes please extend CartModel, CartView, copy 
-    // template theme/default/cart.php and change attributes
-    $item = (object) array('name' => 'Product1', 'price' => 30, 'tax' => 0.21);
-    $cart->model->insertItem($item, 1, 2); // inserts on id 1 and quantity 2
-    $cart->model->updateQuantity(1, 3); // updates item 1 quantity to 3
-    $cart->model->updateShippingCost(5); // updates shipping cost to 5
-    // deletes an item with id = 1
-    if (app()->input->get('del')) $cart->model->updateQuantity(1, 0);
-    // finally add cart to content
-    app()->addContent($cart);
-
+    app()->addContent(new DemoView());
 });
 
 // add routes

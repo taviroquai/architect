@@ -716,4 +716,22 @@ class App implements Messenger {
         $view->set('code', $this->session->_captcha);
         return $view;
     }
+    
+    /**
+     * Returns a new breadcrumb view
+     * @param string $tmpl
+     * @return \BreadcrumbsView
+     */
+    public function createBreadcrumbs($tmpl = null) {
+        return new BreadcrumbsView($tmpl);
+    }
+    
+    /**
+     * Returns a new carousel view
+     * @param type $tmpl
+     * @return \CarouselView
+     */
+    public function createCarousel($tmpl = null) {
+        return new CarouselView($tmpl);
+    }
 }
