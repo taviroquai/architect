@@ -30,9 +30,7 @@ app()->addRoute('/demo', function() {
     if ($file = app()->input->file(0)) {
         $result = app()->upload($file, BASEPATH.'/theme/data');
         app()->addContent('<p>File upload result: '.$result.'</p>');
-        if ($result) {
-            app()->download($result);
-        }
+        if ($result) app()->download($result);
     }
     $fileuploadView = new FileuploadView();
     $fileuploadView->set('name', 'upload');
@@ -46,9 +44,9 @@ app()->addRoute('/demo', function() {
 
     // demo of download file
     if (app()->input->get('download')) {
-        $output = new Output('{"download": "demo"}');
-        $output->setHeaders(array('Content-type: application/json'));
-        $output->send();
+        app()->output->setContent('{"download": "demo"}');
+        app()->output->setHeaders(array('Content-type: application/json'));
+        app()->output->send();
         exit();
     }
     $url = 'http://localhost'.app()->url('/demo?download=1');
