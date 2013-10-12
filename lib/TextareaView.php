@@ -2,8 +2,9 @@
 
 class TextareaView extends View {
 	
-	public function __construct() {
-		parent::__construct(BASEPATH.'/theme/default/wysiwyg.php');
+	public function __construct($tmpl = null) {
+        if ($tmpl === null) $tmpl = BASEPATH.'/theme/default/wysiwyg.php';
+		parent::__construct($tmpl);
         
         // add view resources
         app()->theme->addContent(BASEURL.'theme/default/font-awesome/css/font-awesome.min.css', 'css');

@@ -9,8 +9,9 @@ class PaginationView extends View {
     public $items = array();
     public $current = 1;
 	
-	public function __construct($id = 1) {
-		parent::__construct(BASEPATH.'/theme/default/pagination.php');
+	public function __construct($id = 1, $tmpl = null) {
+        if ($tmpl === null) $tmpl = BASEPATH.'/theme/default/pagination.php';
+		parent::__construct($tmpl);
         
         // get pager id
         $this->id = $id;
