@@ -5,6 +5,7 @@
  */
 class View {
     
+    protected $hidden = false;
     protected $data = array();
     protected $slot = array('content' => array());
     protected $path;
@@ -114,8 +115,27 @@ class View {
         return $this;
     }
     
+    /**
+     * Hides the view
+     * @return \View
+     */
+    public function hide() {
+        $this->hidden = true;
+        return $this;
+    }
+    
+    /**
+     * Shows the view
+     * @return \View
+     */
+    public function show() {
+        $this->hidden = false;
+        return $this;
+    }
+    
     public function __toString() {
         if (!file_exists($this->path)) return $this->output;
+        if ($this->hidden) return '';
         ob_start();
         extract($this->data);
         include $this->path;

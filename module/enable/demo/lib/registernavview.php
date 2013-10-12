@@ -6,7 +6,6 @@ class RegisterNavView extends View {
         parent::__construct(BASEPATH.'/theme/demo/register_navlink.php');
         
         // hide if there is a user logged in
-        $login = app()->session->login;
-        if (!empty($login)) $this->out = ' ';
+        if (app()->session->login) $this->hide();
     }
 }
