@@ -8,9 +8,10 @@ class CartView extends View {
      */
 	public $model;
 
-	public function __construct($tmpl = null) {
+	public function __construct($tmpl = null, CartModel $model = null) {
         if ($tmpl === null) $tmpl = BASEPATH.'/theme/default/cart.php';
-		$this->model = new CartModel();
+		if ($model === null) $model = new CartModel();
+        $this->model = $model;
 		parent::__construct($tmpl);
 
         // default checkoutUrl
