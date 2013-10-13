@@ -5,11 +5,16 @@ Architect PHP Framework uses a pragmatic and modular Web development approach.
 The idea is to create a small API but with the most common features in web 
 development.
 
+Online Demo
+-----------
+
+An online demo can be found in <http://marcoafonso.pt/tests/architect/>
+
 Install
 -------
 
 1. Edit config/development.xml
-2. Open in browser http://localhost/architect
+2. Open in browser <http://localhost/architect>
 
 Main features
 -------------
@@ -55,7 +60,7 @@ Quick Start
         app()->addContent($message);
     });
 
-4. Open http://localhost/architect/index.php/hello
+4. Open <http://localhost/architect/index.php/hello>
 
 
 Theme Configuration without programming skills
