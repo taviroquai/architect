@@ -150,10 +150,10 @@ r() - **R**oute. Adds a new route
 c() - **C**ontent. Adds content to the default theme  
 u() - **U**RL. Returns an internal URL. Use this to generate internal URLs  
 m() - **M**essage. Adds a message to be shown to the user  
-g() - **G**ET. Returns $_GET parameters  
-p() - **P**OST. Returns $_POST parameters  
-f() - **F**ILES. Returns a $_FILES entry by index  
-q() - **Q**uery table. Returns a Table instance to start querying
+g() - **G**ET. Returns GET parameters  
+p() - **P**OST. Returns POST parameters  
+f() - **F**ILES. Returns a FILES entry by index  
+q() - **Q**uery table. Returns a Table instance to start querying  
 s() - **S**ecure. Returns a secured (encrypted) string  
 t() - **T**ranslate. Returns the translation given by key  
 e() - **E**vent. Adds a new event  
