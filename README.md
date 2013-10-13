@@ -88,7 +88,7 @@ Idiom configuration without programming skills
     	<item key="TITLE">Architect PHP Framework</item>
     </items>
 
-User registration module example
+User registration module example - OOP style
 --------------------------------
 
 /module/demo/config.php
@@ -97,9 +97,7 @@ Show user form
 
     app()->addRoute('/register', function() {
         app()->triggerEvent('register.form.before.view');
-        $view = new RegisterView();
-        $view->set('registerUrl', app()->url('/register'));
-        app()->addContent($view);
+        app()->addContent(new RegisterView());
     });
     
 Save user on database
@@ -112,7 +110,29 @@ Save user on database
             if ($result) app()->redirect('/register-success');
         }
     });
-  
+
+User registration module example - Function alias style
+--------------------------------
+
+/module/demo/config.php
+
+Show user form
+
+    r('/register', function() {
+        tr('register.form.before.view');
+        c(new RegisterView());
+    });
+    
+Save user on database
+
+    e('register.form.before.view', function() {
+        if (p() && app()->getCaptcha()) {
+            $model = new UserModel();
+            $result = $model->register(p('email'), p());
+            if ($result) app()->redirect('/register-success');
+        }
+    });
+
 API usage examples
 ------------------
 
