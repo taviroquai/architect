@@ -26,7 +26,9 @@ called in the form **app()->featureName()**. Use IDE type hinting.
 
 Common features
 ----------------------------------------------------
-(most features can be called in 1 line of code, ie. **app()->featureName()**)
+Most features can be called in 1 line of code, ie. **app()->featureName()**. If
+you prefer to use functions style, there are also core functions aliases. Se
+below.
 
 * Supports multiple themes
 * Supports multiple idiom
