@@ -58,10 +58,11 @@ Quick Start
 2. Create a new file in module/enable/hello/config.php
 3. Add the following content to config.php
 
-    <?php app()->addRoute('/hello', function() {
-        $message = 'Hello World!';
-        app()->addContent($message);
-    });
+        <?php 
+            app()->addRoute('/hello', function() {
+            $message = 'Hello World!';
+            app()->addContent($message);
+        });
 
 4. Open <http://localhost/architect/index.php/hello>
 
