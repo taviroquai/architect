@@ -141,10 +141,10 @@ class App implements Messenger {
         // set default routes
         $this->router = new Router();
         $this->router->addRoute('/404', function()  {
-            App::Instance()->Output->setHeaders(
+            app()->output->setHeaders(
                 array('HTTP/1.0 400 Not Found', 'Status: 404 Not Found')
                 );
-            App::Instance()->theme->addContent('<h1>There is no content for this route</h1>');
+            app()->addContent('<h1>There is no content for this route</h1>');
         });
     }
     
