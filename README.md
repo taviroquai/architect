@@ -22,7 +22,8 @@ Main features
 * Small API - You should not need to learn another language. All features can be
 called in the form **app()->featureName()**. Use IDE type hinting.
 * Modular and Events architecture
-* Theme and Idiom strings are XML files (no programming skills required)
+* Theme slots configuration and Idiom strings are XML files (no programming 
+skills required)
 
 Common features
 ----------------------------------------------------
@@ -152,7 +153,7 @@ tr() - **TR**igger. Triggers the event
     app()->addContent('Any string or View instance', 'optional slot name');
 
 ### URL
-    app()->url('/demo', array('param1' => 'World'); // creates an application URL
+    app()->url('/demo', array('param1' => 'World'); // creates an URL
  
 ### INPUT (GET / POST / RAW / FILES / CLI ARGS)
     app()->input->post('optional post param');
@@ -199,7 +200,7 @@ tr() - **TR**igger. Triggers the event
 
 ### SHOPPING CART (only use session)
     $item = (object) array('name' => 'Product1', 'price' => 30);
-    $cart = app()->createCart(); // loads or creates a Shopping Cart from session
+    $cart = app()->createCart(); // loads or creates a cart from session
     $cart->model->insertItem($item, 1, 2, 0.2);
 
 ### HTTP
@@ -210,7 +211,8 @@ tr() - **TR**igger. Triggers the event
     app()->upload($index, '/var/www/architect/theme/data'); // uploads a file
 
 ### DOWNLOAD
-    app()->download('/var/www/architect/theme/data/image.jpg'); // force file download
+    app()->download('/var/www/architect/theme/data/image.jpg'); // force file 
+download by sending attachment HTTP headers
 
 
 ROAD MAP (TODO)
