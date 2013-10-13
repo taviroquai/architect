@@ -16,6 +16,17 @@ app()->addRoute('/404', function()  {
 
 app()->addRoute('/demo', function() {
     
+    // demo of file upload
+    if ($file = app()->input->file(0)) {
+        app()->upload($file, BASEPATH.'/theme/data');
+    }
+    
+    // demo of download file
+    if (app()->input->get('dl')) {
+        app()->download(BASEPATH.'/theme/default/img/'.app()->input->get('dl'));
+    }
+    
+    // show demo view
     app()->addContent(new DemoView());
 });
 

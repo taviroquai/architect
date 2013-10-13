@@ -82,7 +82,6 @@ class Input {
      */
     public function file($index) {
         if (empty($this->files[$index])) return false;
-        if (!empty($this->files[$index]['error'])) return false;
         return $this->files[$index];
     }
     
@@ -98,9 +97,10 @@ class Input {
         if (empty($this->action)) {
             $this->action = '/';
             if ($this->api != 'cli') {
-                $uri = str_replace(array(BASEURL,'index.php'), '', $_SERVER['REQUEST_URI']);
+                $uri = str_replace(array(BASEURL,INDEXFILE), '', $_SERVER['REQUEST_URI']);
                 $end = strpos($uri, '?') === false ? strlen($uri) : strpos($uri, '?');
                 $uri = substr($uri, 0, $end);
+                $uri = '/'.trim($uri, '/');
                 if (!empty($uri)) $this->action = $uri;
             }
             else {
@@ -109,6 +109,38 @@ class Input {
             }
         }
         return $this->action;
+    }
+    
+    /**
+     * Returns true or false if pattern matches action
+     * Matches are populated in $this->params
+     * 
+     * @param string $pattern
+     * @param string $action
+     * @return boolean
+     */
+    public function getActionParams($pattern, $action) {
+        $pattern = str_replace(array(':any', ':num'), array('[^/]+', '[0-9]+'), $pattern);
+        $match = preg_match('#^'.$pattern.'$#', $action, $params);
+        if ($match) {
+            array_shift($params);
+            $this->params = $params;
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Returns a param by index
+     * If index is not provided, returns all params
+     * 
+     * @param integer $index
+     * @return boolean
+     */
+    public function getParam($index = null) {
+        if ($index === null) return $this->params;
+        if (!isset($this->params[$index])) return false;
+        return $this->params[$index];
     }
     
     private function remapFiles($files) {

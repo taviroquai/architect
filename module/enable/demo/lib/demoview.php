@@ -21,17 +21,11 @@ class DemoView extends View {
         $this->addContent(app()->createDatepicker());
 
         // demo of download file
-        if (app()->input->get('dl')) {
-            app()->download(BASEPATH.'/theme/default/img/'.app()->input->get('dl'));
-        }
-        $url = app()->url('/demo?dl=glyphicons-halflings.png');
+        $url = app()->url('/demo', array('dl' => '/glyphicons-halflings.png'));
         $this->addContent(
         '<h3>Download attachment Demo</h3><a href="'.$url.'">Download</a>');
 
         // demo of file upload
-        if ($file = app()->input->file(0)) {
-            app()->upload($file, BASEPATH.'/theme/data');
-        }
         $this->addContent(app()->createFileupload());
 
         // demo of pagination

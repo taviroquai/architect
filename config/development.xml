@@ -4,6 +4,9 @@
     <item name="BASEURL">/architect/</item>
     <item name="THEME">default</item>
     
+    <!-- empty this value if you use URL rewrite -->
+    <item name="INDEXFILE">index.php</item>
+    
     <item name="DBDSN">mysql:host=localhost;dbname=test</item>
     <item name="DBUSER">root</item>
     <item name="DBPASS">toor</item>

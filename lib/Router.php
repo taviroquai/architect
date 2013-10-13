@@ -31,8 +31,11 @@ class Router {
      * @param string $key
      * @return boolean|function
      */
-    public function getRoute($key) {
-        if (empty($this->route[$key])) return false;
-        return $this->route[$key];
+    public function getRoute($action) {
+        foreach ($this->route as $key => $cb) {
+            $match = app()->input->getActionParams($key, $action);
+            if ( $match && is_callable($cb)) return $cb;
+        }
+        return false;
     }
 }

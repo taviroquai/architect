@@ -178,7 +178,7 @@ class App implements Messenger {
     private function execute() {
         $action = $this->router->getRoute($this->action);
         if ($action === false) $action = $this->router->getRoute('/404');
-        $action();
+        return call_user_func_array($action, $this->input->getParam());
     }
     
     private function initDatabase() {
@@ -450,11 +450,12 @@ class App implements Messenger {
      * @return string
      */
     public function url($path = '', $params = array()) {
-        $uri = '';
+        $base = INDEXFILE == '' ? rtrim(BASEURL, '/') : BASEURL;
+        $uri = empty($path) ? '' : $path;
         $query = empty($params) ? '' : '?';
-        if (!empty($path)) $uri = ''.$path;
-        foreach ($params as $key => $item) $query .= '&'.rawurlencode($key).'='.rawurlencode($item);
-        return BASEURL.'index.php'.$uri.$query;
+        //foreach ($params as $key => $item) $query .= '&'.rawurlencode($key).'='.rawurlencode($item);
+        $query .= http_build_query($params);
+        return $base.INDEXFILE.$uri.$query;
     }
     
     /**
@@ -510,7 +511,7 @@ class App implements Messenger {
             $result = $mail->Send();
         }
         catch (phpmailerException $e) {
-            app()->addMessage($e->getMessage());
+            //app()->addMessage($e->getMessage());
             $result = false;
         }
         return $result;
@@ -632,10 +633,12 @@ class App implements Messenger {
      * @param string $targetDir
      * @return boolean|string
      */
-    public function upload($file, $targetDir) {
+    public function upload($file, $targetDir, $newName = '') {
         if ($file['error']) return false;
         if (!is_dir($targetDir) || !is_writable($targetDir)) return false;
-        $destination = $targetDir.'/'.$file['name'];
+        $name = $file['name'];
+        if (!empty($newName)) $name = $newName;
+        $destination = $targetDir.'/'.$name;
         if (!move_uploaded_file($file['tmp_name'], $destination)) return false;
         return $destination;
     }
