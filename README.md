@@ -46,7 +46,7 @@ Common features
 * Built-in carousel
 * More to come...
 
-This is on going and there is not a stable version yet
+This is an on-going work and there is not yet a stable version
 
 Quick Start
 -----------
@@ -115,6 +115,25 @@ API usage examples
 
 All code has type hinting in ie. NetBeans IDE, so it's easy to start.
 
+### ALIAS
+
+Architect framework is built using OOP but if you prefer to use functions code
+styling there are also core function aliases that may speed up development. 
+The first letter gives an idea of what it does.
+Remember to use IDE type hinting to know how the alias works.
+
+app() - **A**pplication. The main gate to access features  
+r() - **R**oute. Adds a new route  
+c() - **C**ontent. Adds content to the default theme  
+u() - **U**RL. Returns an internal URL. Use this to generate internal URLs  
+m() - **M**essage. Adds a message to be shown to the user  
+g() - **G**ET. Returns $_GET parameters  
+p() - **P**OST. Returns $_POST parameters  
+f() - **F**ILES. Returns a $_FILES entry by index  
+s() - **S**ecure. Returns a secured (encrypted) string  
+t() - **T**ranslate. Returns the translation given by key  
+e() - **E**vent. Adds a new event  
+tr() - **TR**igger. Triggers the event
 
 ### CONSTANTS
 

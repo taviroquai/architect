@@ -1,10 +1,8 @@
 <?php
 
-// Alias
-function t($key, $data = array()) {
-	return App::Instance()->translate($key, $data);
-}
-
+/**
+ * Idiom class
+ */
 class Idiom {
 	
 	public $code;
