@@ -112,7 +112,7 @@ e('login.form.before.view', function() {
         $model      = new UserModel();
         $model->validateEmail($post);
         $target = $model->find('email = ? and password = ?', array($email, $password));
-        
+
         if (!$target) {
             m('Invalid email/password', 'alert alert-error');
         }

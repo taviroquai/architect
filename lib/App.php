@@ -104,6 +104,16 @@ function p($param = null) {
 }
 
 /**
+ * Database table query alias
+ * @param string $tableName
+ * @param \PDO $db
+ * @return \Table
+ */
+function q($tableName, \PDO $db = null) {
+    return App::Instance()->query($tableName, $db);
+}
+
+/**
  * Encrypt string alias
  * @param string $string The string to be encrypted
  * @param string $algo The algorithmn to be used for encryption
@@ -120,7 +130,7 @@ function s($string, $algo = 'sha256', $salt = '!Zz$9y#8x%7!') {
  * @param mixed $target An optional object to be passed
  * @return App The application singleton
  */
-function te($eventName, $target = null) {
+function tr($eventName, $target = null) {
     return App::Instance()->triggerEvent($eventName, $target);
 }
 
@@ -883,4 +893,16 @@ class App implements Messenger {
     public function createCarousel($tmpl = null) {
         return new View_Carousel($tmpl);
     }
+    
+    /**
+     * Query a database table
+     * @param string $tableName
+     * @param \PDO $db
+     * @return \Table
+     */
+    public function query($tableName, \PDO $db = null) {
+        $table = new Table($tableName, $db);
+        return $table;
+    }
+    
 }

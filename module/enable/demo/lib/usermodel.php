@@ -2,15 +2,9 @@
 
 class UserModel {
     
-    protected $db;
-    protected $tablename = 'user';
-    
-    public function __construct($db = null) {
-        if (empty($db)) $db = app()->db;
-        $this->db = $db;
-        
+    public function __construct() {
         try {
-            $this->db->query("SELECT 1 FROM `{$this->tablename}`");
+            q('user')->select('1');
         } catch(PDOException $e) {
             $this->install();
         }
@@ -19,7 +13,7 @@ class UserModel {
     public function register($email, $data) {
         if (!$this->validateCreate($data)) return false;
         $user = $this->import($this->create(), $data);
-        if (empty($user->id) || !empty($user->password)) $user->password = App::encrypt($user->password);
+        $user->password = s($user->password);
         $this->save($user);
         return $user;
     }
@@ -49,7 +43,7 @@ class UserModel {
 
         $result = true;
         if (!filter_var($input['email'], FILTER_VALIDATE_EMAIL)) {
-            app()->addMessage('Invalid email address', 'alert alert-error');
+            m('Invalid email address', 'alert alert-error');
             $result = false;
         }
         return $result;
@@ -59,11 +53,11 @@ class UserModel {
 
         $result = true;
         if (strlen($input['password']) < 6) {
-            app()->addMessage('Password too weak', 'alert alert-error');
+            m('Password too weak', 'alert alert-error');
             $result = false;
         }
         if ($input['password'] != $input['password_confirm']) {
-            app()->addMessage('Password does not match', 'alert alert-error');
+            m('Password does not match', 'alert alert-error');
             $result = false;
         }
         return $result;
@@ -74,7 +68,7 @@ class UserModel {
         $result = true;
         $exists = $this->find('email = ?', array($input['email']));
         if (!empty($exists->id)) {
-            app()->addMessage('Please use other email.', 'alert alert-error');
+            m('Please use other email.', 'alert alert-error');
             $result = false;
         }
         return $result;
@@ -87,59 +81,54 @@ class UserModel {
         return $user;
     }
     
-    public function load($id, $db = null) {
-        if (empty($db)) $db =& $this->db;
+    public function load($id) {
+
         try {
-            $sth = $db->prepare('select t1.* from user t1 where id = ?');
-            $data = array($id);
-            $r = $sth->execute($data);
+            $sth = q('user')->where('id = ?', array($id))->select();
             return $sth->fetchObject();
         }
         catch(PDOException $e) {
-            die($e);
+            m($e->getMessage());
+            //app()->redirect(u('/404'));
         }
     }
     
-    public function find($where, $data, $db = null) {
-        if (empty($db)) $db =& $this->db;
+    public function find($where, $data) {
+
         try {
-            $sth = $db->prepare('select t1.id, t1.email from user t1 where '.$where);
-            $r = $sth->execute($data);
+            $sth = q('user')->where($where, $data)->select();
             return $sth->fetchObject();
         }
         catch(PDOException $e) {
-            die($e);
+            m($e->getMessage());
+            //app()->redirect(u('/404'));
         }
     }
 
-    public function save($user, $db = null) {
-        if (empty($db)) $db =& $this->db;
+    public function save(&$user) {
+
+        $data = array('email' => $user->email, 'password' => $user->password);
         try {
             if (empty($user->id)) {
-                $sth = $db->prepare('insert into user (email,password) values (?,?)');
-                $data = array($user->email, $user->password);
-                $r = $sth->execute($data);
+                $stm = q('user')->insert($data);
+                $user->id = app()->db->lastInsertId();
             }
             else {
-                $sth = $db->prepare('update user set email = ?, password = ?)');
-                $data = array($user->email, $user->password);
-                $r = $sth->execute($data);
+                q('user')->where('id = ?', array($user->id))->update($data);
             }
-            return $r;
         }
         catch(PDOException $e) {
-            die($e);
+            m($e->getMessage());
         }
     }
     
-    public function delete($where, $data, $db = null) {
-        if (empty($db)) $db =& $this->db;
+    public function delete($where, $data) {
+
         try {
-            $sth = $db->prepare('delete from user where '.$where);
-            return $sth->execute($data);
+            q('user')->where($where, $data)->delete();
         }
         catch(PDOException $e) {
-            die($e);
+            m($e->getMessage());
         }
     }
     
