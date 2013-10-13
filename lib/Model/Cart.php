@@ -12,7 +12,7 @@ class Model_Cart {
         $this->currency_options = array('EUR');
         $this->shipping_options = array('Standard');
         $this->payment_options  = array('PayPal');
-        $this->quantity_options  = array(1,2,3,4,5,6,7,8,9,10);
+        $this->quantity_options  = array(0,1,2,3,4,5,6,7,8,9,10);
         
     	if (!isset(app()->session->_cart)) {
     		app()->session->_cart = (object) array(

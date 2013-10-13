@@ -42,8 +42,6 @@ class DemoView extends View {
         $cart->model->insertItem($item, 1, 2); // inserts on id 1 and quantity 2
         $cart->model->updateQuantity(1, 3); // updates item 1 quantity to 3
         $cart->model->updateShippingCost(5); // updates shipping cost to 5
-        // deletes an item with id = 1
-        if (app()->input->get('del')) $cart->model->updateQuantity(1, 0);
         // finally add cart to content
         $this->addContent($cart);
     }
