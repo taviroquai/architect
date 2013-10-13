@@ -153,6 +153,7 @@ m() - **M**essage. Adds a message to be shown to the user
 g() - **G**ET. Returns $_GET parameters  
 p() - **P**OST. Returns $_POST parameters  
 f() - **F**ILES. Returns a $_FILES entry by index  
+q() - **Q**uery table. Returns a Table instance to start querying
 s() - **S**ecure. Returns a secured (encrypted) string  
 t() - **T**ranslate. Returns the translation given by key  
 e() - **E**vent. Adds a new event  
@@ -184,6 +185,8 @@ tr() - **TR**igger. Triggers the event
 
 ### DATABASE
     app()->db // Gets a PDO instance
+    app()->query('tablename')->select(); // runs and returns a PDOStatement
+    app()->query('user')->insert(array('username' => 'admin');
 
 ### MAIL
     app()->mail('test@isp.com', 'subject', $view);
