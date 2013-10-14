@@ -12,6 +12,7 @@ class DemoView extends View {
 
         // demo of carousel
         $carousel = app()->createCarousel();
+        app()->addContent(BASEURL.'theme/demo/carousel/style.css', 'css');
         $carousel->addItem('<img src="'.BASEURL.'theme/demo/img/carousel1.jpg" style="width: 780px; height: 250px;" />', 1);
         $carousel->addItem('<p>Slide 2</p>', 0);
         $carousel->addItem('<img src="'.BASEURL.'theme/demo/img/carousel2.jpg" style="width: 780px; height: 250px;" />', 0);
