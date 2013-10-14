@@ -331,7 +331,8 @@ class App implements Messenger {
     
     private function execute() {
         $action = $this->router->getRoute($this->action);
-        if ($action === false) $action = $this->router->getRoute('/404');
+        if ($action === false) $this->redirect(u('/404'));
+        $this->log('User action: '.$this->action);
         return call_user_func_array($action, $this->input->getParam());
     }
     
