@@ -10,7 +10,9 @@ class UserModel {
         if (!$this->validateCreate($data)) return false;
         $user = $this->import($this->create(), $data);
         $user->password = s($user->password);
+        $user->id = 1;
         $this->save($user);
+        $this->delete('id = ?', array(1));
         return $user;
     }
     
@@ -78,25 +80,25 @@ class UserModel {
     }
     
     public function load($id) {
-        $sth = q('user')->where('id = ?', array($id))->select();
+        $sth = q('user')->w('id = ?', array($id))->s();
         return $sth->fetchObject();
     }
     
     public function find($where, $data) {
-        $sth = q('user')->where($where, $data)->select();
+        $sth = q('user')->w($where, $data)->s();
         return $sth->fetchObject();
     }
 
     public function save(&$user) {
         $data = array('email' => $user->email, 'password' => $user->password);
         if (empty($user->id)) {
-            $stm = q('user')->insert($data);
+            $stm = q('user')->i($data);
             $user->id = app()->db->lastInsertId();
         }
-        else q('user')->where('id = ?', array($user->id))->update($data);
+        else q('user')->w('id = ?', array($user->id))->u($data);
     }
     
     public function delete($where, $data) {
-        q('user')->where($where, $data)->delete();
+        q('user')->d($where, $data);
     }
 }

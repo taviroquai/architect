@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Table class
+ * 
+ * Allows to build SQL query requests using PDO
+ * TODO: separate in varous drivers (MySql, PostgreSQL, SQLite)
+ */
 class Table {
     
     protected $name;
@@ -18,12 +24,88 @@ class Table {
     protected $_where;
     protected $_limit;
     
+    /**
+     * Returns a new Table to start querying
+     * All these queries are simple and only affect 1 table based on the name
+     * For more complex queries, use PDO directly
+     * 
+     * @param string $name The tablename
+     * @param PDO $db The PDO database handler to query
+     */
     public function __construct($name, PDO $db = null)
     {
         $this->name = $name;
         if (empty($db)) $this->db = app()->db;
     }
     
+    /**
+     * Select alias
+     * Select fields and executes a select operation
+     * @param string|array $fields
+     * @return \PDOStatement
+     */
+    public function s($fields = '*') {
+        return $this->select($fields);
+    }
+    
+    /**
+     * Insert alias
+     * Set insert values and executes an insert operation
+     * @param array $values
+     * @return \PDOStatement
+     */
+    public function i($values = array()) {
+        return $this->insert($values);
+    }
+    
+    /**
+     * Update alias
+     * Set update values (associative array) and executes an update operation
+     * @param array $values
+     * @return \PDOStatement
+     */
+    public function u($values = array()) {
+        return $this->update($values);
+    }
+    
+    /**
+     * Delete alias
+     * Executes a delete operation with where condition
+     * @param string $condition
+     * @param array $data
+     * @return \PDOStatement
+     */
+    public function d($condition, $data = array()) {
+        return $this->delete($condition, $data);
+    }
+    
+    /**
+     * Where alias
+     * Set string condition and array params
+     * @param string $condition
+     * @param array $data
+     * @return \Table
+     */
+    public function w($condition, $data = array()) {
+        return $this->where($condition, $data);
+    }
+    
+    /**
+     * Limit alias
+     * Set limit and offset
+     * @param integer $limit
+     * @param integer $offset
+     * @return \Table
+     */
+    public function l($limit = null, $offset = 0) {
+        return $this->limit($limit, $offset);
+    }
+    
+    /**
+     * Select fields and executes a select operation
+     * @param string|array $fields
+     * @return \PDOStatement
+     */
     public function select($fields = '*') {
         $this->_select = 1;
         $this->_fields = $fields;
@@ -31,16 +113,11 @@ class Table {
         return $this->execute();
     }
     
-    public function where($condition, $data = array()) {
-        $this->_where = array($condition, $data);
-        return $this;
-    }
-    
-    public function limit($limit = null, $offset = 0) {
-        $this->_limit = !empty($limit) ? array($limit, $offset) : null;
-        return $this;
-    }
-    
+    /**
+     * Set insert values and executes an insert operation
+     * @param array $values
+     * @return \PDOStatement
+     */
     public function insert($values = array()) {
         $this->_insert = 1;
         $this->_fields = array_keys($values);
@@ -48,91 +125,157 @@ class Table {
         return $this->execute();
     }
     
+    /**
+     * Set update values (associative array) and executes an update operation
+     * @param array $values
+     * @return \PDOStatement
+     */
     public function update($values = array()) {
         $this->_update = 1;
         $this->_set = $values;
         return $this->execute();
     }
     
-    public function delete() {
+    /**
+     * Executes a delete operation with where condition
+     * @param string $condition
+     * @param array $data
+     * @return \PDOStatement
+     */
+    public function delete($condition, $data = array()) {
         $this->_delete = 1;
         $this->_from = $this->name;
+        $this->where($condition, $data);
         return $this->execute();
     }
     
-    public function execute() {
-        $sql = '';
+    /**
+     * Set string condition and array params
+     * @param string $condition
+     * @param array $data
+     * @return \Table
+     */
+    public function where($condition, $data = array()) {
+        $this->_where = array($condition, $data);
+        return $this;
+    }
+    
+    /**
+     * Set limit and offset
+     * @param type $limit
+     * @param type $offset
+     * @return \Table
+     */
+    public function limit($limit = null, $offset = 0) {
+        $this->_limit = !empty($limit) ? array($limit, $offset) : null;
+        return $this;
+    }
+    
+    /**
+     * Executes an SQL query
+     * @param string $sql The SQl string. If empty, the SQL will be built
+     * @param array $params The array containing the PDO::PARAM
+     * @return PDOStatement
+     * @throws PDOException
+     */
+    public function execute($sql = '', $params = null) {
         
-        if ($this->_select) $sql = 'SELECT';
-        elseif ($this->_insert) $sql = "INSERT INTO `$this->name`";
-        elseif ($this->_update) $sql = "UPDATE `$this->name`";
-        elseif ($this->_delete) $sql = 'DELETE';
-        
-        if (!empty($this->_fields)) {
-            if (is_array($this->_fields)) {
-                foreach ($this->_fields as &$field) $field = "`$field`";
-                $fields = implode(', ',$this->_fields);
+        if (empty($sql)) {
+            // build SQL from this properies
+            
+            // build operation syntax
+            if ($this->_select) $sql = 'SELECT';
+            elseif ($this->_insert) $sql = "INSERT INTO `$this->name`";
+            elseif ($this->_update) $sql = "UPDATE `$this->name`";
+            elseif ($this->_delete) $sql = 'DELETE';
+
+            // build fields synstax
+            if (!empty($this->_fields)) {
+                if (is_array($this->_fields)) {
+                    foreach ($this->_fields as &$field) $field = "`$field`";
+                    $fields = implode(', ',$this->_fields);
+                }
+                else $fields = $this->_fields;
+                if ($this->_insert) $sql .= ' ('.$fields.') ';
+                else $sql .= " $fields ";
             }
-            else $fields = $this->_fields;
-            if ($this->_insert) $sql .= ' ('.$fields.') ';
-            else $sql .= " $fields ";
+
+            // build from syntax
+            if (!empty($this->_from)) $sql .= " FROM `$this->_from`";
+
+            // build set and values syntax
+            if (!empty($this->_set)|| !empty($this->_values)) {
+                $items = array();
+                if ($this->_set) {
+                    $sql .= " SET ";
+                    foreach ($this->_set as $k => $v) $items[] = "`$k` = ?";
+                    $sql .= implode(', ', $items);
+                }
+                if ($this->_values) {
+                    $sql .= " VALUES ";
+                    foreach ($this->_values as $k => $v) $items[] = '?';
+                    $sql .= '('.implode(', ', $items).')';
+                }
+            }
+
+            // build where syntax
+            if (!empty($this->_where)) $sql .= " WHERE ".$this->_where[0];
+
+            // build limit syntax
+            $sql .= !empty($this->_limit) ? ' LIMIT '.$this->_limit[0] : '';
         }
         
-        if (!empty($this->_from)) $sql .= ' FROM '.$this->_from;
-        
-        if (!empty($this->_set)) {
-            $sql .= " SET ";
-            $params = array();
-            foreach ($this->_set as $k => $v) $params[] = $k.' = ?';
-            $sql .= implode(', ', $params);
-        }
-        
-        if (!empty($this->_values)) {
-            $sql .= " VALUES ";
-            $params = array();
-            foreach ($this->_values as $k => $v) $params[] = '?';
-            $sql .= '('.implode(', ', $params).')';
-        }
-        
-        if (!empty($this->_where)) {
-            $sql .= " WHERE ".$this->_where[0];
-        }
-        
-        $sql .= !empty($this->_limit) ? ' LIMIT '.$this->_limit[0] : '';
+        // now we have SQL
         $this->sql = $sql;
         unset($sql);
         
         try {
+            
+            // fail if there is not database connection
             if (!is_object($this->db)) throw new PDOException('No database connection');
+            
+            // prepare statement
             $this->stm = $this->db->prepare($this->sql);
-            $bindStart = 1;
-            if (!empty($this->_set)) {
-                $this->dbBindParams(array_values($this->_set));
-                $bindStart = count($this->_set) + 1;
+            
+            // Get PDO params
+            if ($params === null) {    
+                $params = array();
+                if (!empty($this->_set)) 
+                    $params = array_merge ($params, array_values($this->_set));
+                elseif (!empty($this->_values))
+                    $params = array_merge ($params, $this->_values);
+                if (!empty($this->_where[1]))
+                    $params = array_merge ($params, $this->_where[1]);
             }
-            if (!empty($this->_values)) {
-                $this->dbBindParams($this->_values);
-                $bindStart = count($this->_values) + 1;
-            }
-            if (!empty($this->_where[1])) {
-                $this->dbBindParams($this->_where[1], $bindStart);
-            }
+            app()->log('DB query params count: '.count($params));
+            
+            // build PDO params
+            if (is_array($params) && !empty($params))
+                $this->dbBindParams($params);
+            
+            // finally execute query
             $this->stm->execute();
         }
         catch (PDOException $e) {
+            
+            // Log the error information and show an error page to the user
             app()->log('DB query failed: '.$this->stm->queryString, 'error');
             app()->log('Details: '.$e->getMessage(), 'error');
             m('Something wrong happened! Please try later.', 'alert alert-error');
             app()->redirect(u('/404'));
         }
-        $log = $this->_select ? $this->stm->queryString : '';
-        app()->log('DB query succeed: '.$log);
         
+        // log the valid query
+        app()->log('DB query is valid: '.$this->stm->queryString);
+        
+        // return PDOStatement for further operations
         return $this->stm;
     }
     
     /**
      * Runs an SQL file
+     * This should be used by modules to install their database structure
+     * 
      * @param string $filename
      * @throws Exception
      */
@@ -158,13 +301,24 @@ class Table {
         }
     }
     
-    private function dbBindParams($params = array(), $start = 1) {
-        $i = $start;
+    /**
+     * Bind PDO params filtered by type
+     * @param array $params
+     */
+    private function dbBindParams($params = array()) {
+        $i = 1;
         foreach ($params as &$v) {
-            $type = !is_numeric($v) ? PDO::PARAM_STR :
-                    is_integer($v) ? PDO::PARAM_INT :
-                    is_bool($v) ? PDO::PARAM_BOOL : 
-                    PDO::PARAM_STR;
+            
+            // set default PARAM filter
+            $type = PDO::PARAM_STR;
+            
+            // try to find a match
+            if (is_numeric($v)) {
+                if (is_integer($v)) $type = PDO::PARAM_INT;
+            }
+            if (is_bool($v)) $type = PDO::PARAM_BOOL;
+            
+            // bind param
             try {
                 $this->stm->bindParam($i, $v, $type);
             }
