@@ -74,29 +74,31 @@ e('register.form.before.view', function() {
 
     if (p('register') && app()->getCaptcha()) {
 
-        // save post
+        // load model
         $model = new UserModel();
-        $target = $model->register(p('email'), p());
         
-        if ($target) {
-
+        // validate post
+        if ($model->validateCreate(p())) {
+            
+            $email = p('email');
             $view = new View(BASEPATH.'/theme/default/mail.php');
-            $view->addContent("Thank you {$target->email} for registering!");
+            $view->addContent("Thank you $email for registering!");
 
-            $r = app()->mail($target->email, 'Register', $view);
+            $r = app()->mail($email, 'Register', $view);
             if(!$r) {
-                m("Registration has failed. Could not send email. Try again.", 'alert alert-error');
-                $model->unregister($post['email']);
+                m("Registration failed. Try again.", 'alert alert-error');
             }
             else {
-                m("Mail Sent OK");
+                m("An email was sent to your address");
+                // finally register
+                $user = $model->register(p());
+                // trigger after post
+                tr('register.form.after.post', $user);
+                // redirect to success page
                 app()->redirect(u('/register-success'));
             }
         }
         else sleep(2);
-        
-        // trigger after post
-        tr('register.form.after.post', $target);
     }
 });
 
@@ -111,17 +113,18 @@ e('login.form.before.view', function() {
         $password   = s(filter_var($post['password']));
         $model      = new UserModel();
         $model->validateEmail($post);
-        $target = $model->find('email = ? and password = ?', array($email, $password));
+        $user = $model->find('email = ? and password = ?', array($email, $password));
 
-        if (!$target) {
+        if (!$user) {
             m('Invalid email/password', 'alert alert-error');
         }
         else {
-            app()->session->login = $target->email;
+            // start user session
+            app()->session->login = $user->email;
+            // trigger after login
+            tr('login.form.after.post', $user);
             app()->redirect();
         }
         
-        // trigger after login
-        tr('login.form.after.post', $target);
     }
 });

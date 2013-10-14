@@ -6,13 +6,10 @@ class UserModel {
         
     }
     
-    public function register($email, $data) {
-        if (!$this->validateCreate($data)) return false;
+    public function register($data) {
         $user = $this->import($this->create(), $data);
         $user->password = s($user->password);
-        $user->id = 1;
         $this->save($user);
-        $this->delete('id = ?', array(1));
         return $user;
     }
     
