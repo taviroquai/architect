@@ -1,5 +1,11 @@
 <?php
 
+// Install or update database
+if (!q('user')->execute('select 1 from user', null, '')) {
+    $filename = BASEPATH.'/module/enable/demo/db/install.sql';
+    q('user')->install($filename);
+}
+
 // add main route
 r('/', function() {
 
