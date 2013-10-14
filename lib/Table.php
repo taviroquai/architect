@@ -41,8 +41,8 @@ class Table {
     /**
      * Select alias
      * Select fields and executes a select operation
-     * @param string|array $fields
-     * @return \PDOStatement
+     * @param string|array $fields The string or array of fields to be selected
+     * @return \PDOStatement The PDOStatement after execute
      */
     public function s($fields = '*') {
         return $this->select($fields);
@@ -51,8 +51,8 @@ class Table {
     /**
      * Insert alias
      * Set insert values and executes an insert operation
-     * @param array $values
-     * @return \PDOStatement
+     * @param array $values An associative array containing the fields and values
+     * @return \PDOStatement The PDOStatement after execute
      */
     public function i($values = array()) {
         return $this->insert($values);
@@ -60,9 +60,9 @@ class Table {
     
     /**
      * Update alias
-     * Set update values (associative array) and executes an update operation
-     * @param array $values
-     * @return \PDOStatement
+     * Set update values and executes an update operation
+     * @param array $values An associative array containing the fields and values
+     * @return \PDOStatement The PDOStatement after execute
      */
     public function u($values = array()) {
         return $this->update($values);
@@ -71,9 +71,9 @@ class Table {
     /**
      * Delete alias
      * Executes a delete operation with where condition
-     * @param string $condition
-     * @param array $data
-     * @return \PDOStatement
+     * @param string $condition The string of conditions with placeholders (?)
+     * @param array $data The values to be used as params on placeholders
+     * @return \PDOStatement The PDOStatement after execute
      */
     public function d($condition, $data = array()) {
         return $this->delete($condition, $data);
@@ -82,9 +82,9 @@ class Table {
     /**
      * Where alias
      * Set string condition and array params
-     * @param string $condition
-     * @param array $data
-     * @return \Table
+     * @param string $condition The string of conditions with placeholders (?)
+     * @param array $data The values to be used as params on placeholders
+     * @return \Table This object
      */
     public function w($condition, $data = array()) {
         return $this->where($condition, $data);
@@ -93,8 +93,8 @@ class Table {
     /**
      * Limit alias
      * Set limit and offset
-     * @param integer $limit
-     * @param integer $offset
+     * @param integer $limit The limit, an integer
+     * @param integer $offset The offset, an integer
      * @return \Table
      */
     public function l($limit = null, $offset = 0) {
@@ -103,8 +103,8 @@ class Table {
     
     /**
      * Select fields and executes a select operation
-     * @param string|array $fields
-     * @return \PDOStatement
+     * @param string|array $fields The string or array of fields to be selected
+     * @return \PDOStatement The PDOStatement after execute
      */
     public function select($fields = '*') {
         $this->_select = 1;
@@ -115,8 +115,8 @@ class Table {
     
     /**
      * Set insert values and executes an insert operation
-     * @param array $values
-     * @return \PDOStatement
+     * @param array $values An associative array containing the fields and values
+     * @return \PDOStatement The PDOStatement after execute
      */
     public function insert($values = array()) {
         $this->_insert = 1;
@@ -127,8 +127,8 @@ class Table {
     
     /**
      * Set update values (associative array) and executes an update operation
-     * @param array $values
-     * @return \PDOStatement
+     * @param array $values An associative array containing the fields and values
+     * @return \PDOStatement The PDOStatement after execute
      */
     public function update($values = array()) {
         $this->_update = 1;
@@ -138,9 +138,9 @@ class Table {
     
     /**
      * Executes a delete operation with where condition
-     * @param string $condition
-     * @param array $data
-     * @return \PDOStatement
+     * @param string $condition The string of conditions with placeholders (?)
+     * @param array $data The values to be used as params on placeholders
+     * @return \PDOStatement The PDOStatement after execute
      */
     public function delete($condition, $data = array()) {
         $this->_delete = 1;
@@ -151,9 +151,9 @@ class Table {
     
     /**
      * Set string condition and array params
-     * @param string $condition
-     * @param array $data
-     * @return \Table
+     * @param string $condition The string of conditions with placeholders (?)
+     * @param array $data The values to be used as params on placeholders
+     * @return \Table This object
      */
     public function where($condition, $data = array()) {
         $this->_where = array($condition, $data);
@@ -162,9 +162,9 @@ class Table {
     
     /**
      * Set limit and offset
-     * @param type $limit
-     * @param type $offset
-     * @return \Table
+     * @param integer $limit The limit, an integer
+     * @param integer $offset The offset, an integer
+     * @return \Table This object
      */
     public function limit($limit = null, $offset = 0) {
         $this->_limit = !empty($limit) ? array($limit, $offset) : null;
