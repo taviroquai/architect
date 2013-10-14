@@ -30,11 +30,10 @@ class UserModel {
     
     public function validateCreate($input) {
 
-        $email = $this->validateEmail($input);
-        $pass = true & $this->validatePassword($input);
-        $new = true & $this->validateNewEmail($input);
-        $result = $email & $pass & $new;
-        return $result;
+        $email  = $this->validateEmail($input);
+        $pass   = $this->validatePassword($input);
+        $new    = $this->validateNewEmail($input);
+        return $email & $pass & $new;
     }
     
     public function validateEmail($input) {
@@ -92,7 +91,7 @@ class UserModel {
     public function save(&$user) {
         $data = array('email' => $user->email, 'password' => $user->password);
         if (empty($user->id)) {
-            $stm = q('user')->i($data);
+            q('user')->i($data);
             $user->id = app()->db->lastInsertId();
         }
         else q('user')->w('id = ?', array($user->id))->u($data);
