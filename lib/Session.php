@@ -18,6 +18,7 @@ class Session implements Messenger {
         if (!isset($this->storage['_message'])) $this->storage['_message'] = array();
         if (empty($_SESSION['login'])) $_SESSION['login'] = null;
         $this->storage = $_SESSION;
+        app()->log('Session loaded');
     }
     
     /**
@@ -26,6 +27,7 @@ class Session implements Messenger {
     public function save() {
         foreach ($this->storage as $prop => $value) $_SESSION[$prop] = $value;
         session_write_close();
+        app()->log('Session closed');
     }
 
     /**
@@ -34,6 +36,7 @@ class Session implements Messenger {
     public function destroy() {
         $this->storage = array();
         session_destroy();
+        app()->log('Session destroyed');
     }
     
     /**

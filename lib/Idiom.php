@@ -26,7 +26,9 @@ class Idiom {
                 $key = (string) $item['key'];
                 $this->storage[$key] = (string) $item;
             }
+            app()->log('Idiom file loaded: '.$filename);
         }
+        else app()->log('Idiom file load failed: '.$filename, 'error');
 	}
 
 	public function translate($key, $data = array()) {

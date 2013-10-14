@@ -102,21 +102,60 @@ class Table {
         $this->sql = $sql;
         unset($sql);
         
-        $this->stm = $this->db->prepare($this->sql);
-        $bindStart = 1;
-        if (!empty($this->_set)) {
-            $this->dbBindParams(array_values($this->_set));
-            $bindStart = count($this->_set) + 1;
+        try {
+            if (!is_object($this->db)) throw new PDOException('No database connection');
+            $this->stm = $this->db->prepare($this->sql);
+            $bindStart = 1;
+            if (!empty($this->_set)) {
+                $this->dbBindParams(array_values($this->_set));
+                $bindStart = count($this->_set) + 1;
+            }
+            if (!empty($this->_values)) {
+                $this->dbBindParams($this->_values);
+                $bindStart = count($this->_values) + 1;
+            }
+            if (!empty($this->_where[1])) {
+                $this->dbBindParams($this->_where[1], $bindStart);
+            }
+            $this->stm->execute();
         }
-        if (!empty($this->_values)) {
-            $this->dbBindParams($this->_values);
-            $bindStart = count($this->_values) + 1;
+        catch (PDOException $e) {
+            app()->log('DB query failed: '.$this->stm->queryString, 'error');
+            app()->log('Details: '.$e->getMessage(), 'error');
+            m('Something wrong happened! Please try later.', 'alert alert-error');
+            app()->redirect(u('/404'));
         }
-        if (!empty($this->_where[1])) {
-            $this->dbBindParams($this->_where[1], $bindStart);
-        }
-        $this->stm->execute();
+        $log = $this->_select ? $this->stm->queryString : '';
+        app()->log('DB query succeed: '.$log);
+        
         return $this->stm;
+    }
+    
+    /**
+     * Runs an SQL file
+     * @param string $filename
+     * @throws Exception
+     */
+    public function install($moduleName) {
+        try {
+            $engine = reset(explode(':', DBDSN));
+            $filename = BASEPATH.'/module/enable/'.$moduleName.'/db/'.$engine.'.sql';
+            if (!file_exists($filename)) 
+                throw new Exception('SQL file not found: '.$filename);
+            $sql = file_get_contents($filename);
+            if (!is_object($this->db)) 
+                throw new Exception('No database connection');
+            if ($this->db->exec($sql) === false) throw new Exception();
+        } catch (PDOException $e) {
+            app()->log($e->getMessage(), 'error');
+            m('Could not install module '.$moduleName, 'alert alert-error');
+            app()->redirect(u('/404'));
+        }
+        catch (Exception $e) {
+            app()->log($e->getMessage(), 'error');
+            m('Could not install module '.$moduleName, 'alert alert-error');
+            app()->redirect(u('/404'));
+        }
     }
     
     private function dbBindParams($params = array(), $start = 1) {
@@ -126,7 +165,12 @@ class Table {
                     is_integer($v) ? PDO::PARAM_INT :
                     is_bool($v) ? PDO::PARAM_BOOL : 
                     PDO::PARAM_STR;
-            $this->stm->bindParam($i, $v, $type);
+            try {
+                $this->stm->bindParam($i, $v, $type);
+            }
+            catch (PDOException $e) {
+                app()->log("DB bind param $i failed", 'error');
+            }
             $i++;
         }
     }

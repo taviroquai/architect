@@ -52,6 +52,7 @@ class Output {
         if (!app()->input->isCli() && !empty($this->headers)) {
             foreach ($this->headers as $item) header($item);
         }
+        app()->log('Sending output...');
         echo $this->content;
     }
 }

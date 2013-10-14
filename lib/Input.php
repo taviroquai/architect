@@ -27,6 +27,7 @@ class Input {
         }
         $this->raw = file_get_contents("php://input");
         $this->getAction();
+        app()->log('Input finish loading');
     }
     
     /**

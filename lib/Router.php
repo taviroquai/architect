@@ -20,7 +20,9 @@ class Router {
      * @return boolean
      */
     public function addRoute($key, $action) {
-        if (!is_callable($action)) return false;
+        if (!is_callable($action)) {
+            return false;
+        }
         $this->route[$key] = $action;
         return true;
     }

@@ -3,11 +3,7 @@
 class UserModel {
     
     public function __construct() {
-        try {
-            q('user')->select('1');
-        } catch(PDOException $e) {
-            $this->install();
-        }
+        
     }
     
     public function register($email, $data) {
@@ -82,63 +78,25 @@ class UserModel {
     }
     
     public function load($id) {
-
-        try {
-            $sth = q('user')->where('id = ?', array($id))->select();
-            return $sth->fetchObject();
-        }
-        catch(PDOException $e) {
-            m($e->getMessage());
-            //app()->redirect(u('/404'));
-        }
+        $sth = q('user')->where('id = ?', array($id))->select();
+        return $sth->fetchObject();
     }
     
     public function find($where, $data) {
-
-        try {
-            $sth = q('user')->where($where, $data)->select();
-            return $sth->fetchObject();
-        }
-        catch(PDOException $e) {
-            m($e->getMessage());
-            //app()->redirect(u('/404'));
-        }
+        $sth = q('user')->where($where, $data)->select();
+        return $sth->fetchObject();
     }
 
     public function save(&$user) {
-
         $data = array('email' => $user->email, 'password' => $user->password);
-        try {
-            if (empty($user->id)) {
-                $stm = q('user')->insert($data);
-                $user->id = app()->db->lastInsertId();
-            }
-            else {
-                q('user')->where('id = ?', array($user->id))->update($data);
-            }
+        if (empty($user->id)) {
+            $stm = q('user')->insert($data);
+            $user->id = app()->db->lastInsertId();
         }
-        catch(PDOException $e) {
-            m($e->getMessage());
-        }
+        else q('user')->where('id = ?', array($user->id))->update($data);
     }
     
     public function delete($where, $data) {
-
-        try {
-            q('user')->where($where, $data)->delete();
-        }
-        catch(PDOException $e) {
-            m($e->getMessage());
-        }
-    }
-    
-    private function install() {
-        $engine = reset(explode(':', DBDSN));
-        $sql = file_get_contents(BASEPATH.'/module/enable/demo/db/'.$engine.'.sql');
-        try {
-            if (app()->db->exec($sql) === false) throw new Exception();
-        } catch (PDOException $e) {
-            die(print_r(app()->db->errorInfo(), true));
-        }
+        q('user')->where($where, $data)->delete();
     }
 }

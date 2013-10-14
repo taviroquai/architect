@@ -1,10 +1,5 @@
 <?php
 
-/*
- * API
- * 
- */
-
 /**
  * App alias. The other aliases are:
  * 
@@ -240,6 +235,12 @@ class App implements Messenger {
     private  $events = array();
     
     /**
+     * Holds the log file handler
+     * @var resource
+     */
+    private  $log;
+    
+    /**
      * Application singleton instance
      * @var App
      */
@@ -262,9 +263,14 @@ class App implements Messenger {
      */
     private function __construct($configPath = null)
     {
+        // logging
+        $this->log('Open configuration '.$configPath, 'access', true);
         
         // load configuration
-        if (!file_exists($configPath)) die('The file config.xml was not found.');
+        if (!file_exists($configPath)) {
+            debug_print_backtrace();
+            die("The file $configPath was not found.");
+        }
         $xml = @simplexml_load_file($configPath);
         if (!$xml) die('Invalid config.xml file');
         foreach ($xml->item as $item) {
@@ -317,6 +323,9 @@ class App implements Messenger {
 
         // save session
         $this->session->save();
+        
+        // close log handler
+        if (is_resource($this->log)) fclose ($this->log);
     }
     
     private function execute() {
@@ -329,10 +338,12 @@ class App implements Messenger {
         try {
             $this->db = new PDO(DBDSN.';charset=UTF8', DBUSER, DBPASS);
             $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->log('Database initialized');
         }
         catch (PDOException $e)  {
             $this->addMessage('Check database configuration: '.$e->getMessage(),
                     'alert alert-error');
+            $this->log('Database could not be initialized', 'error');
         }
     }
     
@@ -352,10 +363,31 @@ class App implements Messenger {
                     foreach($includes as $inc) require_once $inc;
                 }
                 $filename = $name.'/config.php';
-                if (file_exists($filename)) require_once $filename;
+                if (file_exists($filename)) {
+                    require_once $filename;
+                    app()->log('Module loaded: '.$name);
+                }
             }
         }
         $this->modules = $mods;
+    }
+    
+    public function log($msg, $label = 'access', $nlb = false) {
+        if (!is_resource($this->log)) {
+            $filename = BASEPATH.DS.'log'.DS.'log.txt';
+            if (!is_writable($filename)) {
+                return false;
+            }
+            $this->log = @fopen($filename, 'a');
+            if ($this->log === false) {
+                return false;
+            }
+        }
+        $secs = round(microtime(true)-floor(microtime(true)), 3);
+        $time = date('Y-m-d H:i:s').' '.sprintf('%0.3f', $secs).'ms';
+        $msg = strtoupper($label).' '.$time.' '.$msg.PHP_EOL;
+        if ($nlb) $msg = PHP_EOL.$msg;
+        if (is_resource($this->log)) fwrite($this->log, $msg);
     }
     
     /**
@@ -395,6 +427,7 @@ class App implements Messenger {
                     $this->theme->addContent($module, $slotName);
                 }
             }
+            $this->log('Theme loaded: '.$name);
         }
         return $this;
     }
@@ -434,9 +467,10 @@ class App implements Messenger {
         $output = new Output();
         $output->setHeaders(array('Location: '.$url));
         $output->send();
+        $this->log('Redirecting to '.$url);
         if ($now) {
             $this->session->save();
-            exit();    
+            exit();
         }
     }
     
@@ -457,7 +491,9 @@ class App implements Messenger {
      * @return \App
      */
     public function addRoute($key, $action) {
-        $this->router->addRoute($key, $action);
+        $result = $this->router->addRoute($key, $action);
+        if ($result) $this->log('Add route succeed: '.$key);
+        else $this->log('Add route failed: '.$key);
         return $this;
     }
 
@@ -653,9 +689,10 @@ class App implements Messenger {
             $mail->AltBody = "Please use an HTML email viewer!";
             $mail->MsgHTML((string) $view);
             $result = $mail->Send();
+            $this->log("Sending mail to $to has succeed");
         }
         catch (phpmailerException $e) {
-            //app()->addMessage($e->getMessage());
+            $this->log("Sending mail to $to failed: ".$e->errorMessage(), 'error');
             $result = false;
         }
         return $result;
@@ -757,7 +794,8 @@ class App implements Messenger {
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post));
         }
-        if ($debug) curl_setopt($ch, CURLOPT_VERBOSE, true);
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        curl_setopt($ch, CURLOPT_STDERR, $this->log);
 
         $data = curl_exec($ch);
         curl_close($ch);
@@ -779,11 +817,18 @@ class App implements Messenger {
      */
     public function upload($file, $targetDir, $newName = '') {
         if ($file['error']) return false;
-        if (!is_dir($targetDir) || !is_writable($targetDir)) return false;
+        if (!is_dir($targetDir) || !is_writable($targetDir)) {
+            $this->log('Upload file failed. Directory error: '.$targetDir, 'error');
+            return false;
+        }
         $name = $file['name'];
         if (!empty($newName)) $name = $newName;
         $destination = $targetDir.'/'.$name;
-        if (!move_uploaded_file($file['tmp_name'], $destination)) return false;
+        if (!move_uploaded_file($file['tmp_name'], $destination)) {
+            $this->log('Failed to move file: '.$destination, 'error');
+            return false;
+        }
+        $this->log('Upload file succeed');
         return $destination;
     }
     
@@ -796,7 +841,11 @@ class App implements Messenger {
      * @param string $filename
      */
     public function download($filename) {
-        if (!file_exists($filename)) app()->redirect (app()->url('/404'));
+        if (!file_exists($filename)) {
+            $this->log('Download failed. File not found: '.$filename, 'error');
+            m('File to download was not found', 'alert alert-error');
+            app()->redirect(u('/404'));
+        }
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $type = finfo_file($finfo, $filename);
         $name = basename($filename);
@@ -811,6 +860,7 @@ class App implements Messenger {
         
         // save session
         $this->session->save();
+        $this->log('Attachment sent: '.$filename);
         exit();
     }
     

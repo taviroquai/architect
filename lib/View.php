@@ -134,12 +134,14 @@ class View {
     }
     
     public function __toString() {
+        app()->log('Rendering view '.$this->path);
         if (!file_exists($this->path)) return $this->output;
         if ($this->hidden) return '';
         ob_start();
         extract($this->data);
         include $this->path;
         $this->output = (string) ob_get_clean();
+        app()->log('Finish render');
         return $this->output;
     }
 }
