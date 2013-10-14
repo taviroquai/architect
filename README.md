@@ -36,6 +36,7 @@ below.
 * Plugin routes with PHP5 anonymous functions
 * Supports events for inter-module actions
 * Supports screen messages
+* Core application logging
 * Generate consistent URLs
 * Centralized encryption
 * Built-in sending email
