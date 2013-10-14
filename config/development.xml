@@ -20,4 +20,6 @@
     
     <item name="IDIOM">en</item>
     
+    <item name="LOGPATH"></item>
+    
 </config>

@@ -263,8 +263,6 @@ class App implements Messenger {
      */
     private function __construct($configPath = null)
     {
-        // logging
-        $this->log('Open configuration '.$configPath, 'access', true);
         
         // load configuration
         if (!file_exists($configPath)) {
@@ -277,6 +275,9 @@ class App implements Messenger {
             $name = (string) $item['name'];
             define($name, (string) $item);
         }
+        
+        // ready to start logging now
+        $this->log('Loaded configuration from '.$configPath, 'access', true);
         
         // set session handler
         $this->session = new Session();
@@ -372,9 +373,19 @@ class App implements Messenger {
         $this->modules = $mods;
     }
     
+    /**
+     * Logs application activity
+     * If LOGPATH is empty, no log happens
+     * 
+     * @param string $msg The message to be logged
+     * @param string $label Label for the log message
+     * @param boolean $nlb If true adds a line break
+     * @return boolean
+     */
     public function log($msg, $label = 'access', $nlb = false) {
+        if (LOGPATH == '') return false;
         if (!is_resource($this->log)) {
-            $filename = BASEPATH.DS.'log'.DS.'log.txt';
+            $filename = BASEPATH.LOGPATH.DS.'log.txt';
             if (!is_writable($filename)) {
                 return false;
             }
@@ -388,6 +399,7 @@ class App implements Messenger {
         $msg = strtoupper($label).' '.$time.' '.$msg.PHP_EOL;
         if ($nlb) $msg = PHP_EOL.$msg;
         if (is_resource($this->log)) fwrite($this->log, $msg);
+        return true;
     }
     
     /**
