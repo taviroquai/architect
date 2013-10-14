@@ -178,7 +178,7 @@ class Table {
      * @return PDOStatement
      * @throws PDOException
      */
-    public function execute($sql = '', $params = null) {
+    public function execute($sql = '', $params = null, $redirect = '/404') {
         
         if (empty($sql)) {
             // build SQL from this properies
@@ -262,7 +262,8 @@ class Table {
             app()->log('DB query failed: '.$this->stm->queryString, 'error');
             app()->log('Details: '.$e->getMessage(), 'error');
             m('Something wrong happened! Please try later.', 'alert alert-error');
-            app()->redirect(u('/404'));
+            if (empty($redirect)) return false;
+            app()->redirect(u($redirect));
         }
         
         // log the valid query
@@ -279,10 +280,8 @@ class Table {
      * @param string $filename
      * @throws Exception
      */
-    public function install($moduleName) {
+    public function install($filename) {
         try {
-            $engine = reset(explode(':', DBDSN));
-            $filename = BASEPATH.'/module/enable/'.$moduleName.'/db/'.$engine.'.sql';
             if (!file_exists($filename)) 
                 throw new Exception('SQL file not found: '.$filename);
             $sql = file_get_contents($filename);
@@ -291,12 +290,12 @@ class Table {
             if ($this->db->exec($sql) === false) throw new Exception();
         } catch (PDOException $e) {
             app()->log($e->getMessage(), 'error');
-            m('Could not install module '.$moduleName, 'alert alert-error');
+            m('Could not complete sql file: '.$filename, 'alert alert-error');
             app()->redirect(u('/404'));
         }
         catch (Exception $e) {
             app()->log($e->getMessage(), 'error');
-            m('Could not install module '.$moduleName, 'alert alert-error');
+            m('Could not complete sql file'.$filename, 'alert alert-error');
             app()->redirect(u('/404'));
         }
     }
