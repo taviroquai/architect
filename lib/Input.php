@@ -5,8 +5,6 @@
  */
 class Input {
 
-    protected $get = array();
-    protected $post = array();
     protected $files = array();
     protected $raw;
     protected $api;
@@ -15,19 +13,15 @@ class Input {
     
     /**
      * Constructor
-     * Default $_GET, $_POST, $_FILES and 'php://input' is parsed
+     * Default $_GET, $_POST, $_FILES, $_SERVER and 'php://input' is parsed
      */
     public function __construct() {
         
         $this->api = php_sapi_name();
-        if (!empty($_GET))      $this->get = $_GET;
-        if (!empty($_POST))     $this->post = $_POST;
-        if (!empty($_FILES))    {
-            $this->remapFiles($_FILES);
-        }
+        if (!empty($_FILES)) $this->remapFiles($_FILES);
         $this->raw = file_get_contents("php://input");
         $this->getAction();
-        app()->log('Input finish loading');
+        app()->log('Input finish loading: '.$this->server('HTTP_USER_AGENT'));
     }
     
     /**
@@ -46,16 +40,10 @@ class Input {
      * @return boolean|string
      */
     public function get($param = null) {
-        if ($this->api == 'cli') {
-            return $this->params;
-        }
-        else {
-            if (!empty($param)) {
-                if (empty($this->get[$param])) return false;
-                return $this->get[$param];
-            }
-            return $this->get;
-        }
+        if ($this->api == 'cli') return $this->params;
+        if (empty($param)) return $_GET;
+        if (empty($_GET[$param])) return false;
+        return $_GET[$param];
     }
     
     /**
@@ -65,11 +53,21 @@ class Input {
      * @return boolean|string
      */
     public function post($param = null) {
-        if (!empty($param)) {
-            if (empty($this->post[$param])) return false;
-            return $this->post[$param];
-        }
-        return $this->post;
+        if (empty($param)) return $_POST;
+        if (empty($_POST[$param])) return false;
+        return $_POST[$param];
+    }
+    
+    /**
+     * Returns a $_SERVER param
+     * 
+     * @param string $param
+     * @return boolean|string
+     */
+    public function server($param = null) {
+        if (empty($param)) return $_SERVER;
+        if (empty($_SERVER[$param])) return false;
+        return $_SERVER[$param];
     }
     
     /**
@@ -106,7 +104,7 @@ class Input {
             }
             else {
                 $this->params = $_SERVER['argv'];
-                if (!empty($params[1])) $this->action = $params[1];
+                if (!empty($this->params[1])) $this->action = $this->params[1];
             }
         }
         return $this->action;
@@ -123,12 +121,10 @@ class Input {
     public function getActionParams($pattern, $action) {
         $pattern = str_replace(array(':any', ':num'), array('[^/]+', '[0-9]+'), $pattern);
         $match = preg_match('#^'.$pattern.'$#', $action, $params);
-        if ($match) {
-            array_shift($params);
-            $this->params = $params;
-            return true;
-        }
-        return false;
+        if (!$match) return false;
+        array_shift($params);
+        $this->params = $params;
+        return true;
     }
     
     /**
