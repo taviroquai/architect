@@ -189,6 +189,10 @@ tr() - **TR**igger. Triggers the event
     app()->db // Gets a PDO instance
     app()->query('tablename')->select(); // runs and returns a PDOStatement
     app()->query('user')->insert(array('username' => 'admin');
+    q('user')->w('id = ?', array(1))->s(); // select user where id = 1
+    q('user')->i(array('username' => 'admin')); // insert into user
+    q('user')->w('id = ?', array(1))->u(array('username' => 'guest')); // update
+    q('user')->d('id = ?', array(1)); // delete from user where id = 1
 
 ### MAIL
     app()->mail('test@isp.com', 'subject', $view);
