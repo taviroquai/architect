@@ -163,8 +163,8 @@ tr() - **TR**igger. Triggers the event
 
 ### CONSTANTS
 
-    BASEPATH // constant base path
-    BASEURL  // constant base url
+    BASE_PATH // constant base path
+    BASE_URL  // constant base url
 
 ### APP
     app() // return the application singleton

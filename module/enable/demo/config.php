@@ -1,67 +1,54 @@
 <?php
 
-// Install or update database
-if (!q('user')->execute('select 1 from user', null, '')) {
-    $filename = BASEPATH.'/module/enable/demo/db/install.sql';
-    q('user')->install($filename);
-}
+// initialization
+\Arch\Demo\ModelUser::checkDatabase();
 
 // add main route
 r('/', function() {
-
 	// add content
-    c(new View(BASEPATH.'/theme/demo/default.php'));
+    c(new \Arch\View(BASE_PATH.'/theme/demo/default.php'));
 });
 
 // add 404 route
 r('/404', function()  {
-
    	// set content
     c('<h1>404</h1>');
 });
 
 r('/demo', function() {
-    
     // demo of file upload
     if ($file = f(0)) {
-        app()->upload($file, BASEPATH.'/theme/data');
-    }
-    
+        app()->upload($file, BASE_PATH.'/theme/data');
+    }    
     // demo of download file
     if (g('dl')) {
-        app()->download(BASEPATH.'/theme/default/img/'.g('dl'));
+        app()->download(BASE_PATH.'/theme/default/img/'.g('dl'));
     }
-    
     // show demo view
-    c(new DemoView());
+    c(new \Arch\Demo\ViewMain());
 });
 
 // add routes
 r('/register', function() {
-    
     // trigger before view
     tr('register.form.before.view');
-    
     // add view to content
-    $view = new RegisterView();
+    $view = new \Arch\Demo\ViewRegister();
     $view->set('registerUrl', u('/register'));
     c($view);
 });
 
 // add routes
 r('/register-success', function() {
-    
     c('<p>Thank you for registering</p>');
 });
 
 // add login route
 r('/login', function() {
-    
     // trigger before view
     tr('login.form.before.view');
-    
     // add view to content
-    $view = new LoginView();
+    $view = new \Arch\Demo\ViewLogin();
     $view->set('loginUrl', app()->url('/login'));
     $view->set('logoutUrl', app()->url('/logout'));
     c($view);
@@ -69,7 +56,6 @@ r('/login', function() {
 
 // add logout route
 r('/logout', function() {
-    
     // destroy current session and redirect
     app()->session->destroy();
     app()->redirect();
@@ -81,13 +67,13 @@ e('register.form.before.view', function() {
     if (p('register') && app()->getCaptcha()) {
 
         // load model
-        $model = new UserModel();
+        $model = new \Arch\Demo\ModelUser();
         
         // validate post
         if ($model->validateCreate(p())) {
             
             $email = p('email');
-            $view = new View(BASEPATH.'/theme/default/mail.php');
+            $view = new \Arch\View(BASE_PATH.'/theme/default/mail.php');
             $view->addContent("Thank you $email for registering!");
 
             $r = app()->mail($email, 'Register', $view);
@@ -117,7 +103,7 @@ e('login.form.before.view', function() {
         // login user
         $email      = filter_var($post['email']);
         $password   = s(filter_var($post['password']));
-        $model      = new UserModel();
+        $model      = new \Arch\Demo\ModelUser();
         $model->validateEmail($post);
         $user = $model->find('email = ? and password = ?', array($email, $password));
 
@@ -131,6 +117,5 @@ e('login.form.before.view', function() {
             tr('login.form.after.post', $user);
             app()->redirect();
         }
-        
     }
 });

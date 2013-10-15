@@ -4,18 +4,21 @@
     <meta charset="utf-8">
     <title>Bootstrap, from Twitter - Architect PHP Framework</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="<?=empty($description) ? '' : $description?>">
+    <meta name="description" 
+          content="<?=empty($description) ? '' : $description?>">
     <meta name="author" content="<?=empty($author) ? '' : $author?>">
 
     <!-- Le styles -->
-    <link href="<?=BASEURL?>theme/default/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?=BASE_URL?>theme/default/css/bootstrap.min.css" 
+          rel="stylesheet">
     <style type="text/css">
       body {
         padding-top: 60px;
         padding-bottom: 40px;
       }
     </style>
-    <link href="<?=BASEURL?>theme/default/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="<?=BASE_URL?>theme/default/css/bootstrap-responsive.min.css" 
+          rel="stylesheet">
 
     <!-- module styles -->
     <?php $this->slot('css', function($item) { ?>
@@ -24,9 +27,9 @@
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-      <script src="<?=BASEURL?>theme/default/js/html5shiv.js"></script>
+      <script src="<?=BASE_URL?>theme/default/js/html5shiv.js"></script>
     <![endif]-->
-    <script src="<?=BASEURL?>theme/default/js/jquery.js"></script>
+    <script src="<?=BASE_URL?>theme/default/js/jquery.js"></script>
     
   </head>
 
@@ -35,7 +38,8 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" 
+                  data-target=".nav-collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -73,8 +77,8 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     
-    <script src="<?=BASEURL?>theme/default/js/bootstrap.js"></script>
-    <script src="<?=BASEURL?>theme/app.js" type="text/javascript"></script>
+    <script src="<?=BASE_URL?>theme/default/js/bootstrap.js"></script>
+    <script src="<?=BASE_URL?>theme/app.js" type="text/javascript"></script>
     <?php $this->slot('js', function($item) { ?>
     <script src="<?=$item?>" type="text/javascript"></script>
     <?})?>

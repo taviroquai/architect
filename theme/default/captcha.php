@@ -1,1 +1,2 @@
-<input type="text" name="_captcha" style="visibility: hidden" value="<?=$code?>" />
+<input type="text" name="_captcha" 
+       style="visibility: hidden" value="<?=$code?>" />

@@ -1,5 +1,5 @@
 
 // default app client
-app = function(baseurl) {
-	this.baseurl = baseurl;
+app = function(BASE_URL) {
+	this.BASE_URL = BASE_URL;
 }

@@ -1,6 +1,6 @@
 <?php
 
 app()->theme
-	->setPath(BASEPATH.'/theme/default/layout.php')
+	->setPath(BASE_PATH.'/theme/default/layout.php')
 	->addSlot('topbar');
 

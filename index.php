@@ -1,19 +1,12 @@
 <?php
 
-// Default PHP configuration
-error_reporting(E_ALL | E_NOTICE);
-ini_set('display_errors', true);
-define('DS', DIRECTORY_SEPARATOR);
-define('BASEPATH', __DIR__);
+// IMPORTANT!!! Define base path constant
+define('BASE_PATH', __DIR__);
 
-// Set configuration file path
-$filename = BASEPATH.'/config/development.xml';
+// IMPORTANT!!! Require class autoloader
+require_once 'src/autoload.php';
+require_once 'src/aliases.php';
 
-// Require class autoloader
-require_once 'lib/autoload.php';
-
-// Get application
-$app = App::Instance($filename);
-
-// Run application
-$app->run();
+// IMPORTANT!!! Run application
+$env = 'development';
+\Arch\App::Instance($env)->run();

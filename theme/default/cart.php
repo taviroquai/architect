@@ -36,13 +36,16 @@
                     <td><?=$item->product->price?></td>
                     <td>
                         <select name="quantity[<?=$i?>]" class="span1">
-                            <?php foreach ($this->model->quantity_options as $opt) { ?>
+                            <?php 
+                            foreach ($this->model->quantity_options as $opt) { ?>
                             <option <?=$item->quantity == $opt ? 'selected' : ''?> 
                                 value="<?=$opt?>"><?=$opt?></option>
                             <?php } ?>
                         </select>
                     </td>
-                    <td><?=round($item->quantity * $item->product->price, 2)?></td>
+                    <td>
+                        <?=round($item->quantity * $item->product->price, 2)?>
+                    </td>
                 </tr>
                 <?php } ?>
             </tbody>
@@ -55,7 +58,8 @@
                     <th>Shipping</th>
                     <td colspan="2">
                         <select name="shipping">
-                            <?php foreach ($this->model->shipping_options as $opt) { ?>
+                            <?php 
+                            foreach ($this->model->shipping_options as $opt) { ?>
                             <option <?=$cart->shipping == $opt ? 'selected' : ''?> 
                                 value="<?=$opt?>"><?=$opt?></option>
                             <?php } ?>
@@ -75,7 +79,8 @@
                     <th>Payment</th>
                     <td colspan="2">
                         <select name="payment">
-                            <?php foreach ($this->model->payment_options as $opt) { ?>
+                            <?php 
+                            foreach ($this->model->payment_options as $opt) { ?>
                             <option <?=$cart->payment == $opt ? 'selected' : ''?> 
                                 value="<?=$opt?>"><?=$opt?></option>
                             <?php } ?>
@@ -83,7 +88,9 @@
                     </td>
                     <td>
                         <div class="text-center">
-                            <input type="submit" name="pay" value="Checkout &gt;&gt;&gt;" class="btn-primary btn-large" />
+                            <input type="submit" name="pay" 
+                                   value="Checkout &gt;&gt;&gt;" 
+                                   class="btn-primary btn-large" />
                         </div>
                     </td>
                 </tr>
