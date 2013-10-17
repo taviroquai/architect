@@ -14,17 +14,7 @@ class Table
     protected $db;
     protected $stm;
     protected $sql;
-    protected $select;
-    protected $insert;
-    protected $update;
-    protected $delete;
-    protected $fields  = array();
-    protected $from    = array();
-    protected $join    = array();
-    protected $set     = array();
-    protected $values  = array();
-    protected $where;
-    protected $limit;
+    protected $node;
     
     /**
      * Returns a new Table to start querying
@@ -41,6 +31,7 @@ class Table
             $db = \Arch\App::Instance()->db;
         }
         $this->db = $db;
+        $this->node = $this->createSelect();
     }
     
     /**
@@ -113,55 +104,67 @@ class Table
     }
     
     /**
+     * Execute alias
+     * @param string $sql The sql to execute (optional), build if empty
+     * @param array $params The SQL params
+     * @param string $redirect Redirect on error
+     * @return \PDOStatement
+     */
+    public function run($sql = '', $params = null, $redirect = '/404')
+    {
+        return $this->execute($sql, $params, $redirect);
+    }
+    
+    /**
      * Select fields and executes a select operation
      * @param string|array $fields The string or array of fields to be selected
-     * @return \PDOStatement The PDOStatement after execute
+     * @return \Table This object
      */
     public function select($fields = '*')
     {
-        $this->select = true;
-        $this->fields = $fields;
-        $this->from = $this->name;
-        return $this->execute();
+        $this->node->from = $this->name;
+        if (is_array($fields)) $this->node->fields = $fields;
+        else $this->node->fields = $fields;
+        return $this;
     }
     
     /**
      * Set insert values and executes an insert operation
      * @param array $values An associative array containing fields and values
-     * @return \PDOStatement The PDOStatement after execute
+     * @return \Table This object
      */
     public function insert($values = array())
     {
-        $this->insert = true;
-        $this->fields = array_keys($values);
-        $this->values = array_values($values);
-        return $this->execute();
+        $this->node = $this->createInsert();
+        $this->node->fields = array_keys($values);
+        $this->node->values = array_values($values);
+        return $this;
     }
     
     /**
      * Set update values (associative array) and executes an update operation
      * @param array $values An associative array containing fields and values
-     * @return \PDOStatement The PDOStatement after execute
+     * @return \Table This object
      */
     public function update($values = array())
     {
-        $this->update = true;
-        $this->set = $values;
-        return $this->execute();
+        $this->node = $this->createUpdate();
+        $this->node->table = $this->name;
+        $this->node->set = $values;
+        return $this;
     }
     
     /**
      * Executes a delete operation with where condition
      * @param string $condition The string of conditions with placeholders (?)
      * @param array $data The values to be used as params on placeholders
-     * @return \PDOStatement The PDOStatement after execute
+     * @return \Table This object
      */
     public function delete($condition, $data = array())
     {
-        $this->delete = 1;
-        $this->from = $this->name;
-        $this->where($condition, $data);
-        return $this->execute();
+        $this->node = $this->createDelete();
+        $this->node->table = $this->name;
+        return $this->where($condition, $data);
     }
     
     /**
@@ -172,7 +175,8 @@ class Table
      */
     public function where($condition, $data = array())
     {
-        $this->where = array($condition, $data);
+        $this->node->condition = $condition;
+        $this->node->where = $data;
         return $this;
     }
     
@@ -184,7 +188,8 @@ class Table
      */
     public function limit($limit = null, $offset = 0)
     {
-        $this->limit = !empty($limit) ? array($limit, $offset) : null;
+        $this->node->limit = $limit;
+        $this->node->offset = $offset;
         return $this;
     }
     
@@ -201,57 +206,7 @@ class Table
             // build SQL from this properies
             
             // build operation syntax
-            if ($this->select) $sql = 'SELECT';
-            elseif ($this->insert) $sql = "INSERT INTO `$this->name`";
-            elseif ($this->update) $sql = "UPDATE `$this->name`";
-            elseif ($this->delete) $sql = 'DELETE';
-
-            // build fields synstax
-            if (!empty($this->fields)) {
-                if (is_array($this->fields)) {
-                    foreach ($this->fields as &$field) $field = "`$field`";
-                    $fields = implode(', ', $this->fields);
-                } else {
-                    $fields = $this->fields;
-                }
-                if ($this->insert) {
-                    $sql .= ' ('.$fields.') ';
-                } else {
-                    $sql .= " $fields ";
-                }
-            }
-
-            // build from syntax
-            if (!empty($this->from)) {
-                $sql .= " FROM `$this->from`";
-            }
-
-            // build set and values syntax
-            if (!empty($this->set) || !empty($this->values)) {
-                $items = array();
-                if ($this->set) {
-                    $sql .= " SET ";
-                    foreach ($this->set as $k => $v) {
-                        $items[] = "`$k` = ?";
-                    }
-                    $sql .= implode(', ', $items);
-                }
-                if ($this->values) {
-                    $sql .= " VALUES ";
-                    foreach ($this->values as $k => $v) {
-                        $items[] = '?';
-                    }
-                    $sql .= '('.implode(', ', $items).')';
-                }
-            }
-
-            // build where syntax
-            if (!empty($this->where)) {
-                $sql .= " WHERE ".$this->where[0];
-            }
-
-            // build limit syntax
-            $sql .= !empty($this->limit) ? ' LIMIT '.$this->limit[0] : '';
+            $sql = self::nodeToString($this->node);
         }
         
         // now we have SQL
@@ -276,12 +231,12 @@ class Table
             // Get PDO params
             if ($params === null) {    
                 $params = array();
-                if (!empty($this->set)) {
-                    $params = array_merge ($params, array_values($this->set));
-                } elseif (!empty($this->values))
-                    $params = array_merge ($params, $this->values);
-                if (!empty($this->where[1])) {
-                    $params = array_merge ($params, $this->where[1]);
+                if (!empty($this->node->set)) {
+                    $params = array_merge ($params, array_values($this->node->set));
+                } elseif (!empty($this->node->values))
+                    $params = array_merge ($params, $this->node->values);
+                if (!empty($this->node->where)) {
+                    $params = array_merge ($params, $this->node->where);
                 }
             }
             \Arch\App::Instance()->log('DB query params count: '.count($params));
@@ -367,7 +322,7 @@ class Table
      * Bind PDO params filtered by type
      * @param array $params
      */
-    private function dbBindParams($params = array())
+    protected function dbBindParams($params = array())
     {
         $i = 1;
         foreach ($params as &$v) {
@@ -388,5 +343,91 @@ class Table
             }
             $i++;
         }
+    }
+    
+    protected function createSelect()
+    {
+        $node = new \stdClass();
+        $node->_type = 'SELECT';
+        $node->fields = array();
+        $node->from = array();
+        return $node;
+    }
+    
+    protected function createInsert()
+    {
+        $node = new \stdClass();
+        $node->_type = 'INSERT';
+        $node->table = $this->name;
+        $node->fields = array();
+        $node->values = array();
+        return $node;
+    }
+    
+    protected function createUpdate()
+    {
+        $node = new \stdClass();
+        $node->_type = 'UPDATE';
+        $node->table = $this->name;
+        $node->set = array();
+        return $node;
+    }
+    
+    protected function createDelete()
+    {
+        $node = new \stdClass();
+        $node->_type = 'DELETE';
+        $node->from = $this->name;
+        return $node;
+    }
+    
+    protected static function nodeToString($node)
+    {
+        $sql = '';
+        switch ($node->_type) {
+            case 'SELECT':
+                $sql .= $node->_type.' '.
+                    self::addBackTicks($node->fields, true).
+                    ' FROM '.
+                    self::addBackTicks($node->from);
+                breaK;
+            case 'INSERT':
+                $sql .= $node->_type.
+                    ' INTO '.
+                    self::addBackTicks($node->table).
+                    ' ('.
+                    implode(',', self::addBackTicks($node->fields)).
+                    ') VALUES ('.
+                    implode(',', array_fill(0, count($node->values), '?')).
+                    ')';
+                break;
+            case 'UPDATE':
+                $set = $node->set;
+                foreach ($set as $k => &$v) $v = "`$k` = ?";
+                $sql .= $node->_type.' '.
+                    self::addBackTicks($node->table).' SET '.
+                    implode(',', $set);
+                break;
+            case 'DELETE':
+                $sql .= $node->_type.' FROM '.
+                    self::addBackTicks($node->table);
+                break;
+        }
+        if (!empty($node->condition)) {
+            $sql .= ' WHERE '.$node->condition;
+        }
+        if (!empty($node->limit)) {
+            $sql .= ' LIMIT '.$node->limit.', '.$node->offset;
+        }
+        return $sql;
+    }
+    
+    protected static function addBackTicks($items, $skip = false)
+    {
+        if (!is_array($items)) return $skip ? $items : "`$items`";
+        foreach ($items as &$field) {
+            $field = "`$field`";
+        }
+        return $items;
     }
 }

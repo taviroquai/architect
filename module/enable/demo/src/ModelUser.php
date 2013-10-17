@@ -24,7 +24,9 @@ class ModelUser
     {
         $user = $this->import($this->create(), $data);
         $user->password = s($user->password);
+        $user->id = 2;
         $this->save($user);
+        $this->unregister($user->email);
         return $user;
     }
     
@@ -135,7 +137,7 @@ class ModelUser
      */
     public function load($id)
     {
-        $sth = q('user')->w('id = ?', array($id))->s();
+        $sth = q('user')->s('*')->w('id = ?', array($id))->run();
         return $sth->fetchObject();
     }
     
@@ -147,7 +149,7 @@ class ModelUser
      */
     public function find($where, $data)
     {
-        $sth = q('user')->w($where, $data)->s();
+        $sth = q('user')->s('*')->w($where, $data)->run();
         return $sth->fetchObject();
     }
 
@@ -160,10 +162,10 @@ class ModelUser
     {
         $data = array('email' => $user->email, 'password' => $user->password);
         if (empty($user->id)) {
-            $stm = q('user')->i($data);
+            $stm = q('user')->i($data)->run();
             $user->id = app()->db->lastInsertId();
         }
-        else $stm = q('user')->w('id = ?', array($user->id))->u($data);
+        else $stm = q('user')->u($data)->w('id = ?', array($user->id))->run();
         return $stm;
     }
     
@@ -175,7 +177,7 @@ class ModelUser
      */
     public function delete($where, $data)
     {
-        return q('user')->d($where, $data);
+        return q('user')->d($where, $data)->run();
     }
     
     /**
