@@ -24,9 +24,7 @@ class ModelUser
     {
         $user = $this->import($this->create(), $data);
         $user->password = s($user->password);
-        $user->id = 2;
         $this->save($user);
-        $this->unregister($user->email);
         return $user;
     }
     
