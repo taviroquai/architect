@@ -135,7 +135,7 @@ class ModelUser
      */
     public function load($id)
     {
-        $sth = q('user')->s('*')->w('id = ?', array($id))->run();
+        $sth = q('demo_user')->s('*')->w('id = ?', array($id))->run();
         return $sth->fetchObject();
     }
     
@@ -147,7 +147,7 @@ class ModelUser
      */
     public function find($where, $data)
     {
-        $sth = q('user')->s('*')->w($where, $data)->run();
+        $sth = q('demo_user')->s('*')->w($where, $data)->run();
         return $sth->fetchObject();
     }
 
@@ -160,10 +160,10 @@ class ModelUser
     {
         $data = array('email' => $user->email, 'password' => $user->password);
         if (empty($user->id)) {
-            $stm = q('user')->i($data)->run();
+            $stm = q('demo_user')->i($data)->run();
             $user->id = app()->db->lastInsertId();
         }
-        else $stm = q('user')->u($data)->w('id = ?', array($user->id))->run();
+        else $stm = q('demo_user')->u($data)->w('id = ?', array($user->id))->run();
         return $stm;
     }
     
@@ -175,7 +175,7 @@ class ModelUser
      */
     public function delete($where, $data)
     {
-        return q('user')->d($where, $data)->run();
+        return q('demo_user')->d($where, $data)->run();
     }
     
     /**
@@ -184,9 +184,9 @@ class ModelUser
      */
     public static function checkDatabase()
     {
-        if (!q('user')->execute('select 1 from user', null, '')) {
+        if (!q('demo_user')->execute('select 1 from demo_user', null, '')) {
             $filename = BASE_PATH.'/module/enable/demo/db/install.sql';
-            q('user')->install($filename);
+            q('demo_user')->install($filename);
         }
     }
 }

@@ -51,5 +51,8 @@ class ViewMain extends \Arch\View
         $cart->model->updateShippingCost(5); // updates shipping cost to 5
         // finally add cart to content
         $this->addContent($cart);
+        
+        // UI crud demo
+        $this->addContent(new \Arch\View('theme/demo/crud.php'));
     }
 }
