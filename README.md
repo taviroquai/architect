@@ -153,6 +153,8 @@ c() - **C**ontent. Adds content to the default theme
 u() - **U**RL. Returns an internal URL. Use this to generate internal URLs  
 m() - **M**essage. Adds a message to be shown to the user  
 g() - **G**ET. Returns GET parameters  
+j() - **J**SON. Sets JSON output  
+o() - **O**utput. Sets the application Output, ie. a View or plain text  
 p() - **P**OST. Returns POST parameters  
 f() - **F**ILES. Returns a FILES entry by index  
 q() - **Q**uery table. Returns a Table instance to start querying  
@@ -187,12 +189,13 @@ tr() - **TR**igger. Triggers the event
 
 ### DATABASE
     app()->db // Gets a PDO instance
-    app()->query('tablename')->select(); // runs and returns a PDOStatement
-    app()->query('user')->insert(array('username' => 'admin');
-    q('user')->w('id = ?', array(1))->s(); // select user where id = 1
-    q('user')->i(array('username' => 'admin')); // insert into user
-    q('user')->w('id = ?', array(1))->u(array('username' => 'guest')); // update
-    q('user')->d('id = ?', array(1)); // delete from user where id = 1
+    app()->query('tablename')->select()->run(); // runs and returns a PDOStatement
+    app()->query('user')->insert(array('username' => 'admin')->run();
+    q('user')->s()->w('id = ?', array(1))->run(); // select user where id = 1
+    q('user')->i(array('username' => 'admin'))->run(); // insert into user
+    q('user')->u(array('username' => 'guest'))->w('id = ?', array(1))->run(); // update
+    q('user')->d('id = ?', array(1))->run(); // delete from user where id = 1
+    q('user')->s('group.*')->j('usergroup', 'usergroup.id_group = group.id')->run(); // join
 
 ### MAIL
     app()->mail('test@isp.com', 'subject', $view);
