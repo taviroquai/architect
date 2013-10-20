@@ -412,9 +412,7 @@ class App implements Messenger
     public function addRoute($key, $action)
     {
         $result = $this->router->addRoute($key, $action);
-        if ($result) {
-            $this->log('Add route succeed: '.$key);
-        } else {
+        if (!$result) {
             $this->log('Add route failed: '.$key);
         }
         return $this;
@@ -514,8 +512,12 @@ class App implements Messenger
         if ($target === null) {
             $target = $this;
         }
+        if (!is_callable($callback)) {
+            $this->log('Event create failed: '.$eventName);
+        } else {
         $this->events[$eventName][] = 
                 new \Arch\Event($eventName, $callback, $target);
+        }
         return $this;
     }
     

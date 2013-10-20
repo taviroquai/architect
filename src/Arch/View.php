@@ -160,7 +160,6 @@ class View
         extract($this->data);
         include $this->path;
         $this->output = (string) ob_get_clean();
-        \Arch\App::Instance()->log('Finish render');
         return $this->output;
     }
 }

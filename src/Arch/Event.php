@@ -16,7 +16,6 @@ class Event
     {
         $this->name = $name;
         $this->callback = $callback;
-        \Arch\App::Instance()->log('Event created: '.$name);
     }
     
     public function trigger($target = null)
