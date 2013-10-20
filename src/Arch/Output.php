@@ -27,10 +27,12 @@ class Output
      * Sets the output content string
      * 
      * @param string $content
+     * @return \Arch\Output
      */
     public function setContent($content)
     {
         $this->content = $content;
+        return $this;
     }
     
     /**
@@ -45,10 +47,12 @@ class Output
     /**
      * Sets HTTP headers to be used on HTTP type
      * @param array $headers
+     * @return \Arch\Output
      */
     public function setHeaders($headers)
     {
         $this->headers = (array) $headers;
+        return $this;
     }
     
     /**

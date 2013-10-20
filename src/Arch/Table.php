@@ -92,6 +92,17 @@ class Table
     }
     
     /**
+     * Join alias
+     * @param string $tablename The tablename to join
+     * @param string $on The join condition
+     * @param string $type The join type (LEFT, INNER, RIGHT, empty)
+     * @return \Arch\Table Thisobject
+     */
+    public function j($tablename, $on, $type = 'LEFT') {
+        return $this->join($tablename, $on, $type);
+    }
+    
+    /**
      * Limit alias
      * Set limit and offset
      * @param integer $limit The limit, an integer
@@ -181,6 +192,20 @@ class Table
     }
     
     /**
+     * Adds a JOIN instruction
+     * @param string $tablename The tablename to join
+     * @param string $on The join condition
+     * @param string $type The join type (LEFT, INNER, RIGHT, empty)
+     * @return \Arch\Table Thisobject
+     */
+    public function join($tablename, $on, $type = 'LEFT')
+    {
+        if (!isset($this->node->join)) $this->node->join = array();
+        $this->node->join[] = $this->createJoin($tablename, $on, $type);
+        return $this;
+    }
+    
+    /**
      * Set limit and offset
      * @param integer $limit The limit, an integer
      * @param integer $offset The offset, an integer
@@ -191,6 +216,15 @@ class Table
         $this->node->limit = $limit;
         $this->node->offset = $offset;
         return $this;
+    }
+    
+    /**
+     * Returns the last insert id on this table
+     * @param type $name
+     * @return type
+     */
+    public function id($name = 'id') {
+        return $this->db->lastInsertId($name);
     }
     
     /**
@@ -381,6 +415,16 @@ class Table
         return $node;
     }
     
+    protected function createJoin($tablename, $on, $type = 'LEFT')
+    {
+        $node = new \stdClass();
+        $node->_type = 'JOIN';
+        $node->type = $type;
+        $node->sql = $tablename;
+        $node->on = $on;
+        return $node;
+    }
+    
     protected static function nodeToString($node)
     {
         $sql = '';
@@ -412,6 +456,11 @@ class Table
                 $sql .= $node->_type.' FROM '.
                     self::addBackTicks($node->table);
                 break;
+        }
+        if (!empty($node->join)) {
+            foreach ($node->join as $item) {
+                $sql .= " {$item->type} JOIN ".$item->sql.' ON '.$item->on;
+            }
         }
         if (!empty($node->condition)) {
             $sql .= ' WHERE '.$node->condition;

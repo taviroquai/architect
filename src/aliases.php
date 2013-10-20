@@ -87,6 +87,15 @@ function g($param = null)
 }
 
 /**
+ * Send JSON alias
+ * @param array $data
+ * @param boolean $cache
+ */
+function j($data, $cache = false) {
+    app()->sendJSON($data, $cache);
+}
+
+/**
  * Add message alias
  * @param string $text The message to be shown
  * @param string $cssClass The css class to style
@@ -115,6 +124,23 @@ function p($param = null)
 function q($tableName, \PDO $db = null)
 {
     return \Arch\App::Instance()->query($tableName, $db);
+}
+
+/**
+ * Send output alias
+ * 
+ * This is a fast way to send text output
+ * It will use an Output instance to send
+ * 
+ * Example:
+ * \Arch\App::Instance()->sendOutput('Hello World!');
+ * 
+ * @param mixed $content
+ * @param boolean $exit
+ */
+function o($content = null, $exit = false)
+{
+    return app()->sendOutput($content, $exit);
 }
 
 /**

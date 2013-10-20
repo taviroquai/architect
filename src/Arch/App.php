@@ -318,17 +318,19 @@ class App implements Messenger
      * \Arch\App::Instance()->sendOutput('Hello World!');
      * 
      * @param mixed $content
-     * @param boolean $now
+     * @param boolean $exit
      */
-    public function sendOutput($content = null, $now = true)
+    public function sendOutput($content = null, $exit = false)
     {
         if (!empty($content)) {
             $this->output->setContent($content);
         } else {
             $this->output->setContent($this->theme);
         }
-        if ($now) {
-            $this->output->send();
+        $this->output->send();
+        if ($exit) {
+            $this->session->save();
+            exit();
         }
     }
     
@@ -358,6 +360,26 @@ class App implements Messenger
             $this->session->save();
             exit();
         }
+    }
+    
+    /**
+     * Creates a JSON response, sends it and exits
+     * @param array $data
+     * @param boolean $cache
+     */
+    public function sendJSON($data, $cache = false) {
+        $headers = array();
+        if (!$cache) {
+            $headers[] = 'Cache-Control: no-cache, must-revalidate';
+            $headers[] = 'Expires: Mon, 26 Jul 1997 05:00:00 GMT';
+        }
+        $headers[] = 'Content-type: application/json; charset=utf-8';
+        $output = new \Arch\Output();
+        $output->setHeaders($headers);
+        $output->setContent(json_encode($data));
+        $output->send();
+        $this->session->save();
+        exit();
     }
     
     /**
