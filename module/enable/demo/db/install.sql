@@ -40,8 +40,8 @@ ALTER TABLE `demo_usergroup` ENGINE=InnoDB;
 ALTER TABLE `demo_usergroup` MODIFY COLUMN `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 CREATE INDEX `user_fk_idx` ON `demo_usergroup` (`id_user`);
 CREATE INDEX `group_fk_idx` ON `demo_usergroup` (`id_group`);
--- ALTER TABLE `demo_usergroup` ADD CONSTRAINT `user_fk` FOREIGN KEY (`id_user`) REFERENCES `demo_user`.`id` ON UPDATE NO ACTION ON DELETE NO ACTION;
--- ALTER TABLE `demo_usergroup` ADD CONSTRAINT `group_fk` FOREIGN KEY (`id_group`) REFERENCES `demo_group`.`id` ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `demo_usergroup` ADD CONSTRAINT `usergroup_user_fk` FOREIGN KEY (`id_user`) REFERENCES `demo_user` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `demo_usergroup` ADD CONSTRAINT `usergroup_group_fk` FOREIGN KEY (`id_group`) REFERENCES `demo_group` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 --
 -- Insert default data
