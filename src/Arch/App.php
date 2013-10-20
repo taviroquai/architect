@@ -165,10 +165,8 @@ class App implements Messenger
         $this->execute();
         // send output
         $this->sendOutput();
-        // save session
-        $this->session->save();
-        // close log handler
-        if (is_resource($this->log)) fclose ($this->log);
+        // close resources
+        $this->cleanEnd();
     }
     
     private function execute()
@@ -224,6 +222,18 @@ class App implements Messenger
             }
         }
         $this->modules = $mods;
+    }
+    
+    private function cleanEnd() {
+        
+        // close output buffer
+        if (ob_get_status()) ob_end_flush();
+        
+        // save session
+        $this->session->save();
+        
+        // close log handler
+        if (is_resource($this->log)) fclose ($this->log);
     }
     
     /**
@@ -318,20 +328,23 @@ class App implements Messenger
      * \Arch\App::Instance()->sendOutput('Hello World!');
      * 
      * @param mixed $content
-     * @param boolean $exit
      */
-    public function sendOutput($content = null, $exit = false)
+    public function sendOutput()
     {
-        if (!empty($content)) {
-            $this->output->setContent($content);
-        } else {
-            $this->output->setContent($this->theme);
+        if (get_class($this->output->getContent()) === FALSE) {
+            if ($this->output->getContent() == '') {
+                $this->output->setContent($this->theme);
+            }
         }
+        
+        // clean application buffer; only 1 output allowed
+        // not good for debugging; please use app()->log($msg) for debugging
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+        
+        // send output
         $this->output->send();
-        if ($exit) {
-            $this->session->save();
-            exit();
-        }
     }
     
     /**
@@ -374,12 +387,8 @@ class App implements Messenger
             $headers[] = 'Expires: Mon, 26 Jul 1997 05:00:00 GMT';
         }
         $headers[] = 'Content-type: application/json; charset=utf-8';
-        $output = new \Arch\Output();
-        $output->setHeaders($headers);
-        $output->setContent(json_encode($data));
-        $output->send();
-        $this->session->save();
-        exit();
+        $this->output->setHeaders($headers);
+        $this->output->setContent(json_encode($data));
     }
     
     /**
@@ -812,18 +821,14 @@ class App implements Messenger
         $type = finfo_file($finfo, $filename);
         $name = basename($filename);
         
-        // set Output
-        $this->output = new \Arch\Output(file_get_contents($filename));
-        $this->output->setHeaders(array(
-            'Content-type: '.$type,
-            'Content-disposition: attachment; filename='.$name
-            ));
-        $this->output->send();
-        
-        // save session
-        $this->session->save();
-        $this->log('Attachment sent: '.$filename);
-        exit();
+        // set output
+        $this->output->setContent(file_get_contents($filename));
+        $this->output->setHeaders(
+            array(
+                'Content-type: '.$type,
+                'Content-disposition: attachment; filename='.$name
+            )
+        );
     }
     
     /**

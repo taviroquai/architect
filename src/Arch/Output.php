@@ -17,7 +17,7 @@ class Output
      * @param string $content
      * @param string $type // TODO
      */
-    public function __construct($content = 'Hello World!', $type = 'HTTP')
+    public function __construct($content = '', $type = 'HTTP')
     {
         $this->content = $content;
         $this->type = $type;

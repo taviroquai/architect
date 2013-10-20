@@ -136,11 +136,10 @@ function q($tableName, \PDO $db = null)
  * \Arch\App::Instance()->sendOutput('Hello World!');
  * 
  * @param mixed $content
- * @param boolean $exit
  */
-function o($content = null, $exit = false)
+function o($content = null)
 {
-    return app()->sendOutput($content, $exit);
+    return app()->output->setContent($content);
 }
 
 /**
