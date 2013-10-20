@@ -24,6 +24,11 @@
     <?php $this->slot('css', function($item) { ?>
     <link href="<?=$item?>" rel="stylesheet" />
     <?})?>
+    
+    <script type="text/javascript">
+        var BASE_URL = '<?=BASE_URL?>';
+        var INDEX_FILE = '<?=INDEX_FILE?>';
+    </script>
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -77,7 +82,7 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     
-    <script src="<?=BASE_URL?>theme/default/js/bootstrap.js"></script>
+    <script src="<?=BASE_URL?>theme/default/js/bootstrap.min.js"></script>
     <script src="<?=BASE_URL?>theme/app.js" type="text/javascript"></script>
     <?php $this->slot('js', function($item) { ?>
     <script src="<?=$item?>" type="text/javascript"></script>
