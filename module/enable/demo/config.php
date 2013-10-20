@@ -124,19 +124,19 @@ r('/demo/crud/user/(:num)/edit', function($id) {
     $stm = q('demo_user')->s()->w('id = ? ', array($id))->run();
     $data = array('user' => $stm->fetchObject());
     $v = new \Arch\View(BASE_PATH.'/theme/demo/userform.php', $data);
-    o($v, true);
+    o($v);
 });
 
 r('/demo/crud/user/list', function() {
     $data = array('stm' => q('demo_user')->s()->run());
     $v = new \Arch\View(BASE_PATH.'/theme/demo/userlist.php', $data);
-    o($v, true);
+    o($v);
 });
 
 r('/demo/crud/group/list', function() {
     $data = array('stm' => q('demo_group')->s()->run());
     $v = new \Arch\View(BASE_PATH.'/theme/demo/grouplist.php', $data);
-    o($v, true);
+    o($v);
 });
 
 r('/demo/crud/user/(:num)/group/list', function($id) {
@@ -147,7 +147,7 @@ r('/demo/crud/user/(:num)/group/list', function($id) {
         ->run();
     $data = array('stm' => $stm);
     $v = new \Arch\View(BASE_PATH.'/theme/demo/grouplist.php', $data);
-    o($v, true);
+    o($v);
 });
 
 r('/demo/crud/user/save', function() {
