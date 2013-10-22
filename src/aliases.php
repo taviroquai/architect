@@ -127,13 +127,13 @@ function q($tableName, \PDO $db = null)
 }
 
 /**
- * Send output alias
+ * app()->output() alias
  * 
  * This is a fast way to send text output
  * It will use an Output instance to send
  * 
  * Example:
- * \Arch\App::Instance()->sendOutput('Hello World!');
+ * o('Hello World!');
  * 
  * @param mixed $content
  */

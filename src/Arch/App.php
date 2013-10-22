@@ -236,6 +236,25 @@ class App implements Messenger
         if (is_resource($this->log)) fclose ($this->log);
     }
     
+    
+    private function sendOutput()
+    {
+        if (get_class($this->output->getContent()) === FALSE) {
+            if ($this->output->getContent() == '') {
+                $this->output->setContent($this->theme);
+            }
+        }
+        
+        // clean application buffer; only 1 output allowed
+        // not good for debugging; please use app()->log($msg) for debugging
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+        
+        // send output
+        $this->output->send();
+    }
+    
     /**
      * Logs application activity
      * If LOG_PATH is empty, no log happens
@@ -319,32 +338,18 @@ class App implements Messenger
     }
     
     /**
-     * Sends application output
+     * Sets application output
      * 
      * This is a fast way to send text output
      * It will use an Output instance to send
      * 
      * Example:
-     * \Arch\App::Instance()->sendOutput('Hello World!');
+     * app()->output('Hello World!');
      * 
      * @param mixed $content
      */
-    public function sendOutput()
-    {
-        if (get_class($this->output->getContent()) === FALSE) {
-            if ($this->output->getContent() == '') {
-                $this->output->setContent($this->theme);
-            }
-        }
-        
-        // clean application buffer; only 1 output allowed
-        // not good for debugging; please use app()->log($msg) for debugging
-        while (ob_get_level() > 0) {
-            ob_end_clean();
-        }
-        
-        // send output
-        $this->output->send();
+    public function output($content) {
+        $this->output->setContent($content);
     }
     
     /**
