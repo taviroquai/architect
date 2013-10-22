@@ -347,7 +347,8 @@ class App implements Messenger
      * 
      * @param mixed $content
      */
-    public function output($content) {
+    public function output($content)
+    {
         $this->output->setContent($content);
     }
     
