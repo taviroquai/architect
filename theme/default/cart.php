@@ -87,15 +87,21 @@
                         </select>
                     </td>
                     <td>
-                        <div class="text-center">
-                            <input type="submit" name="pay" 
-                                   value="Checkout &gt;&gt;&gt;" 
-                                   class="btn-primary btn-large" />
-                        </div>
+                        
                     </td>
                 </tr>
             </tbody>
         </table>
+        <div class="clearfix"></div>
+        
+        <div class="pull-right">
+            <div class="text-center">
+                <input type="submit" name="pay" 
+                       value="Checkout &gt;&gt;&gt;" 
+                       class="btn-primary btn-large" />
+            </div>
+        </div>
+        <div class="clearfix"></div>
     </form>
 </div>
 

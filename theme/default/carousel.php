@@ -1,6 +1,6 @@
 <h3>Carousel Demo</h3>
 <div id="myCarousel" class="carousel slide" 
-     style="width: 780px; height: 250px;">
+     style="width: 100%; height: 250px;">
     <ol class="carousel-indicators">
       <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
       <li data-target="#myCarousel" data-slide-to="1"></li>
