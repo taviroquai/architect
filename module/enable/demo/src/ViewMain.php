@@ -53,6 +53,7 @@ class ViewMain extends \Arch\View
         $this->addContent($cart);
         
         // UI crud demo
+        c(BASE_URL.'theme/demo/demo.js', 'js');
         $this->addContent(new \Arch\View('theme/demo/crud.php'));
     }
 }
