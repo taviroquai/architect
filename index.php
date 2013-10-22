@@ -7,6 +7,6 @@ define('BASE_PATH', __DIR__);
 require_once 'src/autoload.php';
 require_once 'src/aliases.php';
 
-// IMPORTANT!!! Run application
-$env = 'development';
-\Arch\App::Instance($env)->run();
+// IMPORTANT!!! Give configuration file and run application
+$config = BASE_PATH."/config/development.xml";
+\Arch\App::Instance($config)->run();

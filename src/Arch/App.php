@@ -102,26 +102,25 @@ class App implements Messenger
 
     /**
      * Gets application singleton
-     * @param string $env
-     * @return \App
+     * @param string $filename Full configuration file path
+     * @return \App The application singleton
      */
-    public static function Instance($env = 'development')
+    public static function Instance($filename = 'config.xml')
     {
         if (self::$inst === null) {
-            self::$inst = new App($env);
+            self::$inst = new App($filename);
         }
         return self::$inst;
     }
 
     /**
      * Returns a new application
-     * @param string $env
+     * @param string $filename Full configuration file path
      */
-    private function __construct($env = 'development')
+    private function __construct($filename = 'config.xml')
     {
         
         // load configuration and apply
-        $filename = BASE_PATH."/config/$env.xml";
         $config = new Config($filename);
         $config->apply();
         
