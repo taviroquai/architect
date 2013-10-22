@@ -15,7 +15,7 @@ class ViewMain extends \Arch\View
 
         // demo of carousel
         $carousel = app()->createCarousel();
-        app()->addContent(BASE_URL.'theme/demo/carousel/style.css', 'css');
+        c(BASE_URL.'theme/demo/carousel/style.css', 'css');
         $carousel->addItem(
                 '<img src="'.BASE_URL.'theme/demo/img/carousel1.jpg" />', 1);
         $carousel->addItem(
@@ -28,7 +28,7 @@ class ViewMain extends \Arch\View
         $this->addContent(app()->createDatepicker());
 
         // demo of download file
-        $url = app()->url('/demo', array('dl' => '/glyphicons-halflings.png'));
+        $url = u('/demo', array('dl' => '/glyphicons-halflings.png'));
         $this->addContent(
         '<h3>Download attachment Demo</h3><a href="'.$url.'">Download</a>');
 
