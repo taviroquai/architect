@@ -1,8 +1,5 @@
 <?php
 
-// initialization
-\Arch\Demo\ModelUser::checkDatabase();
-
 // add main route
 r('/', function() {
 	// add content
@@ -26,6 +23,11 @@ r('/demo', function() {
     }
     // show demo view
     c(new \Arch\Demo\ViewMain());
+});
+
+r('/demo/install', function() {
+    // initialization
+    \Arch\Demo\ModelUser::checkDatabase();
 });
 
 // add routes
