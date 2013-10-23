@@ -70,49 +70,29 @@ e('register.form.before.view', function() {
 
         // load model
         $model = new \Arch\Demo\ModelUser();
+        $user = $model->register(p());
         
-        // validate post
-        if ($model->validateCreate(p())) {
-            
-            $email = p('email');
-            $view = new \Arch\View(BASE_PATH.'/theme/default/mail.php');
-            $view->addContent("Thank you $email for registering!");
-
-            $r = app()->mail($email, 'Register', $view);
-            if(!$r) {
-                m("Registration failed. Try again.", 'alert alert-error');
-            }
-            else {
-                m("An email was sent to your address");
-                // finally register
-                $user = $model->register(p());
-                // trigger after post
-                tr('register.form.after.post', $user);
-                // redirect to success page
-                app()->redirect(u('/register-success'));
-            }
+        if ($user) {
+            // trigger after post
+            tr('register.form.after.post', $user);
+            // redirect to success page
+            app()->redirect(u('/register-success'));
+        } else {
+            sleep(2);
         }
-        else sleep(2);
     }
 });
 
 // add event try to login
 e('login.form.before.view', function() {
 
-    $post = p();
-    if (!empty($post['login'])) {
+    if (p('login')) {
         
         // login user
-        $email      = filter_var($post['email']);
-        $password   = s(filter_var($post['password']));
-        $model      = new \Arch\Demo\ModelUser();
-        $model->validateEmail($post);
-        $user = $model->find('email = ? and password = ?', array($email, $password));
+        $model = new \Arch\Demo\ModelUser();
+        $user = $model->login(p('email'), p('password'));
 
-        if (!$user) {
-            m('Invalid email/password', 'alert alert-error');
-        }
-        else {
+        if ($user) {
             // start user session
             app()->session->login = $user->email;
             // trigger after login

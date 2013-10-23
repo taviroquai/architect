@@ -22,9 +22,42 @@ class ModelUser
      */
     public function register($data)
     {
-        $user = $this->import($this->create(), $data);
-        $user->password = s($user->password);
-        $this->save($user);
+        // validate post
+        if ($this->validateCreate($data)) {
+            
+            $email = $data['email'];
+            $view = new \Arch\View(BASE_PATH.'/theme/default/mail.php');
+            $view->addContent("Thank you $email for registering!");
+
+            $r = app()->mail($email, 'Register', $view);
+            if(!$r) {
+                m("Registration failed. Try again.", 'alert alert-error');
+            }
+            else {
+                m("An email was sent to your address");
+                // finally register
+                $user = $this->import($this->create(), $data);
+                $user->password = s($user->password);
+                $this->save($user);
+                return $user;
+            }
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * Tries to login user input
+     * @param array $data
+     * @return mixed
+     */
+    public function login($email, $password) {
+        $email      = filter_var($email);
+        $password   = s(filter_var($password));
+        
+        $this->validateEmail($email);
+        $user = $this->find('email = ? and password = ?', array($email, $password));
+        if (!$user) m('Invalid email/password', 'alert alert-error');
         return $user;
     }
     
@@ -58,7 +91,7 @@ class ModelUser
      */
     public function validateCreate($input)
     {
-        $email  = $this->validateEmail($input);
+        $email  = $this->validateEmail($input['email']);
         $pass   = $this->validatePassword($input);
         $new    = $this->validateNewEmail($input);
         return $email & $pass & $new;
@@ -66,13 +99,13 @@ class ModelUser
     
     /**
      * Validates email field
-     * @param array $input The user input
+     * @param string $email The user input
      * @return boolean Returns true if is valid, otherwise false
      */
-    public function validateEmail($input)
+    public function validateEmail($email)
     {
         $result = true;
-        if (!filter_var($input['email'], FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             m('Invalid email address', 'alert alert-error');
             $result = false;
         }
