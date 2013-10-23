@@ -56,16 +56,22 @@ class Output
     }
     
     /**
-     * Send the output
+     * Sends HTTP Headers
      */
-    public function send()
+    public function sendHeaders()
     {
-        if (!\Arch\App::Instance()->input->isCli() && !empty($this->headers)) {
+        if (!empty($this->headers)) {
             foreach ($this->headers as $item) {
                 header($item);
             }
         }
-        \Arch\App::Instance()->log('Sending output...');
+    }
+    
+    /**
+     * Send the output
+     */
+    public function send()
+    {   
         echo $this->content;
     }
 }

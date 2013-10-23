@@ -27,7 +27,6 @@ class Session implements Messenger
             $_SESSION['login'] = null;
         }
         $this->storage = $_SESSION;
-        \Arch\App::Instance()->log('Session loaded');
     }
     
     /**
@@ -39,7 +38,6 @@ class Session implements Messenger
             $_SESSION[$prop] = $value;
         }
         session_write_close();
-        \Arch\App::Instance()->log('Session closed');
     }
 
     /**
@@ -49,7 +47,6 @@ class Session implements Messenger
     {
         $this->storage = array();
         session_destroy();
-        \Arch\App::Instance()->log('Session destroyed');
     }
     
     /**

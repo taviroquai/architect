@@ -16,12 +16,6 @@ class Cart extends \Arch\View
 
 	public function __construct($tmpl = null, \Arch\Model\Cart $model = null)
     {
-        if ($tmpl === null) {
-            $tmpl = BASE_PATH.'/theme/default/cart.php';
-        }
-		if ($model === null) {
-            $model = new \Arch\Model\Cart();
-        }
         $this->model = $model;
 		parent::__construct($tmpl);
 

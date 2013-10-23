@@ -153,7 +153,6 @@ class View
     
     public function __toString()
     {
-        \Arch\App::Instance()->log('Rendering view '.$this->path);
         if (!file_exists($this->path)) return $this->output;
         if ($this->hidden) return '';
         ob_start();

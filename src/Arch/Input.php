@@ -7,6 +7,9 @@ namespace Arch;
  */
 class Input
 {
+    protected $httpGet = array();
+    protected $httpPost = array();
+    protected $httpServer = array();
     protected $files = array();
     protected $raw;
     protected $api;
@@ -20,13 +23,17 @@ class Input
     public function __construct()
     {
         $this->api = php_sapi_name();
+        if ($_GET) $this->httpGet = $_GET;
+        if ($_POST) $this->httpPost = $_POST;
+        if ($_SERVER) $this->httpServer = $_SERVER;
         if (!empty($_FILES)) {
             $this->remapFiles($_FILES);
         }
         $this->raw = file_get_contents("php://input");
         $this->getAction();
-        \Arch\App::Instance()->log('Input finish loading: '.
-                $this->server('HTTP_USER_AGENT'));
+        unset($_GET);
+        unset($_POST);
+        unset($_FILES);
     }
     
     /**
@@ -51,12 +58,12 @@ class Input
             return $this->params;
         }
         if (empty($param)) {
-            return $_GET;
+            return $this->httpGet;
         }
-        if (empty($_GET[$param])) {
+        if (empty($this->httpGet[$param])) {
             return false;
         }
-        return $_GET[$param];
+        return $this->httpGet[$param];
     }
     
     /**
@@ -68,12 +75,12 @@ class Input
     public function post($param = null)
     {
         if (empty($param)) {
-            return $_POST;
+            return $this->httpPost;
         }
-        if (empty($_POST[$param])) {
+        if (empty($this->httpPost[$param])) {
             return false;
         }
-        return $_POST[$param];
+        return $this->httpPost[$param];
     }
     
     /**
@@ -85,12 +92,12 @@ class Input
     public function server($param = null)
     {
         if (empty($param)) {
-            return $_SERVER;
+            return $this->httpServer;
         }
-        if (empty($_SERVER[$param])) {
+        if (empty($this->httpServer[$param])) {
             return false;
         }
-        return $_SERVER[$param];
+        return $this->httpServer[$param];
     }
     
     /**
@@ -125,7 +132,7 @@ class Input
                 $uri = str_replace(
                     array(BASE_URL,INDEX_FILE), 
                     '', 
-                    $_SERVER['REQUEST_URI']
+                    $this->httpServer['REQUEST_URI']
                 );
                 $end = strpos($uri, '?') === false ? 
                         strlen($uri) : 
@@ -137,7 +144,7 @@ class Input
                 }
             }
             else {
-                $this->params = $_SERVER['argv'];
+                $this->params = $this->httpServer['argv'];
                 if (!empty($this->params[1])) {
                     $this->action = $this->params[1];
                 }
@@ -205,5 +212,20 @@ class Input
                 }
             }
         }
+    }
+    
+    public function setHttpGet($array)
+    {
+        $this->httpGet = $array;
+    }
+    
+    public function setHttpPost($array)
+    {
+        $this->httpPost = $array;
+    }
+    
+    public function setHttpServer($array)
+    {
+        $this->httpServer = $array;
     }
 }

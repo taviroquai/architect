@@ -13,28 +13,31 @@ class FTP
      */
     protected $connection;
     
+    protected $host, $username, $password;
+    
     /**
      * Creates a new FTP connection
      * @param string $host The remote host
      * @param string $username The ftp username
-     * @param string $password The ftp password
      * @return boolean The connection result
      */
-    public function __construct($host="", $username="", $password="")
+    public function __construct($host="", $username="")
+    {
+        
+        //setup host
+        $this->host = $host;
+        
+        // setup username
+        $this->username = $username;
+    }
+    
+    public function connect($password)
     {
         // set up basic connection 
-        $this->connection = ftp_connect($host); 
+        $this->connection = ftp_connect($this->host);
 
         // login with username and password 
-        $result = ftp_login($this->connection, $username, $password);
-        if (!$result) {
-            \Arch\App::Instance()->log(
-                'FTP connect to '.$host.' failed', 
-                'error'
-            );
-        } else {
-            \Arch\App::Instance()->log('FTP connected to '.$host);
-        }
+        return ftp_login($this->connection, $this->username, $password);
     }
     
     /**
@@ -45,19 +48,7 @@ class FTP
      */
     public function put($localFile, $remoteFile)
     {
-        $result = ftp_put(
-            $this->connection,
-            $remoteFile,
-            $localFile,
-            FTP_BINARY
-        );
-        if ($result) { 
-            \Arch\App::Instance()->log("FTP successfully uploaded $localFile");
-            return true;
-        } else {
-            \Arch\App::Instance()->log("FTP failed upload $localFile");
-            return false;
-        }
+        return ftp_put($this->connection, $remoteFile, $localFile, FTP_BINARY);
     }
 
     /**
@@ -69,19 +60,12 @@ class FTP
     public function get($remoteFile, $localFile)
     {
         // try to download $server_file and save to $local_file
-        $result = ftp_get(
+        return ftp_get(
             $this->connection,
             $localFile,
             $remoteFile,
             FTP_BINARY
         );
-        if ($result) { 
-            \Arch\App::Instance()->log("FTP successfully doenloaded $localFile");
-            return true;
-        } else {
-            \Arch\App::Instance()->log("FTP failed to download $localFile");
-            return false;
-        }
     }
     
     /**
@@ -89,9 +73,6 @@ class FTP
      */
     public function close()
     {
-        ftp_close($this->connection);
-        if (!is_resource($this->connection)) {
-            \Arch\App::Instance()->log('FTP connection closed');
-        }
+        return ftp_close($this->connection);
     }
 }

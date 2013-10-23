@@ -27,9 +27,6 @@ class Table
     public function __construct($name, \PDO $db = null)
     {
         $this->name = $name;
-        if (empty($db)) {
-            $db = \Arch\App::Instance()->db;
-        }
         $this->db = $db;
         $this->node = $this->createSelect();
     }

@@ -23,14 +23,7 @@ class Event
         $target = empty($target) ? $this->target : $target;
         $fn = $this->callback;
         if (is_callable($fn)) {
-            \Arch\App::Instance()->log('Event triggered: '.$this->name);
             $fn($target);
-        }
-        else {
-            \Arch\App::Instance()->log(
-                'Event callback is not callable: '.$this->name,
-                'error'
-            );
         }
     }
 }

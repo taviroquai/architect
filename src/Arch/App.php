@@ -89,10 +89,10 @@ class App implements Messenger
     private  $events = array();
     
     /**
-     * Holds the log file handler
-     * @var resource
+     * Holds the application logger
+     * @var \Arch\Logger
      */
-    private  $log;
+    private  $logger;
     
     /**
      * Application singleton instance
@@ -125,6 +125,8 @@ class App implements Messenger
         $config->apply();
         
         // ready to start logging now
+        $logpath = BASE_PATH.LOG_PATH.DIRECTORY_SEPARATOR.'log.txt';
+        $this->logger = new \Arch\Logger($logpath);
         $this->log('Loaded configuration from '.$filename, 'access', true);
         
         // set session handler
@@ -152,6 +154,7 @@ class App implements Messenger
     {
         // load session
         $this->session->load();
+        $this->log('Session loaded');
         // initialize default database
         $this->initDatabase();
         // load user input
@@ -200,8 +203,16 @@ class App implements Messenger
     {
         $this->input = new \Arch\Input();
         $this->action = $this->input->getAction();
-        $this->idiom = new \Arch\Idiom();
-        $this->loadIdiom('default.xml');
+        $this->log('Input finish loading: '.
+                $this->input->server('HTTP_USER_AGENT'));
+        if ($this->input->get('idiom')) {
+            $this->session->_idiom = $this->input->get('idiom');
+        } else {
+            $this->session->_idiom = IDIOM;
+        }
+        $this->idiom = new \Arch\Idiom($this->session->_idiom);
+        $filename = 'default.xml';
+        $this->loadIdiom($filename);
     }
     
     private function loadModules()
@@ -230,9 +241,10 @@ class App implements Messenger
         
         // save session
         $this->session->save();
+        $this->log('Session closed');
         
         // close log handler
-        if (is_resource($this->log)) fclose ($this->log);
+        $this->logger->close();
     }
     
     
@@ -251,6 +263,8 @@ class App implements Messenger
         }
         
         // send output
+        $this->log('Sending output...');
+        if (!$this->input->isCli()) $this->output->sendHeaders();
         $this->output->send();
     }
     
@@ -265,29 +279,7 @@ class App implements Messenger
      */
     public function log($msg, $label = 'access', $nlb = false)
     {
-        if (LOG_PATH == '') {
-            return false;
-        }
-        if (!is_resource($this->log)) {
-            $filename = BASE_PATH.LOG_PATH.DIRECTORY_SEPARATOR.'log.txt';
-            if (!is_writable($filename)) {
-                return false;
-            }
-            $this->log = @fopen($filename, 'a');
-            if ($this->log === false) {
-                return false;
-            }
-        }
-        $secs = round(microtime(true)-floor(microtime(true)), 3);
-        $time = date('Y-m-d H:i:s').' '.sprintf('%0.3f', $secs).'ms';
-        $msg = strtoupper($label).' '.$time.' '.$msg.PHP_EOL;
-        if ($nlb) {
-            $msg = PHP_EOL.$msg;
-        }
-        if (is_resource($this->log)) {
-            fwrite($this->log, $msg);
-        }
-        return true;
+        return $this->logger->log($msg, $label, $nlb);
     }
     
     /**
@@ -372,6 +364,7 @@ class App implements Messenger
         }
         $output = new \Arch\Output();
         $output->setHeaders(array('Location: '.$url));
+        $output->sendHeaders();
         $output->send();
         $this->log('Redirecting to '.$url);
         if ($now) {
@@ -538,6 +531,7 @@ class App implements Messenger
     {
         if (isset($this->events[$eventName])) {
             foreach ($this->events[$eventName] as $evt) {
+                $this->log('Event triggered: '.$eventName);
                 $evt->trigger($target);
             }
         }
@@ -673,7 +667,11 @@ class App implements Messenger
             $filename = BASE_PATH.'/module/'.$module.'/idiom/'.
                     $idiom.'/'.$filename;
         }
-        $this->idiom->loadFile($filename);
+        if ($this->idiom->loadFile($filename)) {
+            $this->log('Idiom file loaded: '.$filename);
+        } else {
+            $this->log('Idiom file load failed: '.$filename, 'error');
+        }
         return $this;
     }
 
@@ -887,6 +885,8 @@ class App implements Messenger
      */
     public function createCart($tmpl = null, Model_Cart $model = null)
     {
+        if ($tmpl == null) $tmpl = BASE_PATH.'/theme/default/cart.php';
+        if ($model === null) $model = new \Arch\Model\Cart ($this->session);
         return new \Arch\View\Cart($tmpl, $model);
     }
     
@@ -935,7 +935,14 @@ class App implements Messenger
      */
     public function createFTP($host="", $username="", $password="")
     {
-        return new FTP($host, $username, $password);
+        $this->log('FTP connected to '.$host);
+        $ftp = new FTP($host, $username, $password);
+        if (!$ftp->connect($password)) {
+            $this->log('FTP connect to '.$host.' failed', 'error');
+        } else {
+            $this->log('FTP connected to '.$host);
+        }
+        return $ftp;
     }
     
     /**

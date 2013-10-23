@@ -13,13 +13,7 @@ class Idiom
 	public function __construct($code = 'en')
     {
 		$this->code = $code;
-		if (App::Instance()->input->get('idiom')) {
-			$this->session->_idiom = App::Instance()->input->get('idiom');
-			$this->code = $this->session->_idiom;
-		}
-		if (App::Instance()->session->_idiom == null) {
-			App::Instance()->session->_idiom = $this->code;
-        }
+        if (empty($this->code)) $this->code = 'en';
 	}
 
 	public function loadFile($filename)
@@ -30,14 +24,9 @@ class Idiom
                 $key = (string) $item['key'];
                 $this->storage[$key] = (string) $item;
             }
-            \Arch\App::Instance()->log('Idiom file loaded: '.$filename);
+            return true;
         }
-        else {
-            \Arch\App::Instance()->log(
-                'Idiom file load failed: '.$filename,
-                'error'
-            );
-        }
+        return false;
 	}
 
 	public function translate($key, $data = array())
