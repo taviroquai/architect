@@ -155,8 +155,6 @@ class App implements Messenger
         // load session
         $this->session->load();
         $this->log('Session loaded');
-        // initialize default database
-        $this->initDatabase();
         // load user input
         $this->loadInput();
         // load enabled modules
@@ -953,6 +951,7 @@ class App implements Messenger
      */
     public function query($tableName)
     {
+        if (empty($this->db)) $this->initDatabase ();
         $table = new \Arch\Table($tableName, $this->db);
         return $table;
     }
