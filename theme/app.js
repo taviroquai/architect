@@ -6,7 +6,8 @@ UI = function(BASE_URL)
 }
 
 UI.url = function(path, params) {
-    var base = INDEX_FILE == '' ? rtrim(BASE_URL, '/') : BASE_URL;
+    var base = INDEX_FILE == '' ? 
+        BASE_URL.substring(0, BASE_URL.length - 1) : BASE_URL;
     var uri = path == undefined ? '' : path;
     var query = params == undefined ? '' : '?';
     if (params) {
