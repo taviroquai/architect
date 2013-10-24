@@ -13,7 +13,7 @@ An online demo can be found in <http://marcoafonso.pt/tests/architect/>
 Install
 -------
 
-1. Edit config/development.xml
+1. Copy config/development.dist.xml to config/development.xml and edit
 2. Open in browser <http://localhost/architect>
 
 Main features
