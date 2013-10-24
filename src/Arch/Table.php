@@ -124,6 +124,23 @@ class Table
     }
     
     /**
+     * Returns a list of data of the given column
+     * @return array
+     */
+    public function column($column = 0)
+    {
+        $data = array();
+        $stm = $this->execute();
+        if (!$stm) {
+            return $data;
+        }
+        while ($row = $stm->fetchColumn($column)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+    
+    /**
      * Select fields and executes a select operation
      * @param string|array $fields The string or array of fields to be selected
      * @return \Table This object

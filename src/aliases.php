@@ -25,7 +25,7 @@
  * 
  * tr() Triggers the event
  * 
- * @return App
+ * @return \Arch\App
  */
 function app()
 { 

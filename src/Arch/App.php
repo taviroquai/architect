@@ -944,6 +944,14 @@ class App implements Messenger
     }
     
     /**
+     * Returns a new input validator
+     * @return \Arch\Validator
+     */
+    public function createValidator() {
+        return new \Arch\Validator($this);
+    }
+    
+    /**
      * Query a database table
      * @param string $tableName
      * @param \PDO $db
