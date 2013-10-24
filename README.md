@@ -48,6 +48,7 @@ below.
 * Built-in pagination
 * Built-in breadcrumbs
 * Built-in carousel
+* Built-in input validation
 * More to come...
 
 This is an on-going work and there is not yet a stable version
@@ -245,6 +246,10 @@ tr() - **TR**igger. Triggers the event
 ### DOWNLOAD
     app()->download('/var/www/architect/theme/data/image.jpg'); // force file 
 download by sending attachment HTTP headers
+
+### VALIDATION
+    $v = app()->createValidator();
+    $v->addRule($v->createRule('email')->setAction('isEmail'));
 
 
 ROAD MAP (TODO)
