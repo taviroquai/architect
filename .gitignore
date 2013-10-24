@@ -2,4 +2,5 @@
 /theme/data/
 /log/log.txt
 /config/development.xml
+/.htaccess
 
