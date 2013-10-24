@@ -52,12 +52,19 @@ class ModelUser
      * @return mixed
      */
     public function login($email, $password) {
-        $email      = filter_var($email);
-        $password   = s(filter_var($password));
         
-        $this->validateEmail($email);
-        $user = $this->find('email = ? and password = ?', array($email, $password));
-        if (!$user) m('Invalid email/password', 'alert alert-error');
+        $validator = app()->createValidator();
+        $rule = $validator->createRule('email')
+                ->setErrorMessage('Invalid email address')
+                ->setAction('isEmail');
+        $validator->addRule($rule);
+        
+        if ($validator->validate()->getResult()) {
+            $email      = filter_var($email);
+            $password   = s(filter_var($password));
+            $user = $this->find('email = ? and password = ?', array($email, $password));
+            if (!$user) m('Invalid email/password', 'alert alert-error');
+        }
         return $user;
     }
     
@@ -89,62 +96,33 @@ class ModelUser
      * @param array $input The associative array containing the user data
      * @return boolean Returns true if all data is valid, otherwise false
      */
-    public function validateCreate($input)
-    {
-        $email  = $this->validateEmail($input['email']);
-        $pass   = $this->validatePassword($input);
-        $new    = $this->validateNewEmail($input);
-        return $email & $pass & $new;
-    }
-    
-    /**
-     * Validates email field
-     * @param string $email The user input
-     * @return boolean Returns true if is valid, otherwise false
-     */
-    public function validateEmail($email)
-    {
-        $result = true;
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            m('Invalid email address', 'alert alert-error');
-            $result = false;
-        }
-        return $result;
-    }
-    
-    /**
-     * Validates 
-     * @param aray $input The user input
-     * @return boolean
-     */
-    public function validatePassword($input)
-    {
-        $result = true;
-        if (strlen($input['password']) < 6) {
-            m('Password too weak', 'alert alert-error');
-            $result = false;
-        }
-        if ($input['password'] != $input['password_confirm']) {
-            m('Password does not match', 'alert alert-error');
-            $result = false;
-        }
-        return $result;
-    }
-    
-    /**
-     * Validates new email
-     * @param array $input The user input
-     * @return boolean
-     */
-    public function validateNewEmail($input)
-    {
-        $result = true;
-        $exists = $this->find('email = ?', array($input['email']));
-        if (!empty($exists->id)) {
-            m('Please use other email.', 'alert alert-error');
-            $result = false;
-        }
-        return $result;
+    public function validateCreate()
+    {   
+        $validator = app()->createValidator();
+        
+        $rule = $validator->createRule('email')
+                ->setErrorMessage('Invalid email address')
+                ->setAction('isEmail');
+        $validator->addRule($rule);
+        
+        $rule = $validator->createRule('email')
+                ->setErrorMessage('Use other email')
+                ->setAction('unique')
+                ->addParam(q('demo_user')->s('email')->column(0));
+        $validator->addRule($rule);
+        
+        $rule = $validator->createRule('password')
+                ->setErrorMessage('Password cannot be empty')
+                ->setAction('required');
+        $validator->addRule($rule);
+        
+        $rule = $validator->createRule('password')
+                ->setErrorMessage('Password does not match')
+                ->setAction('equals')
+                ->addParam('password_confirm');
+        $validator->addRule($rule);
+
+        return $validator->validate()->getResult();
     }
     
     /**
@@ -215,11 +193,13 @@ class ModelUser
      * Checks database structure for this model
      * and makes operations if needed
      */
-    public static function checkDatabase()
+    public static function checkDatabase($install = true)
     {
         if (!q('demo_user')->execute('select 1 from demo_user', null, '')) {
-            $filename = BASE_PATH.'/module/enable/demo/db/install.sql';
-            q('demo_user')->install($filename);
+            if ($install) {
+                $filename = BASE_PATH.'/module/enable/demo/db/install.sql';
+                q('demo_user')->install($filename);
+            }
         }
     }
 }
