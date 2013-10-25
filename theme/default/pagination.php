@@ -22,3 +22,8 @@
         </li>
   </ul>
 </div>
+<h4>PHP</h4>
+<pre>
+$pagination = app()->createPagination();
+c($pagination);
+</pre>

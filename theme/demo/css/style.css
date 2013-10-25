@@ -1,0 +1,13 @@
+/* 
+    Document   : style
+    Created on : 25/Out/2013, 19:51:15
+    Author     : mafonso
+    Description:
+        Demo module stylesheet
+*/
+
+pre {
+    background-color: #3f3f3f;
+    color: white;
+    font-weight: bold;
+}

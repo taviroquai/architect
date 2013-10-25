@@ -16,3 +16,10 @@
         $i++;
     } ?>
 </ul>
+<h4>PHP</h4>
+<pre>
+$breadcrumbs = app()->createBreadcrumbs();
+$breadcrumbs->addItem('Home');
+$breadcrumbs->addItem('Demo', '#', 1);
+c($breadcrumbs);
+</pre>

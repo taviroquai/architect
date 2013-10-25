@@ -8,6 +8,9 @@ class ViewMain extends \Arch\View
     {
         parent::__construct(BASE_PATH.'/theme/demo/demo.php');
         
+        // add demo stylesheet
+        c(BASE_URL.'theme/demo/css/style.css', 'css');
+        
         // demo of breadcrumbs
         $breadcrumbs = app()->createBreadcrumbs();
         $breadcrumbs->parseAction(app()->input->getAction());
@@ -28,9 +31,10 @@ class ViewMain extends \Arch\View
         $this->addContent(app()->createDatepicker());
 
         // demo of download file
+        $dl_view = new \Arch\View(BASE_PATH.'/theme/default/download.php');
         $url = u('/demo', array('dl' => '/glyphicons-halflings.png'));
-        $this->addContent(
-        '<h3>Download attachment Demo</h3><a href="'.$url.'">Download</a>');
+        $dl_view->set('url', $url);
+        $this->addContent($dl_view);
 
         // demo of file upload
         $this->addContent(app()->createFileupload());

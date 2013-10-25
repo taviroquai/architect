@@ -17,3 +17,10 @@
     </div>
     <button type="submit" class="btn">Send</button>
 </form>
+<h4>PHP</h4>
+<pre>
+if ($file = f(0)) {
+    app()->upload($file, BASE_PATH.'/theme/data');
+}
+$this->addContent(app()->createFileupload());
+</pre>

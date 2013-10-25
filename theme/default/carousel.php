@@ -20,7 +20,17 @@
     <a class="carousel-control right" 
        href="#myCarousel" data-slide="next">&rsaquo;</a>
 </div>
-
+<h4>PHP</h4>
+<pre>
+c(BASE_URL.'theme/demo/carousel/style.css', 'css');
+$carousel = app()->createCarousel();
+$carousel->addItem('&lt;img src="'.BASE_URL.'theme/demo/img/carousel1.jpg" /&gt;', 1);
+c($carousel);
+</pre>
+<h4>JS</h4>
+<pre>
+$('.carousel').carousel();
+</pre>
 <script type="text/javascript">
     jQuery(function($) {
         $('.carousel').carousel();

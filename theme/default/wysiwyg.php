@@ -74,6 +74,15 @@
   <input type="text" data-edit="inserttext" id="voiceBtn" x-webkit-speech="">
 </div>
 <div id="editor1" style="overflow:scroll; height:250px;"></div>
+<h4>PHP</h4>
+<pre>
+$editor = app()->createTexteditor();
+c($editor);
+</pre>
+<h4>JS</h4>
+<pre>
+$('#editor1').wysiwyg();
+</pre>
 <script type="text/javascript">
     jQuery(function($) {
         $('#editor1').wysiwyg();

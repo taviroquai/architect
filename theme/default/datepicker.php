@@ -6,6 +6,15 @@
         </i>
     </span>
 </div>
+<h4>PHP</h4>
+<pre>
+$datepicker = app()->createDatepicker();
+$this->addContent($datepicker);
+</pre>
+<h4>JS</h4>
+<pre>
+$('#calendar1').datetimepicker();
+</pre>
 <script type="text/javascript">
 	$(function() {
   		$('#calendar1').datetimepicker({
