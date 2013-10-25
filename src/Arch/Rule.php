@@ -8,6 +8,7 @@ namespace Arch;
 class Rule
 {
     
+    protected $app;
     protected $input;
     protected $msg = 'Invalid input';
     protected $action = 'exists';
@@ -19,9 +20,10 @@ class Rule
      * Returns a new input validation rule
      * @param string $name The input param
      */
-    public function __construct($name = null)
+    public function __construct($name, \Arch\App $app)
     {
         $this->input = $name;
+        $this->app = $app;
     }
     
     /**
@@ -125,5 +127,15 @@ class Rule
     public function getResult()
     {
         return $this->result;
+    }
+    
+    /**
+     * Check whether the value is an associative array
+     * @param array $v
+     * @return bool
+     */
+    protected function isAssoc($v)
+    {
+        return (bool) (array_values($v) !== $v);
     }
 }
