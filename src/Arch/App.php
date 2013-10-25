@@ -952,6 +952,15 @@ class App implements Messenger
     }
     
     /**
+     * Returns a new comment form
+     * @param string $tmpl The template file path
+     * @return \Arch\View\CommentForm
+     */
+    public function createCommentForm($tmpl = null) {
+        return new \Arch\View\CommentForm($tmpl);
+    }
+    
+    /**
      * Query a database table
      * @param string $tableName
      * @param \PDO $db

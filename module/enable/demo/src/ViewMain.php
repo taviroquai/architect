@@ -44,6 +44,9 @@ class ViewMain extends \Arch\View
 
         // demo of texarea editor
         $this->addContent(app()->createTexteditor());
+        
+        // demo of a comment form
+        $this->addContent(app()->createCommentForm());
 
         // demo of the shopping cart
         $cart = app()->createCart();
