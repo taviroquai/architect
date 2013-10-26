@@ -19,6 +19,11 @@
         </a>
         <?php } else { ?>
         <a href="#" class="file" data-path="<?=$item?>">
+            <?php if (getimagesize($item)) { ?>
+            <i class="icon icon-picture"></i>
+            <?php } else { ?>
+            <i class="icon icon-file"></i>
+            <?php } ?>
             <?=basename($item)?>
         </a>
         <?php } ?>
