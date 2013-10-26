@@ -947,7 +947,8 @@ class App implements Messenger
      * Returns a new input validator
      * @return \Arch\Validator
      */
-    public function createValidator() {
+    public function createValidator()
+    {
         return new \Arch\Validator($this);
     }
     
@@ -956,7 +957,8 @@ class App implements Messenger
      * @param string $tmpl The template file path
      * @return \Arch\View\CommentForm
      */
-    public function createCommentForm($tmpl = null) {
+    public function createCommentForm($tmpl = null)
+    {
         return new \Arch\View\CommentForm($tmpl);
     }
     
@@ -965,8 +967,19 @@ class App implements Messenger
      * @param string $tmpl The template for the map
      * @return \Arch\View\Map
      */
-    public function createMap($tmpl = null, \Arch\Model\Map $model = null) {
+    public function createMap($tmpl = null, \Arch\Model\Map $model = null)
+    {
         return new \Arch\View\Map($tmpl, $model);
+    }
+    
+    /**
+     * Returns a new Line Chart view
+     * @param type $tmpl The chart template file path
+     * @return \Arch\View\LineChart
+     */
+    public function createLineChart($tmpl = null)
+    {
+        return new \Arch\View\LineChart($tmpl);
     }
     
     /**

@@ -54,6 +54,17 @@ class ViewMain extends \Arch\View
         $marker = $map->model->createMarker(0, 0, 'Hello Architect!', true);
         $map->model->addMarker($marker);
         $this->addContent($map);
+        
+        //demo of chart line
+        $chart = app()->createLineChart();
+        $data = array(
+            array("x" => "2011 W27", "y" => 100),
+            array("x" => "2011 W28", "y" => 500)
+        );
+        $chart->set('data', $data)
+                ->set('ykeys', array('y'))
+                ->set('labels', array('Sells'));
+        $this->addContent($chart);
 
         // demo of the shopping cart
         $cart = app()->createCart();
