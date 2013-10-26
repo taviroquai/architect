@@ -28,10 +28,8 @@ $carousel = app()->createCarousel();
 $carousel->addItem('&lt;img src="'.BASE_URL.'theme/demo/img/carousel1.jpg" /&gt;', 1);
 c($carousel);
 </pre>
-<h4>JS</h4>
-<pre>
-$('.carousel').carousel();
-</pre>
+<h4>Default Template</h4>
+<pre>theme/default/carousel.php</pre>
 <script type="text/javascript">
     jQuery(function($) {
         $('.carousel').carousel();

@@ -8,10 +8,8 @@ $marker = $map->model->createMarker(0, 0, 'Hello Architect!', true);
 $map->model->addMarker($marker);
 c($map);
 </pre>
-<h4>JS</h4>
-<pre>
-var map1 = new Map('map1', <?=$lon?>, <?=$lat?>, <?=$zoom?>);
-</pre>
+<h4>Default Template</h4>
+<pre>theme/default/map.php</pre>
 <script type="text/javascript">
     jQuery(function($) {
         var style = {

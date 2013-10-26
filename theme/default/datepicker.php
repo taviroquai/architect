@@ -13,10 +13,8 @@
 $datepicker = app()->createDatepicker();
 $this->addContent($datepicker);
 </pre>
-<h4>JS</h4>
-<pre>
-$('#calendar1').datetimepicker();
-</pre>
+<h4>Default Template</h4>
+<pre>theme/default/datepicker.php</pre>
 <script type="text/javascript">
 	$(function() {
   		$('#calendar1').datetimepicker({

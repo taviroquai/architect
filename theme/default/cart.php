@@ -111,6 +111,8 @@ $item = (object) array('name' => 'Product1', 'price' => 30, 'tax' => 0.21);
 $cart->model->insertItem($item, 1, 2);
 c($cart);
 </pre>
+<h4>Default Template</h4>
+<pre>theme/default/cart.php</pre>
 <script type="text/javascript">
     $('#cart select').on('change', function() {
         $('#cart form').submit();

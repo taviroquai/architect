@@ -26,3 +26,5 @@ if ($file = f(0)) {
 }
 $this->addContent(app()->createFileupload());
 </pre>
+<h4>Default Template</h4>
+<pre>theme/default/fileupload.php</pre>

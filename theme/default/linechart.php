@@ -11,6 +11,8 @@ $data = array(
 $chart->set('data', $data)->set('ykeys', array('y'))->set('labels', array('Sells'));
 c($chart);
 </pre>
+<h4>Default Template</h4>
+<pre>theme/default/linechart.php</pre>
 <script type="text/javascript">
     jQuery(function($) {
         var data = <?=json_encode($data)?>;

@@ -28,3 +28,5 @@
 $pagination = app()->createPagination();
 c($pagination);
 </pre>
+<h4>Default Template</h4>
+<pre>theme/default/pagination.php</pre>

@@ -80,10 +80,8 @@
 $editor = app()->createTexteditor();
 c($editor);
 </pre>
-<h4>JS</h4>
-<pre>
-$('#editor1').wysiwyg();
-</pre>
+<h4>Default Template</h4>
+<pre>theme/default/wysiwyg.php</pre>
 <script type="text/javascript">
     jQuery(function($) {
         $('#editor1').wysiwyg();

@@ -6,3 +6,5 @@ if (g('dl')) {
     app()->download(BASE_PATH.'/theme/default/img/'.g('dl'));
 }
 </pre>
+<h4>Default Template</h4>
+<pre>theme/default/download.php</pre>

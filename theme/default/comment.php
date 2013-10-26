@@ -16,3 +16,5 @@
 $form = app()->createCommentForm();
 c($form);
 </pre>
+<h4>Default Template</h4>
+<pre>theme/default/comment.php</pre>

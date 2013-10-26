@@ -23,3 +23,5 @@ $breadcrumbs->addItem('Home');
 $breadcrumbs->addItem('Demo', '#', 1);
 c($breadcrumbs);
 </pre>
+<h4>Default Template</h4>
+<pre>theme/default/breadcrumbs.php</pre>
