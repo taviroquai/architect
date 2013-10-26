@@ -87,6 +87,12 @@ class ViewMain extends \Arch\View
         );
         $treeview->set('tree', $root);
         $this->addContent($treeview);
+        
+        // demo of the file explorer
+        $explorer = app()->createFileExplorer();
+        $explorer->set('base', BASE_PATH.'/theme');
+        $explorer->set('url', '/demo');
+        $this->addContent($explorer);
 
         // demo of the shopping cart
         $cart = app()->createCart();

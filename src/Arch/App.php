@@ -993,6 +993,16 @@ class App implements Messenger
     }
     
     /**
+     * Returns a new File Explorer view
+     * @param string $tmpl The template for explorer
+     * @return \Arch\View\FileExplorer
+     */
+    public function createFileExplorer($tmpl = null)
+    {
+        return new \Arch\View\FileExplorer($tmpl);
+    }
+    
+    /**
      * Query a database table
      * @param string $tableName
      * @param \PDO $db
