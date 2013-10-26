@@ -16,7 +16,7 @@ class LineChart extends \Arch\View
 		parent::__construct($tmpl);
         
         c(BASE_URL.'theme/default/morris/morris.css', 'css');
-        c(BASE_URL.'theme/default/morris/rafael-min.js', 'js');
+        c(BASE_URL.'theme/default/morris/raphael-min.js', 'js');
         c(BASE_URL.'theme/default/morris/morris.js', 'js');
 	}
     
