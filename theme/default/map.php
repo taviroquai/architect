@@ -1,6 +1,6 @@
 <h3>Map Demo</h3>
 <div id="map1" style="width: 100%; height: 300px"></div>
-<em>Powered by LeafletJS and Google API</em>
+<em>Powered by LeafletJS, Google API and Map Icons Collection</em>
 <h4>PHP</h4>
 <pre>
 $map = app()->createMap()->set('lon', 0)->set('lat', 0)->set('zoom', 2);
