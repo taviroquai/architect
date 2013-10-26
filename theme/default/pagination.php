@@ -22,6 +22,7 @@
         </li>
   </ul>
 </div>
+<em>Powered by Bootstrap Pagination</em>
 <h4>PHP</h4>
 <pre>
 $pagination = app()->createPagination();

@@ -6,6 +6,8 @@
         </i>
     </span>
 </div>
+<div class="clearfix"></div>
+<em>Powered by Bootstrap Datetimepicker</em>
 <h4>PHP</h4>
 <pre>
 $datepicker = app()->createDatepicker();

@@ -1,5 +1,6 @@
 <h3>Line Chart Demo</h3>
 <div id="chart1" style="width: 100%; height: 300px"></div>
+<em>Powered by Morris and Rafael</em>
 <h4>PHP</h4>
 <pre>
 $chart = app()->createLineChart();

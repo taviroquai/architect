@@ -17,6 +17,8 @@
     </div>
     <button type="submit" class="btn">Send</button>
 </form>
+<div class="clearfix"></div>
+<em>Powered by Bootstrap Fileupload</em>
 <h4>PHP</h4>
 <pre>
 if ($file = f(0)) {

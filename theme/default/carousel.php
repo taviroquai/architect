@@ -20,6 +20,7 @@
     <a class="carousel-control right" 
        href="#myCarousel" data-slide="next">&rsaquo;</a>
 </div>
+<em>Powered by Bootstrap Carousel</em>
 <h4>PHP</h4>
 <pre>
 c(BASE_URL.'theme/demo/carousel/style.css', 'css');

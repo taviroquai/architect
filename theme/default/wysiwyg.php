@@ -74,6 +74,7 @@
   <input type="text" data-edit="inserttext" id="voiceBtn" x-webkit-speech="">
 </div>
 <div id="editor1" style="overflow:scroll; height:250px;"></div>
+<em>Powered by Bootstrap WYSIWYG</em>
 <h4>PHP</h4>
 <pre>
 $editor = app()->createTexteditor();
