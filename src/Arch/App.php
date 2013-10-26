@@ -961,6 +961,15 @@ class App implements Messenger
     }
     
     /**
+     * Returns a new map view
+     * @param string $tmpl The template for the map
+     * @return \Arch\View\Map
+     */
+    public function createMap($tmpl = null, \Arch\Model\Map $model = null) {
+        return new \Arch\View\Map($tmpl, $model);
+    }
+    
+    /**
      * Query a database table
      * @param string $tableName
      * @param \PDO $db

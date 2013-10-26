@@ -47,6 +47,13 @@ class ViewMain extends \Arch\View
         
         // demo of a comment form
         $this->addContent(app()->createCommentForm());
+        
+        // demo of a map
+        $map = app()->createMap()
+            ->set('lon', 0)->set('lat', 0)->set('zoom', 2);
+        $marker = $map->model->createMarker(0, 0, 'Hello Architect!', true);
+        $map->model->addMarker($marker);
+        $this->addContent($map);
 
         // demo of the shopping cart
         $cart = app()->createCart();
