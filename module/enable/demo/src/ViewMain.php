@@ -65,6 +65,28 @@ class ViewMain extends \Arch\View
                 ->set('ykeys', array('y'))
                 ->set('labels', array('Sells'));
         $this->addContent($chart);
+        
+        // demo of a tree view
+        $treeview = app()->createTreeView();
+        $root = array(
+            'label' => 'root',
+            'nodes' => array(
+                array(
+                    'label' => 'level 1',
+                    'nodes' => array(
+                        array(
+                            'label' => 'level 1.1',
+                            'nodes' => array(
+                                array('label' => 'level 1.1.1')
+                            )
+                        ),
+                        array('label' => 'level 1.2')
+                    )
+                )
+            )
+        );
+        $treeview->set('tree', $root);
+        $this->addContent($treeview);
 
         // demo of the shopping cart
         $cart = app()->createCart();

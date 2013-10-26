@@ -974,12 +974,22 @@ class App implements Messenger
     
     /**
      * Returns a new Line Chart view
-     * @param type $tmpl The chart template file path
+     * @param string $tmpl The chart template file path
      * @return \Arch\View\LineChart
      */
     public function createLineChart($tmpl = null)
     {
         return new \Arch\View\LineChart($tmpl);
+    }
+    
+    /**
+     * Returns a new Tree view
+     * @param string $tmpl The template for the tree
+     * @return \Arch\View\TreeView
+     */
+    public function createTreeView($tmpl = null)
+    {
+        return new \Arch\View\TreeView($tmpl);
     }
     
     /**
