@@ -49,6 +49,9 @@ below.
 * Built-in breadcrumbs
 * Built-in carousel
 * Built-in input validation
+* Built-in line chart
+* Built-in tree view
+* Built-in file explorer (list and gallery templates)
 * More to come...
 
 This is an on-going work and there is not yet a stable version
@@ -251,6 +254,16 @@ download by sending attachment HTTP headers
     $v = app()->createValidator();
     $v->addRule($v->createRule('email')->setAction('isEmail'));
 
+### LINE CHART
+    app()->createLineChart();
+
+### TREE VIEW
+    app()->createTreeView();
+
+### FILE EXPLORER
+    app()->createFileExplorer();
+    $tmpl = BASE_PATH.'/theme/default/filegallery.php';
+    app()->createFileExplorer($tmpl);
 
 ROAD MAP (TODO)
 ===============
