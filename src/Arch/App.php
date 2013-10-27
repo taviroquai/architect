@@ -1003,6 +1003,16 @@ class App implements Messenger
     }
     
     /**
+     * Returns a new poll view
+     * @param string $tmpl The template for the poll
+     * @return \Arch\View\Poll
+     */
+    public function createPoll($tmpl = null)
+    {
+        return new \Arch\View\Poll($tmpl);
+    }
+
+        /**
      * Query a database table
      * @param string $tableName
      * @param \PDO $db
