@@ -52,6 +52,8 @@ below.
 * Built-in line chart
 * Built-in tree view
 * Built-in file explorer (list and gallery templates)
+* Built-in forum
+* Built-in leaflet map
 * More to come...
 
 This is an on-going work and there is not yet a stable version
@@ -264,6 +266,12 @@ download by sending attachment HTTP headers
     app()->createFileExplorer();
     $tmpl = BASE_PATH.'/theme/default/filegallery.php';
     app()->createFileExplorer($tmpl);
+
+### MAP
+    app()->createMap();
+
+### FORUM
+    app()->createForum();
 
 ROAD MAP (TODO)
 ===============
