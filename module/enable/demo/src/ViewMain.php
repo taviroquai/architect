@@ -98,7 +98,34 @@ class ViewMain extends \Arch\View
         $poll->setVotes("Candidate 5", 551);
         $poll->set('labels', array('Votes'));
         $this->addContent($poll);
-
+        
+        // demo of the forum
+        $forum = app()->createForum();
+        $forum_model = new \Arch\Demo\ModelForum();
+        if (p('topic')) {
+            $forum_model->addTopic(p());
+        }
+        if (p('post')) {
+            $forum_model->addPost(p());
+        }
+        $forum->set('url', '/demo');
+        $forum->set('categories', $forum_model->getCategories());
+        $this->addContent($forum);
+        
+        $forumitem = $forum->createItem();
+        $id_forum = 1;
+        $forumitem->set('forum', $forum_model->getForum($id_forum));
+        $forumitem->set('url', '/demo');
+        $forumitem->set('topics', $forum_model->getTopics($id_forum));
+        $this->addContent($forumitem);
+        
+        $topic = $forum->createTopic();
+        $id_topic = 1;
+        $topic->set('topic', $forum_model->getTopic($id_topic));
+        $topic->set('url', '/demo');
+        $topic->set('posts', $forum_model->getPosts($id_topic));
+        $this->addContent($topic);
+        
         // demo of the shopping cart
         $cart = app()->createCart();
         // if you use other item attributes please extend Model_Cart, View_Cart, 

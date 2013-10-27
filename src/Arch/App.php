@@ -1011,8 +1011,36 @@ class App implements Messenger
     {
         return new \Arch\View\Poll($tmpl);
     }
+    
+    /**
+     * Returns a new forum view
+     * @param string $tmpl The template for the forum
+     * @return \Arch\View\Forum
+     */
+    public function createForum($tmpl = null)
+    {
+        return new \Arch\View\Forum($tmpl);
+    }
+    
+    /**
+     * Returns a safe url string
+     * @param string $text
+     * @return string
+     */
+    public function createSlug($text)
+    { 
+        $slug = preg_replace('~[^\\pL\d]+~u', '-', $text);
+        $slug = trim($slug, '-');
+        $slug = iconv('utf-8', 'us-ascii//TRANSLIT', $slug);
+        $slug = strtolower($slug);
+        $slug = preg_replace('~[^-\w]+~', '', $slug);
+        if (empty($slug)) {
+            $slug = md5($text);
+        }
+        return $slug;
+    }
 
-        /**
+    /**
      * Query a database table
      * @param string $tableName
      * @param \PDO $db

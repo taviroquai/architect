@@ -112,6 +112,16 @@ class Table
     }
     
     /**
+     * Set group by fields
+     * @param string $groupby The list of fields to group
+     * @return \Arch\Table This object
+     */
+    public function g($groupby)
+    {
+        return $this->groupby($groupby);
+    }
+
+        /**
      * Execute alias
      * @param string $sql The sql to execute (optional), build if empty
      * @param array $params The SQL params
@@ -229,6 +239,17 @@ class Table
     {
         $this->node->limit = $limit;
         $this->node->offset = $offset;
+        return $this;
+    }
+    
+    /**
+     * Set group by fields
+     * @param string $groupby The list of fields to group
+     * @return \Arch\Table This object
+     */
+    public function groupby($groupby)
+    {
+        $this->node->groupby = $groupby;
         return $this;
     }
     
@@ -478,6 +499,9 @@ class Table
         }
         if (!empty($node->condition)) {
             $sql .= ' WHERE '.$node->condition;
+        }
+        if (!empty($node->groupby)) {
+            $sql .= ' GROUP BY '.$node->groupby;
         }
         if (!empty($node->limit)) {
             $sql .= ' LIMIT '.$node->limit.', '.$node->offset;
