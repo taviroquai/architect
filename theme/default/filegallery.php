@@ -19,6 +19,7 @@
         <a href="<?=u($url, array($param => $folder))?>" 
            class="directory" title="<?=basename($item)?>">
             <i class="icon-4x icon-folder-open"></i>
+            <br /><span><?=basename($item)?></span>
         </a>
         <?php } else { ?>
         <a href="#" class="file" title="<?=basename($item)?>"
@@ -27,15 +28,27 @@
             <img src="<?=u('/demo', array('img' => $item))?>" />
             <?php } else { ?>
             <i class="icon-4x icon-file"></i>
+            <br /><span><?=basename($item)?></span>
             <?php } ?>
         </a>
         <?php } ?>
         </div>
-        <span><?=basename($item)?></span>
     </div>
     <?php } ?>
 </div>
 <div class="clearfix"></div>
+<h4>PHP</h4>
+<pre>
+$tmpl = BASE_PATH.'/theme/default/filegallery.php';
+$explorer = app()->createFileExplorer($tmpl);
+$explorer->set('base', BASE_PATH.'/theme/demo/img');
+$explorer->set('url', '/demo');
+c($explorer);
+</pre>
+<h4>Default Template</h4>
+<pre>
+theme/default/filegallery.php
+</pre>
 <script type="text/javascript">
 jQuery(function($) {
     $('.file').click(function(e) {

@@ -68,23 +68,10 @@ class ViewMain extends \Arch\View
         
         // demo of a tree view
         $treeview = app()->createTreeView();
-        $root = array(
-            'label' => 'root',
-            'nodes' => array(
-                array(
-                    'label' => 'level 1',
-                    'nodes' => array(
-                        array(
-                            'label' => 'level 1.1',
-                            'nodes' => array(
-                                array('label' => 'level 1.1.1')
-                            )
-                        ),
-                        array('label' => 'level 1.2')
-                    )
-                )
-            )
-        );
+        $root = array('label' => 'root', 'nodes' => array());
+        $root['nodes'][] = array('label' => 'level 1', 'nodes' => array());
+        $root['nodes'][0][nodes][] = array('label' => 'level 1.1');
+        $root['nodes'][] = array('label' => 'level 2');
         $treeview->set('tree', $root);
         $this->addContent($treeview);
         
@@ -99,7 +86,7 @@ class ViewMain extends \Arch\View
         $explorer = app()->createFileExplorer($tmpl);
         $explorer->set('base', BASE_PATH.'/theme/demo/img');
         $explorer->set('url', '/demo');
-        $explorer->set('param', 'gal');
+        $explorer->set('param', 'gal'); // $_GET['gal'] = $path
         $this->addContent($explorer);
 
         // demo of the shopping cart

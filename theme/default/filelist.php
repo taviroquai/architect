@@ -30,6 +30,17 @@
     </li>
     <?php } ?>
 </ul>
+<h4>PHP</h4>
+<pre>
+$explorer = app()->createFileExplorer();
+$explorer->set('base', BASE_PATH.'/theme');
+$explorer->set('url', '/demo');
+c($explorer);
+</pre>
+<h4>Default Template</h4>
+<pre>
+theme/default/filelist.php
+</pre>
 <script type="text/javascript">
 jQuery(function($) {
     $('.file').click(function(e) {

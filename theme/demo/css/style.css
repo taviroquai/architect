@@ -14,20 +14,11 @@ pre {
 
 .gallery .item {
     width: 102px;
-    height: 100px;
+    height: 102px;
     text-align: center;
     overflow: hidden;
 }
 
 .gallery .thumb {
-    max-width: 102px;
-    max-height: 90px;
-    text-align: center;
     margin: 0 auto;
 }
-/*
-.gallery img {
-    width: 100%;
-    height: 100%;
-}
-*/
