@@ -93,6 +93,14 @@ class ViewMain extends \Arch\View
         $explorer->set('base', BASE_PATH.'/theme');
         $explorer->set('url', '/demo');
         $this->addContent($explorer);
+        
+        // demo of the file gallery
+        $tmpl = BASE_PATH.'/theme/default/filegallery.php';
+        $explorer = app()->createFileExplorer($tmpl);
+        $explorer->set('base', BASE_PATH.'/theme/demo/img');
+        $explorer->set('url', '/demo');
+        $explorer->set('param', 'gal');
+        $this->addContent($explorer);
 
         // demo of the shopping cart
         $cart = app()->createCart();

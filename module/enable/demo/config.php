@@ -21,6 +21,9 @@ r('/demo', function() {
     if (g('dl')) {
         app()->download(BASE_PATH.'/theme/default/img/'.g('dl'));
     }
+    if (g('img')) {
+        app()->download(g('img'), false);
+    }
     // show demo view
     c(new \Arch\Demo\ViewMain());
 });

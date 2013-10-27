@@ -810,7 +810,7 @@ class App implements Messenger
      * 
      * @param string $filename
      */
-    public function download($filename)
+    public function download($filename, $attachment = true)
     {
         if (!file_exists($filename)) {
             $this->log('Download failed. File not found: '.$filename, 'error');
@@ -826,12 +826,12 @@ class App implements Messenger
         
         // set output
         $this->output->setContent(file_get_contents($filename));
-        $this->output->setHeaders(
-            array(
-                'Content-type: '.$type,
-                'Content-disposition: attachment; filename='.$name
-            )
-        );
+        $headers = array();
+        $headers[] = 'Content-type: '.$type;
+        if ($attachment) {
+            $headers[] = 'Content-disposition: attachment; filename='.$name;
+        }
+        $this->output->setHeaders($headers);
     }
     
     /**

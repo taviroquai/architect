@@ -4,7 +4,7 @@
     <li>
         <a class="label" href="<?=u($url, array($param => $parent))?>">
             <i class="icon icon-backward"></i>
-            ..<?=$parent?>
+            .. Back
         </a>
     </li>
     <?php } ?>
