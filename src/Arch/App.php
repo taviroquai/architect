@@ -129,10 +129,13 @@ class App implements Messenger
             die('Please define BASE_PATH constant in you index.php');
         }
         if (!defined('THEME_PATH')) {
-            die('Please set THEME_PATH in configuration (xml) file');
+            define('THEME_PATH', '/theme');
         }
         if (!defined('DEFAULT_THEME')) {
             define('DEFAULT_THEME', 'default');
+        }
+        if (!defined('MODULE_PATH')) {
+            define('MODULE_PATH', '/module');
         }
         if (!defined('LOG_PATH')) {
             define('LOG_PATH', '/log');
