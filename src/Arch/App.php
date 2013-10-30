@@ -864,7 +864,9 @@ class App implements Messenger
     public function createCaptcha()
     {
         $this->session->_captcha = " ";
-        $view = new \Arch\View(BASE_PATH.'/theme/default/captcha.php');
+        $tmpl = implode(DIRECTORY_SEPARATOR,
+                array(ARCH_PATH, 'theme', 'architect', 'captcha.php'));
+        $view = new \Arch\View($tmpl);
         $view->set('code', $this->session->_captcha);
         return $view;
     }
