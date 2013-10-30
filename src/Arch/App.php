@@ -124,8 +124,23 @@ class App implements Messenger
         $config = new Config($filename);
         $config->apply();
         
+        // check path dependencies and setup defaults
+        if (!defined('BASE_PATH')) {
+            die('Please define BASE_PATH constant in you index.php');
+        }
+        if (!defined('THEME_PATH')) {
+            die('Please set THEME_PATH in configuration (xml) file');
+        }
+        if (!defined('DEFAULT_THEME')) {
+            define('DEFAULT_THEME', 'default');
+        }
+        if (!defined('LOG_PATH')) {
+            define('LOG_PATH', '/log');
+        }
+        
         // ready to start logging now
         $logpath = BASE_PATH.LOG_PATH.DIRECTORY_SEPARATOR.'log.txt';
+        
         $this->logger = new \Arch\Logger($logpath);
         $this->log('Loaded configuration from '.$filename, 'access', true);
         
@@ -200,7 +215,11 @@ class App implements Messenger
         if ($this->input->get('idiom')) {
             $this->session->_idiom = $this->input->get('idiom');
         } else {
-            $this->session->_idiom = DEFAULT_IDIOM;
+            if (defined('DEFAULT_IDIOM')) {
+                $this->session->_idiom = DEFAULT_IDIOM;
+            } else {
+                $this->session->_idiom = 'en';
+            }
         }
         $this->idiom = new \Arch\Idiom($this->session->_idiom);
         $filename = 'default.xml';
