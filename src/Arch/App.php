@@ -677,8 +677,6 @@ class App implements Messenger
         }
         if ($this->idiom->loadFile($filename)) {
             $this->log('Idiom file loaded: '.$filename);
-        } else {
-            $this->log('Idiom file load failed: '.$filename, 'error');
         }
         return $this;
     }
