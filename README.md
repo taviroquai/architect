@@ -13,8 +13,7 @@ An online demo can be found in <http://marcoafonso.pt/tests/architect/>
 Install
 -------
 
-1. Copy config/development.dist.xml to config/development.xml and edit
-2. Open in browser <http://localhost/architect>
+Look at demo repository at <https://github.com/taviroquai/architect-demo/>
 
 Main features
 -------------
@@ -57,22 +56,6 @@ below.
 * More to come...
 
 This is an on-going work and there is not yet a stable version
-
-Quick Start
------------
-
-1. Create a new folder in module/enable/hello
-2. Create a new file in module/enable/hello/config.php
-3. Add the following content to config.php
-
-        <?php 
-            app()->addRoute('/hello', function() {
-            $message = 'Hello World!';
-            app()->addContent($message);
-        });
-
-4. Open <http://localhost/architect/index.php/hello>
-
 
 Theme Configuration without programming skills
 ----------------------------------------------
