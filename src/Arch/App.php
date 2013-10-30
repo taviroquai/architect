@@ -124,23 +124,6 @@ class App implements Messenger
         $config = new Config($filename);
         $config->apply();
         
-        // check path dependencies and setup defaults
-        if (!defined('BASE_PATH')) {
-            die('Please define BASE_PATH constant in you index.php');
-        }
-        if (!defined('THEME_PATH')) {
-            define('THEME_PATH', '/theme');
-        }
-        if (!defined('DEFAULT_THEME')) {
-            define('DEFAULT_THEME', 'default');
-        }
-        if (!defined('MODULE_PATH')) {
-            define('MODULE_PATH', '/module');
-        }
-        if (!defined('LOG_PATH')) {
-            define('LOG_PATH', '/log');
-        }
-        
         // ready to start logging now
         $logpath = BASE_PATH.LOG_PATH.DIRECTORY_SEPARATOR.'log.txt';
         

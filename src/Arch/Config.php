@@ -59,5 +59,25 @@ class Config
             }
             define($name, (string) $item);
         }
+        
+        // check path dependencies and setup defaults
+        if (!defined('BASE_PATH')) {
+            die('Please define BASE_PATH constant in you index.php');
+        }
+        if (!defined('THEME_PATH')) {
+            define('THEME_PATH', '/theme');
+        }
+        if (!defined('DEFAULT_THEME')) {
+            define('DEFAULT_THEME', 'default');
+        }
+        if (!defined('DEFAULT_THEME')) {
+            define('DEFAULT_THEME', 'default');
+        }
+        if (!defined('DEFAULT_IDIOM')) {
+            define('DEFAULT_IDIOM', '/idiom');
+        }
+        if (!defined('LOG_PATH')) {
+            define('LOG_PATH', '/log');
+        }
     }
 }
