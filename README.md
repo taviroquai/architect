@@ -38,7 +38,6 @@ below.
 * Core application logging
 * Generate consistent URLs
 * Centralized encryption
-* Built-in sending email
 * Built-in shopping cart
 * Built-in anti-span field
 * Built-in GET/POST cURL requests
@@ -152,11 +151,6 @@ t() - **T**ranslate. Returns the translation given by key
 e() - **E**vent. Adds a new event  
 tr() - **TR**igger. Triggers the event
 
-### CONSTANTS
-
-    BASE_PATH // constant base path
-    BASE_URL  // constant base url
-
 ### APP
     app() // return the application singleton
 
@@ -185,9 +179,6 @@ tr() - **TR**igger. Triggers the event
     q('user')->u(array('username' => 'guest'))->w('id = ?', array(1))->run(); // update
     q('user')->d('id = ?', array(1))->run(); // delete from user where id = 1
     q('user')->s('group.*')->j('usergroup', 'usergroup.id_group = group.id')->run(); // join
-
-### MAIL
-    app()->mail('test@isp.com', 'subject', $view);
 
 ### IDIOM
     app()->loadIdiom('filename', 'optional module name'); // loads idiom strings
