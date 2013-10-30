@@ -604,50 +604,6 @@ class App implements Messenger
     }
 
     /**
-     * Sends an email
-     * 
-     * Don't worry to configure an email request, but use this method.
-     * This uses the phpmailer library.
-     * 
-     * Example:
-     * $result = \Arch\App::Instance()->mail(
-     *      'admin@isp.com', 
-     *      'Hello', 
-     *      new View('/path/to/template.php', array('greet' => 'Hi'))
-     * );
-     * 
-     * @param string $to
-     * @param string $subject
-     * @param View $view
-     * @return boolean
-     */
-    public function mail($to, $subject, $view)
-    {
-        require_once 'vendor/phpmailer/class.phpmailer.php';
-        
-        try {
-            $mail = new \PHPMailer(true); // defaults to using php "mail()"
-            $mail->CharSet = 'UTF-8';
-            $mail->SetFrom(MAIL_FROM, MAIL_FROMNAME);
-            $mail->AddReplyTo(MAIL_REPLY, MAIL_REPLYNAME);
-            $mail->AddAddress($to);
-            $mail->Subject = $subject;
-            $mail->AltBody = "Please use an HTML email viewer!";
-            $mail->MsgHTML((string) $view);
-            $result = $mail->Send();
-            $this->log("Sending mail to $to has succeed");
-        }
-        catch (phpmailerException $e) {
-            $this->log(
-                "Sending mail to $to failed: ".$e->errorMessage(), 
-                'error'
-            );
-            $result = false;
-        }
-        return $result;
-    }
-
-    /**
      * Loads an idiom file
      * 
      * Idiom files are plain xml (no programming skills needed)
