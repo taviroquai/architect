@@ -62,7 +62,10 @@ class Config
         
         // check path dependencies and setup defaults
         if (!defined('BASE_PATH')) {
-            die('Please define BASE_PATH constant in you index.php');
+            die('Please define BASE_PATH constant in your index.php');
+        }
+        if (!defined('ARCH_PATH')) {
+            die('Please define ARCH_PATH constant in your index.php');
         }
         if (!defined('THEME_PATH')) {
             define('THEME_PATH', '/theme');
