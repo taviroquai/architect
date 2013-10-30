@@ -140,14 +140,7 @@ class App implements Messenger
         $this->output = new Output($this->theme);
         
         // set default routes
-        $this->router = new Router();
-        $this->router->addRoute('/404', function()  {
-            \Arch\App::Instance()->output->setHeaders(
-                array('HTTP/1.0 400 Not Found', 'Status: 404 Not Found')
-                );
-            \Arch\App::Instance()
-                    ->addContent('<h1>There is no content for this route</h1>');
-        });
+        $this->router = new Router($this);
     }
     
     public function run()
@@ -160,7 +153,7 @@ class App implements Messenger
         // load enabled modules
         $this->loadModules();
         // load theme class and configuration
-        $this->loadTheme(THEME);
+        $this->loadTheme(DEFAULT_THEME);
         // execute action
         $this->execute();
         // send output
@@ -172,6 +165,7 @@ class App implements Messenger
     private function execute()
     {
         $action = $this->router->getRoute($this->action);
+        
         if ($action === false && $this->action != '/404') {
             $this->redirect($this->url('/404'));
         }
@@ -206,7 +200,7 @@ class App implements Messenger
         if ($this->input->get('idiom')) {
             $this->session->_idiom = $this->input->get('idiom');
         } else {
-            $this->session->_idiom = IDIOM;
+            $this->session->_idiom = DEFAULT_IDIOM;
         }
         $this->idiom = new \Arch\Idiom($this->session->_idiom);
         $filename = 'default.xml';
@@ -215,17 +209,22 @@ class App implements Messenger
     
     private function loadModules()
     {
-        $mods = glob(BASE_PATH.'/module/enable/*');
+        if (!is_dir(BASE_PATH.MODULE_PATH)) die('Module path not found!');
+        $mods = glob(BASE_PATH.MODULE_PATH.
+                DIRECTORY_SEPARATOR.'enable'.
+                DIRECTORY_SEPARATOR.'*');
         foreach($mods as $name) {
             if (is_dir($name)) {
-                if (is_dir($name.'/src')) {
-                    $includes = glob($name.'/src/*.php');
+                if (is_dir($name.DIRECTORY_SEPARATOR.'src')) {
+                    $mods_src = $name.DIRECTORY_SEPARATOR.'src'.
+                            DIRECTORY_SEPARATOR.'*.php';
+                    $includes = glob($mods_src);
                     foreach($includes as $inc) require_once $inc;
                 }
-                $filename = $name.'/config.php';
+                $filename = $name.DIRECTORY_SEPARATOR.'config.php';
                 if (file_exists($filename)) {
                     require_once $filename;
-                    \Arch\App::Instance()->log('Module loaded: '.$name);
+                    $this->log('Module loaded: '.$name);
                 }
             }
         }
@@ -299,14 +298,15 @@ class App implements Messenger
      */
     public function loadTheme($name)
     {
-        $theme_path = BASE_PATH.'/theme/'.$name;
+        $theme_path = BASE_PATH.THEME_PATH.DIRECTORY_SEPARATOR.$name;
+        if (!is_dir($theme_path)) die('Default theme not found: '.$theme_path);
 
-        $filename = $theme_path.'/config.php';
+        $filename = $theme_path.DIRECTORY_SEPARATOR.'config.php';
         if (file_exists($filename)) {
             require_once $filename;
         }
         
-        $filename = $theme_path.'/slots.xml';
+        $filename = $theme_path.DIRECTORY_SEPARATOR.'slots.xml';
         if (file_exists($filename)) {
             $xml = @simplexml_load_file($filename);
             foreach ($xml->slot as $slot) {
@@ -569,7 +569,7 @@ class App implements Messenger
      */
     public function url($path = '', $params = array())
     {
-        $base = INDEX_FILE == '' ? rtrim(BASE_URL, '/') : BASE_URL;
+        $base = INDEX_FILE == '' ? rtrim(BASE_URL, '/') : BASE_URL.'/';
         $uri = empty($path) ? '' : $path;
         $query = empty($params) ? '' : '?';
         $query .= http_build_query($params);
@@ -660,10 +660,15 @@ class App implements Messenger
     {
         $idiom = $this->session->_idiom;
         if ($module == 'app') {
-            $filename = BASE_PATH.'/idiom/'.$idiom.'/'.$filename;
+            $filename = BASE_PATH.DIRECTORY_SEPARATOR.
+                    'idiom'.DIRECTORY_SEPARATOR.$idiom.
+                    DIRECTORY_SEPARATOR.$filename;
         } else {
-            $filename = BASE_PATH.'/module/'.$module.'/idiom/'.
-                    $idiom.'/'.$filename;
+            $filename = BASE_PATH.DIRECTORY_SEPARATOR.
+                    'module'.DIRECTORY_SEPARATOR.$module.
+                    DIRECTORY_SEPARATOR.'idiom'.
+                    DIRECTORY_SEPARATOR.$idiom.
+                    DIRECTORY_SEPARATOR.$filename;
         }
         if ($this->idiom->loadFile($filename)) {
             $this->log('Idiom file loaded: '.$filename);
@@ -883,8 +888,9 @@ class App implements Messenger
      */
     public function createCart($tmpl = null, Model_Cart $model = null)
     {
-        if ($tmpl == null) $tmpl = BASE_PATH.'/theme/default/cart.php';
-        if ($model === null) $model = new \Arch\Model\Cart ($this->session);
+        if ($model === null) {
+            $model = new \Arch\Model\Cart ($this->session);
+        }
         return new \Arch\View\Cart($tmpl, $model);
     }
     

@@ -11,12 +11,14 @@ class Carousel extends \Arch\View
 	public function __construct($tmpl = null)
     {
         if ($tmpl === null) {
-            $tmpl = BASE_PATH.'/theme/default/carousel.php';
+            $tmpl = implode(DIRECTORY_SEPARATOR,
+                    array(ARCH_PATH,'theme','architect','carousel.php'));
         }
 		parent::__construct($tmpl);
         
-        \Arch\App::Instance()->addContent(
-            BASE_URL.'theme/default/carousel/bootstrap-carousel.js',
+        $app = \Arch\App::Instance();
+        $app->addContent(
+            $app->url('/arch/asset/js/bootstrap-carousel.js'),
             'js'
         );
         

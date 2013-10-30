@@ -130,7 +130,7 @@ class Input
             $this->action = '/';
             if ($this->api != 'cli') {
                 $uri = str_replace(
-                    array(BASE_URL,INDEX_FILE), 
+                    array(BASE_URL.'/',INDEX_FILE), 
                     '', 
                     $this->httpServer['REQUEST_URI']
                 );

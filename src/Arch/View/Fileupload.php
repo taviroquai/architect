@@ -11,17 +11,19 @@ class Fileupload extends \Arch\View
 	public function __construct($tmpl = null)
     {
         if ($tmpl === null) {
-            $tmpl = BASE_PATH.'/theme/default/fileupload.php';
+            $tmpl = implode(DIRECTORY_SEPARATOR,
+                    array(ARCH_PATH,'theme','architect','fileupload.php'));
         }
 		parent::__construct($tmpl);
         
         // add view resources
-        \Arch\App::Instance()->addContent(
-            BASE_URL.'theme/default/fileupload/bootstrap-fileupload.min.css',
+        $app = \Arch\App::Instance();
+        $app->addContent(
+            $app->url('/arch/asset/css/bootstrap-fileupload.min.css'),
             'css'
         );
-        \Arch\App::Instance()->addContent(
-            BASE_URL.'theme/default/fileupload/bootstrap-fileupload.min.js',
+        $app->addContent(
+            $app->url('/arch/asset/js/bootstrap-fileupload.min.js'),
             'js'
         );
         

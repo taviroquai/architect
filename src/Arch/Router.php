@@ -9,9 +9,27 @@ class Router
 {
     protected $route = array();
     
-    public function __construct()
+    public function __construct(\Arch\App $app)
     {
+        // Add route 404! Show something if everything else fails...
+        $this->addRoute('/404', function() use ($app) {
+            $app->output->setHeaders(
+                array('HTTP/1.0 400 Not Found', 'Status: 404 Not Found')
+                );
+            $app->addContent('<h1>There is no content for this route</h1>');
+        });
         
+        $this->addRoute('/arch/asset/(:any)/(:any)', 
+                function($dir, $filename) use ($app) {
+            $filename = ARCH_PATH.DIRECTORY_SEPARATOR.
+                    'theme'.DIRECTORY_SEPARATOR.
+                    'architect'.DIRECTORY_SEPARATOR.
+                     $dir.DIRECTORY_SEPARATOR.$filename;
+            if (!file_exists($filename)) $app->redirect ('/404');
+            else {
+                $app->output->readfile($filename);
+            }
+        });
     }
     
     /**

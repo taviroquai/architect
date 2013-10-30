@@ -11,7 +11,8 @@ class ForumItem extends \Arch\View
 	public function __construct($tmpl = null)
     {
         if ($tmpl === null) {
-            $tmpl = BASE_PATH.'/theme/default/forumitem.php';
+            $tmpl = implode(DIRECTORY_SEPARATOR,
+                    array(ARCH_PATH,'theme','architect','forumitem.php'));
         }
 		parent::__construct($tmpl);
         

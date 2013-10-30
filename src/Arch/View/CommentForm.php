@@ -10,7 +10,8 @@ class CommentForm extends \Arch\View
 	public function __construct($tmpl = null)
     {
         if ($tmpl === null) {
-            $tmpl = BASE_PATH.'/theme/default/comment.php';
+            $tmpl = implode(DIRECTORY_SEPARATOR,
+                    array(ARCH_PATH,'theme','architect','comment.php'));
         }
 		parent::__construct($tmpl);
 	}

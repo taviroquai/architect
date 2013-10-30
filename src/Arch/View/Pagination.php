@@ -18,7 +18,8 @@ class Pagination extends \Arch\View
 	public function __construct($id = 1, $tmpl = null)
     {
         if ($tmpl === null) {
-            $tmpl = BASE_PATH.'/theme/default/pagination.php';
+            $tmpl = implode(DIRECTORY_SEPARATOR,
+                    array(ARCH_PATH,'theme','architect','pagination.php'));
         }
 		parent::__construct($tmpl);
         
@@ -33,10 +34,10 @@ class Pagination extends \Arch\View
             $this->url = str_replace(
                 '&p'.$this->id.'='.$pid, 
                 '', 
-                $_SERVER['REQUEST_URI']
+                \Arch\App::Instance()->input->server('REQUEST_URI')
             );
         } else {
-            $this->url = $_SERVER['REQUEST_URI'];
+            $this->url = \Arch\App::Instance()->input->server('REQUEST_URI');
         }
         
 	}

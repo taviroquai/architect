@@ -16,7 +16,8 @@ class Map extends \Arch\View
 	public function __construct($tmpl = null, \Arch\Model\Map $model = null)
     {
         if ($tmpl === null) {
-            $tmpl = BASE_PATH.'/theme/default/map.php';
+            $tmpl = implode(DIRECTORY_SEPARATOR,
+                    array(ARCH_PATH,'theme','architect','map.php'));
         }
 		parent::__construct($tmpl);
         
@@ -25,11 +26,15 @@ class Map extends \Arch\View
         }
         $this->model = $model;
         
-        c(BASE_URL.'theme/default/leaflet/leaflet.css', 'css');
-        c('http://maps.google.com/maps/api/js?v=3.2&sensor=false', 'js');
-        c(BASE_URL.'theme/default/leaflet/leaflet.js', 'js');
-        c(BASE_URL.'theme/default/leaflet/Google.js', 'js');
-        c(BASE_URL.'theme/default/map/map.js', 'js');
+        $app = \Arch\App::Instance();
+        $app->addContent($app->url('/arch/asset/css/leaflet.css'), 'css');
+        $app->addContent(
+                'http://maps.google.com/maps/api/js?v=3.2&sensor=false',
+                'js'
+        );
+        $app->addContent($app->url('/arch/asset/js/leaflet.js'), 'js');
+        $app->addContent($app->url('/arch/asset/js/leaflet.Google.js'), 'js');
+        $app->addContent($app->url('/arch/asset/js/map.js'), 'js');
 	}
     
 }

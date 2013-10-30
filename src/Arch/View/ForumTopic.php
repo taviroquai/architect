@@ -11,7 +11,8 @@ class ForumTopic extends \Arch\View
 	public function __construct($tmpl = null)
     {
         if ($tmpl === null) {
-            $tmpl = BASE_PATH.'/theme/default/forumtopic.php';
+            $tmpl = implode(DIRECTORY_SEPARATOR,
+                    array(ARCH_PATH,'theme','architect','forumtopic.php'));
         }
 		parent::__construct($tmpl);
         

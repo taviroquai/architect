@@ -11,17 +11,19 @@ class Datepicker extends \Arch\View
 	public function __construct($tmpl = null)
     {
         if ($tmpl === null) {
-            $tmpl = BASE_PATH.'/theme/default/datepicker.php';
+            $tmpl = implode(DIRECTORY_SEPARATOR,
+                    array(ARCH_PATH,'theme','architect','datepicker.php'));
         }
 		parent::__construct($tmpl);
         
         // add view resources
-        \Arch\App::Instance()->addContent(
-            BASE_URL.'theme/default/datepicker/bootstrap-datetimepicker.min.css',
+        $app = \Arch\App::Instance();
+        $app->addContent(
+            $app->url('/arch/asset/css/bootstrap-datetimepicker.min.css'),
             'css'
         );
-        \Arch\App::Instance()->addContent(
-            BASE_URL.'theme/default/datepicker/bootstrap-datetimepicker.min.js',
+        $app->addContent(
+            $app->url('/arch/asset/js/bootstrap-datetimepicker.min.js'),
             'js'
         );
 	}

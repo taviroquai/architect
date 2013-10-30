@@ -11,13 +11,15 @@ class Poll extends \Arch\View
 	public function __construct($tmpl = null)
     {
         if ($tmpl === null) {
-            $tmpl = BASE_PATH.'/theme/default/pollchart.php';
+            $tmpl = implode(DIRECTORY_SEPARATOR,
+                    array(ARCH_PATH,'theme','architect','pollchart.php'));
         }
 		parent::__construct($tmpl);
         
-        c(BASE_URL.'theme/default/morris/morris.css', 'css');
-        c(BASE_URL.'theme/default/morris/raphael-min.js', 'js');
-        c(BASE_URL.'theme/default/morris/morris.js', 'js');
+        $app = \Arch\App::Instance();
+        $app->addContent($app->url('/arch/asset/css/morris.css'), 'css');
+        $app->addContent($app->url('/arch/asset/js/raphael-min.js'), 'js');
+        $app->addContent($app->url('/arch/asset/js/morris.js'), 'js');
         
         // initialize data
         $this->data['data'] = array();
