@@ -14,9 +14,12 @@ class Router
         // Add route 404! Show something if everything else fails...
         $this->addRoute('/404', function() use ($app) {
             $app->output->setHeaders(
-                array('HTTP/1.0 400 Not Found', 'Status: 404 Not Found')
+                array('HTTP/1.0 404 Not Found', 'Status: 404 Not Found')
                 );
-            $app->addContent('<h1>There is no content for this route</h1>');
+            
+            // set 404 content
+            $content = '<h1>404 Not Found</h1>';
+            $app->output->setContent($content);
         });
         
         $this->addRoute('/arch/asset/(:any)/(:any)', 
