@@ -8,7 +8,7 @@ namespace Arch\View;
 class FileExplorer extends \Arch\View
 {
 
-    public function __construct($tmpl = null)
+    public function __construct($path, $tmpl = null)
     {
         if ($tmpl === null) {
             $tmpl = implode(DIRECTORY_SEPARATOR,
@@ -17,7 +17,7 @@ class FileExplorer extends \Arch\View
         parent::__construct($tmpl);
         
         // init items
-        $this->data['base'] = BASE_PATH;
+        $this->data['base'] = $path;
         $this->data['param'] = 'd';
         $this->data['url'] = '/';
     }

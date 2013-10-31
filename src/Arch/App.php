@@ -125,7 +125,7 @@ class App implements Messenger
         $config->apply();
         
         // ready to start logging now
-        $logpath = BASE_PATH.LOG_PATH.DIRECTORY_SEPARATOR.'log.txt';
+        $logpath = LOG_PATH.DIRECTORY_SEPARATOR.'log.txt';
         
         $this->logger = new \Arch\Logger($logpath);
         $this->log('Loaded configuration from '.$filename, 'access', true);
@@ -214,8 +214,8 @@ class App implements Messenger
     
     private function loadModules()
     {
-        if (!is_dir(BASE_PATH.MODULE_PATH)) die('Module path not found!');
-        $mods = glob(BASE_PATH.MODULE_PATH.
+        if (!is_dir(MODULE_PATH)) die('Module path not found!');
+        $mods = glob(MODULE_PATH.
                 DIRECTORY_SEPARATOR.'enable'.
                 DIRECTORY_SEPARATOR.'*');
         foreach($mods as $name) {
@@ -303,7 +303,7 @@ class App implements Messenger
      */
     public function loadTheme($name)
     {
-        $theme_path = BASE_PATH.THEME_PATH.DIRECTORY_SEPARATOR.$name;
+        $theme_path = THEME_PATH.DIRECTORY_SEPARATOR.$name;
         if (!is_dir($theme_path)) die('Default theme not found: '.$theme_path);
 
         $filename = $theme_path.DIRECTORY_SEPARATOR.'config.php';
@@ -621,12 +621,10 @@ class App implements Messenger
     {
         $idiom = $this->session->_idiom;
         if ($module == 'app') {
-            $filename = BASE_PATH.DIRECTORY_SEPARATOR.
-                    'idiom'.DIRECTORY_SEPARATOR.$idiom.
+            $filename = IDIOM_PATH.DIRECTORY_SEPARATOR.$idiom.
                     DIRECTORY_SEPARATOR.$filename;
         } else {
-            $filename = BASE_PATH.DIRECTORY_SEPARATOR.
-                    'module'.DIRECTORY_SEPARATOR.$module.
+            $filename = MODULE_PATH.DIRECTORY_SEPARATOR.$module.
                     DIRECTORY_SEPARATOR.'idiom'.
                     DIRECTORY_SEPARATOR.$idiom.
                     DIRECTORY_SEPARATOR.$filename;
@@ -961,12 +959,13 @@ class App implements Messenger
     
     /**
      * Returns a new File Explorer view
+     * @param string $path The base path to be explored
      * @param string $tmpl The template for explorer
      * @return \Arch\View\FileExplorer
      */
-    public function createFileExplorer($tmpl = null)
+    public function createFileExplorer($path, $tmpl = null)
     {
-        return new \Arch\View\FileExplorer($tmpl);
+        return new \Arch\View\FileExplorer($path, $tmpl);
     }
     
     /**
