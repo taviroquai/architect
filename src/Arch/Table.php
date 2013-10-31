@@ -134,20 +134,78 @@ class Table
     }
     
     /**
-     * Returns a list of data of the given column
+     * Runs the query and returns all records
+     * @param int $type The type of rows (array or class)
      * @return array
      */
-    public function column($column = 0)
+    public function fetchAll($type = \PDO::FETCH_CLASS)
     {
-        $data = array();
         $stm = $this->execute();
         if (!$stm) {
-            return $data;
+            return array();
         }
+        return $stm->fetchAll($type);
+    }
+    
+    /**
+     * Runs the query and returns the first object
+     * @return stdClass
+     */
+    public function fetchObject()
+    {
+        $stm = $this->execute();
+        if (!$stm) {
+            return false;
+        }
+        return $stm->fetchObject();
+    }
+
+        /**
+     * Returns a list of data of the given column
+     * @param int $column The number of the column to be returned
+     * @return array
+     */
+    public function fetchColumn($column = 0)
+    {
+        $stm = $this->execute();
+        if (!$stm) {
+            return array();
+        }
+        $data = array();
         while ($row = $stm->fetchColumn($column)) {
             $data[] = $row;
         }
         return $data;
+    }
+    
+    /**
+     * Runs the query and returns the last insert id
+     * @param string $name The auto-increment field name
+     * @return boolean
+     */
+    public function getInsertId($name = 'id')
+    {
+        $stm = $this->execute();
+        if (!$stm) {
+            return false;
+        }
+        return $this->db->lastInsertId($name);
+    }
+    
+    /**
+     * Runs the query and returns the number of affected rows
+     * @return boolean|integer
+     */
+    public function getRowCount()
+    {
+        /**
+         * @var $stm PDOStatement
+         */
+        $stm = $this->execute();
+        if (!$stm) {
+            return false;
+        }
+        return $stm->rowCount();
     }
     
     /**
@@ -251,15 +309,6 @@ class Table
     {
         $this->node->groupby = $groupby;
         return $this;
-    }
-    
-    /**
-     * Returns the last insert id on this table
-     * @param type $name
-     * @return type
-     */
-    public function id($name = 'id') {
-        return $this->db->lastInsertId($name);
     }
     
     /**
