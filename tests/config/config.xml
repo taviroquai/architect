@@ -10,7 +10,7 @@
     <item name="MODULE_PATH">/module</item>
     <item name="IDIOM_PATH">/idiom</item>
     <item name="LOG_PATH">/log</item>
-    <item name="BASE_URL">/architectphp</item>
+    <item name="BASE_URL">/architectphp/tests</item>
     <!-- empty INDEX_FILE if you use URL rewrite -->
     <item name="INDEX_FILE">index.php</item>
     
