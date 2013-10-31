@@ -1,5 +1,4 @@
-<h3>File Explorer Demo</h3>
-<ul class="nav nav-list">
+<ul id="<?=$_id?>" class="nav nav-list" title="File List">
     <?php if ($path != $base) { ?>
     <li>
         <a class="label" href="<?=u($url, array($param => $parent))?>">
@@ -30,17 +29,6 @@
     </li>
     <?php } ?>
 </ul>
-<h4>PHP</h4>
-<pre>
-$explorer = app()->createFileExplorer();
-$explorer->set('base', BASE_PATH.'/theme');
-$explorer->set('url', '/demo');
-c($explorer);
-</pre>
-<h4>Default Template</h4>
-<pre>
-theme/default/filelist.php
-</pre>
 <script type="text/javascript">
 jQuery(function($) {
     $('.file').click(function(e) {

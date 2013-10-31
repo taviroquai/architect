@@ -1,5 +1,4 @@
-<h3>Forum Item Demo</h3>
-<div id="forum">
+<div id="<?=$_id?>" title="Forum Category">
     <?php if (empty($topics)) { ?>
     <p>There are no topics yet.</p>
     <?php } else { ?>

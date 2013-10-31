@@ -1,5 +1,4 @@
-<h3>Shopping Cart Demo</h3>
-<div id="cart">
+<div id="<?=$_id?>" title="Cart">
     <form action="<?=$checkoutUrl?>" method="post">
         <div class="pull-right">
             <label>Currency</label>
@@ -104,17 +103,8 @@
         <div class="clearfix"></div>
     </form>
 </div>
-<h4>PHP</h4>
-<pre>
-$cart = app()->createCart();
-$item = (object) array('name' => 'Product1', 'price' => 30, 'tax' => 0.21);
-$cart->model->insertItem($item, 1, 2);
-c($cart);
-</pre>
-<h4>Default Template</h4>
-<pre>theme/default/cart.php</pre>
 <script type="text/javascript">
-    $('#cart select').on('change', function() {
-        $('#cart form').submit();
+    $('#<?=$_id?> select').on('change', function() {
+        $('#<?=$_id?> form').submit();
     });
 </script>

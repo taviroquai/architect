@@ -1,5 +1,4 @@
-<h3>Comment Form Demo</h3>
-<div id="send_comment">
+<div id="<?=$_id?>" title="Post Comment">
     <form method="post">
         <label>Name</label>
         <input type="text" name="name" />
@@ -11,10 +10,3 @@
         <button type="sybmit" class="btn">Send</button>
     </form>
 </div>
-<h4>PHP</h4>
-<pre>
-$form = app()->createCommentForm();
-c($form);
-</pre>
-<h4>Default Template</h4>
-<pre>theme/default/comment.php</pre>

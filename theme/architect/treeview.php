@@ -1,5 +1,4 @@
-<h3>Tree View Demo</h3>
-<ul class="nav nav-list">
+<ul id="<?=$_id?>" class="nav nav-list" title="Tree View">
     <?php foreach ($tree['nodes'] as $lvl1) { ?>
     <?php if (!empty($lvl1['nodes'])) { ?>
     <li><label class="tree-toggler nav-header"><?=$lvl1['label']?></label>
@@ -43,20 +42,6 @@
     <?php } ?>
     <li class="divider"></li>
 </ul>
-<h4>PHP</h4>
-<pre>
-$treeview = app()->createTreeView();
-$root = array('label' => 'root', 'nodes' => array());
-$root['nodes'][] = array('label' => 'level 1', 'nodes' => array());
-$root['nodes'][0][nodes][] = array('label' => 'level 1.1');
-$root['nodes'][] = array('label' => 'level 2');
-$treeview->set('tree', $root);
-c($treeview);
-</pre>
-<h4>Default Template</h4>
-<pre>
-theme/default/treeview.php
-</pre>
 <script type="text/javascript">
 jQuery(function ($) {
 	$('label.tree-toggler').click(function () {

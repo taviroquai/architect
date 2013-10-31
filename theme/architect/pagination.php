@@ -1,5 +1,4 @@
-<h3>Pagination Demo</h3>
-<div class="pagination pagination-centered">
+<div id="<?=$_id?>" class="pagination pagination-centered" title="Pagination">
     <ul>
         <?php
         $class = '';
@@ -22,11 +21,3 @@
         </li>
   </ul>
 </div>
-<em>Powered by Bootstrap Pagination</em>
-<h4>PHP</h4>
-<pre>
-$pagination = app()->createPagination();
-c($pagination);
-</pre>
-<h4>Default Template</h4>
-<pre>theme/default/pagination.php</pre>

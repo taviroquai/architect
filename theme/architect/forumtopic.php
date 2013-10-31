@@ -1,5 +1,4 @@
-<h3>Forum Topic Demo</h3>
-<div id="forum">
+<div id="<?=$_id?>" title="Forum Topic">
     <?php if (empty($posts)) { ?>
     <p>There are no posts yet.</p>
     <?php } else { ?>

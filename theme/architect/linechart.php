@@ -1,23 +1,9 @@
-<h3>Line Chart Demo</h3>
-<div id="chart1" style="width: 100%; height: 300px"></div>
-<em>Powered by Morris and Rafael</em>
-<h4>PHP</h4>
-<pre>
-$chart = app()->createLineChart();
-$data = array(
-    array("x" => "2011 W27", "y" => 100),
-    array("x" => "2011 W28", "y" => 500)
-);
-$chart->set('data', $data)->set('ykeys', array('y'))->set('labels', array('Sells'));
-c($chart);
-</pre>
-<h4>Default Template</h4>
-<pre>theme/default/linechart.php</pre>
+<div id="<?=$_id?>" style="width: 100%; height: 300px" title="Line Chart"></div>
 <script type="text/javascript">
     jQuery(function($) {
         var data = <?=json_encode($data)?>;
             Morris.Line({
-            element: 'chart1',
+            element: '<?=$_id?>',
             data: data,
             xkey: 'x',
             ykeys: <?=json_encode($ykeys)?>,

@@ -1,5 +1,4 @@
-<h3>Breadcrumbs Demo</h3>
-<ul class="breadcrumb">
+<ul id="<?=$_id?>" class="breadcrumb" title="Breadcrumbs">
     <?php 
     $i = 0;
     while ($i < count($items)) {
@@ -16,12 +15,3 @@
         $i++;
     } ?>
 </ul>
-<h4>PHP</h4>
-<pre>
-$breadcrumbs = app()->createBreadcrumbs();
-$breadcrumbs->addItem('Home');
-$breadcrumbs->addItem('Demo', '#', 1);
-c($breadcrumbs);
-</pre>
-<h4>Default Template</h4>
-<pre>theme/default/breadcrumbs.php</pre>

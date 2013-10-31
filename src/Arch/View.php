@@ -7,6 +7,7 @@ namespace Arch;
  */
 class View
 {
+    public $id;
     protected $hidden = false;
     protected $data = array();
     protected $slot = array('content' => array());
@@ -30,6 +31,9 @@ class View
         }
         // set default data
         $this->data = $data;
+        
+        //set id
+        $this->id = substr(md5(microtime(true)),0,7);
     }
     
     /**
@@ -155,6 +159,7 @@ class View
     {
         if (!file_exists($this->path)) return $this->output;
         if ($this->hidden) return '';
+        $this->set('_id', $this->id);
         ob_start();
         if (is_array($this->data)) extract($this->data);
         include $this->path;
