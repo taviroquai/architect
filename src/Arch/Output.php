@@ -31,7 +31,7 @@ class Output
      */
     public function setContent($content)
     {
-        $this->content = $content;
+        $this->content = (string) $content;
         return $this;
     }
     

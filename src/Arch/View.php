@@ -11,7 +11,7 @@ class View
     protected $hidden = false;
     protected $data = array();
     protected $slot = array('content' => array());
-    protected $path;
+    protected $template;
     protected $output;
 
     /**
@@ -24,7 +24,7 @@ class View
     {
         // check if $mixed is a file path
         if (file_exists($mixed)) {
-            $this->path = $mixed;
+            $this->template = $mixed;
         } else {
             // if not, consider it as content
             $this->output = $mixed;
@@ -92,6 +92,9 @@ class View
             }
         }
         if (!$skip) {
+            if (!isset($this->slot[$slotName])) {
+                $this->slot[$slotName] = array();
+            }
             $this->slot[$slotName][] = $content;
         }
         return $this;
@@ -126,12 +129,12 @@ class View
     
     /**
      * Sets the path template that will be used
-     * @param string $path
+     * @param string $template
      * @return \View
      */
-    public function setPath($path)
+    public function setTemplate($template)
     {
-        $this->path = $path;
+        $this->template = $template;
         return $this;
     }
     
@@ -157,12 +160,12 @@ class View
     
     public function __toString()
     {
-        if (!file_exists($this->path)) return $this->output;
+        if (!file_exists($this->template)) return $this->output;
         if ($this->hidden) return '';
         $this->set('_id', $this->id);
         ob_start();
         if (is_array($this->data)) extract($this->data);
-        include $this->path;
+        include $this->template;
         $this->output = (string) ob_get_clean();
         return $this->output;
     }

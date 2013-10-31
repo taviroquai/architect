@@ -51,7 +51,7 @@ class App implements Messenger
      * Default theme
      * 
      * This will hold the theme (View) that will be used when outputing HTML
-     * You can change the theme with: \Arch\App::Instance()->loadTheme('mytheme');
+     * You can change the theme with: \Arch\App::Instance()->loadTheme($path);
      * This will load the theme configuration into the application
      * 
      * @var View
@@ -136,9 +136,12 @@ class App implements Messenger
         // set default output
         $this->theme = new View();
         $this->theme->addSlot('css')->addSlot('js');
+        
+        // set input
+        $this->input = new \Arch\Input();
 
         // set default Output
-        $this->output = new Output($this->theme);
+        $this->output = new Output();
         
         // set default routes
         $this->router = new Router($this);
@@ -153,8 +156,6 @@ class App implements Messenger
         $this->loadInput();
         // load enabled modules
         $this->loadModules();
-        // load theme class and configuration
-        $this->loadTheme(DEFAULT_THEME);
         // execute action
         $this->execute();
         // send output
@@ -167,8 +168,10 @@ class App implements Messenger
     {
         $action = $this->router->getRoute($this->action);
         
-        if ($action === false && $this->action != '/404') {
-            $this->redirect($this->url('/404'));
+        if ($action === false) {
+            if ($this->router->getRoute('/404') && $this->action != '/404') {
+                $this->redirect($this->url('/404'));
+            }
         }
         $this->log('User action: '.$this->action);
         return call_user_func_array($action, $this->input->getParam());
@@ -194,7 +197,6 @@ class App implements Messenger
     
     private function loadInput()
     {
-        $this->input = new \Arch\Input();
         $this->action = $this->input->getAction();
         $this->log('Input finish loading: '.
                 $this->input->server('HTTP_USER_AGENT'));
@@ -214,7 +216,10 @@ class App implements Messenger
     
     private function loadModules()
     {
-        if (!is_dir(MODULE_PATH)) die('Module path not found!');
+        if (!is_dir(MODULE_PATH)) {
+            $this->log('Module path not found!', 'error');
+            return false;
+        }
         $mods = glob(MODULE_PATH.
                 DIRECTORY_SEPARATOR.'enable'.
                 DIRECTORY_SEPARATOR.'*');
@@ -252,7 +257,7 @@ class App implements Messenger
     
     private function sendOutput()
     {
-        if (get_class($this->output->getContent()) === FALSE) {
+        if (is_object($this->output->getContent()) === FALSE) {
             if ($this->output->getContent() == '') {
                 $this->output->setContent($this->theme);
             }
@@ -263,7 +268,7 @@ class App implements Messenger
         while (ob_get_level() > 0) {
             ob_end_clean();
         }
-        
+
         // send output
         $this->log('Sending output...');
         if (!$this->input->isCli()) $this->output->sendHeaders();
@@ -298,36 +303,13 @@ class App implements Messenger
      * You can also add content with, for example:
      * \Arch\App::Instance()->theme->addContent('Hello World');
      * 
-     * @param type $name
+     * @param string $name
      * @return \App
      */
-    public function loadTheme($name)
+    public function loadTheme($path)
     {
-        $theme_path = THEME_PATH.DIRECTORY_SEPARATOR.$name;
-        if (!is_dir($theme_path)) die('Default theme not found: '.$theme_path);
-
-        $filename = $theme_path.DIRECTORY_SEPARATOR.'config.php';
-        if (file_exists($filename)) {
-            require_once $filename;
-        }
-        
-        $filename = $theme_path.DIRECTORY_SEPARATOR.'slots.xml';
-        if (file_exists($filename)) {
-            $xml = @simplexml_load_file($filename);
-            foreach ($xml->slot as $slot) {
-                $slotName = (string) $slot['name'];
-                foreach ($slot->module as $item) {
-                    $classname = (string) $item->classname;
-                    if (!class_exists($classname)) {
-                        continue;
-                    }
-                    $c = isset($item->content) ? (string) $item->content : '';
-                    $module = new $classname($c);
-                    $this->theme->addContent($module, $slotName);
-                }
-            }
-            $this->log('Theme loaded: '.$name);
-        }
+        $this->theme = new \Arch\Theme($path);
+        $this->log('Theme loaded: '.$path);
         return $this;
     }
     
@@ -651,6 +633,10 @@ class App implements Messenger
      */
     public function translate($key, $data = array())
     {
+        if (empty($this->idiom)) {
+            $this->log('Could not translate: '.$key, 'error');
+            return $key;
+        }
         return (string) $this->idiom->translate($key, $data);
     }
 
