@@ -156,7 +156,7 @@ class View
         if (!file_exists($this->path)) return $this->output;
         if ($this->hidden) return '';
         ob_start();
-        extract($this->data);
+        if (is_array($this->data)) extract($this->data);
         include $this->path;
         $this->output = (string) ob_get_clean();
         return $this->output;
