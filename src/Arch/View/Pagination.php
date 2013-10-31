@@ -23,21 +23,24 @@ class Pagination extends \Arch\View
         }
 		parent::__construct($tmpl);
         
+        // get app
+        $app = \Arch\App::Instance();
+        
         // get pager id
         $this->id = $id;
         
         // get user input
         $this->current = 1;
-        if (\Arch\App::Instance()->input->get('p'.$this->id) != false) {
-            $this->current = \Arch\App::Instance()->input->get('p'.$this->id);
-            $pid = \Arch\App::Instance()->input->get('p'.$this->id);
+        if ($app->input->get('p'.$this->id) != false) {
+            $this->current = $app->input->get('p'.$this->id);
+            $pid = $app->input->get('p'.$this->id);
             $this->url = str_replace(
                 '&p'.$this->id.'='.$pid, 
                 '', 
-                \Arch\App::Instance()->input->server('REQUEST_URI')
+                $app->input->server('REQUEST_URI')
             );
         } else {
-            $this->url = \Arch\App::Instance()->input->server('REQUEST_URI');
+            $this->url = $app->input->server('REQUEST_URI');
         }
         
 	}
