@@ -60,15 +60,9 @@ class Config
             define($name, (string) $item);
         }
         
-        // check path dependencies and setup defaults
-        if (!defined('ARCH_PATH')) {
-            die('Please define ARCH_PATH constant in your index.php');
-        }
+        // setup defaults
         if (!defined('THEME_PATH')) {
             define('THEME_PATH', '/theme');
-        }
-        if (!defined('DEFAULT_THEME')) {
-            define('DEFAULT_THEME', 'default');
         }
         if (!defined('DEFAULT_IDIOM')) {
             define('DEFAULT_IDIOM', '/idiom');

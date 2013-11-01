@@ -5,7 +5,7 @@ namespace Arch;
 /**
  * Application API
  * 
- * Use alias \Arch\App::Instance() id recomended
+ * Use alias \Arch\App::Instance() is recomended
  * 
  */
 class App implements Messenger
@@ -20,7 +20,7 @@ class App implements Messenger
      * To return a FILES entry use: \Arch\App::Instance()->input->file($index);
      * To return raw input use: \Arch\App::Instance()->input->raw();
      * 
-     * @var Input
+     * @var \Arch\Input
      */
     public  $input;
     
@@ -32,7 +32,7 @@ class App implements Messenger
      * To add a View use: \Arch\App::Instance()->setContent(new View('tmpl.php');
      * To output a string use: \Arch\App::Instance()->sendOutput('Hello World!');
      * To output a View use: \Arch\App::Instance()->sendOutput(new View('tmpl.php'));
-     * @var Output
+     * @var \Arch\Output
      */
     public  $output;
     
@@ -43,7 +43,7 @@ class App implements Messenger
      * Then the function callback will be called when the user requests
      * index.php/demo
      * 
-     * @var Router
+     * @var \Arch\Router
      */
     public  $router;
     
@@ -54,19 +54,19 @@ class App implements Messenger
      * You can change the theme with: \Arch\App::Instance()->loadTheme($path);
      * This will load the theme configuration into the application
      * 
-     * @var View
+     * @var \Arch\View
      */
     public  $theme;
     
     /**
      * Holds user session
-     * @var Session
+     * @var \Arch\Session
      */
     public  $session;
     
     /**
      * Holds PDO database instance
-     * @var PDO
+     * @var \PDO
      */
     public  $db;
     
@@ -96,14 +96,14 @@ class App implements Messenger
     
     /**
      * Application singleton instance
-     * @var App
+     * @var \Arch\App
      */
     private static $inst = null;
 
     /**
      * Gets application singleton
      * @param string $filename Full configuration file path
-     * @return \App The application singleton
+     * @return \Arch\App The application singleton
      */
     public static function Instance($filename = 'config.xml')
     {
@@ -112,6 +112,16 @@ class App implements Messenger
         }
         return self::$inst;
     }
+    
+    /**
+     * Load Aliases class
+     * @return \Arch\App
+     */
+    public function aliases()
+    {
+        require_once __DIR__ . '/../aliases.php';
+        return $this;
+    }
 
     /**
      * Returns a new application
@@ -119,6 +129,10 @@ class App implements Messenger
      */
     private function __construct($filename = 'config.xml')
     {
+        /**
+         * Define Architect base path
+         */
+        define('ARCH_PATH', realpath(__DIR__ . '/../'));
         
         // load configuration and apply
         $config = new Config($filename);
@@ -145,6 +159,11 @@ class App implements Messenger
         
         // set default routes
         $this->router = new Router($this);
+        
+        // load default theme if exists
+        if (defined('DEFAULT_THEME')) {
+            $this->loadTheme(THEME_PATH.DIRECTORY_SEPARATOR.DEFAULT_THEME);
+        }
     }
     
     public function run()
@@ -152,14 +171,19 @@ class App implements Messenger
         // load session
         $this->session->load();
         $this->log('Session loaded');
+        
         // load user input
         $this->loadInput();
+        
         // load enabled modules
         $this->loadModules();
+        
         // execute action
         $this->execute();
+        
         // send output
         $this->sendOutput();
+        
         // close resources
         $this->cleanEnd();
     }
@@ -254,7 +278,6 @@ class App implements Messenger
         $this->logger->close();
     }
     
-    
     private function sendOutput()
     {
         if (is_object($this->output->getContent()) === FALSE) {
@@ -304,7 +327,7 @@ class App implements Messenger
      * \Arch\App::Instance()->theme->addContent('Hello World');
      * 
      * @param string $name
-     * @return \App
+     * @return \Arch\App
      */
     public function loadTheme($path)
     {
@@ -390,7 +413,7 @@ class App implements Messenger
      * 
      * @param string $key
      * @param function $action
-     * @return \App
+     * @return \Arch\App
      */
     public function addRoute($key, $action)
     {
@@ -412,7 +435,7 @@ class App implements Messenger
      * 
      * @param string $text
      * @param string $cssClass
-     * @return \App
+     * @return \Arch\App
      */
     public function addMessage($text, $cssClass = 'alert alert-success')
     {
@@ -442,7 +465,7 @@ class App implements Messenger
      * 
      * @param function $template
      * @param boolean $flush
-     * @return \App
+     * @return \Arch\App
      */
     public function showMessages($template, $flush = true)
     {
@@ -461,7 +484,7 @@ class App implements Messenger
 
     /**
      * Flushes session messages
-     * @return \App
+     * @return \Arch\App
      */
     public function clearMessages()
     {
@@ -488,7 +511,7 @@ class App implements Messenger
      * @param string $eventName
      * @param function $callback
      * @param mixed $target
-     * @return \App
+     * @return \Arch\App
      */
     public function addEvent($eventName, $callback, $target = null)
     {
@@ -510,7 +533,7 @@ class App implements Messenger
      * 
      * @param string $eventName
      * @param mixed $target
-     * @return \App
+     * @return \Arch\App
      */
     public function triggerEvent($eventName, $target = null)
     {
@@ -536,7 +559,7 @@ class App implements Messenger
      * @param mixed $content
      * @param string $slotName
      * @param boolean $unique
-     * @return \App
+     * @return \Arch\App
      */
     public function addContent($content, $slotName = 'content', $unique = false)
     {
@@ -597,7 +620,7 @@ class App implements Messenger
      * 
      * @param string $filename
      * @param string $module
-     * @return \App
+     * @return \Arch\App
      */
     public function loadIdiom($filename, $module = 'app')
     {
@@ -785,7 +808,7 @@ class App implements Messenger
     /**
      * Returns a new datepicker view
      * @param string $tmpl
-     * @return \View_Datepicker
+     * @return \Arch\View\Datepicker
      */
     public function createDatepicker($tmpl = null)
     {
@@ -795,7 +818,7 @@ class App implements Messenger
     /**
      * Returns a new file upload view
      * @param string $tmpl
-     * @return \View_Fileupload
+     * @return \Arch\View\Fileupload
      */
     public function createFileupload($tmpl = null)
     {
@@ -806,7 +829,7 @@ class App implements Messenger
      * Returns a new pagination view
      * @param string $id
      * @param string $tmpl
-     * @return \View_Pagination
+     * @return \Arch\View\Pagination
      */
     public function createPagination($id = 1, $tmpl = null)
     {
@@ -816,7 +839,7 @@ class App implements Messenger
     /**
      * Creates a new text editor view
      * @param string $tmpl
-     * @return \View_Texteditor
+     * @return \Arch\View\Texteditor
      */
     public function createTexteditor($tmpl = null)
     {
@@ -827,7 +850,7 @@ class App implements Messenger
      * Creates a new shopping cart view
      * @param string $tmpl
      * @param Model_Cart $model
-     * @return \View_Cart
+     * @return \Arch\View\Cart
      */
     public function createCart($tmpl = null, Model_Cart $model = null)
     {
@@ -843,7 +866,7 @@ class App implements Messenger
      * Example:
      * echo \Arch\App::Instance()->createCaptcha();
      * 
-     * @return View
+     * @return \Arch\View
      */
     public function createCaptcha()
     {
@@ -858,7 +881,7 @@ class App implements Messenger
     /**
      * Returns a new breadcrumb view
      * @param string $tmpl
-     * @return \View_Breadcrumbs
+     * @return \Arch\View\Breadcrumbs
      */
     public function createBreadcrumbs($tmpl = null)
     {
@@ -868,7 +891,7 @@ class App implements Messenger
     /**
      * Returns a new carousel view
      * @param type $tmpl
-     * @return \View_Carousel
+     * @return \Arch\View\Carousel
      */
     public function createCarousel($tmpl = null)
     {
@@ -880,12 +903,12 @@ class App implements Messenger
      * @param string $host The remote host
      * @param string $username The ftp username
      * @param string $password The ftp password
-     * @return boolean The connection result
+     * @return \Arch\FTP
      */
     public function createFTP($host="", $username="", $password="")
     {
         $this->log('FTP connected to '.$host);
-        $ftp = new FTP($host, $username, $password);
+        $ftp = new \Arch\FTP($host, $username, $password);
         if (!$ftp->connect($password)) {
             $this->log('FTP connect to '.$host.' failed', 'error');
         } else {
@@ -996,7 +1019,7 @@ class App implements Messenger
      * Query a database table
      * @param string $tableName
      * @param \PDO $db
-     * @return \Table
+     * @return \Arch\Table
      */
     public function query($tableName)
     {
