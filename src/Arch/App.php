@@ -3,6 +3,11 @@
 namespace Arch;
 
 /**
+ * Define Architect base path
+ */
+define('ARCH_PATH', realpath(__DIR__ . '/../../'));
+
+/**
  * Application API
  * 
  * Use alias \Arch\App::Instance() is recomended
@@ -112,28 +117,13 @@ class App implements Messenger
         }
         return self::$inst;
     }
-    
-    /**
-     * Load Aliases class
-     * @return \Arch\App
-     */
-    public function aliases()
-    {
-        require_once __DIR__ . '/../aliases.php';
-        return $this;
-    }
 
     /**
      * Returns a new application
      * @param string $filename Full configuration file path
      */
     private function __construct($filename = 'config.xml')
-    {
-        /**
-         * Define Architect base path
-         */
-        define('ARCH_PATH', realpath(__DIR__ . '/../'));
-        
+    {   
         // load configuration and apply
         $config = new Config($filename);
         $config->apply();
@@ -159,15 +149,15 @@ class App implements Messenger
         
         // set default routes
         $this->router = new Router($this);
-        
-        // load default theme if exists
-        if (defined('DEFAULT_THEME')) {
-            $this->loadTheme(THEME_PATH.DIRECTORY_SEPARATOR.DEFAULT_THEME);
-        }
     }
     
     public function run()
     {
+        // load default theme if exists
+        if (defined('DEFAULT_THEME')) {
+            $this->loadTheme(THEME_PATH.DIRECTORY_SEPARATOR.DEFAULT_THEME);
+        }
+        
         // load session
         $this->session->load();
         $this->log('Session loaded');
