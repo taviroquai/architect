@@ -9,8 +9,14 @@ namespace Arch;
 class Session implements Messenger
 {
     protected $storage;
+    protected $app;
     
-    /**
+    public function __construct(\Arch\App &$app)
+    {
+        $this->app = $app;
+    }
+
+        /**
      * Loads data from $_SESSION into storage
      * Initiates _message and login values
      */
@@ -27,6 +33,11 @@ class Session implements Messenger
             $_SESSION['login'] = null;
         }
         $this->storage = $_SESSION;
+        
+        // trigger core event
+        $this->app->triggerEvent('arch.session.after.load', $this);
+        
+        $this->app->log('Session loaded');
     }
     
     /**
@@ -37,6 +48,12 @@ class Session implements Messenger
         foreach ($this->storage as $prop => $value) {
             $_SESSION[$prop] = $value;
         }
+        
+        // trigger core event
+        \Arch\App::Instance()
+                ->triggerEvent('arch.session.after.save', $_SESSION);
+        
+        // finally close session
         session_write_close();
     }
 

@@ -8,7 +8,7 @@ development.
 Online Demo
 -----------
 
-An online demo can be found in <http://marcoafonso.pt/tests/architect/>
+An online demo can be found in <http://marcoafonso.pt/tests/architect/index.php/>
 
 Install
 -------
@@ -78,51 +78,6 @@ Idiom configuration without programming skills
     	<item key="TITLE">Architect PHP Framework</item>
     </items>
 
-User registration module example - OOP style
---------------------------------
-
-/module/demo/config.php
-
-Show user form
-
-    app()->addRoute('/register', function() {
-        app()->triggerEvent('register.form.before.view');
-        app()->addContent(new RegisterView());
-    });
-    
-Save user on database
-
-    app()->addEvent('register.form.before.view', function() {
-        $post = app()->input->post();
-        if (!empty($post) && app()->getCaptcha()) {
-            $model = new UserModel();
-            $result = $model->register($post['email'], $post);
-            if ($result) app()->redirect('/register-success');
-        }
-    });
-
-User registration module example - Function alias style
---------------------------------
-
-/module/demo/config.php
-
-Show user form
-
-    r('/register', function() {
-        tr('register.form.before.view');
-        c(new RegisterView());
-    });
-    
-Save user on database
-
-    e('register.form.before.view', function() {
-        if (p() && app()->getCaptcha()) {
-            $model = new UserModel();
-            $result = $model->register(p('email'), p());
-            if ($result) app()->redirect('/register-success');
-        }
-    });
-
 API usage examples
 ------------------
 
@@ -156,19 +111,43 @@ tr() - **TR**igger. Triggers the event
 
 ### ROUTER
     app()->addRoute('/my/path', function() { ... }); // PHP5 anonymous function
+    r('/my/path/(:any)', function ($param) { ... });
 
 ### THEME
     app()->addContent('Any string or View instance', 'optional slot name');
+    c('Hello World!');
 
 ### URL
     app()->url('/demo', array('param1' => 'World'); // creates an URL
+    u('/demo');
  
 ### INPUT (GET / POST / RAW / FILES / CLI ARGS)
     app()->input->post('optional post param');
+    p('username'); // returns $_POST['username']
+    g('param'); // returns $_GET['param']
+    f(0); // returns $_FILES['file'] or $_FILES['file'][0] for multiple
 
 ### EVENTS
     app()->register('event.name', function() { ... }); // Register listener
     app()->trigger('event.name', $optional);           // call listener
+    e('my.event.name', function($target) { ... });
+    tr('my.event-name', $target);
+
+### CORE EVENTS
+
+There are core events that allows to change application workflow without 
+changing the core system. These are:
+
+    'arch.module.after.load'
+    'arch.session.after.load'
+    'arch.theme.after.load'
+    'arch.input.after.load'
+    'arch.db.after.init'
+    'arch.action.before.call'
+    'arch.http.before.headers'
+    'arch.output.before.send'
+    'arch.session.before.save'
+    'arch.before.end'
 
 ### DATABASE
     app()->db // Gets a PDO instance
@@ -187,6 +166,7 @@ tr() - **TR**igger. Triggers the event
 
 ### SCREEN MESSAGES
     app()->addMessage('An error has occurred', 'alert alert-error');
+    m('An error has occured');
 
 ### CAPTCHA
     app()->createCaptcha(); // returns an HTML form element with a captcha code
@@ -194,9 +174,27 @@ tr() - **TR**igger. Triggers the event
  
 ### ENCRYPTION
     app()->encrypt('my password', 'sha256'); // returns an hash of a string
+    s('secure this string');
 
 ### REDIRECT
     app()->redirect('http://www.google.com'); // redirects to an url
+
+### VALIDATION
+    $v = app()->createValidator();
+    $v->addRule($v->createRule('email')->setAction('isEmail'));
+
+### HTTP
+    app()->httpGet('http://google.com'); // gets the url content
+    app()->httpPost('http://google.com', array('param1' => 'value'));
+
+### UPLOAD
+    app()->upload($index, '/var/www/architect/theme/data'); // uploads a file
+
+### DOWNLOAD
+    app()->download('/var/www/architect/theme/data/image.jpg'); // force file 
+    download by sending attachment HTTP headers
+    app()->download('/var/www/architect/theme/data/image.jpg', false); // do
+    not send attachment headers
 
 ### DATEPICKER
     app()->createDatepicker(); // returns a HTML date picker view
@@ -214,21 +212,6 @@ tr() - **TR**igger. Triggers the event
     $item = (object) array('name' => 'Product1', 'price' => 30);
     $cart = app()->createCart(); // loads or creates a cart from session
     $cart->model->insertItem($item, 1, 2, 0.2);
-
-### HTTP
-    app()->httpGet('http://google.com'); // gets the url content
-    app()->httpPost('http://google.com', array('param1' => 'value'));
-
-### UPLOAD
-    app()->upload($index, '/var/www/architect/theme/data'); // uploads a file
-
-### DOWNLOAD
-    app()->download('/var/www/architect/theme/data/image.jpg'); // force file 
-download by sending attachment HTTP headers
-
-### VALIDATION
-    $v = app()->createValidator();
-    $v->addRule($v->createRule('email')->setAction('isEmail'));
 
 ### LINE CHART
     app()->createLineChart();

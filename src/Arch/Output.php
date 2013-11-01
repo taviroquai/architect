@@ -60,6 +60,10 @@ class Output
      */
     public function sendHeaders()
     {
+        //trigger core event
+        \Arch\App::Instance()
+                ->triggerEvent('arch.http.before.headers', $this->headers);
+        
         if (!empty($this->headers)) {
             foreach ($this->headers as $item) {
                 header($item);
@@ -71,46 +75,54 @@ class Output
      * Send the output
      */
     public function send()
-    {   
+    {
+        //trigger core event
+        \Arch\App::Instance()
+                ->triggerEvent('arch.output.before.send', $this->content);
+        
         echo $this->content;
     }
     
     public function readfile($filename) {
+        
+        // clear headers
+        $this->headers = array();
         
         // send unknown mime type resolved by readfile
         $parts = explode('.', $filename);
         $ext = end($parts);
         switch ($ext) {
             case 'svg': 
-                header("Content-type: image/svg+xml"); 
+                $this->headers[] = "Content-type: image/svg+xml";
             break;
             case 'ttf': 
-                header("Content-type: application/x-font-truetype");
+                $this->headers[] = "Content-type: application/x-font-truetype";
             break;
             case 'otf': 
-                header("Content-type: application/x-font-opentype");
+                $this->headers[] = "Content-type: application/x-font-opentype";
             break;
             case 'woff':
-                header("Content-type: application/font-woff");
+                $this->headers[] = "Content-type: application/font-woff";
             break;
             case 'eot': 
-                header("Content-type: application/vnd.ms-fontobject");
+                $this->headers[] = "Content-type: application/vnd.ms-fontobject";
             break;
             case 'css':
-                header("Content-type: text/css");
+                $this->headers[] = "Content-type: text/css";
             break;
             case 'js':
-                header("Content-type: text/javascript");
+                $this->headers[] = "Content-type: text/javascript";
             break;
         }
 
         // send cache headers
         $asset_cache = 300;
         $ts = gmdate("D, d M Y H:i:s", time()+$asset_cache)." GMT";
-        header("Expires: $ts");
-        header("Pragma: cache");
-        header("Cache-Control: max-age=".$asset_cache);
+        $this->headers[] = "Expires: $ts";
+        $this->headers[] = "Pragma: cache";
+        $this->headers[] = "Cache-Control: max-age=".$asset_cache;
 
+        $this->sendHeaders();
         readfile($filename);
         exit();
     }

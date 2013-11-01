@@ -135,7 +135,7 @@ class App implements Messenger
         $this->log('Loaded configuration from '.$filename, 'access', true);
         
         // set session handler
-        $this->session = new Session();
+        $this->session = new Session($this);
 
         // set default output
         $this->theme = new View();
@@ -153,20 +153,19 @@ class App implements Messenger
     
     public function run()
     {
+        // load enabled modules
+        $this->loadModules();
+        
+        // load session
+        $this->session->load();
+        
         // load default theme if exists
         if (defined('DEFAULT_THEME')) {
             $this->loadTheme(THEME_PATH.DIRECTORY_SEPARATOR.DEFAULT_THEME);
         }
         
-        // load session
-        $this->session->load();
-        $this->log('Session loaded');
-        
         // load user input
         $this->loadInput();
-        
-        // load enabled modules
-        $this->loadModules();
         
         // execute action
         $this->execute();
@@ -184,9 +183,14 @@ class App implements Messenger
         
         if ($action === false) {
             if ($this->router->getRoute('/404') && $this->action != '/404') {
-                $this->redirect($this->url('/404'));
+                $this->action = '/404';
+                $action = $this->router->getRoute($this->action);
             }
         }
+        
+        // trigger core event
+        $this->triggerEvent('arch.action.before.call', $action);
+        
         $this->log('User action: '.$this->action);
         return call_user_func_array($action, $this->input->getParam());
     }
@@ -199,6 +203,10 @@ class App implements Messenger
                 \PDO::ATTR_ERRMODE, 
                 \PDO::ERRMODE_EXCEPTION
             );
+            
+            // trigger core event
+            $this->triggerEvent('arch.db.after.load', $this->db);
+        
             $this->log('Database initialized');
         } catch (\PDOException $e)  {
             $this->addMessage (
@@ -212,6 +220,10 @@ class App implements Messenger
     private function loadInput()
     {
         $this->action = $this->input->getAction();
+        
+        // trigger core event
+        $this->triggerEvent('arch.input.after.load', $this->input);
+        
         $this->log('Input finish loading: '.
                 $this->input->server('HTTP_USER_AGENT'));
         if ($this->input->get('idiom')) {
@@ -226,6 +238,9 @@ class App implements Messenger
         $this->idiom = new \Arch\Idiom($this->session->_idiom);
         $filename = 'default.xml';
         $this->loadIdiom($filename);
+        
+        // trigger core event
+        $this->triggerEvent('arch.idiom.after.load', $this->idiom);
     }
     
     private function loadModules()
@@ -253,19 +268,9 @@ class App implements Messenger
             }
         }
         $this->modules = $mods;
-    }
-    
-    private function cleanEnd() {
         
-        // close output buffer
-        if (ob_get_status()) ob_end_flush();
-        
-        // save session
-        $this->session->save();
-        $this->log('Session closed');
-        
-        // close log handler
-        $this->logger->close();
+        // trigger core event
+        $this->triggerEvent('arch.module.after.load', $this->modules);
     }
     
     private function sendOutput()
@@ -286,6 +291,22 @@ class App implements Messenger
         $this->log('Sending output...');
         if (!$this->input->isCli()) $this->output->sendHeaders();
         $this->output->send();
+    }
+    
+    private function cleanEnd()
+    {
+        // trigger core event
+        $this->triggerEvent('arch.before.end');
+        
+        // close output buffer
+        if (ob_get_status()) ob_end_flush();
+        
+        // save session
+        $this->session->save();
+        $this->log('Session closed');
+        
+        // close log handler
+        $this->logger->close();
     }
     
     /**
@@ -322,6 +343,10 @@ class App implements Messenger
     public function loadTheme($path)
     {
         $this->theme = new \Arch\Theme($path);
+        
+        // trigger core event
+        $this->triggerEvent('arch.theme.after.load', $this->theme);
+        
         $this->log('Theme loaded: '.$path);
         return $this;
     }
