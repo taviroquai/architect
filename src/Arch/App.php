@@ -366,7 +366,7 @@ class App implements Messenger
         $output->send();
         $this->log('Redirecting to '.$url);
         if ($now) {
-            $this->session->save();
+            $this->cleanEnd();
             exit();
         }
     }
