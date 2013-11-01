@@ -9,18 +9,20 @@ class Theme extends \Arch\View
 {
     
     protected $theme_path;
+    protected $app;
 
     /**
      * Constructor
      * 
      * @param string $path
      */
-    public function __construct($path)
+    public function __construct($path, \Arch\App $app)
     {
         parent::__construct();
         
         if (!is_dir($path)) die('Default theme not found: '.$path);
         $this->theme_path = $path;
+        $this->app = $app;
         
         // add default theme slots
         $this->addSlot('css');
@@ -51,6 +53,9 @@ class Theme extends \Arch\View
                 }
             }
         }
+        
+        // trigger core event
+        $this->app->triggerEvent('arch.theme.before.render', $this);
         
         return parent::__toString();
     }

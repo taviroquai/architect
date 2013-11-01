@@ -342,7 +342,7 @@ class App implements Messenger
      */
     public function loadTheme($path)
     {
-        $this->theme = new \Arch\Theme($path);
+        $this->theme = new \Arch\Theme($path, $this);
         
         // trigger core event
         $this->triggerEvent('arch.theme.after.load', $this->theme);
