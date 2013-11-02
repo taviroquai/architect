@@ -29,8 +29,11 @@ class Breadcrumbs extends \Arch\View
         $action = '';
         $i = 0;
         foreach ($items as $item) {
-            $text = $i == 0 ? 'Home' : $item;
-            $action = ($i == 0) ? '/' : $action.'/'.$item;
+            $text = $i == 0 ? '/' : $item;
+            $action = 
+                ($i == 0) ? '/' : 
+                    ($i == 1) ? '/'.$item : 
+                    $action.'/'.$item;
             $active = $i == count($items)-1 ? 1 : 0;
             $this->addItem($text, \Arch\App::Instance()->url($action), $active);
             $i++;
