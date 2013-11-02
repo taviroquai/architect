@@ -66,6 +66,34 @@ class View
     }
     
     /**
+     * Returns the named slots
+     * @return array
+     */
+    public function getSlots()
+    {
+        return arra_keys($this->slot);
+    }
+    
+    /**
+     * Returns slot items
+     * @param string $name
+     * @return array
+     */
+    public function getSlotItems($name)
+    {
+        if (empty($this->slot[$name])) return array();
+        return $this->slot[$name];
+    }
+
+    /**
+     * Sets the slot as empty
+     * @param string $name
+     */
+    public function emptySlot($name) {
+        $this->slot[$name] = array();
+    }
+
+    /**
      * Adds content to the view
      * This can be a string, a View or a php file template path
      * 
