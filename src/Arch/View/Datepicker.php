@@ -26,5 +26,7 @@ class Datepicker extends \Arch\View
             $app->url('/arch/asset/js/bootstrap-datetimepicker.min.js'),
             'js'
         );
+        
+        $this->set('default', date('Y/m/d'));
 	}
 }

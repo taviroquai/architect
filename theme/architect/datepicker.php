@@ -1,5 +1,5 @@
 <div id="<?=$_id?>" class="input-append date" title="Choose date">
-    <input data-format="dd/MM/yyyy hh:mm:ss" type="text" />
+    <input data-format="dd/MM/yyyy hh:mm:ss" type="text" value="<?=$default?>"/>
     <span class="add-on">
         <i data-time-icon="icon-time" data-date-icon="icon-calendar">
         </i>
