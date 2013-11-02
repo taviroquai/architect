@@ -831,6 +831,18 @@ class App implements Messenger
     }
     
     /**
+     * Returns a new view for the given template
+     * The view adds methods to allow data manipulation on the template
+     * @param string $tmpl The template path
+     * @param array $data The associative array
+     * @return \Arch\View
+     */
+    public function createView($tmpl, $data = array())
+    {
+        return new \Arch\View($tmpl, $data);
+    }
+    
+    /**
      * Returns a new datepicker view
      * @param string $tmpl
      * @return \Arch\View\Datepicker

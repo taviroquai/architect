@@ -186,3 +186,14 @@ function t($key, $data = array())
 { 
     return app()->translate($key, $data);
 }
+
+/**
+ * Create view alias
+ * @param string $tmpl The template path
+ * @param array $data The data to be passed to the template
+ * @return \Arch\View
+ */
+function v($tmpl, $data = array())
+{
+    return app()->createView($tmpl, $data);
+}
