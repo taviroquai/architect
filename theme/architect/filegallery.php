@@ -18,16 +18,15 @@
         <a href="<?=u($url, array($param => $folder))?>" 
            class="directory" title="<?=basename($item)?>">
             <i class="icon-4x icon-folder-open"></i>
-            <br /><span><?=basename($item)?></span>
         </a>
         <?php } else { ?>
         <a href="#" class="file" title="<?=basename($item)?>"
            data-path="<?=$item?>">
             <?php if (getimagesize($item)) { ?>
-            <img src="<?=u('/demo', array('img' => $item))?>" />
+            <img src="<?=$this->translatePath($item)?>" 
+                 title="<?=basename($item)?>" />
             <?php } else { ?>
-            <i class="icon-4x icon-file"></i>
-            <br /><span><?=basename($item)?></span>
+            <i class="icon-4x icon-file" title="<?=basename($item)?>"></i>
             <?php } ?>
         </a>
         <?php } ?>
