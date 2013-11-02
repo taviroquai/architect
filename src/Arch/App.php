@@ -821,6 +821,16 @@ class App implements Messenger
     }
     
     /**
+     * Returns a new image
+     * @param string $filename The image file path
+     * @return \Arch\Image
+     */
+    public function createImage($filename)
+    {
+        return new \Arch\Image($filename);
+    }
+    
+    /**
      * Returns a new datepicker view
      * @param string $tmpl
      * @return \Arch\View\Datepicker
