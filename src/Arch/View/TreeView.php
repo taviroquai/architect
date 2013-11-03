@@ -8,6 +8,8 @@ namespace Arch\View;
 class TreeView extends \Arch\View
 {
 
+    public $tree;
+    
     public function __construct($tmpl = null)
     {
         if ($tmpl === null) {
@@ -17,7 +19,36 @@ class TreeView extends \Arch\View
         parent::__construct($tmpl);
         
         // init items
-        $this->data['tree'] = array();
+        $this->tree = new \DOMDocument('1.0', 'UTF-8');
+        $root = $this->tree->createElement('node');
+        $root->setAttribute('label', 'root');
+        $this->tree->appendChild($root);
+    }
+
+    /**
+     * Returns the root node
+     * @return \DOMElement
+     */
+    public function getRoot()
+    {
+        return $this->tree->documentElement;
     }
     
+    /**
+     * Creates a node and adds to tree
+     * @param string $attribute The first attribute
+     * @param string $value The attribute value
+     * @param \DOMElement $parent The node parent
+     * @return \DOMElement
+     */
+    public function createNode($attribute, $value, $parent = null)
+    {
+        $node = $this->tree->createElement('node');
+        $node->setAttribute($attribute, $value);
+        if (!is_object($parent) || get_class($parent) !== 'DOMElement') {
+            $parent = $this->getRoot();
+        }
+        $parent->appendChild($node);
+        return $node;
+    }
 }

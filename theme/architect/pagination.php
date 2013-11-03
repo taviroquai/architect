@@ -19,5 +19,8 @@
         <li class="<?=$class?>">
             <a href="<?=$this->getUrl($this->current + 1)?>">&raquo;</a>
         </li>
-  </ul>
+    </ul>
+    <?php $this->slot('content', function($item) { ?>
+        <?=$item?>
+    <?})?>
 </div>

@@ -1,5 +1,5 @@
 <div id="<?=$_id?>" title="Rich Text Editor">
-    <div id="alerts"></div>
+    <div id="<?=$_id?>_alerts"></div>
     <div class="btn-toolbar" data-role="editor-toolbar" data-target="#editor">
       <div class="btn-group">
         <a class="btn dropdown-toggle" data-toggle="dropdown" title="Font">
@@ -73,7 +73,12 @@
       </div>
       <input type="text" data-edit="inserttext" id="voiceBtn" x-webkit-speech="">
     </div>
-    <div class="editor" style="overflow:scroll; height:250px;"></div>
+    <div class="editor" 
+         style="min-height: 84px">
+    </div>
+    <?php $this->slot('content', function($item) { ?>
+        <?=$item?>
+    <?})?>
 </div>
 <script type="text/javascript">
     jQuery(function($) {

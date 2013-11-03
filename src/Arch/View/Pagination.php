@@ -54,8 +54,9 @@ class Pagination extends \Arch\View
         return $url;
     }
     
-    public function getOffset($page)
+    public function getOffset($page = null)
     {
+        if ($page === null) $page = $this->current;
         return ($page - 1 ) * $this->limit;
     }
     

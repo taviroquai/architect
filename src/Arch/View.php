@@ -33,7 +33,7 @@ class View
         $this->data = $data;
         
         //set id
-        $this->id = substr(md5(microtime(true)),0,7);
+        $this->id = substr(md5(microtime(true)),0,6);
     }
     
     /**

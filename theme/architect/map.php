@@ -8,7 +8,10 @@
             popupAnchor: [0, -28]
         };
         var markers = <?=json_encode($this->model->getMarkers())?>;
-        var map1 = new Map('<?=$_id?>', <?=$lon?>, <?=$lat?>, <?=$zoom?>);
-        map1.addMarkers(markers, style);
+        var <?=$_id?>_map = new Map('<?=$_id?>', <?=$lon?>, <?=$lat?>, <?=$zoom?>);
+        <?=$_id?>_map.addMarkers(markers, style);
     });
 </script>
+<?php $this->slot('content', function($item) { ?>
+    <?=$item?>
+<?})?>

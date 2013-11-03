@@ -17,6 +17,7 @@ class Breadcrumbs extends \Arch\View
 		parent::__construct($tmpl);
         
         $this->set('items', array());
+        $this->set('home', 'Home');
 	}
     
     /**
@@ -29,7 +30,7 @@ class Breadcrumbs extends \Arch\View
         $action = '';
         $i = 0;
         foreach ($items as $item) {
-            $text = $i == 0 ? '/' : $item;
+            $text = $i == 0 ? $this->data['home'] : $item;
             $action = 
                 ($i == 0) ? '/' : 
                     ($i == 1) ? '/'.$item : 
@@ -38,6 +39,7 @@ class Breadcrumbs extends \Arch\View
             $this->addItem($text, \Arch\App::Instance()->url($action), $active);
             $i++;
         }
+        return $this;
     }
     
     /**

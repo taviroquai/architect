@@ -27,6 +27,6 @@ class Datepicker extends \Arch\View
             'js'
         );
         
-        $this->set('default', date('Y/m/d'));
+        $this->set('default', date('Y-m-d'));
 	}
 }

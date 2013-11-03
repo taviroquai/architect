@@ -9,4 +9,8 @@
         <label></label>
         <button type="sybmit" class="btn">Send</button>
     </form>
+    <?php $this->slot('content', function($item) { ?>
+        <?=$item?>
+    <?})?>
 </div>
+

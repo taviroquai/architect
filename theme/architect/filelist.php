@@ -17,7 +17,7 @@
             <?=basename($item)?>
         </a>
         <?php } else { ?>
-        <a href="#" class="file" data-path="<?=$item?>">
+        <a href="#" class="file" data-path="<?=$this->translatePath($item)?>">
             <?php if (getimagesize($item)) { ?>
             <i class="icon icon-picture"></i>
             <?php } else { ?>
@@ -29,11 +29,6 @@
     </li>
     <?php } ?>
 </ul>
-<script type="text/javascript">
-jQuery(function($) {
-    $('.file').click(function(e) {
-        e.preventDefault();
-        alert($(this).attr('data-path'));
-    });
-});
-</script>
+<?php $this->slot('content', function($item) { ?>
+    <?=$item?>
+<?})?>

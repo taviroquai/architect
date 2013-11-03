@@ -1,5 +1,4 @@
-<div  id="<?=$_id?>" class="carousel slide" title="Carousel"
-      style="width: 100%; height: 250px;">
+<div  id="<?=$_id?>" class="carousel slide" title="Carousel">
     <ol class="carousel-indicators">
       <li data-target="#<?=$_id?>" data-slide-to="0" class="active"></li>
       <li data-target="#<?=$_id?>" data-slide-to="1"></li>
@@ -20,7 +19,10 @@
        href="#<?=$_id?>" data-slide="next">&rsaquo;</a>
 </div>
 <script type="text/javascript">
-    jQuery(function($) {
-        $('.carousel').carousel();
-    });
+jQuery(function($) {
+    $('.carousel').carousel();
+});
 </script>
+<?php $this->slot('content', function($item) { ?>
+    <?=$item?>
+<?})?>

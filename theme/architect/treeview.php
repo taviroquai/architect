@@ -1,17 +1,18 @@
+<?=$this->tree->saveXML()?>
 <ul id="<?=$_id?>" class="nav nav-list" title="Tree View">
-    <?php foreach ($tree['nodes'] as $lvl1) { ?>
-    <?php if (!empty($lvl1['nodes'])) { ?>
-    <li><label class="tree-toggler nav-header"><?=$lvl1['label']?></label>
+    <?php foreach ($this->tree->documentElement->childNodes as $lvl1) { ?>
+    <?php if ($lvl1->hasChildNodes()) { ?>
+    <li><label class="tree-toggler nav-header"><?=$lvl1->getAttribute('label')?></label>
         <ul class="nav nav-list tree">
-            <?php foreach ($lvl1['nodes'] as $lvl2) { ?>
-            <?php if (!empty($lvl2['nodes'])) { ?>
-            <li><label class="tree-toggler nav-header"><?=$lvl2['label']?></label>
+            <?php foreach ($lvl1->childNodes as $lvl2) { ?>
+            <?php if ($lvl2->hasChildNodes()) { ?>
+            <li><label class="tree-toggler nav-header"><?=$lvl2->getAttribute('label')?></label>
                 <ul class="nav nav-list tree">
-                    <?php foreach ($lvl2['nodes'] as $lvl3) { ?>
-                    <?php if (empty($lvl3['nodes'])) { ?>
+                    <?php foreach ($lvl2->childNodes as $lvl3) { ?>
+                    <?php if (!$lvl3->hasChildNodes()) { ?>
                     <li>
-                        <a href="<?=empty($lvl3['href']) ? '#' : $lvl3['href']?>">
-                        <?=$lvl3['label']?>
+                        <a href="<?=$lvl3->hasAttribute('href') ? '#' : $lvl3->getAttribute('href')?>">
+                        <?=$lvl3->getAttribute('label')?>
                         </a>
                     </li>
                     <?php } ?>
@@ -20,10 +21,10 @@
                 </ul>
             </li>
             <?php } ?>
-            <?php if (empty($lvl2['nodes'])) { ?>
+            <?php if (!$lvl2->hasChildNodes()) { ?>
             <li>
-                <a href="<?=empty($lvl2['href']) ? '#' : $lvl2['href']?>">
-                    <?=$lvl2['label']?>
+                <a href="<?=$lvl2->hasAttribute('href') ? '#' : $lvl2->getAttribute('href')?>">
+                    <?=$lvl2->getAttribute('label')?>
                 </a>
             </li>
             <?php } ?>
@@ -32,10 +33,10 @@
         </ul>
     </li>
     <?php } ?>
-    <?php if (empty($lvl1['nodes'])) { ?>
+    <?php if (!$lvl1->hasChildNodes()) { ?>
     <li>
-        <a href="<?=empty($lvl1['href']) ? '#' : $lvl1['href']?>">
-        <?=$lvl1['label']?>
+        <a href="<?=$lvl1->hasAttribute('href') ? '#' : $lvl1->getAttribute('href')?>">
+        <?=$lvl1->getAttribute('label')?>
         </a>
     </li>
     <?php } ?>
@@ -49,3 +50,6 @@ jQuery(function ($) {
 	});
 });
 </script>
+<?php $this->slot('content', function($item) { ?>
+    <?=$item?>
+<?})?>

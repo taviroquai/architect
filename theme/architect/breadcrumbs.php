@@ -15,3 +15,6 @@
         $i++;
     } ?>
 </ul>
+<?php $this->slot('content', function($item) { ?>
+    <?=$item?>
+<?})?>

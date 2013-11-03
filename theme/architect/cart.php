@@ -102,9 +102,7 @@
         </div>
         <div class="clearfix"></div>
     </form>
+    <?php $this->slot('content', function($item) { ?>
+        <?=$item?>
+    <?})?>
 </div>
-<script type="text/javascript">
-    $('#<?=$_id?> select').on('change', function() {
-        $('#<?=$_id?> form').submit();
-    });
-</script>
