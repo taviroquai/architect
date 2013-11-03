@@ -35,14 +35,6 @@
     <?php } ?>
 </div>
 <div class="clearfix"></div>
-<script type="text/javascript">
-jQuery(function($) {
-    $('.file').click(function(e) {
-        e.preventDefault();
-        alert($(this).attr('data-path'));
-    });
-});
-</script>
 <?php $this->slot('content', function($item) { ?>
     <?=$item?>
 <?})?>
