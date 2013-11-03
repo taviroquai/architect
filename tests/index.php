@@ -1,8 +1,8 @@
 <?php
 
 // Autoload files using Composer autoload
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../aliases.php';
+require_once realpath(__DIR__ . '/../vendor/autoload.php');
+require_once realpath(__DIR__ . '/../aliases.php');
 
 // Create application
 $config_path = realpath('config/config.xml');
