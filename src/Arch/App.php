@@ -100,6 +100,12 @@ class App implements Messenger
     private  $logger;
     
     /**
+     * Holds the current running stage
+     * @var string
+     */
+    private  $stage = '';
+    
+    /**
      * Application singleton instance
      * @var \Arch\App
      */
@@ -124,6 +130,9 @@ class App implements Messenger
      */
     private function __construct($filename = 'config.xml')
     {   
+        // update stage
+        $this->stage = 'init';
+        
         // load configuration and apply
         $config = new Config($filename);
         $config->apply();
@@ -153,6 +162,12 @@ class App implements Messenger
     
     public function run()
     {
+        // prevent infinit calls
+        if ($this->stage === 'run') return;
+        
+        // update stage
+        $this->stage = 'run';
+        
         // load enabled modules
         $this->loadModules();
         
