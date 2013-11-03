@@ -33,6 +33,11 @@ class Theme extends \Arch\View
         if (file_exists($filename)) {
             require_once $filename;
         }
+        
+        // add flash messages
+        $v = new \Arch\View(THEME_PATH.DIRECTORY_SEPARATOR.'default'.
+                DIRECTORY_SEPARATOR.'messages.php');
+        $this->set('messages', $v);
     }
     
     public function __toString()

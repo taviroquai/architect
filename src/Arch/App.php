@@ -325,20 +325,6 @@ class App implements Messenger
     }
     
     /**
-     * Logs application activity
-     * If LOG_PATH is empty, no log happens
-     * 
-     * @param string $msg The message to be logged
-     * @param string $label Label for the log message
-     * @param boolean $nlb If true adds a line break
-     * @return boolean
-     */
-    public function log($msg, $label = 'access', $nlb = false)
-    {
-        return $this->logger->log($msg, $label, $nlb);
-    }
-    
-    /**
      * Loads the theme configuration
      * 
      * For example:
@@ -364,6 +350,20 @@ class App implements Messenger
         
         $this->log('Theme loaded: '.$path);
         return $this;
+    }
+    
+    /**
+     * Logs application activity
+     * If LOG_PATH is empty, no log happens
+     * 
+     * @param string $msg The message to be logged
+     * @param string $label Label for the log message
+     * @param boolean $nlb If true adds a line break
+     * @return boolean
+     */
+    public function log($msg, $label = 'access', $nlb = false)
+    {
+        return $this->logger->log($msg, $label, $nlb);
     }
     
     /**
@@ -481,35 +481,6 @@ class App implements Messenger
     public function getMessages()
     {
         return $this->session->getMessages();
-    }
-    
-    /**
-     * Uses a template to display the messages
-     * 
-     * This is commonly used in themes to display and clear the messages
-     * 
-     * Example:
-     * \Arch\App::Instance()->showMessages(function($item) {
-     *     echo '<div>'.$item.'</div>';
-     * });
-     * 
-     * @param function $template
-     * @param boolean $flush
-     * @return \Arch\App
-     */
-    public function showMessages($template, $flush = true)
-    {
-        if (count($this->session->getMessages()) == 0) {
-            return;
-        }
-        $messages = $this->session->getMessages();
-        foreach ($messages as $item) {
-            $template($item);
-        }
-        if ($flush) {
-            $this->session->clearMessages();
-        }
-        return $this;
     }
 
     /**
