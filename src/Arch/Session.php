@@ -109,10 +109,10 @@ class Session implements Messenger
     }
     
     public function __isset($name) {
-        return isset($this->data[$name]);
+        return isset($this->storage[$name]);
     }
 
     public function __unset($name) {
-        unset($this->data[$name]);
+        unset($this->storage[$name]);
     }
 }
