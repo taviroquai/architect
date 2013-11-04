@@ -8,7 +8,7 @@
 jQuery(function($) {
     $('#<?=$_id?>').datetimepicker({
         pickTime: false,
-        format: 'yyyy-mm-dd',
+        format: 'yyyy-MM-dd',
         language: 'en'
     });
 });

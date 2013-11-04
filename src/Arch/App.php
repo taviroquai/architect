@@ -807,6 +807,19 @@ class App implements Messenger
     }
     
     /**
+     * Query a database table
+     * @param string $tableName
+     * @param \PDO $db
+     * @return \Arch\Table
+     */
+    public function query($tableName)
+    {
+        if (empty($this->db)) $this->initDatabase ();
+        $table = new \Arch\Table($tableName, $this->db);
+        return $table;
+    }
+    
+    /**
      * Returns a new image
      * @param string $filename The image file path
      * @return \Arch\Image
@@ -829,23 +842,23 @@ class App implements Messenger
     }
     
     /**
-     * Returns a new datepicker view
-     * @param string $tmpl
-     * @return \Arch\View\Datepicker
+     * Returns a new date picker view
+     * @param string $tmpl The date picker template
+     * @return \Arch\View\DatePicker
      */
-    public function createDatepicker($tmpl = null)
+    public function createDatePicker($tmpl = null)
     {
-        return new \Arch\View\Datepicker($tmpl);
+        return new \Arch\View\DatePicker($tmpl);
     }
     
     /**
      * Returns a new file upload view
-     * @param string $tmpl
-     * @return \Arch\View\Fileupload
+     * @param string $tmpl The upload template
+     * @return \Arch\View\FileUpload
      */
-    public function createFileupload($tmpl = null)
+    public function createFileUpload($tmpl = null)
     {
-        return new \Arch\View\Fileupload($tmpl);
+        return new \Arch\View\FileUpload($tmpl);
     }
     
     /**
@@ -861,12 +874,12 @@ class App implements Messenger
     
     /**
      * Creates a new text editor view
-     * @param string $tmpl
-     * @return \Arch\View\Texteditor
+     * @param string $tmpl The editor template
+     * @return \Arch\View\TextEditor
      */
-    public function createTexteditor($tmpl = null)
+    public function createTextEditor($tmpl = null)
     {
-        return new \Arch\View\Texteditor($tmpl);
+        return new \Arch\View\TextEditor($tmpl);
     }
     
     /**
@@ -1036,18 +1049,5 @@ class App implements Messenger
             $slug = md5($text);
         }
         return $slug;
-    }
-
-    /**
-     * Query a database table
-     * @param string $tableName
-     * @param \PDO $db
-     * @return \Arch\Table
-     */
-    public function query($tableName)
-    {
-        if (empty($this->db)) $this->initDatabase ();
-        $table = new \Arch\Table($tableName, $this->db);
-        return $table;
     }
 }

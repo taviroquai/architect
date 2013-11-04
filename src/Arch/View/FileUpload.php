@@ -3,30 +3,30 @@
 namespace Arch\View;
 
 /**
- * View datepicker
+ * View FileUpload
  */
-class Datepicker extends \Arch\View
+class FileUpload extends \Arch\View
 {
 	
 	public function __construct($tmpl = null)
     {
         if ($tmpl === null) {
             $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','architect','datepicker.php'));
+                    array(ARCH_PATH,'theme','architect','fileupload.php'));
         }
 		parent::__construct($tmpl);
         
         // add view resources
         $app = \Arch\App::Instance();
         $app->addContent(
-            $app->url('/arch/asset/css/bootstrap-datetimepicker.min.css'),
+            $app->url('/arch/asset/css/bootstrap-fileupload.min.css'),
             'css'
         );
         $app->addContent(
-            $app->url('/arch/asset/js/bootstrap-datetimepicker.min.js'),
+            $app->url('/arch/asset/js/bootstrap-fileupload.min.js'),
             'js'
         );
         
-        $this->set('default', date('Y-m-d'));
+        $this->set('name', 'upload');
 	}
 }

@@ -3,9 +3,9 @@
 namespace Arch\View;
 
 /**
- * View Texteditor
+ * View Text Editor
  */
-class Texteditor extends \Arch\View
+class TextEditor extends \Arch\View
 {
 	
 	public function __construct($tmpl = null)

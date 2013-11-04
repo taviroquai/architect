@@ -20,13 +20,11 @@
             <i class="icon-4x icon-folder-open"></i>
         </a>
         <?php } else { ?>
-        <a href="#" class="file" title="<?=basename($item)?>"
-           data-path="<?=$item?>">
+        <a href="#" class="file" data-path="<?=$this->translatePath($item)?>">
             <?php if (getimagesize($item)) { ?>
-            <img src="<?=$this->translatePath($item)?>" 
-                 title="<?=basename($item)?>" />
+            <img src="<?=$this->translatePath($item)?>" />
             <?php } else { ?>
-            <i class="icon-4x icon-file" title="<?=basename($item)?>"></i>
+            <i class="icon-4x icon-file"></i>
             <?php } ?>
         </a>
         <?php } ?>
