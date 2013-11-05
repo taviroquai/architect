@@ -138,9 +138,7 @@ class App implements Messenger
         $config->apply();
         
         // ready to start logging now
-        $logpath = LOG_PATH.DIRECTORY_SEPARATOR.'log.txt';
-        
-        $this->logger = new \Arch\Logger($logpath);
+        $this->logger = new \Arch\Logger(LOG_FILE);
         $this->log('Loaded configuration from '.$filename, 'access', true);
         
         // set session handler
@@ -152,6 +150,8 @@ class App implements Messenger
         
         // set input
         $this->input = new \Arch\Input();
+        $this->log('Input finish loading: '.
+                $this->input->server('HTTP_USER_AGENT'));
 
         // set default Output
         $this->output = new Output();
@@ -168,8 +168,12 @@ class App implements Messenger
         // update stage
         $this->stage = 'run';
         
-        // load enabled modules
-        $this->loadModules();
+        // bypass user modules if it is a core action (arch)
+        // main purpose is to improve performance
+        if (!$this->input->isArchAction()) {
+            // load enabled modules
+            $this->loadModules();
+        }
         
         // load session
         $this->session->load();
@@ -178,9 +182,6 @@ class App implements Messenger
         if (defined('DEFAULT_THEME')) {
             $this->loadTheme(THEME_PATH.DIRECTORY_SEPARATOR.DEFAULT_THEME);
         }
-        
-        // load user input
-        $this->loadInput();
         
         // execute action
         $this->execute();
@@ -194,20 +195,21 @@ class App implements Messenger
     
     private function execute()
     {
-        $action = $this->router->getRoute($this->action);
-        
-        if ($action === false) {
-            if ($this->router->getRoute('/404') && $this->action != '/404') {
-                $this->action = '/404';
-                $action = $this->router->getRoute($this->action);
+        $action = $this->input->getAction();
+        $callback = $this->router->getRoute($this->input->getAction());
+
+        if ($callback === false) {
+            if ($this->router->getRoute('/404') && $action != '/404') {
+                $action = '/404';
+                $callback = $this->router->getRoute($action);
             }
         }
         
         // trigger core event
         $this->triggerEvent('arch.action.before.call', $action);
         
-        $this->log('User action: '.$this->action);
-        return call_user_func_array($action, $this->input->getParam());
+        $this->log('User action: '.$action);
+        return call_user_func_array($callback, $this->input->getParam());
     }
     
     private function initDatabase()
@@ -232,43 +234,40 @@ class App implements Messenger
         }
     }
     
-    private function loadInput()
-    {
-        $this->action = $this->input->getAction();
-        
-        // trigger core event
-        $this->triggerEvent('arch.input.after.load', $this->input);
-        
-        $this->log('Input finish loading: '.
-                $this->input->server('HTTP_USER_AGENT'));
-        
-    }
-    
     private function loadModules()
     {
         if (!is_dir(MODULE_PATH)) {
             $this->log('Module path not found!', 'error');
             return false;
         }
-        $mods = glob(MODULE_PATH.
+        
+        $modules = glob(MODULE_PATH.
                 DIRECTORY_SEPARATOR.'enable'.
-                DIRECTORY_SEPARATOR.'*');
-        foreach($mods as $name) {
-            if (is_dir($name)) {
-                if (is_dir($name.DIRECTORY_SEPARATOR.'src')) {
-                    $mods_src = $name.DIRECTORY_SEPARATOR.'src'.
-                            DIRECTORY_SEPARATOR.'*.php';
-                    $includes = glob($mods_src);
-                    foreach($includes as $inc) require_once $inc;
-                }
-                $filename = $name.DIRECTORY_SEPARATOR.'config.php';
-                if (file_exists($filename)) {
-                    require_once $filename;
-                    $this->log('Module loaded: '.$name);
-                }
+                DIRECTORY_SEPARATOR.'*', GLOB_ONLYDIR);
+
+        foreach($modules as $name) {
+            $m_loader = $name.DIRECTORY_SEPARATOR.'src'.
+                        DIRECTORY_SEPARATOR.'autoload.php';
+            if (file_exists($m_loader)) {
+                require_once $m_loader;
             }
+            $m_config = $name.DIRECTORY_SEPARATOR.'config.php';
+            if (file_exists($m_config)) {
+                require_once $m_config;
+            }
+            $this->log('Module loaded: '.$name);
         }
-        $this->modules = $mods;
+
+        // clean up
+        unset($name);
+        unset($m_loader);
+        unset($m_config);
+        
+        // save modules directories
+        $this->modules = $modules;
+        
+        // clean up
+        unset($modules);
         
         // trigger core event
         $this->triggerEvent('arch.module.after.load', $this->modules);
@@ -340,7 +339,7 @@ class App implements Messenger
     
     /**
      * Logs application activity
-     * If LOG_PATH is empty, no log happens
+     * If LOG_FILE is empty, no log happens
      * 
      * @param string $msg The message to be logged
      * @param string $label Label for the log message
@@ -382,7 +381,7 @@ class App implements Messenger
      */
     public function redirect($url = null, $now = true)
     {
-        if ($this->url($this->action) == $url) return; 
+        if ($this->url($this->input->getAction()) == $url) return; 
         if (empty($url)) {
             $url = $this->url('/');
         }
@@ -587,7 +586,7 @@ class App implements Messenger
      * @param string $salt
      * @return string
      */
-    public function encrypt($string, $algo = 'sha256', $salt = '!Zz$9y#8x%7!')
+    public function encrypt($string, $algo = 'sha256')
     {
         if (in_array($algo, hash_algos())) {
             return hash($algo, $string);

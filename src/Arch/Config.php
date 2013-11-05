@@ -64,11 +64,14 @@ class Config
         if (!defined('THEME_PATH')) {
             define('THEME_PATH', '/theme');
         }
+        if (!defined('CACHE_PATH')) {
+            define('CACHE_PATH', '/cache');
+        }
         if (!defined('DEFAULT_IDIOM')) {
             define('DEFAULT_IDIOM', '/idiom');
         }
-        if (!defined('LOG_PATH')) {
-            define('LOG_PATH', '/log');
+        if (!defined('LOG_FILE')) {
+            define('LOG_FILE', '/log');
         }
     }
 }

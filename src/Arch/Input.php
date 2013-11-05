@@ -175,6 +175,18 @@ class Input
         return true;
     }
     
+    public function isArchAction()
+    {
+        $params = explode('/', $this->getAction());
+        if (empty($params[1])) {
+            return false;
+        }
+        if ($params[1] !== 'arch') {
+            return false;
+        }
+        return true;
+    }
+    
     /**
      * Returns a param by index
      * If index is not provided, returns all params
