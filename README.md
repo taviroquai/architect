@@ -140,7 +140,6 @@ changing the core system. These are:
     'arch.module.after.load'
     'arch.session.after.load'
     'arch.theme.after.load'
-    'arch.input.after.load'
     'arch.db.after.init'
     'arch.action.before.call'
     'arch.http.before.headers'
