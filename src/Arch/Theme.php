@@ -24,6 +24,9 @@ class Theme extends \Arch\View
         $this->theme_path = $path;
         $this->app = $app;
         
+        // create a default idiom loader
+        $this->set('idiom', $this->app->createIdiom());
+        
         // add default theme slots
         $this->addSlot('css');
         $this->addSlot('js');

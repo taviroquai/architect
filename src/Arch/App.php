@@ -241,21 +241,7 @@ class App implements Messenger
         
         $this->log('Input finish loading: '.
                 $this->input->server('HTTP_USER_AGENT'));
-        if ($this->input->get('idiom')) {
-            $this->session->_idiom = $this->input->get('idiom');
-        } else {
-            if (defined('DEFAULT_IDIOM')) {
-                $this->session->_idiom = DEFAULT_IDIOM;
-            } else {
-                $this->session->_idiom = 'en';
-            }
-        }
-        $this->idiom = new \Arch\Idiom($this->session->_idiom);
-        $filename = 'default.xml';
-        $this->loadIdiom($filename);
         
-        // trigger core event
-        $this->triggerEvent('arch.idiom.after.load', $this->idiom);
     }
     
     private function loadModules()
@@ -610,61 +596,6 @@ class App implements Messenger
     }
 
     /**
-     * Loads an idiom file
-     * 
-     * Idiom files are plain xml (no programming skills needed)
-     * 
-     * Example:
-     * \Arch\App::Instance()->loadIdiom('/path/to/file.xml');
-     * 
-     * To call an idiom string use: t('KEY')
-     * 
-     * @param string $filename
-     * @param string $module
-     * @return \Arch\App
-     */
-    public function loadIdiom($filename, $module = 'app')
-    {
-        $idiom = $this->session->_idiom;
-        if ($module == 'app') {
-            $filename = IDIOM_PATH.DIRECTORY_SEPARATOR.$idiom.
-                    DIRECTORY_SEPARATOR.$filename;
-        } else {
-            $filename = MODULE_PATH.DIRECTORY_SEPARATOR.$module.
-                    DIRECTORY_SEPARATOR.'idiom'.
-                    DIRECTORY_SEPARATOR.$idiom.
-                    DIRECTORY_SEPARATOR.$filename;
-        }
-        if ($this->idiom->loadFile($filename)) {
-            $this->log('Idiom file loaded: '.$filename);
-        }
-        return $this;
-    }
-
-    /**
-     * Returns an idiom translation by key
-     * 
-     * Examples:
-     * echo \Arch\App::Instance()->translate('KEY');
-     * echo t('KEY');
-     * 
-     * Remember to previously load the idiom file with:
-     * \Arch\App::Instance()->loadIdiom('/path/to/file.xml');
-     * 
-     * @param string $key
-     * @param array $data
-     * @return string
-     */
-    public function translate($key, $data = array())
-    {
-        if (empty($this->idiom)) {
-            $this->log('Could not translate: '.$key, 'error');
-            return $key;
-        }
-        return (string) $this->idiom->translate($key, $data);
-    }
-
-    /**
      * Verifies the submitted anti-span code
      * Returns false if the code does not match
      * 
@@ -839,6 +770,15 @@ class App implements Messenger
     public function createView($tmpl, $data = array())
     {
         return new \Arch\View($tmpl, $data);
+    }
+    
+    /**
+     * Returns a new Idiom object
+     * @return \Arch\Idiom
+     */
+    public function createIdiom()
+    {
+        return new \Arch\Idiom($this);
     }
     
     /**

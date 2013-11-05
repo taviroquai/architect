@@ -26,13 +26,10 @@ class Session implements Messenger
         if (empty($this->storage)) {
             session_start();
         }
-        if (!isset($this->storage['_message'])) {
-            $this->storage['_message'] = array();
-        }
-        if (empty($_SESSION['login'])) {
-            $_SESSION['login'] = null;
-        }
         $this->storage = $_SESSION;
+        if (!isset($this->storage['arch.message'])) {
+            $this->storage['arch.message'] = array();
+        }
         
         // trigger core event
         $this->app->triggerEvent('arch.session.after.load', $this);
@@ -75,7 +72,7 @@ class Session implements Messenger
      */
     public function addMessage($text, $cssClass = 'alert alert-success')
     {
-        $this->storage['_message'][] = new Message($text, $cssClass);
+        $this->storage['arch.message'][] = new Message($text, $cssClass);
     }
     
     /**
@@ -84,35 +81,48 @@ class Session implements Messenger
      */
     public function getMessages()
     {
-        if (!isset($this->storage['_message'])) {
-            $this->storage['_message'] = array();
+        if (!isset($this->storage['arch.message'])) {
+            $this->storage['arch.message'] = array();
         }
-        return $this->storage['_message'];
+        return $this->storage['arch.message'];
     }
     
     /**
      * Clears all messages from session
      */
     public function clearMessages() {
-        $this->storage['_message'] = array();
+        unset($this->storage['arch.message']);
+        $this->storage['arch.message'] = array();
     }
     
     public function __get($prop) {
+        $prop = 'user.'.$prop;
         if (!isset($this->storage[$prop])) {
             return null;
+        }
+        $value = @unserialize($this->storage[$prop]);
+        if ($value !== false) {
+            return $value;
         }
         return $this->storage[$prop];
     }
     
     public function __set($prop, $value) {
-        $this->storage[$prop] = $value;
+        $prop = 'user.'.$prop;
+        if (is_array($value) || is_object($value)) {
+            $this->storage[$prop] = serialize($value);
+        } else {
+            $this->storage[$prop] = $value;
+        }
     }
     
-    public function __isset($name) {
-        return isset($this->storage[$name]);
+    public function __isset($prop) {
+        $prop = 'user.'.$prop;
+        return isset($this->storage[$prop]);
     }
 
-    public function __unset($name) {
-        unset($this->storage[$name]);
+    public function __unset($prop) {
+        $prop = 'user.'.$prop;
+        unset($this->storage[$prop]);
     }
 }

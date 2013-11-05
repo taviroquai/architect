@@ -102,7 +102,6 @@ p() - **P**OST. Returns POST parameters
 f() - **F**ILES. Returns a FILES entry by index  
 q() - **Q**uery table. Returns a Table instance to start querying  
 s() - **S**ecure. Returns a secured (encrypted) string  
-t() - **T**ranslate. Returns the translation given by key  
 e() - **E**vent. Adds a new event  
 tr() - **TR**igger. Triggers the event
 
@@ -160,9 +159,10 @@ changing the core system. These are:
     q('user')->s('group.*')->j('usergroup', 'usergroup.id_group = group.id')->run(); // join
 
 ### IDIOM
-    app()->loadIdiom('filename', 'optional module name'); // loads idiom strings
-    app()->translate('key'); // returns translated key in filename
-    t('TITLE'); // An small alias to use in views
+    $i = app()->createIdiom();  // tries to find a default idiom by session or input
+    $i->loadTranslation('filename', 'optional module name'); // loads a translation file
+    $i->translate('key', array('key' => 'World')); // returns translated key in filename
+    $i->t('TITLE'); // A smaller alias to use in templates
 
 ### SCREEN MESSAGES
     app()->addMessage('An error has occurred', 'alert alert-error');

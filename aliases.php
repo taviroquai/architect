@@ -19,8 +19,6 @@
  * 
  * s() Returns a secured (encrypted) string - use for passwords
  * 
- * t() Returns the translation given by key
- * 
  * e() Adds a new event
  * 
  * tr() Triggers the event
@@ -174,17 +172,6 @@ function tr($eventName, $target = null)
 function u($path, $params = array())
 {
     return app()->url($path, $params);
-}
-
-/**
- * Translate alias
- * @param string key Idiom key
- * @param array $data Data to be included in idiom string
- * @return string Complete idiom string
- */
-function t($key, $data = array())
-{ 
-    return app()->translate($key, $data);
 }
 
 /**
