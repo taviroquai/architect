@@ -99,6 +99,16 @@ class Output
     }
     
     /**
+     * Removes all user items from cache
+     */
+    public function expireAll()
+    {
+        if (function_exists('apc_clear_cache')) {
+            apc_clear_cache('user');
+        }
+    }
+    
+    /**
      * Checks whether the item is cached or not
      * @param string $id The cache identifier
      * @param string $expire The time to expire
