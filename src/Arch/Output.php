@@ -119,21 +119,10 @@ class Output
         if (empty($expire) && defined('CACHE_EXPIRE')) {
             $expire = CACHE_EXPIRE;
         }
-        if (function_exists('apc_exists')) {
-            return apc_exists($id);
+        if (function_exists('apc_fetch')) {
+            return apc_fetch($id);
         } else {
             return false;
-        }
-    }
-    
-    /**
-     * Loads content from the cache identifier
-     * @param string $id The cache identifier
-     */
-    public function loadFromCache($id)
-    {
-        if (function_exists('apc_fetch')) {
-            $this->setContent(apc_fetch($id));
         }
     }
     

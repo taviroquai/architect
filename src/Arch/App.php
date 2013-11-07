@@ -169,36 +169,37 @@ class App implements Messenger
         $this->stage = 'run';
         
         // send cached version
-        if ($this->output->isCached($this->input->genCacheKey())) {
+        if ($cached = $this->output->isCached($this->input->genCacheKey())) {
             $this->log('Loading output from cache...');
-            $this->output->loadFromCache($this->input->genCacheKey());
+            $this->output->setContent($cached);
             $this->sendOutput();
-            return;
+            unset($cached);
+        } else {
+
+            // bypass user modules if it is a core action (arch)
+            // main purpose is to improve performance
+            if (!$this->input->isArchAction()) {
+                // load enabled modules
+                $this->loadModules();
+            }
+
+            // load session
+            $this->session->load();
+
+            // load default theme if exists
+            if (defined('DEFAULT_THEME')) {
+                $this->loadTheme(THEME_PATH.DIRECTORY_SEPARATOR.DEFAULT_THEME);
+            }
+
+            // execute action
+            $this->execute();
+
+            // send output
+            $this->sendOutput();
+
+            // close resources
+            $this->cleanEnd();
         }
-        
-        // bypass user modules if it is a core action (arch)
-        // main purpose is to improve performance
-        if (!$this->input->isArchAction()) {
-            // load enabled modules
-            $this->loadModules();
-        }
-        
-        // load session
-        $this->session->load();
-        
-        // load default theme if exists
-        if (defined('DEFAULT_THEME')) {
-            $this->loadTheme(THEME_PATH.DIRECTORY_SEPARATOR.DEFAULT_THEME);
-        }
-        
-        // execute action
-        $this->execute();
-        
-        // send output
-        $this->sendOutput();
-        
-        // close resources
-        $this->cleanEnd();
     }
     
     private function execute()
