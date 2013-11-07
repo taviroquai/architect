@@ -175,6 +175,11 @@ class Input
         return true;
     }
     
+    public function genCacheKey()
+    {
+        return md5($this->server('REQUEST_URI').$this->server('QUERY_STRING'));
+    }
+    
     public function isArchAction()
     {
         $params = explode('/', $this->getAction());
