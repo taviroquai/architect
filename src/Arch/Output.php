@@ -71,6 +71,12 @@ class Output
         }
     }
     
+    /**
+     * Adds content to be cached
+     * @param string $id The cache identifier
+     * @param mixed $content The content to be cached
+     * @param int $expire The time to expire
+     */
     public function cache($id, $content, $expire = 3600)
     {
         if (empty($expire) && defined('CACHE_EXPIRE')) {
@@ -81,6 +87,10 @@ class Output
         }
     }
     
+    /**
+     * Removes a cached item by ID
+     * @param string $id The cache identifier
+     */
     public function expire($id)
     {
         if (function_exists('apc_delete')) {
@@ -88,6 +98,12 @@ class Output
         }
     }
     
+    /**
+     * Checks whether the item is cached or not
+     * @param string $id The cache identifier
+     * @param string $expire The time to expire
+     * @return boolean
+     */
     public function isCached($id, $expire = 3600)
     {
         if (empty($expire) && defined('CACHE_EXPIRE')) {
@@ -100,6 +116,10 @@ class Output
         }
     }
     
+    /**
+     * Loads content from the cache identifier
+     * @param string $id The cache identifier
+     */
     public function loadFromCache($id)
     {
         if (function_exists('apc_fetch')) {
