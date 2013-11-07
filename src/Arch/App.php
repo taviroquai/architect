@@ -168,6 +168,14 @@ class App implements Messenger
         // update stage
         $this->stage = 'run';
         
+        // send cached version
+        if ($this->output->isCached($this->input->genCacheKey())) {
+            $this->log('Loading output from cache...');
+            $this->output->loadFromCache($this->input->genCacheKey());
+            $this->sendOutput();
+            return;
+        }
+        
         // bypass user modules if it is a core action (arch)
         // main purpose is to improve performance
         if (!$this->input->isArchAction()) {
