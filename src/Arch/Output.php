@@ -81,6 +81,13 @@ class Output
         }
     }
     
+    public function expire($id)
+    {
+        if (function_exists('apc_delete')) {
+            apc_delete($id);
+        }
+    }
+    
     public function isCached($id, $expire = 3600)
     {
         if (empty($expire) && defined('CACHE_EXPIRE')) {
