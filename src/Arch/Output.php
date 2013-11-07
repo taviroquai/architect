@@ -71,6 +71,35 @@ class Output
         }
     }
     
+    public function cache($id, $content, $expire = 3600)
+    {
+        if (empty($expire) && defined('CACHE_EXPIRE')) {
+            $expire = CACHE_EXPIRE;
+        }
+        if (function_exists('apc_add')) {
+            apc_add($id, (string) $content, $expire);
+        }
+    }
+    
+    public function isCached($id, $expire = 3600)
+    {
+        if (empty($expire) && defined('CACHE_EXPIRE')) {
+            $expire = CACHE_EXPIRE;
+        }
+        if (function_exists('apc_exists')) {
+            return apc_exists($id);
+        } else {
+            return false;
+        }
+    }
+    
+    public function loadFromCache($id)
+    {
+        if (function_exists('apc_fetch')) {
+            $this->setContent(apc_fetch($id));
+        }
+    }
+    
     /**
      * Send the output
      */
