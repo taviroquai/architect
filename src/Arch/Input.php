@@ -177,7 +177,8 @@ class Input
     
     public function genCacheKey()
     {
-        return md5($this->server('REQUEST_URI').$this->server('QUERY_STRING'));
+        return 'arch.input.'.
+                md5($this->server('REQUEST_URI').$this->server('QUERY_STRING'));
     }
     
     public function isArchAction()
