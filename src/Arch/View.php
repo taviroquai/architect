@@ -61,7 +61,9 @@ class View
      */
     public function addSlot($name)
     {
-        $this->slot[$name] = array();
+        if (!isset($this->slot[$name])) {
+            $this->slot[$name] = array();
+        }
         return $this;
     }
     

@@ -31,20 +31,7 @@ class Theme extends \Arch\View
         $this->addSlot('css');
         $this->addSlot('js');
         
-        // add theme configuration
-        $filename = $this->theme_path.DIRECTORY_SEPARATOR.'config.php';
-        if (file_exists($filename)) {
-            require_once $filename;
-        }
-        
-        // add flash messages
-        $v = new \Arch\View(THEME_PATH.DIRECTORY_SEPARATOR.'default'.
-                DIRECTORY_SEPARATOR.'messages.php');
-        $this->set('messages', $v);
-    }
-    
-    public function __toString()
-    {
+        // load slots configuration
         $filename = $this->theme_path.DIRECTORY_SEPARATOR.'slots.xml';
         if (file_exists($filename)) {
             $xml = @simplexml_load_file($filename);
@@ -62,6 +49,30 @@ class Theme extends \Arch\View
             }
         }
         
+        // clean up
+        unset($filename);
+        unset($xml);
+        unset($slot);
+        unset($slotName);
+        unset($item);
+        unset($classname);
+        unset($c);
+        unset($module);
+        
+        // add theme configuration
+        $filename = $this->theme_path.DIRECTORY_SEPARATOR.'config.php';
+        if (file_exists($filename)) {
+            require_once $filename;
+        }
+        
+        // add flash messages
+        $v = new \Arch\View(THEME_PATH.DIRECTORY_SEPARATOR.'default'.
+                DIRECTORY_SEPARATOR.'messages.php');
+        $this->set('messages', $v);
+    }
+    
+    public function __toString()
+    {   
         // trigger core event
         $this->app->triggerEvent('arch.theme.before.render', $this);
         
