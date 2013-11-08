@@ -76,12 +76,6 @@ class App implements Messenger
     public  $db;
     
     /**
-     * Holds parsed user action
-     * @var string
-     */
-    private  $action;
-    
-    /**
      * Holds loaded modules
      * @var array
      */
@@ -134,8 +128,14 @@ class App implements Messenger
         $this->stage = 'init';
         
         // load configuration and apply
-        $config = new Config($filename);
-        $config->apply();
+        try {
+            $config = new Config();
+            $config->load($filename);
+            $config->apply();
+        }
+        catch (\Exception $e) {
+            die($e->getMessage());
+        }
         
         // ready to start logging now
         $this->logger = new \Arch\Logger(LOG_FILE);

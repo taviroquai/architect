@@ -7,37 +7,42 @@ namespace Arch;
  */
 class Config
 {
-    
+    /**
+     * Holds the configuration filename
+     * @var string
+     */
     protected $filename;
+    
+    /**
+     * Holds the original xml configuration
+     * @var \SimpleXMLElement
+     */
     protected $xml;
     
     /**
      * Returns a new configuration
-     * @param string $filename
      */
-    public function __construct($filename = null)
+    public function __construct()
     {
-        if (!empty($filename)) {
-            $this->load ($filename);
-        }
+        
     }
     
     /**
-     * Loads configuration from filename
+     * Loads configuration from a filename
      * @param string $filename
      */
     public function load($filename)
     {    
         // load configuration
         if (!file_exists($filename)) {
-            die("The file $filename was not found.");
+            throw new \Exception('File not found');
         }
         
         // valid filename
         $this->filename = $filename;
         $xml = @simplexml_load_file($filename);
         if (!$xml) {
-            die("Invalid $filename file");
+            throw new \Exception('Invalid XML configuration');
         }
         
         // valid xml file
