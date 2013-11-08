@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
     
+    <!-- PHP configuration -->
+    <item name="ERROR_REPORTING">32767</item>
+    <item name="DISPLAY_ERRORS">1</item>
+    
     <!-- Default paths -->
     <item name="THEME_PATH">/theme</item>
     <item name="MODULE_PATH">/module</item>

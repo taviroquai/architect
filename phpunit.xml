@@ -5,4 +5,12 @@
             <directory>./Test/</directory>
         </testsuite>
     </testsuites>
+    <filter>
+        <blacklist>
+            <directory suffix=".php">./vendor/</directory>
+        </blacklist>
+    </filter>
+    <php>
+        <const name="RESOURCE_PATH" value="./TestResource/"/>
+    </php>
 </phpunit>
