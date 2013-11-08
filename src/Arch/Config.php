@@ -29,7 +29,8 @@ class Config
     
     /**
      * Loads configuration from a filename
-     * @param string $filename
+     * @param string $filename The filename with xml configuration
+     * @return \Arch\Config
      */
     public function load($filename)
     {    
@@ -45,12 +46,31 @@ class Config
             throw new \Exception('Invalid XML configuration');
         }
         
+        // check for required items
+        $required = array(
+            'BASE_URL',
+            'INDEX_FILE',
+            'THEME_PATH',
+            'MODULE_PATH',
+            'IDIOM_PATH',
+            'LOG_FILE'
+        );
+        foreach ($required as $item) {
+            $required_node = $xml->xpath('/config/item[@name="BASE_URL"]');
+            if (empty($required_node)) {
+                throw 
+                new \Exception('Invalid XML configuration. Required '.$item);
+            }
+        }
+        
         // valid xml file
         $this->xml = $xml;
+        return $this;
     }
     
     /**
      * Apply configuration
+     * @return \Arch\Config
      */
     public function apply()
     {
@@ -78,5 +98,7 @@ class Config
         if (!defined('LOG_FILE')) {
             define('LOG_FILE', '/log');
         }
+        
+        return $this;
     }
 }

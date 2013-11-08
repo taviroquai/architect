@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    
+    <!-- Default paths -->
+    <item name="THEME_PATH">/theme</item>
+    <item name="MODULE_PATH">/module</item>
+    <item name="IDIOM_PATH">/idiom</item>
+    <item name="LOG_FILE">/log/log.txt</item>
+    <item name="BASE_URL">/</item>
+    <!-- empty INDEX_FILE if you use URL rewrite -->
+    <item name="INDEX_FILE">index.php</item>
+    
+</config>
