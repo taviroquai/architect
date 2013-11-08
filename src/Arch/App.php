@@ -884,25 +884,6 @@ class App implements Messenger
     }
     
     /**
-     * Returns a new FTP server connection
-     * @param string $host The remote host
-     * @param string $username The ftp username
-     * @param string $password The ftp password
-     * @return \Arch\FTP
-     */
-    public function createFTP($host="", $username="", $password="")
-    {
-        $this->log('FTP connected to '.$host);
-        $ftp = new \Arch\FTP($host, $username, $password);
-        if (!$ftp->connect($password)) {
-            $this->log('FTP connect to '.$host.' failed', 'error');
-        } else {
-            $this->log('FTP connected to '.$host);
-        }
-        return $ftp;
-    }
-    
-    /**
      * Returns a new input validator
      * @return \Arch\Validator
      */
