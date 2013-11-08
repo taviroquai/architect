@@ -45,7 +45,7 @@ function r($uri, $action)
  * @param string|View $content The content to be rendered
  * @param string $slotName The name of the theme's slot
  * @param boolean $unique Tells if must be the only content
- * @return View The default theme
+ * @return \Arch\View The default theme
  */
 function c($content, $slotName = 'content', $unique = false)
 {
@@ -57,7 +57,7 @@ function c($content, $slotName = 'content', $unique = false)
  * @param string $eventName The event name
  * @param function $callback The callback to be run
  * @param mixed $target An optional object to be passed to the callback
- * @return App The application singleton
+ * @return \Arch\App The application singleton
  */
 function e($eventName, $callback, $target = null)
 {
@@ -77,7 +77,7 @@ function f($index)
 /**
  * $_GET alias
  * @param string $param The name of the $_GET param
- * @return boolean|mixed|array Returns all params or the param value or false
+ * @return boolean|mixed Returns all params or the param value or false
  */
 function g($param = null)
 {
@@ -86,8 +86,8 @@ function g($param = null)
 
 /**
  * Send JSON alias
- * @param array $data
- * @param boolean $cache
+ * @param array $data The associative array containing data
+ * @param boolean $cache Tells application to send cache headers
  */
 function j($data, $cache = false) {
     app()->sendJSON($data, $cache);
@@ -106,7 +106,7 @@ function m($text, $cssClass = 'alert alert-success')
 /**
  * $_POST alias
  * @param string $param The name of the $_POST param
- * @return boolean|mixed|array Returns all params or the param value or false
+ * @return boolean|mixed Returns all params or the param value or false
  */
 function p($param = null)
 {
@@ -115,9 +115,9 @@ function p($param = null)
 
 /**
  * Database table query alias
- * @param string $tableName
- * @param \PDO $db
- * @return \Table
+ * @param string $tableName The name of the relational database table
+ * @param \PDO $db A PDO instance if not using application default
+ * @return \Arch\Table The table to start querying
  */
 function q($tableName, \PDO $db = null)
 {
@@ -133,7 +133,8 @@ function q($tableName, \PDO $db = null)
  * Example:
  * o('Hello World!');
  * 
- * @param mixed $content
+ * @param mixed $content The content to be sent
+ * @return \Arch\Output The output object
  */
 function o($content = null)
 {
@@ -156,7 +157,7 @@ function s($string, $algo = 'sha256', $salt = '!Zz$9y#8x%7!')
  * Trigger event alias
  * @param string $eventName The event name
  * @param mixed $target An optional object to be passed
- * @return App The application singleton
+ * @return \Arch\App The application singleton
  */
 function tr($eventName, $target = null)
 {
@@ -178,7 +179,7 @@ function u($path, $params = array())
  * Create view alias
  * @param string $tmpl The template path
  * @param array $data The data to be passed to the template
- * @return \Arch\View
+ * @return \Arch\View The created View
  */
 function v($tmpl, $data = array())
 {
