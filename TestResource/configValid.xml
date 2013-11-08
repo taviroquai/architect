@@ -17,4 +17,7 @@
     <!-- Default theme -->
     <item name="DEFAULT_THEME">default</item>
     
+    <!-- Default idiom -->
+    <item name="DEFAULT_IDIOM">en</item>
+    
 </config>

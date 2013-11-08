@@ -7,42 +7,41 @@ namespace Arch;
  */
 class Idiom
 {	
-
-    protected $app;
+    
+    /**
+     * Holds the idiom ISO code
+     * @var string
+     */
     protected $code;
+    
+    /**
+     * Holds the translation strings
+     * @var array
+     */
 	protected $storage = array();
 
     /**
      * Returns a new Idiom object
      * @param string $code The language code
      */
-	public function __construct(\Arch\App &$app, $filename = 'default.xml')
+	public function __construct($code = 'en')
     {
-        $this->app = $app;
-        if ($this->app->input->get('idiom')) {
-            $this->setCode($this->app->input->get('idiom'));
-        } else {
-            if (defined('DEFAULT_IDIOM')) {
-                $this->setCode(DEFAULT_IDIOM, true);
-            } else {
-                $this->setCode('en', true);
-            }
+        if (!is_string($code)) {
+            throw new \Exception('Invalid ISO code');
         }
-        $this->loadtranslation($filename);
-        
-        // trigger core event
-        $this->app->triggerEvent('arch.idiom.after.load', $this);
+        if (empty($code)) {
+            throw new \Exception('Invalid ISO code');
+        }
+        $this->code = $code;
 	}
     
     /**
      * Sets the language code
      * @param string $code The language code
-     * @param boolean $session Tells whether should be set to all session or not
      */
-    public function setCode($code, $session = false)
+    public function setCode($code)
     {
         $this->code = $code;
-        if ($session) $this->app->session->idiom = $code;
     }
 
 
@@ -65,29 +64,20 @@ class Idiom
      * 
      * To call an idiom string use: t('KEY')
      * 
-     * @param string $filename The basename of the translation file
-     * @param string $module The name of the module
-     * @return \Arch\App
+     * @param string $filename The path of the translation file
+     * @return boolean
      */
-    public function loadTranslation($filename, $module = 'app')
+    public function loadTranslation($filename)
     {
-        if ($module == 'app') {
-            $filename = IDIOM_PATH.DIRECTORY_SEPARATOR.$this->code.
-                    DIRECTORY_SEPARATOR.$filename;
-        } else {
-            $filename = MODULE_PATH.DIRECTORY_SEPARATOR.$module.
-                    DIRECTORY_SEPARATOR.'idiom'.
-                    DIRECTORY_SEPARATOR.$this->code.
-                    DIRECTORY_SEPARATOR.$filename;
-        }
         if (file_exists($filename)) {
             $xml = @simplexml_load_file($filename);
-            foreach ($xml->item as $item) {
-                $key = (string) $item['key'];
-                $this->storage[$key] = (string) $item;
+            if ($xml) {
+                foreach ($xml->item as $item) {
+                    $key = (string) $item['key'];
+                    $this->storage[$key] = (string) $item;
+                }
+                return true;
             }
-            $this->app->log('Idiom file loaded: '.$filename);
-            return true;
         }
         return false;
 	}
@@ -107,6 +97,27 @@ class Idiom
             return @vsprintf($this->storage[$key], $data);
         }
 		return (string) $this->storage[$key];
+    }
+    
+    /**
+     * Resolves translation filename
+     * @param string $name The requested translation name
+     * @param string $module The requested module name
+     * @return string
+     */
+    public function resolveFilename($name, $module = 'app')
+    {
+        if ($module == 'app') {
+            $filename = IDIOM_PATH.DIRECTORY_SEPARATOR.$this->code.
+                    DIRECTORY_SEPARATOR.$name;
+        } else {
+            $filename = MODULE_PATH.DIRECTORY_SEPARATOR.'enable'.
+                    DIRECTORY_SEPARATOR.$module.
+                    DIRECTORY_SEPARATOR.'idiom'.
+                    DIRECTORY_SEPARATOR.$this->code.
+                    DIRECTORY_SEPARATOR.$name;
+        }
+        return $filename;
     }
     
     /**

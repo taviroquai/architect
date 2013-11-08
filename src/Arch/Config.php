@@ -19,7 +19,11 @@ class Config
      */
     protected $xml;
     
-    protected $required;
+    /**
+     * Holds the required configuration keys
+     * @var array
+     */
+    protected $required = array();
     
     /**
      * Returns a new configuration
@@ -76,18 +80,30 @@ class Config
     public function apply()
     {
         // setup required items
-        $node = $this->xml->xpath('/config/item[@name="BASE_URL"]');
-        define('BASE_URL', (string) $node[0]);
-        $node = $this->xml->xpath('/config/item[@name="INDEX_FILE"]');
-        define('INDEX_FILE', (string) $node[0]);
-        $node = $this->xml->xpath('/config/item[@name="THEME_PATH"]');
-        define('THEME_PATH', (string) $node[0]);
-        $node = $this->xml->xpath('/config/item[@name="MODULE_PATH"]');
-        define('MODULE_PATH', (string) $node[0]);
-        $node = $this->xml->xpath('/config/item[@name="IDIOM_PATH"]');
-        define('IDIOM_PATH', (string) $node[0]);
-        $node = $this->xml->xpath('/config/item[@name="LOG_FILE"]');
-        define('LOG_FILE', (string) $node[0]);
+        if (!defined('BASE_URL')) {
+            $node = $this->xml->xpath('/config/item[@name="BASE_URL"]');
+            define('BASE_URL', (string) $node[0]);
+        }
+        if (!defined('INDEX_FILE')) {
+            $node = $this->xml->xpath('/config/item[@name="INDEX_FILE"]');
+            define('INDEX_FILE', (string) $node[0]);
+        }
+        if (!defined('THEME_PATH')) {
+            $node = $this->xml->xpath('/config/item[@name="THEME_PATH"]');
+            define('THEME_PATH', (string) $node[0]);
+        }
+        if (!defined('MODULE_PATH')) {
+            $node = $this->xml->xpath('/config/item[@name="MODULE_PATH"]');
+            define('MODULE_PATH', (string) $node[0]);
+        }
+        if (!defined('IDIOM_PATH')) {
+            $node = $this->xml->xpath('/config/item[@name="IDIOM_PATH"]');
+            define('IDIOM_PATH', (string) $node[0]);
+        }
+        if (!defined('LOG_FILE')) {
+            $node = $this->xml->xpath('/config/item[@name="LOG_FILE"]');
+            define('LOG_FILE', (string) $node[0]);
+        }
         
         // extra configuration
         foreach ($this->xml->item as $item) {

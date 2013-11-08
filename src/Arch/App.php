@@ -783,11 +783,35 @@ class App implements Messenger
     
     /**
      * Returns a new Idiom object
+     * @param string $code The ISO code
      * @return \Arch\Idiom
      */
-    public function createIdiom()
-    {
-        return new \Arch\Idiom($this);
+    public function createIdiom(
+            $code = null, 
+            $name = 'default.xml', 
+            $module = 'app'
+    ) {
+        // resolve idiom code
+        if (empty($code)) {
+            $code = $this->input->get('idiom');
+            if (empty($code)) {
+                if (defined('DEFAULT_IDIOM')) {
+                    $code = DEFAULT_IDIOM;
+                } else {
+                    $code = 'en';
+                }
+            }
+            $this->session->idiom = $code;
+        }
+        $idiom = new \Arch\Idiom($code);
+        $filename = $idiom->resolveFilename($name, $module);
+        if (!$idiom->loadTranslation($filename)) {
+            $this->log('Translation failed: '.$filename);
+        }
+        
+        // trigger core event
+        $this->triggerEvent('arch.idiom.after.load', $this);
+        return $idiom;
     }
     
     /**
