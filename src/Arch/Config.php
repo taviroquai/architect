@@ -78,6 +78,8 @@ class Config
         // setup required items
         $node = $this->xml->xpath('/config/item[@name="BASE_URL"]');
         define('BASE_URL', (string) $node[0]);
+        $node = $this->xml->xpath('/config/item[@name="INDEX_FILE"]');
+        define('INDEX_FILE', (string) $node[0]);
         $node = $this->xml->xpath('/config/item[@name="THEME_PATH"]');
         define('THEME_PATH', (string) $node[0]);
         $node = $this->xml->xpath('/config/item[@name="MODULE_PATH"]');

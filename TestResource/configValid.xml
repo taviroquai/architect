@@ -14,4 +14,7 @@
     <!-- empty INDEX_FILE if you use URL rewrite -->
     <item name="INDEX_FILE">index.php</item>
     
+    <!-- Default theme -->
+    <item name="DEFAULT_THEME">default</item>
+    
 </config>
