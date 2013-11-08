@@ -36,6 +36,9 @@ class Event
         if (!is_string($name)) {
             throw new \Exception('Invalid event name');
         }
+        if (empty($name)) {
+            throw new \Exception('Invalid event name');
+        }
         $this->name = $name;
         if (!is_callable($callback)) {
             throw new \Exception('Invalid event callback');
