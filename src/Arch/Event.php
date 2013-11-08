@@ -21,14 +21,24 @@ class Event
     protected $callback;
     
     /**
+     * An optional target
+     * @var mixed
+     */
+    protected $target;
+    
+    /**
      * Returns a new event
      * @param string $name The event name
      * @param mixed $callback The event callback
      */
-    public function __construct($name, $callback)
+    public function __construct($name, $callback, $target = null)
     {
         $this->name = $name;
+        if (!is_callable($callback)) {
+            throw new \Exception('Invalid event callback');
+        }
         $this->callback = $callback;
+        $this->target = $target;
     }
     
     /**
@@ -37,9 +47,10 @@ class Event
      */
     public function trigger($target = null)
     {
-        $fn = $this->callback;
-        if (is_callable($fn)) {
-            $fn($target);
+        if (empty($target)) {
+            $target = $this->target;
         }
+        $fn = $this->callback;
+        $fn($target);
     }
 }

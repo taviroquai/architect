@@ -513,12 +513,13 @@ class App implements Messenger
         if ($target === null) {
             $target = $this;
         }
-        if (!is_callable($callback)) {
-            $this->log('Event create failed: '.$eventName);
-        } else {
-        $this->events[$eventName][] = 
-                new \Arch\Event($eventName, $callback, $target);
+        try {
+            $evt = new \Arch\Event($eventName, $callback, $target);
+            $this->events[$eventName][] = $evt;
+        } catch (\Exception $e) {
+            $this->log('Event create failed: '.$e->getMessage(), 'error');
         }
+        
         return $this;
     }
     
