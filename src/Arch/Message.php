@@ -22,8 +22,8 @@ class Message
 
     /**
      * Returns a new message
-     * @param type $text The message text
-     * @param type $cssClass The HTML element class attribute
+     * @param string $text The message text
+     * @param string $cssClass The HTML element class attribute
      */
 	public function __construct($text, $cssClass = 'alert alert-success')
     {
