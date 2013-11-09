@@ -32,40 +32,67 @@ class InputTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Test default cli
+     * Generates $_SERVER data
+     * @return array
      */
-    public function testParseGlobalCli()
+    public function providerDataSERVER()
+    {
+        return array(
+            array('', array('index.php', '/')),
+            array('index.php/', array('index.php'))
+        );
+    }
+    
+    /**
+     * Generates $_GET data
+     * @return array
+     */
+    public function providerDataGET()
+    {
+        return array(
+            array(array('a' => '1', 'b' => '2', 'c' => '3' ), 'b')
+        );
+    }
+    
+    /**
+     * Generates $_POST data
+     * @return array
+     */
+    public function providerDataPOST()
+    {
+        return array(
+            array(array('a' => '1', 'b' => '2', 'c' => '3' ), 'b')
+        );
+    }
+    
+    /**
+     * Test default cli
+     * @param string $request_uri The $_SERVER['request_uri']
+     * @param array $argv The $_SERVER['argv']
+     * @dataProvider providerDataSERVER
+     */
+    public function testParseGlobalCli($request_uri, $argv)
     {
         $index = 1;
-        $data = array('index.php', '/');
-        $expected = $data[$index];
+        $server = array('REQUEST_URI' => $request_uri, 'argv' => $argv);
+        $expected = $server['argv'][$index];
         $input = new \Arch\Input();
-        $server = array('argv' => $expected);
         $input->parseGlobal('cli', $server);
         $result = $input->getAction();
         $this->assertEquals($expected, $result);
     }
     
     /**
-     * Test cgi
-     */
-    public function testParseGlobalCgi()
-    {
-        $expected = '/';
-        $input = new \Arch\Input();
-        $input->parseGlobal('cgi');
-        $result = $input->getAction();
-        $this->assertEquals($expected, $result);
-    }
-    
-    /**
      * Test cli params
+     * @param string $request_uri The $_SERVER['request_uri']
+     * @param array $argv The $_SERVER['argv']
+     * @dataProvider providerDataSERVER
      */
-    public function testCliParams()
+    public function testCliParams($request_uri, $argv)
     {
-        $expected = array('/', 'a', 'b', 'c');
+        $server = array('REQUEST_URI' => $request_uri, 'argv' => $argv);
+        $expected = $server['argv'];
         $input = new \Arch\Input();
-        $server = array('argv' => $expected);
         $input->parseGlobal('cli', $server);
         $result = $input->getParam();
         $this->assertEquals($expected, $result);
@@ -73,14 +100,16 @@ class InputTest extends \PHPUnit_Framework_TestCase
     
     /**
      * Test cli param by index
+     * @param string $request_uri The $_SERVER['request_uri']
+     * @param array $argv The $_SERVER['argv']
+     * @dataProvider providerDataSERVER
      */
-    public function testCliParamByIndex()
+    public function testCliParamByIndex($request_uri, $argv)
     {
-        $data = array('/', 'a', 'b', 'c');
-        $index = 1;
-        $expected = $data[$index];
+        $index = 0;
+        $server = array('REQUEST_URI' => $request_uri, 'argv' => $argv);
+        $expected = $server['argv'][$index];
         $input = new \Arch\Input();
-        $server = array('argv' => $data);
         $input->parseGlobal('cli', $server);
         $result = $input->getParam($index);
         $this->assertEquals($expected, $result);
@@ -88,112 +117,118 @@ class InputTest extends \PHPUnit_Framework_TestCase
     
     /**
      * Test server params
+     * @param string $request_uri The $_SERVER['request_uri']
+     * @param array $argv The $_SERVER['argv']
+     * @dataProvider providerDataSERVER
      */
-    public function testServerParams()
+    public function testServerParams($request_uri, $argv)
     {
-        $expected = array('a', 'b', 'c');
+        $server = array('REQUEST_URI' => $request_uri, 'argv' => $argv);
+        $expected = $server;
         $input = new \Arch\Input();
-        $input->parseGlobal('apache', $expected);
+        $input->parseGlobal('apache', $server);
         $result = $input->server();
         $this->assertEquals($expected, $result);
     }
     
     /**
      * Test server param by key
+     * @param string $request_uri The $_SERVER['request_uri']
+     * @param array $argv The $_SERVER['argv']
+     * @dataProvider providerDataSERVER
      */
-    public function testServerParamByKey()
+    public function testServerParamByKey($request_uri, $argv)
     {
-        $data = array('a' => '1', 'b' => '2', 'c' => '3');
-        $key = 'b';
-        $expected = $data[$key];
+        $key = 'argv';
+        $server = array('REQUEST_URI' => $request_uri, 'argv' => $argv);
+        $expected = $server[$key];
         $input = new \Arch\Input();
-        $input->setHttpServer($data);
+        $input->setHttpServer($server);
         $result = $input->server($key);
         $this->assertEquals($expected, $result);
     }
     
     /**
      * Test HTTP GET params
+     * @param $get The $_GET params
+     * @dataProvider providerDataGET
      */
-    public function testGetParams()
+    public function testGetParams($get)
     {
-        $expected = array('a', 'b', 'c');
+        $expected = $get;
         $input = new \Arch\Input();
-        $input->setHttpGet($expected);
-        $input->parseGlobal('apache');
+        $input->setHttpGet($get);
         $result = $input->get();
         $this->assertEquals($expected, $result);
     }
     
     /**
      * Test HTTP GET param by index
+     * @param $get The $_GET params
+     * @dataProvider providerDataGET
      */
-    public function testGetParamByIndex()
+    public function testGetParamByIndex($get, $index)
     {
-        $data = array('a', 'b', 'c');
-        $index = 0;
-        $expected = $data[$index];
+        $expected = $get[$index];
         $input = new \Arch\Input();
-        $input->setHttpGet($data);
-        $input->parseGlobal('apache');
+        $input->setHttpGet($get);
         $result = $input->getParam($index);
         $this->assertEquals($expected, $result);
     }
     
     /**
      * Test HTTP GET param by key
+     * @param $get The $_GET params
+     * @dataProvider providerDataGET
      */
-    public function testGetParamByKey()
+    public function testGetParamByKey($get, $key)
     {
-        $data = array('a' => '1', 'b' => '2', 'c' => '3');
-        $key = 'b';
-        $expected = $data[$key];
+        $expected = $get[$key];
         $input = new \Arch\Input();
-        $input->setHttpGet($data);
-        $input->parseGlobal('apache');
+        $input->setHttpGet($get);
         $result = $input->get($key);
         $this->assertEquals($expected, $result);
     }
     
     /**
      * Test HTTP POST params
+     * @param $post The $_POST params
+     * @dataProvider providerDataPOST
      */
-    public function testPostParams()
+    public function testPostParams($post)
     {
-        $expected = array('a', 'b', 'c');
+        $expected = $post;
         $input = new \Arch\Input();
-        $input->setHttpPost($expected);
-        $input->parseGlobal('apache');
+        $input->setHttpPost($post);
         $result = $input->post();
         $this->assertEquals($expected, $result);
     }
     
     /**
      * Test HTTP POST param by index
+     * @param $post The $_POST params
+     * @dataProvider providerDataPOST
      */
-    public function testPostParamByIndex()
+    public function testPostParamByIndex($post, $index)
     {
-        $data = array('a', 'b', 'c');
-        $index = 0;
-        $expected = $data[$index];
+        $expected = $post[$index];
         $input = new \Arch\Input();
-        $input->setHttpPost($data);
-        $input->parseGlobal('apache');
+        $input->setHttpPost($post);
         $result = $input->getParam($index);
         $this->assertEquals($expected, $result);
     }
     
     /**
      * Test HTTP POST param by key
+     * @param $post The $_POST params
+     * @param $key The param
+     * @dataProvider providerDataPOST
      */
-    public function testPostParamByKey()
+    public function testPostParamByKey($post, $key)
     {
-        $data = array('a' => '1', 'b' => '2', 'c' => '3');
-        $key = 'b';
-        $expected = $data[$key];
+        $expected = $post[$key];
         $input = new \Arch\Input();
-        $input->setHttpPost($data);
-        $input->parseGlobal('apache');
+        $input->setHttpPost($post);
         $result = $input->post($key);
         $this->assertEquals($expected, $result);
     }
