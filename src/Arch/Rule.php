@@ -58,7 +58,7 @@ class Rule
     public function setErrorMessage($msg)
     {
         if  (!is_string($msg) || empty($msg)) {
-            throw new \Exception('Invalid rule name');
+            throw new \Exception('Invalid error message');
         }
         $this->msg = $msg;
         return $this;
@@ -73,7 +73,7 @@ class Rule
     public function setAction($action)
     {
         if  (!is_string($action) || empty($action)) {
-            throw new \Exception('Invalid rule name');
+            throw new \Exception('Invalid rule action');
         }
         $this->action = $action;
         return $this;
