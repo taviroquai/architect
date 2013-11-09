@@ -4,7 +4,6 @@ namespace Arch;
 
 /**
  * Session class
- * This uses native PHP $_SESSION
  */
 class Session
 {
@@ -20,6 +19,14 @@ class Session
     public function __construct()
     {
         $this->storage = array();
+    }
+    
+    /**
+     * Clears the storage
+     */
+    public function __destruct()
+    {
+        unset($this->storage);
     }
 
     /**
@@ -45,14 +52,6 @@ class Session
         foreach ($this->storage as $prop => $value) {
             $data[$prop] = $value;
         }
-    }
-
-    /**
-     * Reset storage
-     */
-    public function destroy()
-    {
-        $this->storage = array();
     }
     
     /**
