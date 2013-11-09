@@ -43,7 +43,8 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
     {
         $logger = new \Arch\Logger(RESOURCE_PATH.'/dummy');
         $result = $logger->isOpen();
-        $this->assertFalse($result);
+        $this->assertTrue($result);
+        $logger->close();
     }
     
     /**
@@ -59,6 +60,8 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         
         $result2 = $logger->log($message, 'error', true);
         $this->assertTrue($result2);
+        
+        $logger->close();
     }
     
     public function testCloseLogger()
