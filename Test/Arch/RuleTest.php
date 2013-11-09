@@ -12,7 +12,7 @@ class RuleTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidRule()
     {
-        new \Arch\Rule();
+        new \Arch\Rule(null, new \Arch\Input);
     }
     
     /**
@@ -20,7 +20,7 @@ class RuleTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidRuleMessage()
     {
-        $rule = new \Arch\Rule();
+        $rule = new \Arch\Rule(null, new \Arch\Input);
         $rule->setErrorMessage(NULL);
     }
     
@@ -29,7 +29,7 @@ class RuleTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidRuleAction()
     {
-        $rule = new \Arch\Rule();
+        $rule = new \Arch\Rule(null, new \Arch\Input);
         $rule->setAction(NULL);
     }
 
@@ -40,7 +40,7 @@ class RuleTest extends \PHPUnit_Framework_TestCase
     public function testCreateRule()
     {
         $expected = 'test';
-        $rule = new \Arch\Rule($expected);
+        $rule = new \Arch\Rule($expected, new \Arch\Input);
         $result = $rule->getName();
         $this->assertEquals($expected, $result);
         
