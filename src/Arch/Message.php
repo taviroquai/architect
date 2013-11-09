@@ -27,6 +27,9 @@ class Message
      */
 	public function __construct($text, $cssClass = 'alert alert-success')
     {
+        if  (!is_string($text) || empty($text)) {
+            throw new \Exception('Invalid filename');
+        }
 		$this->text = $text;
 		$this->cssClass = $cssClass;
 	}
