@@ -44,6 +44,9 @@ class Rule
      */
     public function __construct($name)
     {
+        if  (!is_string($name) || empty($name)) {
+            throw new \Exception('Invalid rule name');
+        }
         $this->input = $name;
     }
     
