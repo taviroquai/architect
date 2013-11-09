@@ -9,9 +9,15 @@ class Rule
 {
     /**
      * Holds the user input
-     * @var string
+     * @var \Arch\Input
      */
     protected $input;
+    
+    /**
+     * Holds the rule input name
+     * @var string
+     */
+    protected $name;
     
     /**
      * Holds the default validation message
@@ -42,12 +48,13 @@ class Rule
      * Returns a new input validation rule
      * @param string $name The input param
      */
-    public function __construct($name)
+    public function __construct($name, \Arch\Input $input)
     {
         if  (!is_string($name) || empty($name)) {
             throw new \Exception('Invalid rule name');
         }
-        $this->input = $name;
+        $this->name = $name;
+        $this->input = $input;
     }
     
     /**
@@ -120,7 +127,7 @@ class Rule
      */
     public function getName()
     {
-        return $this->input;
+        return $this->name;
     }
     
     /**

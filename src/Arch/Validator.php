@@ -56,7 +56,7 @@ class Validator
      */
     public function createRule($name)
     {
-        return new \Arch\Rule\Action($name, $this->app);
+        return new \Arch\Rule\Action($name, $this->app->input);
     }
     
     /**

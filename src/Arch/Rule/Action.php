@@ -12,9 +12,9 @@ class Action extends \Arch\Rule
      * Returns a new input validation rule
      * @param string $name The input param
      */
-    public function __construct($name, \Arch\App $app)
+    public function __construct($name, \Arch\Input $input)
     {
-        parent::__construct($name, $app);
+        parent::__construct($name, $input);
     }
     
     /**
@@ -68,8 +68,8 @@ class Action extends \Arch\Rule
      */
     public function equals($v, $confirm)
     {
-        $type = $this->app->input->server('REQUEST_METHOD');
-        $confirm_value = $this->app->input->{$type}($confirm);
+        $type = $this->input->server('REQUEST_METHOD');
+        $confirm_value = $this->input->{$type}($confirm);
         return (bool) ($v === $confirm_value);
     }
 

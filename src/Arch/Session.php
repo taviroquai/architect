@@ -6,73 +6,64 @@ namespace Arch;
  * Session class
  * This uses native PHP $_SESSION
  */
-class Session implements Messenger
+class Session
 {
+    /**
+     * Holds a list of values
+     * @var array
+     */
     protected $storage;
-    protected $app;
     
-    public function __construct(\Arch\App &$app)
+    /**
+     * Returns a new Session
+     */
+    public function __construct()
     {
-        $this->app = $app;
+        $this->storage = array();
     }
 
-        /**
+    /**
      * Loads data from $_SESSION into storage
      * Initiates _message and login values
      */
-    public function load()
+    public function load(&$data = array())
     {
-        $this->storage = array();
-        if (empty($this->storage)) {
-            session_start();
-        }
-        $this->storage = $_SESSION;
+        $this->storage = $data;
         if (!isset($this->storage['arch.message'])) {
             $this->storage['arch.message'] = array();
         }
-        
-        // trigger core event
-        $this->app->triggerEvent('arch.session.after.load', $this);
-        
-        $this->app->log('Session loaded');
     }
     
     /**
      * Saves current storage to $_SESSION and close session
      */
-    public function save()
+    public function save(&$data = array())
     {
-        foreach ($this->storage as $prop => $value) {
-            $_SESSION[$prop] = $value;
+        foreach ($data as $prop => &$value) {
+            unset($value);
         }
-        
-        // trigger core event
-        \Arch\App::Instance()
-                ->triggerEvent('arch.session.after.save', $_SESSION);
-        
-        // finally close session
-        session_write_close();
+        foreach ($this->storage as $prop => $value) {
+            $data[$prop] = $value;
+        }
     }
 
     /**
-     * Destroys $_SESSION and reset storage
+     * Reset storage
      */
     public function destroy()
     {
         $this->storage = array();
-        session_destroy();
     }
     
     /**
-     * Adds a screen message
+     * Stores a message in session
      * To display messages use: \Arch\App::Instance()->showMessages($template);
      * 
-     * @param string $text
-     * @param string $cssClass
+     * @param \Arch\Message $message
      */
-    public function addMessage($text, $cssClass = 'alert alert-success')
+    public function addMessage(\Arch\Message $message)
     {
-        $this->storage['arch.message'][] = new Message($text, $cssClass);
+        $this->storage['arch.message'][] = $message;
     }
     
     /**

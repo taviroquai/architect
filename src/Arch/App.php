@@ -142,7 +142,7 @@ class App implements Messenger
         $this->log('Loaded configuration from '.$filename, 'access', true);
         
         // set session handler
-        $this->session = new Session($this);
+        $this->session = new Session();
 
         // set default output
         $this->theme = new View();
@@ -194,8 +194,9 @@ class App implements Messenger
                 $this->loadModules();
             }
 
-            // load session
-            $this->session->load();
+            // trigger core event
+            $this->triggerEvent('arch.session.after.load', $this->session);
+            $this->log('Session loaded');
 
             // load default theme if exists
             if (defined('DEFAULT_THEME')) {
@@ -368,8 +369,8 @@ class App implements Messenger
         // close output buffer
         if (ob_get_status()) ob_end_flush();
         
-        // save session
-        $this->session->save();
+        // trigger core event
+        $this->triggerEvent('arch.session.after.save', $this->session);
         $this->log('Session closed');
         
         // close log handler
@@ -521,7 +522,7 @@ class App implements Messenger
      */
     public function addMessage($text, $cssClass = 'alert alert-success')
     {
-        $this->session->addMessage($text, $cssClass);
+        $this->session->addMessage(new \Arch\Message($text, $cssClass));
         return $this;
     }
 
