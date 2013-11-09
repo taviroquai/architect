@@ -18,7 +18,6 @@ env:
 
 # execute any number of scripts before the test run, custom env's are available as variables
 before_script:
-  - /home/travis/.phpenv/versions/5.3.26/bin/composer.phar self-update
   - if [[ "$DB" == "mysql" ]]; then mysql -e "create database IF NOT EXISTS architect;" -uroot; fi
 
 # omitting "script:" will default to phpunit
