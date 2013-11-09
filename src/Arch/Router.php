@@ -31,6 +31,7 @@ class Router
             if (!file_exists($filename)) $app->redirect ('/404');
             else {
                 $app->output->readfile($filename);
+                exit();
             }
         });
     }

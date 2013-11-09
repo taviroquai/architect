@@ -199,11 +199,5 @@ class Output
 
         $this->sendHeaders();
         readfile($filename);
-        $this->cleanExit();
-    }
-    
-    protected function cleanExit()
-    {
-        exit();
     }
 }
