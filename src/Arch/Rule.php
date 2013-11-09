@@ -57,6 +57,9 @@ class Rule
      */
     public function setErrorMessage($msg)
     {
+        if  (!is_string($msg) || empty($msg)) {
+            throw new \Exception('Invalid rule name');
+        }
         $this->msg = $msg;
         return $this;
     }
@@ -69,6 +72,9 @@ class Rule
      */
     public function setAction($action)
     {
+        if  (!is_string($action) || empty($action)) {
+            throw new \Exception('Invalid rule name');
+        }
         $this->action = $action;
         return $this;
     }
@@ -76,7 +82,7 @@ class Rule
     /**
      * Sets the validation actions params
      * Please look at the validation manual
-     * @param string $params The action params
+     * @param mixed $params The action params
      * @return \Arch\Rule
      */
     public function setParams($params)
@@ -92,7 +98,7 @@ class Rule
      */
     public function setResult($result)
     {
-        $this->result = $result;
+        $this->result = (boolean) $result;
         return $this;
     }
     
