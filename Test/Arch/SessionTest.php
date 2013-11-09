@@ -97,5 +97,32 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $result = isset($session->param);
         $this->assertEquals($expected, $result);
     }
+    
+    /**
+     * Test get messages
+     */
+    public function testGetMessages()
+    {
+        $session = new \Arch\Session();
+        $expected = array();
+        $this->assertEquals($expected, $session->getMessages());
+        
+        $message = new \Arch\Message('test');
+        $expected = array($message);
+        $session->addMessage($message);
+        $this->assertEquals($expected, $session->getMessages());
+    }
+    
+    /**
+     * Test clear messages
+     */
+    public function testClearMessages()
+    {
+        $session = new \Arch\Session();
+        $expected = array();
+        $session->addMessage(new \Arch\Message('test'));
+        $session->clearMessages();
+        $this->assertEquals($expected, $session->getMessages());
+    }
 
 }
