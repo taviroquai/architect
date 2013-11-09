@@ -7,33 +7,18 @@ namespace Arch;
  */
 class Router
 {
-    protected $route = array();
+    /**
+     * Holds the list of routes
+     * @var array
+     */
+    protected $route;
     
-    public function __construct(\Arch\App $app)
+    /**
+     * Returns a new router
+     */
+    public function __construct()
     {
-        // Add route 404! Show something if everything else fails...
-        $this->addRoute('/404', function() use ($app) {
-            $app->output->setHeaders(
-                array('HTTP/1.0 404 Not Found', 'Status: 404 Not Found')
-                );
-            
-            // set 404 content
-            $content = '<h1>404 Not Found</h1>';
-            $app->output->setContent($content);
-        });
-        
-        $this->addRoute('/arch/asset/(:any)/(:any)', 
-                function($dir, $filename) use ($app) {
-            $filename = ARCH_PATH.DIRECTORY_SEPARATOR.
-                    'theme'.DIRECTORY_SEPARATOR.
-                    'architect'.DIRECTORY_SEPARATOR.
-                     $dir.DIRECTORY_SEPARATOR.$filename;
-            if (!file_exists($filename)) $app->redirect ('/404');
-            else {
-                $app->output->readfile($filename);
-                exit();
-            }
-        });
+        $this->route = array();
     }
     
     /**
@@ -41,8 +26,8 @@ class Router
      * Action must be an anonymous function
      * TODO: pass url params to the action callback
      * 
-     * @param string $key
-     * @param function $action
+     * @param string $key The route key
+     * @param function $action A callable variable
      * @return boolean
      */
     public function addRoute($key, $action)
@@ -57,14 +42,14 @@ class Router
     /**
      * Returns the route action
      * 
-     * @param string $key
+     * @param string $key The route key
+     * @param \Arch\Input $input The input provider
      * @return boolean|function
      */
-    public function getRoute($action)
+    public function getRoute($action, \Arch\Input $input)
     {
         foreach ($this->route as $key => $cb) {
-            $match = \Arch\App::Instance()->input->
-                    getActionParams($key, $action);
+            $match = $input->getActionParams($key, $action);
             if ( $match && is_callable($cb)) {
                 return $cb;
             }

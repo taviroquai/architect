@@ -168,7 +168,8 @@ class App implements Messenger
         
         // set default routes
         $this->router = new Router($this);
-    }
+        $this->addCoreRoutes();
+    }    
     
     public function run()
     {
@@ -212,13 +213,48 @@ class App implements Messenger
         }
     }
     
+    /**
+     * Add core routes. Return something!
+     */
+    private function addCoreRoutes()
+    {
+        // app alias
+        $app = $this;
+        
+        // Add route 404! Show something if everything else fails...
+        $this->router->addRoute('/404', function() use ($app) {
+            $app->output->setHeaders(
+                array('HTTP/1.0 404 Not Found', 'Status: 404 Not Found')
+            );
+            // set 404 content
+            $content = '<h1>404 Not Found</h1>';
+            $app->output->setContent($content);
+        });
+        
+        // Add get static core file route
+        $this->router->addRoute(
+                '/arch/asset/(:any)/(:any)', 
+                function($dir, $filename) use ($app) {
+            $filename = ARCH_PATH.DIRECTORY_SEPARATOR.
+                    'theme'.DIRECTORY_SEPARATOR.
+                    'architect'.DIRECTORY_SEPARATOR.
+                     $dir.DIRECTORY_SEPARATOR.$filename;
+            if (!file_exists($filename)) $app->redirect ('/404');
+            else {
+                $app->output->readfile($filename);
+                exit();
+            }
+        });
+    }
+    
     private function execute()
     {
-        $action = $this->input->getAction();
-        $callback = $this->router->getRoute($this->input->getAction());
+        $input =& $this->input;
+        $action = $input->getAction();
+        $callback = $this->router->getRoute($input->getAction(), $input);
 
         if ($callback === false) {
-            if ($this->router->getRoute('/404') && $action != '/404') {
+            if ($this->router->getRoute('/404', $input) && $action != '/404') {
                 $action = '/404';
                 $callback = $this->router->getRoute($action);
             }
@@ -228,7 +264,7 @@ class App implements Messenger
         $this->triggerEvent('arch.action.before.call', $action);
         
         $this->log('User action: '.$action);
-        return call_user_func_array($callback, $this->input->getParam());
+        return call_user_func_array($callback, $input->getParam());
     }
     
     private function initDatabase()
