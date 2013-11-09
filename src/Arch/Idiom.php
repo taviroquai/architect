@@ -26,10 +26,7 @@ class Idiom
      */
 	public function __construct($code = 'en')
     {
-        if (!is_string($code)) {
-            throw new \Exception('Invalid ISO code');
-        }
-        if (empty($code)) {
+        if (!is_string($code) || empty($code)) {
             throw new \Exception('Invalid ISO code');
         }
         $this->code = $code;

@@ -13,13 +13,24 @@ class Image {
      * Image source path (only the basename)
      * @var string
      */
-    public $filename = '';
+    public $filename;
     
     /**
      * Creates a new image
      * @param string $filename The image file path
      */
     public function __construct($filename) {
+        if  (
+                !is_string($filename) || 
+                empty($filename) || 
+                !file_exists($filename)
+            )
+        {
+            throw new \Exception('Invalid filename');
+        }
+        if (!is_array(getimagesize($filename))) {
+            throw new \Exception('Invalid image');
+        }
         $this->filename = $filename;
     }
     
@@ -27,6 +38,7 @@ class Image {
      * Creates and saves a thumb image
      * @param string $filename The target image file path or directory
      * @param int $thumbSize The desired proportional size in px
+     * @return boolean
      */
     public function saveThumb($filename, $thumbSize = 60) {
 
@@ -84,9 +96,6 @@ class Image {
         if (is_dir($filename)) {
             $filename = rtrim($filename, '/').'/'.basename ($this->filename);
         }
-        return imagejpeg($thumb, $filename, 90);
-    }
-    
+        return @imagejpeg($thumb, $filename, 90);
+    }    
 }
-
-?>

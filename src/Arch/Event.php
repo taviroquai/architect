@@ -33,10 +33,7 @@ class Event
      */
     public function __construct($name, $callback, $target = null)
     {
-        if (!is_string($name)) {
-            throw new \Exception('Invalid event name');
-        }
-        if (empty($name)) {
+        if (!is_string($name) || empty($name)) {
             throw new \Exception('Invalid event name');
         }
         $this->name = $name;
