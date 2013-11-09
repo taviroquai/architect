@@ -58,7 +58,7 @@ class Rule
     public function setErrorMessage($msg)
     {
         if  (!is_string($msg) || empty($msg)) {
-            throw new \Exception('Invalid error message');
+            throw new \Exception('Invalid rule error message');
         }
         $this->msg = $msg;
         return $this;
