@@ -67,6 +67,15 @@ class Logger
     }
     
     /**
+     * Returns true if file is open, or false if not open
+     * @return boolean
+     */
+    public function isOpen()
+    {
+        return is_resource($this->handler);
+    }
+    
+    /**
      * Closes the resource handler
      * @return boolean
      */
