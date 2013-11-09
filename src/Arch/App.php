@@ -814,7 +814,7 @@ class App implements Messenger
     public function query($tableName)
     {
         if (empty($this->db)) $this->initDatabase ();
-        $table = new \Arch\Table($tableName, $this->db);
+        $table = new \Arch\Table($tableName, $this->db, $this->logger);
         return $table;
     }
     

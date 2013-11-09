@@ -10,11 +10,41 @@ namespace Arch;
  */
 class Table
 {
+    /**
+     * Holds the ralational table name
+     * @var string
+     */
     protected $name;
+    
+    /**
+     * Holds the PDO instance
+     * @var \PDO
+     */
     protected $db;
+    
+    /**
+     * Holds the current statement
+     * @var \PDOStatement
+     */
     protected $stm;
+    
+    /**
+     * Holds the final SQL
+     * @var string
+     */
     protected $sql;
+    
+    /**
+     * The root node
+     * @var \stdClass
+     */
     protected $node;
+    
+    /**
+     * Holds the error logger
+     * @var \Arch\Logger
+     */
+    protected $logger;
     
     /**
      * Returns a new Table to start querying
@@ -24,10 +54,11 @@ class Table
      * @param string $name The tablename
      * @param PDO $db The PDO database handler to query
      */
-    public function __construct($name, \PDO $db = null)
+    public function __construct($name, \PDO $db = null, \Arch\Logger $logger)
     {
         $this->name = $name;
         $this->db = $db;
+        $this->logger = $logger;
         $this->node = $this->createSelect();
     }
     
@@ -321,8 +352,6 @@ class Table
     public function execute($sql = '', $params = null, $redirect = '/404')
     {
         if (empty($sql)) {
-            // build SQL from this properies
-            
             // build operation syntax
             $sql = self::nodeToString($this->node);
         }
@@ -357,7 +386,7 @@ class Table
                     $params = array_merge ($params, $this->node->where);
                 }
             }
-            \Arch\App::Instance()->log('DB query params count: '.count($params));
+            $this->logger->log('DB query params count: '.count($params));
             
             // build PDO params
             if (is_array($params) && !empty($params)) {
@@ -373,29 +402,20 @@ class Table
             $this->stm->execute();
         } catch (\PDOException $e) {
             
-            \Arch\App::Instance()->addMessage('Something wrong happened! 
-                    Please try later.', 'alert alert-error');
-            
             // fail if there is no statement
             if (empty($this->stm)) {
-                \Arch\App::Instance()->log('Invalid database statement');
+                $this->logger->log('Invalid database statement');
             } else {
                 // Log the error information and show an error page to the user
-                \Arch\App::Instance()->log('DB query failed: '.
+                $this->logger->log('DB query failed: '.
                         $this->stm->queryString, 'error');
-                \Arch\App::Instance()->log('Details: '.$e->getMessage(), 'error');
+                $this->logger->log('Details: '.$e->getMessage(), 'error');
             }
-            if (empty($redirect)) {
-                return false;
-            }
-            \Arch\App::Instance()->redirect(
-                \Arch\App::Instance()->url($redirect)
-            );
+            return false;
         }
         
         // log the valid query
-        \Arch\App::Instance()->log(
-                'DB query is valid: '.$this->stm->queryString);
+        $this->logger->log('DB query is valid: '.$this->stm->queryString);
         
         // return PDOStatement for further operations
         return $this->stm;
@@ -422,18 +442,17 @@ class Table
             $r = $this->db->exec($sql);
             if ( $r === false) {
                 $this->db->rollBack();
-                throw new \Exception();
+                throw new \Exception('Rollback. Something went very wrong');
             }
             $this->db->commit();
             return true;
             
         } catch (\PDOException $e) {
-            
+            $this->logger->log('PDO Exception: '.$e->getMessage(), 'error');
         } catch (\Exception $e) {
-            
+            $this->logger->log('Exception: '.$e->getMessage(), 'error');
         }
-        \Arch\App::Instance()->log($e->getMessage(), 'error');
-        \Arch\App::Instance()->redirect(\Arch\App::Instance()->url('/404'));
+        return false;
     }
     
     /**
