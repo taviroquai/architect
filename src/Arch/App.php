@@ -151,7 +151,7 @@ class App implements Messenger
         // set input
         $this->input = new \Arch\Input();
         if ($_GET) $this->input->setHttpGet ($_GET);
-        if ($_POST) $this->input->setHttpGet ($_POST);
+        if ($_POST) $this->input->setHttpPost ($_POST);
         if (!empty($_FILES)) $this->input->setHttpFiles($_FILES);
         $this->input->setRawInput(file_get_contents("php://input"));
         $this->input->parseGlobal(php_sapi_name(), $_SERVER);
