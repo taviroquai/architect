@@ -308,7 +308,19 @@ class App implements Messenger
 
         // send output
         $this->log('Sending output...');
-        if (!$this->input->isCli()) $this->output->sendHeaders();
+        if (!$this->input->isCli()) {
+            //trigger core event
+            $this->triggerEvent(
+                'arch.http.before.headers', 
+                $this->output->getHeaders()
+            );
+            $this->output->sendHeaders();
+        }
+        //trigger core event
+        $this->triggerEvent(
+            'arch.output.before.send',
+            $this->output->getContent()
+        );
         $this->output->send();
     }
     

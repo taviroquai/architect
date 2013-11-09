@@ -7,15 +7,30 @@ namespace Arch;
  */
 class Output
 {
+    
+    /**
+     * Holds the output type, defaults to HTTP
+     * @var string
+     */
     protected $type;
+    
+    /**
+     * Holds the HTTP headers
+     * @var array
+     */
     protected $headers = array();
+    
+    /**
+     * Holds the output content
+     * @var string
+     */
     protected $content;
     
     /**
-     * Constructor
+     * Returns a new Output Object
      * 
-     * @param string $content
-     * @param string $type // TODO
+     * @param string $content The output content
+     * @param string $type The output type, defaults to HTTP
      */
     public function __construct($content = '', $type = 'HTTP')
     {
@@ -26,7 +41,7 @@ class Output
     /**
      * Sets the output content string
      * 
-     * @param string $content
+     * @param string $content The content to be sent
      * @return \Arch\Output
      */
     public function setContent($content)
@@ -36,17 +51,17 @@ class Output
     }
     
     /**
-     * return the output content
+     * Returns the output content
      * @return string
      */
-    public function getContent()
+    public function & getContent()
     {
         return $this->content;
     }
     
     /**
      * Sets HTTP headers to be used on HTTP type
-     * @param array $headers
+     * @param array $headers The list of headers to be sent
      * @return \Arch\Output
      */
     public function setHeaders($headers)
@@ -56,14 +71,19 @@ class Output
     }
     
     /**
+     * Returns the output headers
+     * @return array
+     */
+    public function & getHeaders()
+    {
+        return $this->headers;
+    }
+    
+    /**
      * Sends HTTP Headers
      */
     public function sendHeaders()
-    {
-        //trigger core event
-        \Arch\App::Instance()
-                ->triggerEvent('arch.http.before.headers', $this->headers);
-        
+    {        
         if (!empty($this->headers)) {
             foreach ($this->headers as $item) {
                 header($item);
@@ -131,13 +151,13 @@ class Output
      */
     public function send()
     {
-        //trigger core event
-        \Arch\App::Instance()
-                ->triggerEvent('arch.output.before.send', $this->content);
-        
         echo $this->content;
     }
     
+    /**
+     * Outputs a static file
+     * @param string $filename
+     */
     public function readfile($filename) {
         
         // clear headers
@@ -179,6 +199,11 @@ class Output
 
         $this->sendHeaders();
         readfile($filename);
+        $this->cleanExit();
+    }
+    
+    protected function cleanExit()
+    {
         exit();
     }
 }
