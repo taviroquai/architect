@@ -36,7 +36,7 @@ class Input
      */
     public function parseGlobal(
         $api    = 'server', 
-        $server = array('REQUEST_URI' => '/')
+        $server = array('REQUEST_URI' => '/', 'argv' => array())
     ) {
         $this->api = $api;
         if ($server) $this->httpServer = $server;

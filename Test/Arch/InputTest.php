@@ -7,29 +7,6 @@
  */
 class InputTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * Test create action
-     */
-    public function testCreateAction()
-    {
-        $expected = '/';
-        $input = new \Arch\Input($expected);
-        $result = $input->getAction();
-        $this->assertEquals($expected, $result);
-    }
-    
-    /**
-     * Test default global input
-     */
-    public function testParseGlobalServer()
-    {
-        $expected = '/';
-        $input = new \Arch\Input();
-        $input->setRawInput('');
-        $input->parseGlobal();
-        $result = $input->getAction();
-        $this->assertEquals($expected, $result);
-    }
     
     /**
      * Generates $_SERVER data
@@ -66,6 +43,30 @@ class InputTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Test create action
+     */
+    public function testCreateAction()
+    {
+        $expected = '/';
+        $input = new \Arch\Input($expected);
+        $result = $input->getAction();
+        $this->assertEquals($expected, $result);
+    }
+    
+    /**
+     * Test default global input
+     */
+    public function testParseGlobalServer()
+    {
+        $expected = '/';
+        $input = new \Arch\Input();
+        $input->setRawInput('');
+        $input->parseGlobal();
+        $result = $input->getAction();
+        $this->assertEquals($expected, $result);
+    }
+    
+    /**
      * Test default cli
      * @param string $request_uri The $_SERVER['request_uri']
      * @param array $argv The $_SERVER['argv']
@@ -75,7 +76,8 @@ class InputTest extends \PHPUnit_Framework_TestCase
     {
         $index = 1;
         $server = array('REQUEST_URI' => $request_uri, 'argv' => $argv);
-        $expected = $server['argv'][$index];
+        $expected = '/';
+        if (isset($server['argv'][$index])) $expected = $server['argv'][$index];
         $input = new \Arch\Input();
         $input->parseGlobal('cli', $server);
         $result = $input->getAction();
@@ -163,20 +165,6 @@ class InputTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Test HTTP GET param by index
-     * @param $get The $_GET params
-     * @dataProvider providerDataGET
-     */
-    public function testGetParamByIndex($get, $index)
-    {
-        $expected = $get[$index];
-        $input = new \Arch\Input();
-        $input->setHttpGet($get);
-        $result = $input->getParam($index);
-        $this->assertEquals($expected, $result);
-    }
-    
-    /**
      * Test HTTP GET param by key
      * @param $get The $_GET params
      * @dataProvider providerDataGET
@@ -201,20 +189,6 @@ class InputTest extends \PHPUnit_Framework_TestCase
         $input = new \Arch\Input();
         $input->setHttpPost($post);
         $result = $input->post();
-        $this->assertEquals($expected, $result);
-    }
-    
-    /**
-     * Test HTTP POST param by index
-     * @param $post The $_POST params
-     * @dataProvider providerDataPOST
-     */
-    public function testPostParamByIndex($post, $index)
-    {
-        $expected = $post[$index];
-        $input = new \Arch\Input();
-        $input->setHttpPost($post);
-        $result = $input->getParam($index);
         $this->assertEquals($expected, $result);
     }
     
