@@ -28,15 +28,18 @@ class Router
      * 
      * @param string $key The route key
      * @param function $action A callable variable
-     * @return boolean
+     * @return \Arch\Router
      */
     public function addRoute($key, $action)
     {
+        if  (!is_string($key) || empty($key)) {
+            throw new \Exception('Invalid route key');
+        }
         if (!is_callable($action)) {
-            return false;
+            throw new \Exception('Invalid route callback');
         }
         $this->route[$key] = $action;
-        return true;
+        return $this;
     }
     
     /**
