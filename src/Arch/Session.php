@@ -33,7 +33,7 @@ class Session
      * Loads data from $_SESSION into storage
      * Initiates _message and login values
      */
-    public function load(&$data = array())
+    public function load($data = array())
     {
         $this->storage = $data;
         if (!isset($this->storage['arch.message'])) {
