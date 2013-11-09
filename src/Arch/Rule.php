@@ -7,12 +7,34 @@ namespace Arch;
  */
 class Rule
 {
-    
-    protected $app;
+    /**
+     * Holds the user input
+     * @var string
+     */
     protected $input;
+    
+    /**
+     * Holds the default validation message
+     * @var string
+     */
     protected $msg = 'Invalid input';
+    
+    /**
+     * Holds the default validation action
+     * @var string
+     */
     protected $action = 'exists';
+    
+    /**
+     * Holds the additional input params
+     * @var array
+     */
     protected $params = array();
+    
+    /**
+     * Holds the rule validation result
+     * @var boolean
+     */
     protected $result = true;
 
 
@@ -20,10 +42,9 @@ class Rule
      * Returns a new input validation rule
      * @param string $name The input param
      */
-    public function __construct($name, \Arch\App $app)
+    public function __construct($name)
     {
         $this->input = $name;
-        $this->app = $app;
     }
     
     /**
