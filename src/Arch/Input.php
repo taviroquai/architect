@@ -7,33 +7,48 @@ namespace Arch;
  */
 class Input
 {
+    protected $api = 'apache';
     protected $httpGet = array();
     protected $httpPost = array();
     protected $httpServer = array();
+    protected $params = array();
     protected $files = array();
     protected $raw;
-    protected $api;
-    protected $params = array();
     protected $action;
     
     /**
      * Constructor
-     * Default $_GET, $_POST, $_FILES, $_SERVER and 'php://input' is parsed
+     * 
      */
-    public function __construct()
+    public function __construct($action = '')
     {
-        $this->api = php_sapi_name();
-        if ($_GET) $this->httpGet = $_GET;
-        if ($_POST) $this->httpPost = $_POST;
-        if ($_SERVER) $this->httpServer = $_SERVER;
-        if (!empty($_FILES)) {
-            $this->remapFiles($_FILES);
+        $this->action = $action;
+    }
+    
+    /**
+     * Parse global server input
+     * @param string $api
+     * @param null|array $get
+     * @param null|array $post
+     * @param null|array $server
+     * @param null|array $files
+     * @param null|string $raw
+     */
+    public function parseGlobal(
+        $api    = 'server', 
+        $server = array('REQUEST_URI' => '/')
+    ) {
+        $this->api = $api;
+        if ($server) $this->httpServer = $server;
+        if ($this->isCli()) {
+            $this->params = $this->httpServer['argv'];
+        } else {
+            if (!empty($this->httpGet)) {
+                $this->params = array_values($this->httpGet);
+            } elseif (!empty($this->httpPost)) {
+                $this->params = array_values($this->httpPost);
+            }
         }
-        $this->raw = file_get_contents("php://input");
-        $this->getAction();
-        unset($_GET);
-        unset($_POST);
-        unset($_FILES);
     }
     
     /**
@@ -54,9 +69,6 @@ class Input
      */
     public function get($param = null)
     {
-        if ($this->api == 'cli') {
-            return $this->params;
-        }
         if (empty($param)) {
             return $this->httpGet;
         }
@@ -127,30 +139,40 @@ class Input
     {
         // parse action if no action is set
         if (empty($this->action)) {
-            $this->action = '/';
-            if ($this->api != 'cli') {
-                $uri = str_replace(
-                    array(BASE_URL.'/',INDEX_FILE), 
-                    '', 
-                    $this->httpServer['REQUEST_URI']
-                );
-                $end = strpos($uri, '?') === false ? 
-                        strlen($uri) : 
-                        strpos($uri, '?');
-                $uri = substr($uri, 0, $end);
-                $uri = '/'.trim($uri, '/');
-                if (!empty($uri)) {
-                    $this->action = $uri;
-                }
-            }
-            else {
-                $this->params = $this->httpServer['argv'];
-                if (!empty($this->params[1])) {
-                    $this->action = $this->params[1];
-                }
-            }
+            $this->action = $this->parseAction();
         }
         return $this->action;
+    }
+    
+    /**
+     * Tries to find user action through all input
+     * @param string $default The user action string
+     * @return string
+     */
+    public function parseAction($default = '/')
+    {
+        // parse action if no action is set
+        $action = $default;
+        if (!$this->isCli()) {
+            $uri = str_replace(
+                array(BASE_URL.'/',INDEX_FILE), 
+                '', 
+                $this->httpServer['REQUEST_URI']
+            );
+            $end = strpos($uri, '?') === false ? 
+                    strlen($uri) : 
+                    strpos($uri, '?');
+            $uri = '/'.trim(substr($uri, 0, $end), '/');
+            if (!empty($uri)) {
+                $action = $uri;
+            }
+        }
+        else {
+            if (!empty($this->params[1])) {
+                $action = $this->params[1];
+            }
+        }
+        return $action;
     }
     
     /**
@@ -175,12 +197,20 @@ class Input
         return true;
     }
     
+    /**
+     * Generates an unique input key
+     * @return string
+     */
     public function genCacheKey()
     {
         return 'arch.input.'.
-                md5($this->server('REQUEST_URI').$this->server('QUERY_STRING'));
+                md5($this->action.$this->server('QUERY_STRING'));
     }
     
+    /**
+     * Check whether it is a core action (arch)
+     * @return boolean
+     */
     public function isArchAction()
     {
         $params = explode('/', $this->getAction());
@@ -211,39 +241,67 @@ class Input
         return $this->params[$index];
     }
     
-    private function remapFiles($files)
+    /**
+     * Sets the SERVER variables
+     * @param array $array
+     */
+    public function setHttpServer($array)
     {
-        $name = key($files);
-        if (key($files[$name]) === 'name') {
-            $file_count = 1;
-            $file_keys = array_keys($files[$name]);
-            foreach ($file_keys as $key) {
-                $this->files[0][$key] = $files[$name][$key];
-            }
-        }
-        else {
-            $file_count = count($files[$name]);
-            $file_keys = array_keys($files[$name]);
-            for ($i=0; $i<$file_count; $i++) {
-                foreach ($file_keys as $key) {
-                    $this->files[$i][$key] = $files[$name][$i][$key];
-                }
-            }
-        }
+        $this->httpServer = $array;
     }
     
+    /**
+     * Sets the HTTP GET params
+     * @param array $array
+     */
     public function setHttpGet($array)
     {
         $this->httpGet = $array;
     }
     
+    /**
+     * Sets the HTTP POST params
+     * @param array $array
+     */
     public function setHttpPost($array)
     {
         $this->httpPost = $array;
     }
     
-    public function setHttpServer($array)
+    /**
+     * Loads HTTP FILES information
+     * @param array $array
+     */
+    public function setHttpFiles($array)
     {
-        $this->httpServer = $array;
+        $this->remapFiles($array);
+    }
+    
+    /**
+     * Sets the raw input (usually php://input)
+     * @param string $raw
+     */
+    public function setRawInput($raw)
+    {
+        $this->raw = $raw;
+    }
+    
+    private function remapFiles($files)
+    {
+        if (is_array($files['name'])) {
+            $new = array();
+            foreach( $files as $key => $all ){
+                foreach( $all as $i => $val ){
+                    $new[$i][$key] = $val;    
+                }    
+            }
+            $this->files = $new;
+        }
+        else {
+            $file_keys = array_keys($files);
+            foreach ($file_keys as $key) {
+                $this->files[0][$key] = $files[$key];
+            }
+        }
     }
 }

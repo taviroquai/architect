@@ -150,8 +150,18 @@ class App implements Messenger
         
         // set input
         $this->input = new \Arch\Input();
+        if ($_GET) $this->input->setHttpGet ($_GET);
+        if ($_POST) $this->input->setHttpGet ($_POST);
+        if (!empty($_FILES)) $this->input->setHttpFiles($_FILES);
+        $this->input->setRawInput(file_get_contents("php://input"));
+        $this->input->parseGlobal(php_sapi_name(), $_SERVER);
+        $this->input->getAction();
         $this->log('Input finish loading: '.
                 $this->input->server('HTTP_USER_AGENT'));
+        unset($_SERVER);
+        unset($_GET);
+        unset($_POST);
+        unset($_FILES);
 
         // set default Output
         $this->output = new Output();
