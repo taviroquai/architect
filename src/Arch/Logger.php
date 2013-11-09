@@ -10,11 +10,32 @@ namespace Arch;
 class Logger
 {
     
+    /**
+     * Holds the target file to log messages
+     * @var string
+     */
     protected $filename;
+    
+    /**
+     * Holds the resource handler
+     * @var resource
+     */
     protected $handler;
     
+    /**
+     * Returns a new Logger
+     * @param string $filename The file which contains the logs
+     */
     public function __construct($filename = '')
     {
+        if  (
+                !is_string($filename) || 
+                empty($filename) || 
+                !file_exists($filename)
+            )
+        {
+            throw new \Exception('Invalid filename');
+        }
         $this->filename = $filename;
         
         if (is_writable($this->filename)) {
@@ -22,6 +43,13 @@ class Logger
         }
     }
     
+    /**
+     * Logs a message
+     * @param string $msg The message to be logged
+     * @param string $label The message label ('access', 'error')
+     * @param boolean $nlb Tells to add a line break at the end of the message
+     * @return boolean
+     */
     public function log($msg, $label = 'access', $nlb = false)
     {
         if (!is_resource($this->handler)) return false;
@@ -38,8 +66,15 @@ class Logger
         return true;
     }
     
+    /**
+     * Closes the resource handler
+     * @return boolean
+     */
     public function close() {
-        if (is_resource($this->handler)) fclose ($this->handler);
+        if (is_resource($this->handler)) {
+            return fclose ($this->handler);
+        }
+        return true;
     }
 }
 
