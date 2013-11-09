@@ -35,7 +35,11 @@ class Session
      */
     public function load($data = array())
     {
-        $this->storage = $data;
+        foreach ($data as $prop => $value) {
+            if (strpos($prop, 'user.') === false) $prop = 'user.'.$prop;
+            $this->storage[$prop] = $value;
+        }
+        
         if (!isset($this->storage['arch.message'])) {
             $this->storage['arch.message'] = array();
         }
@@ -50,6 +54,7 @@ class Session
             unset($value);
         }
         foreach ($this->storage as $prop => $value) {
+            if (strpos($prop, 'user.') === 0) $prop = substr($prop, 5);
             $data[$prop] = $value;
         }
     }
