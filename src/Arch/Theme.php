@@ -7,25 +7,25 @@ namespace Arch;
  */
 class Theme extends \Arch\View
 {
-    
+    /**
+     * Holds the theme directory path
+     * @var string
+     */
     protected $theme_path;
-    protected $app;
 
     /**
      * Constructor
      * 
      * @param string $path
      */
-    public function __construct($path, \Arch\App $app)
+    public function __construct($path)
     {
         parent::__construct();
         
-        if (!is_dir($path)) die('Default theme not found: '.$path);
+        if (!is_dir($path)) {
+            throw new Exception('Default theme not found: '.$path);
+        }
         $this->theme_path = $path;
-        $this->app = $app;
-        
-        // create a default idiom loader
-        $this->set('idiom', $this->app->createIdiom());
         
         // add default theme slots
         $this->addSlot('css');
@@ -64,18 +64,5 @@ class Theme extends \Arch\View
         if (file_exists($filename)) {
             require_once $filename;
         }
-        
-        // add flash messages
-        $v = new \Arch\View(THEME_PATH.DIRECTORY_SEPARATOR.'default'.
-                DIRECTORY_SEPARATOR.'messages.php');
-        $this->set('messages', $v);
-    }
-    
-    public function __toString()
-    {   
-        // trigger core event
-        $this->app->triggerEvent('arch.theme.before.render', $this);
-        
-        return parent::__toString();
     }
 }

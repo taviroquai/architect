@@ -334,6 +334,8 @@ class App implements Messenger
     {
         if (is_object($this->output->getContent()) === FALSE) {
             if ($this->output->getContent() == '') {
+                // trigger core event
+                $this->triggerEvent('arch.theme.before.render', $this->theme);
                 $this->output->setContent($this->theme);
             }
         }
@@ -401,6 +403,13 @@ class App implements Messenger
     public function loadTheme($path)
     {
         $this->theme = new \Arch\Theme($path, $this);
+        // create a default idiom loader
+        $this->theme->set('idiom', $this->createIdiom());
+        // add flash messages
+        $this->theme->set(
+            'messages',
+            new \Arch\View($path.DIRECTORY_SEPARATOR.'messages.php')
+        );
         
         // trigger core event
         $this->triggerEvent('arch.theme.after.load', $this->theme);
