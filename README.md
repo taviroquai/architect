@@ -140,7 +140,7 @@ There are core events that allows to change application workflow without
 changing the core system. These are:
 
     'arch.module.after.load'
-    'arch.session.after.load'
+    'arch.session.before.load'
     'arch.theme.after.load'
     'arch.db.after.init'
     'arch.action.before.call'

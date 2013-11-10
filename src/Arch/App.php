@@ -195,7 +195,8 @@ class App implements Messenger
             }
 
             // trigger core event
-            $this->triggerEvent('arch.session.after.load', $this->session);
+            $this->triggerEvent('arch.session.before.load');
+            $this->session->load();
             $this->log('Session loaded');
 
             // load default theme if exists
@@ -370,7 +371,10 @@ class App implements Messenger
         if (ob_get_status()) ob_end_flush();
         
         // trigger core event
-        $this->triggerEvent('arch.session.after.save', $this->session);
+        if (isset($this->session)) {
+            $this->session->save();
+        }
+        $this->triggerEvent('arch.session.after.save');
         $this->log('Session closed');
         
         // close log handler

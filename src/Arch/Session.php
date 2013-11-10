@@ -8,6 +8,12 @@ namespace Arch;
 class Session
 {
     /**
+     * Holds the session identifier
+     * @var string
+     */
+    public $name;
+    
+    /**
      * Holds a list of values
      * @var array
      */
@@ -19,24 +25,22 @@ class Session
     public function __construct()
     {
         $this->storage = array();
-    }
-    
-    /**
-     * Clears the storage
-     */
-    public function __destruct()
-    {
-        unset($this->storage);
+        $this->name = 'arch-'.md5(time());
     }
 
     /**
      * Loads data from $_SESSION into storage
-     * Initiates _message and login values
+     * Initiates session messages storage
      */
-    public function load($data = array())
+    public function load()
     {
-        foreach ($data as $prop => $value) {
-            if (strpos($prop, 'user.') === false) $prop = 'user.'.$prop;
+        foreach ($_SESSION as $prop => $value) {
+            if (
+                    strpos($prop, 'user.') === false
+                    && strpos($prop, 'arch.') === false
+            ) {
+                $prop = 'user.'.$prop;
+            }
             $this->storage[$prop] = $value;
         }
         
@@ -46,19 +50,28 @@ class Session
     }
     
     /**
-     * Saves current storage to $_SESSION and close session
+     * Saves current storage to $data and close session
      */
-    public function save(&$data = array())
+    public function save()
     {
-        foreach ($data as $prop => &$value) {
-            unset($value);
-        }
+        $_SESSION = array();
         foreach ($this->storage as $prop => $value) {
             if (strpos($prop, 'user.') === 0) $prop = substr($prop, 5);
-            $data[$prop] = $value;
+            $_SESSION[$prop] = $value;
         }
+        return $_SESSION;
     }
     
+    /**
+     * Resets storage session
+     */
+    public function reset()
+    {
+        foreach ($this->storage as $prop => $value) {
+            unset($this->storage[$prop]);
+        }
+    }
+
     /**
      * Stores a message in session
      * To display messages use: \Arch\App::Instance()->showMessages($template);
