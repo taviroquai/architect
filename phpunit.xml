@@ -12,5 +12,8 @@
     </filter>
     <php>
         <const name="RESOURCE_PATH" value="./TestResource/"/>
+        <const name="DB_DSN" value="mysql:hostname=localhost;dbname=test_architect;charset=UTF8"/>
+        <const name="DB_USER" value="root" />
+        <const name="DB_PASS" value="toor" />
     </php>
 </phpunit>
