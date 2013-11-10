@@ -105,6 +105,19 @@ class Session
         $this->storage['arch.message'] = array();
     }
     
+    /**
+     * Loads an array of messages
+     * @param array $messages
+     */
+    public function loadMessages($messages)
+    {
+        if (!empty($messages)) {
+            foreach ($messages as $message) {
+                $this->addMessage($message);
+            }
+        }
+    }
+    
     public function __get($prop) {
         $prop = 'user.'.$prop;
         if (!isset($this->storage[$prop])) {
