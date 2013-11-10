@@ -114,5 +114,14 @@ class Validator
     {
         return $this->messages;
     }
+    
+    /**
+     * Returns the number of rules
+     * @return integer
+     */
+    public function countRules()
+    {
+        return count($this->rules);
+    }
 
 }
