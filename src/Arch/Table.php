@@ -53,13 +53,18 @@ class Table
      * 
      * @param string $name The tablename
      * @param PDO $db The PDO database handler to query
+     * @param \Arch\Logger $logger The logs handler
      */
-    public function __construct($name, \PDO $db = null, \Arch\Logger $logger)
+    public function __construct($name, \PDO $db, \Arch\Logger $logger)
     {
+        if  (!is_string($name) || empty($name)) {
+            throw new \Exception('Invalid table name');
+        }
         $this->name = $name;
         $this->db = $db;
         $this->logger = $logger;
         $this->node = $this->createSelect();
+        
     }
     
     /**
@@ -102,7 +107,7 @@ class Table
      * @param array $data The values to be used as params on placeholders
      * @return \PDOStatement The PDOStatement after execute
      */
-    public function d($condition, $data = array())
+    public function d($condition = '', $data = array())
     {
         return $this->delete($condition, $data);
     }
@@ -172,10 +177,10 @@ class Table
     public function fetchAll($type = \PDO::FETCH_CLASS)
     {
         $stm = $this->execute();
-        if (!$stm) {
-            return array();
+        if ($stm) {
+            return $stm->fetchAll($type);
         }
-        return $stm->fetchAll($type);
+        return array();
     }
     
     /**
@@ -185,10 +190,10 @@ class Table
     public function fetchObject()
     {
         $stm = $this->execute();
-        if (!$stm) {
-            return false;
+        if ($stm) {
+            return $stm->fetchObject();
         }
-        return $stm->fetchObject();
+        return false;
     }
 
         /**
@@ -199,14 +204,14 @@ class Table
     public function fetchColumn($column = 0)
     {
         $stm = $this->execute();
-        if (!$stm) {
-            return array();
+        if ($stm) {
+            $data = array();
+            while ($row = $stm->fetchColumn($column)) {
+                $data[] = $row;
+            }
+            return $data;
         }
-        $data = array();
-        while ($row = $stm->fetchColumn($column)) {
-            $data[] = $row;
-        }
-        return $data;
+        return array();
     }
     
     /**
@@ -217,10 +222,10 @@ class Table
     public function getInsertId($name = 'id')
     {
         $stm = $this->execute();
-        if (!$stm) {
-            return false;
+        if ($stm) {
+            return $this->db->lastInsertId($name);
         }
-        return $this->db->lastInsertId($name);
+        return false;
     }
     
     /**
@@ -233,10 +238,10 @@ class Table
          * @var $stm PDOStatement
          */
         $stm = $this->execute();
-        if (!$stm) {
-            return false;
+        if ($stm) {
+            return $stm->rowCount();
         }
-        return $stm->rowCount();
+        return false;
     }
     
     /**
@@ -284,7 +289,7 @@ class Table
      * @param array $data The values to be used as params on placeholders
      * @return \Table This object
      */
-    public function delete($condition, $data = array())
+    public function delete($condition = '', $data = array())
     {
         $this->node = $this->createDelete();
         $this->node->table = $this->name;
@@ -297,10 +302,12 @@ class Table
      * @param array $data The values to be used as params on placeholders
      * @return \Table This object
      */
-    public function where($condition, $data = array())
+    public function where($condition = '', $data = array())
     {
-        $this->node->condition = $condition;
-        $this->node->where = $data;
+        if (!empty($condition)) {
+            $this->node->condition = $condition;
+            $this->node->where = $data;
+        }
         return $this;
     }
     
@@ -349,31 +356,26 @@ class Table
      * @return PDOStatement
      * @throws PDOException
      */
-    public function execute($sql = '', $params = null, $redirect = '/404')
+    public function execute($sql = '', $params = null)
     {
-        if (empty($sql)) {
-            // build operation syntax
-            $sql = self::nodeToString($this->node);
-        }
-        
-        // now we have SQL
-        $this->sql = $sql;
-        unset($sql);
-        
         try {
-            
-            // fail if there is not database connection
-            if (!is_object($this->db)) {
-                throw new \PDOException('Invalid database connection');
+            if (empty($sql)) {
+                // build operation syntax
+                $sql = self::nodeToString($this->node);
             }
+
+            // now we have SQL
+            $this->sql = $sql;
+            unset($sql);
+
+            // provoke failures
+            $this->db->setAttribute(
+                \PDO::ATTR_ERRMODE, 
+                \PDO::ERRMODE_EXCEPTION
+            );
             
             // prepare statement
             $this->stm = $this->db->prepare($this->sql);
-            
-            // fail if there is no statement
-            if ($this->stm === false) {
-                throw new \PDOException('Invalid database statement');
-            }
             
             // Get PDO params
             if ($params === null) {    
@@ -431,23 +433,23 @@ class Table
     public function install($filename)
     {
         try {
+            
             if (!file_exists($filename)) {
                 throw new \Exception('SQL file not found: '.$filename);
             }
             $sql = file_get_contents($filename);
-            if (!is_object($this->db)) {
-                throw new \Exception('No database connection');
-            }
+            
+            $this->db->setAttribute(
+                \PDO::ATTR_ERRMODE, 
+                \PDO::ERRMODE_EXCEPTION
+            );
             $this->db->beginTransaction();
-            $r = $this->db->exec($sql);
-            if ( $r === false) {
-                $this->db->rollBack();
-                throw new \Exception('Rollback. Something went very wrong');
-            }
+            $this->db->exec($sql);
             $this->db->commit();
             return true;
             
         } catch (\PDOException $e) {
+            $this->db->rollBack();
             $this->logger->log('PDO Exception: '.$e->getMessage(), 'error');
         } catch (\Exception $e) {
             $this->logger->log('Exception: '.$e->getMessage(), 'error');
@@ -476,7 +478,7 @@ class Table
             try {
                 $this->stm->bindParam($i, $v, $type);
             } catch (\PDOException $e) {
-                \Arch\App::Instance()->log("DB bind param $i failed", 'error');
+                $this->logger->log("DB bind param $i failed", 'error');
             }
             $i++;
         }
@@ -539,6 +541,9 @@ class Table
                     self::addBackTicks($node->from);
                 breaK;
             case 'INSERT':
+                if (count($node->values) == 0) {
+                    throw new \PDOException('Invalid insert values');
+                }
                 $sql .= $node->_type.
                     ' INTO '.
                     self::addBackTicks($node->table).
@@ -549,6 +554,9 @@ class Table
                     ')';
                 break;
             case 'UPDATE':
+                if (count($node->set) == 0) {
+                    throw new \PDOException('Invalid update values');
+                }
                 $set = $node->set;
                 foreach ($set as $k => &$v) $v = "`$k` = ?";
                 $sql .= $node->_type.' '.
