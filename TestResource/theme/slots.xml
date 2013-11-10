@@ -1,0 +1,20 @@
+<config>
+    <slot name="content">
+        <module>
+            <classname>\Arch\View</classname>
+        </module>
+        <module>
+            <content><![CDATA[test]]></content>
+        </module>
+    </slot>
+    <slot name="css">
+        <module>
+            <content><![CDATA[test.css]]></content>
+        </module>
+    </slot>
+    <slot name="js">
+        <module>
+            <content><![CDATA[test.js]]></content>
+        </module>
+    </slot>
+</config>

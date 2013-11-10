@@ -23,7 +23,7 @@ class Theme extends \Arch\View
         parent::__construct();
         
         if (!is_dir($path)) {
-            throw new Exception('Default theme not found: '.$path);
+            throw new \Exception('Default theme not found: '.$path);
         }
         $this->theme_path = $path;
         
