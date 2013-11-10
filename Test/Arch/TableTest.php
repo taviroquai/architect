@@ -19,15 +19,6 @@ class TableTest extends \PHPUnit_Framework_TestCase
             )
         );
     }
-    
-    /**
-     * @expectedException \PDOException
-     */
-    public function testInvalidConnection()
-    {
-        $logger = new \Arch\Logger(RESOURCE_PATH.'/dummy');
-        new \Arch\Table(null, new \PDO('mysql:'), $logger);
-    }
 
     /**
      * @expectedException \Exception
