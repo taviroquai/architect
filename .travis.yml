@@ -19,7 +19,7 @@ env:
 # execute any number of scripts before the test run, custom env's are available as variables
 before_script:
   - echo "USE mysql;\nUPDATE user SET password=PASSWORD('toor') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
-  - if [[ "$DB" == "mysql" ]]; then mysql -e "create database IF NOT EXISTS test_architect;" -uroot; fi
+  - if [[ "$DB" == "mysql" ]]; then mysql -e "create database IF NOT EXISTS test_architect;" -uroot -ptoor; fi
   - composer install
 
 # omitting "script:" will default to phpunit
