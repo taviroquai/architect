@@ -1,5 +1,8 @@
 <?php
 
+// simulate session variable
+if (!isset($_SESSION)) $_SESSION = array();
+
 /**
  * Description of SessionTest
  *
@@ -12,7 +15,8 @@ class SessionTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateSession()
     {
-        new \Arch\Session();
+        $session = new \Arch\Session();
+        $this->assertNotEmpty($session->name);
     }
     
     /**
@@ -20,10 +24,14 @@ class SessionTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadData()
     {
-        $expected = 'value';
-        $data = array('param' => $expected);
         $session = new \Arch\Session();
-        $session->load($data);
+        
+        $session->load();
+        $this->assertEmpty($session->param);
+        
+        $expected = 'value';
+        $_SESSION['param'] = $expected;
+        $session->load();
         $this->assertEquals($expected, $session->param);
     }
     
@@ -33,11 +41,11 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     public function testSaveData()
     {
         $expected = 'value';
-        $target = array();
+        $_SESSION = array();
         $session = new \Arch\Session();
         $session->param = $expected;
-        $session->save($target);
-        $this->assertEquals($expected, $target['param']);
+        $session->save();
+        $this->assertEquals($expected, $_SESSION['param']);
     }
     
     /**
@@ -46,11 +54,23 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     public function testSaveDataOverride()
     {
         $expected = 'value';
-        $target = array('oldparam' => 'oldvalue');
+        $_SESSION['oldparam'] = 'oldvalue';
         $session = new \Arch\Session();
         $session->param = $expected;
-        $session->save($target);
-        $this->assertEquals($expected, $target['param']);
+        $_SESSION = $session->save();
+        $this->assertEquals($expected, $_SESSION['param']);
+    }
+    
+    /**
+     * Test reset session
+     */
+    public function testResetSession()
+    {
+        $expected = null;
+        $session = new \Arch\Session();
+        $session->param = 'value';
+        $session->reset();
+        $this->assertEquals($expected, $session->param);
     }
     
     /**
@@ -97,7 +117,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $result = isset($session->param);
         $this->assertEquals($expected, $result);
     }
-    
+
     /**
      * Test get messages
      */
