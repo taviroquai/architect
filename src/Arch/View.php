@@ -7,40 +7,69 @@ namespace Arch;
  */
 class View
 {
+    /**
+     * The view identifier
+     * @var string
+     */
     public $id;
+    
+    /**
+     * Defines if the view should be rendered or not
+     * @var boolean
+     */
     protected $hidden = false;
+    
+    /**
+     * Holds the user data
+     * @var array
+     */
     protected $data = array();
+    
+    /**
+     * Holds the view slots
+     * @var array
+     */
     protected $slot = array('content' => array());
+    
+    /**
+     * Holds the template file
+     * @var string
+     */
     protected $template;
+    
+    /**
+     * Holds the rendered view
+     * @var string
+     */
     protected $output;
 
     /**
-     * Constructor
+     * Returns a new view
      * 
-     * @param mixed $mixed
-     * @param array $data
+     * @param mixed $content The template, view or content
+     * @param array $data The user data
      */
-    public function __construct($mixed = '', $data = array())
+    public function __construct($content = '', $data = array())
     {
         // check if $mixed is a file path
-        if (file_exists($mixed)) {
-            $this->template = $mixed;
+        if (file_exists($content)) {
+            $this->template = $content;
         } else {
             // if not, consider it as content
-            $this->output = $mixed;
+            $this->output = $content;
         }
         // set default data
         $this->data = $data;
         
         //set id
-        $this->id = substr(md5(microtime(true)),0,6);
+        $this->id = 'a'.substr(md5(microtime(true)),0,6);
     }
     
     /**
      * Calls a slot using a template callback
      * 
-     * @param string $name
-     * @param function $template
+     * @param string $name The slot name
+     * @param function $template The slot template
      * @return \View
      */
     function slot($name, $template)
@@ -56,7 +85,7 @@ class View
     /**
      * Sets up a new slot identified by name
      * 
-     * @param string $name
+     * @param string $name The name of the new slot
      * @return \View
      */
     public function addSlot($name)
@@ -73,15 +102,15 @@ class View
      */
     public function getSlots()
     {
-        return arra_keys($this->slot);
+        return array_keys($this->slot);
     }
     
     /**
      * Returns slot items
-     * @param string $name
+     * @param string $name The name of the slot
      * @return array
      */
-    public function getSlotItems($name)
+    public function getSlotItems($name = 'content')
     {
         if (empty($this->slot[$name])) return array();
         return $this->slot[$name];
@@ -89,9 +118,9 @@ class View
 
     /**
      * Sets the slot as empty
-     * @param string $name
+     * @param string $name The name of the slot to be emptyed
      */
-    public function emptySlot($name) {
+    public function emptySlot($name = 'content') {
         $this->slot[$name] = array();
     }
 
@@ -102,14 +131,17 @@ class View
      * You can add unique content by setting $unique to true. This will check
      * whether the content is already on the view or not
      * 
-     * @param mixed $content
-     * @param string $slotName
-     * @param boolean $unique
+     * @param mixed $content The template, view or content
+     * @param string $slotName The name of the slot
+     * @param boolean $unique Tells whether this content should be unique
      * @return \View
      */
     public function addContent($content, $slotName = 'content', $unique = false)
     {
         $skip = false;
+        if (!isset($this->slot[$slotName])) {
+            $this->addSlot($slotName);
+        }
         if (in_array($slotName, array('css', 'js'))) {
             $unique = true;
         }
@@ -122,9 +154,6 @@ class View
             }
         }
         if (!$skip) {
-            if (!isset($this->slot[$slotName])) {
-                $this->slot[$slotName] = array();
-            }
             $this->slot[$slotName][] = $content;
         }
         return $this;
@@ -136,8 +165,8 @@ class View
      * The value can be anything ie. string, array, object, etc...
      * Just make sure it will be properly used in the template
      * 
-     * @param string $key
-     * @param mixed $value
+     * @param string $key The data key
+     * @param mixed $value The data value
      * @return \View
      */
     public function set($key, $value)
@@ -149,7 +178,7 @@ class View
     /**
      * Returns the data value identified by key
      * 
-     * @param string $key
+     * @param string $key The data key to be returned
      * @return mixed
      */
     public function get($key)
@@ -159,7 +188,7 @@ class View
     
     /**
      * Sets the path template that will be used
-     * @param string $template
+     * @param string $template The template file
      * @return \View
      */
     public function setTemplate($template)
@@ -188,6 +217,10 @@ class View
         return $this;
     }
     
+    /**
+     * Renders the view
+     * @return string
+     */
     public function __toString()
     {
         if (!file_exists($this->template)) return $this->output;
