@@ -86,6 +86,7 @@ class OutputTest extends \PHPUnit_Framework_TestCase
      * Test read static file
      * @param string $filename The filename to be read
      * @dataProvider providerReadFile
+     * @runInSeparateProcess
      */
     public function testReadFile($filename)
     {
