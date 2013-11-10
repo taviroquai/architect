@@ -100,7 +100,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     /**
      * Test template data
      */
-    public function testTemplateSlot()
+    public function testSlots()
     {
         $template = RESOURCE_PATH.'/template/div.php';
         $view = new \Arch\View($template);
@@ -124,8 +124,16 @@ class ViewTest extends \PHPUnit_Framework_TestCase
         $expected = array();
         $view->emptySlot();
         $this->assertEquals($expected, $view->getSlotItems());
-        
+    }
+    
+    /**
+     * Test slot template
+     */
+    public function testSlotTemplate()
+    {
         $expected = '<p>value</p>';
+        
+        $view = new \Arch\View();
         $view->addContent('value');
         ob_start();
         $view->slot('content', function($item) {
