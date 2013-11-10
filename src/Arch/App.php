@@ -985,7 +985,7 @@ class App implements Messenger
      */
     public function createValidator()
     {
-        return new \Arch\Validator($this);
+        return new \Arch\Validator($this->input);
     }
     
     /**
