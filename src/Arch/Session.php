@@ -34,14 +34,16 @@ class Session
      */
     public function load()
     {
-        foreach ($_SESSION as $prop => $value) {
-            if (
-                    strpos($prop, 'user.') === false
-                    && strpos($prop, 'arch.') === false
-            ) {
-                $prop = 'user.'.$prop;
+        if (isset($_SESSION)) {
+            foreach ($_SESSION as $prop => $value) {
+                if (
+                        strpos($prop, 'user.') === false
+                        && strpos($prop, 'arch.') === false
+                ) {
+                    $prop = 'user.'.$prop;
+                }
+                $this->storage[$prop] = $value;
             }
-            $this->storage[$prop] = $value;
         }
         
         if (!isset($this->storage['arch.message'])) {
