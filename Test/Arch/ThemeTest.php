@@ -25,7 +25,6 @@ class ThemeTest extends \PHPUnit_Framework_TestCase
         $path = RESOURCE_PATH.'theme';
         $theme = new \Arch\Theme($path);
         $this->assertInstanceOf('\Arch\Theme', $theme);
-        $this->assertInternalType('string', (string) $theme);
         $this->assertTrue($theme->get('config'));
     }
 }
