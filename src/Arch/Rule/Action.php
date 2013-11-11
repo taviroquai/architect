@@ -30,7 +30,7 @@ class Action extends \Arch\Rule
             $array = $list();
         }
         else $array = $list;
-        if ($this->isAssoc($list)) {
+        if ($this->isAssoc($array)) {
             $array = array_values($array);
         }
         return in_array($v, $array);
@@ -68,8 +68,7 @@ class Action extends \Arch\Rule
      */
     public function equals($v, $confirm)
     {
-        $confirm_value = $this->input[$confirm];
-        return (bool) ($v === $confirm_value);
+        return (bool) ($v === $confirm);
     }
 
     /**
@@ -78,11 +77,12 @@ class Action extends \Arch\Rule
      * @param string $time
      * @return bool
      */
-    public function after($v, $time)
+    public function after($v, $time, $equal = false)
     {
         $t1 = strtotime($v);
         $t2 = strtotime($time);
-        return $t1 <= $t2 ? false : true;
+        if ($equal) return $t1 >= $t2 ? true : false;
+        return $t1 > $t2 ? true : false;
     }
     
     /**
@@ -91,11 +91,12 @@ class Action extends \Arch\Rule
      * @param string $time
      * @return bool
      */
-    public function before($v, $time)
+    public function before($v, $time, $equal = false)
     {
         $t1 = strtotime($v);
         $t2 = strtotime($time);
-        return $t1 <= $t2 ? true : false;
+        if ($equal) return $t1 <= $t2 ? true : false;
+        return $t1 < $t2 ? true : false;
     }
     
     /**
@@ -107,9 +108,9 @@ class Action extends \Arch\Rule
      */
     public function onInterval($v, $time1, $time2)
     {
-        $r1 = $this->afterTime($v, $time1);
-        $r2 = $this->beforeTime($v, $time2);
-        return $r1 & $r2;
+        $r1 = $this->after($v, $time1, true);
+        $r2 = $this->before($v, $time2, true);
+        return (bool) ($r1 && $r2);
     }
     
     /**
@@ -134,9 +135,9 @@ class Action extends \Arch\Rule
         $r = true;
         foreach ($list as $item) {
             if ($unique) {
-                $r = $this->required ($item) & $r;
+                $r = !empty($item) && $r;
             } else {
-                $r = !$this->required ($item) & $r;
+                $r = !empty($item) && $r;
             }
         }
         return $r ? !empty($v) : true;
@@ -150,7 +151,7 @@ class Action extends \Arch\Rule
      */
     public function isDate($v, $format = 'Y-m-d')
     {
-        $date = DateTime::createFromFormat($format, $v);
+        $date = \DateTime::createFromFormat($format, $v);
         return $date === FALSE ? false : true;
     }
     
@@ -162,7 +163,7 @@ class Action extends \Arch\Rule
      */
     public function isTime($v, $format = 'H:i:s')
     {
-        $date = DateTime::createFromFormat($format, $v);
+        $date = \DateTime::createFromFormat($format, $v);
         return $date === FALSE ? false : true;
     }
     
@@ -203,7 +204,6 @@ class Action extends \Arch\Rule
      */
     public function isInteger($v)
     {
-        $v = (int) $v;
         return (bool) is_int($v);
     }
     
@@ -215,8 +215,14 @@ class Action extends \Arch\Rule
      */
     public function isMime($v, $list)
     {
-        $finfo = new finfo(FILEINFO_MIME);
-        $type = $finfo->file($v);
+        if (!is_array($list)) {
+            $list = array($list);
+        }
+        $finfo = new \finfo(FILEINFO_MIME);
+        $type = strpos($finfo->file($v), ';') ? 
+                explode(';', $finfo->file($v)) :
+                $finfo->file($v);
+        $type = reset($type);
         return in_array($type, $list);
     }
     
