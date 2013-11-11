@@ -1,1 +1,1 @@
-<div><?=empty($key)?'':$key?></div>
+<div><?php echo empty($key) ? '' : $key; ?></div>
