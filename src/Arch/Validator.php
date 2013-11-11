@@ -8,8 +8,8 @@ namespace Arch;
 class Validator
 {
     /**
-     * Holds the application input
-     * @var \Arch\Input
+     * Holds the user input
+     * @var array
      */
     protected $input;
     
@@ -34,7 +34,7 @@ class Validator
     /**
      * Returns a new validator
      */
-    public function __construct(\Arch\Input $input)
+    public function __construct($input = array())
     {
         $this->input = $input;
         $this->rules = array();
@@ -48,12 +48,11 @@ class Validator
      */
     public function validate()
     {
-        $type = $this->input->server('REQUEST_METHOD');
         foreach ($this->rules as &$rule) {
             $callback = array($rule, $rule->getAction());
             $param_arr = array();
-            if (is_callable($this->input->{$type})) {
-                $param_arr[] = $this->input->{$type}($rule->getName());
+            if (isset($this->input[$rule->getName()])) {
+                $param_arr[] = $this->input[$rule->getName()];
             } else {
                 $param_arr[] = false;
             }

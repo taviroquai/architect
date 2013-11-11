@@ -48,7 +48,7 @@ class Rule
      * Returns a new input validation rule
      * @param string $name The input param
      */
-    public function __construct($name, \Arch\Input $input)
+    public function __construct($name, $input = array())
     {
         if  (!is_string($name) || empty($name)) {
             throw new \Exception('Invalid rule name');

@@ -10,9 +10,9 @@ class Action extends \Arch\Rule
     
     /**
      * Returns a new input validation rule
-     * @param string $name The input param
+     * @param array $input The user input
      */
-    public function __construct($name, \Arch\Input $input)
+    public function __construct($name, $input = array())
     {
         parent::__construct($name, $input);
     }
@@ -135,9 +135,9 @@ class Action extends \Arch\Rule
         $r = true;
         foreach ($list as $item) {
             if ($unique) {
-                $r = $this->exists ($item) & $r;
+                $r = $this->required ($item) & $r;
             } else {
-                $r = !$this->exists ($item) & $r;
+                $r = !$this->required ($item) & $r;
             }
         }
         return $r ? !empty($v) : true;
