@@ -7,7 +7,10 @@ namespace Arch\View;
  */
 class ForumTopic extends \Arch\View
 {
-    
+    /**
+     * Returns a new forum topic view
+     * @param string $tmpl The template file
+     */
 	public function __construct($tmpl = null)
     {
         if ($tmpl === null) {

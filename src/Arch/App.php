@@ -893,7 +893,17 @@ class App implements Messenger
      */
     public function createDatePicker($tmpl = null)
     {
-        return new \Arch\View\DatePicker($tmpl);
+        $view = new \Arch\View\DatePicker($tmpl);
+        // add view resources
+        $this->addContent(
+            $this->url('/arch/asset/css/bootstrap-datetimepicker.min.css'),
+            'css'
+        );
+        $this->addContent(
+            $this->url('/arch/asset/js/bootstrap-datetimepicker.min.js'),
+            'js'
+        );
+        return $view;
     }
     
     /**
@@ -903,18 +913,30 @@ class App implements Messenger
      */
     public function createFileUpload($tmpl = null)
     {
-        return new \Arch\View\FileUpload($tmpl);
+        $view = new \Arch\View\FileUpload($tmpl);
+        // add view resources
+        $this->addContent(
+            $this->url('/arch/asset/css/bootstrap-fileupload.min.css'),
+            'css'
+        );
+        $this->addContent(
+            $this->url('/arch/asset/js/bootstrap-fileupload.min.js'),
+            'js'
+        );
+        return $view;
     }
     
     /**
      * Returns a new pagination view
-     * @param string $id
-     * @param string $tmpl
+     * @param string $id The view ID
+     * @param string $tmpl The pagination template file path
      * @return \Arch\View\Pagination
      */
     public function createPagination($id = 1, $tmpl = null)
     {
-        return new \Arch\View\Pagination($id, $tmpl);
+        $view = new \Arch\View\Pagination($id, $tmpl);
+        $view->parseCurrent($this->input);
+        return $view;
     }
     
     /**
@@ -924,7 +946,25 @@ class App implements Messenger
      */
     public function createTextEditor($tmpl = null)
     {
-        return new \Arch\View\TextEditor($tmpl);
+        $view = new \Arch\View\TextEditor($tmpl);
+        // add view resources
+        $this->addContent(
+            $this->url('/arch/asset/css/font-awesome.min.css'),
+            'css'
+        );
+        $this->addContent(
+            $this->url('/arch/asset/css/wysiwyg.css'),
+            'css'
+        );
+        $this->addContent(
+            $this->url('/arch/asset/js/jquery.hotkeys.js'),
+            'js'
+        );
+        $this->addContent(
+            $this->url('/arch/asset/js/bootstrap-wysiwyg.js'),
+            'js'
+        );
+        return $view;
     }
     
     /**
@@ -961,12 +1001,17 @@ class App implements Messenger
     
     /**
      * Returns a new breadcrumb view
-     * @param string $tmpl
+     * @param string $tmpl The template file path
+     * @param boolena $parseInput Tells to insert items from input
      * @return \Arch\View\Breadcrumbs
      */
-    public function createBreadcrumbs($tmpl = null)
+    public function createBreadcrumbs($tmpl = null, $parseInput = true)
     {
-        return new \Arch\View\Breadcrumbs($tmpl);
+        $view = new \Arch\View\Breadcrumbs($tmpl);
+        if ($parseInput) {
+            $view->parseAction($this->input->getAction(), $this);
+        }
+        return $view;
     }
     
     /**
@@ -976,7 +1021,12 @@ class App implements Messenger
      */
     public function createCarousel($tmpl = null)
     {
-        return new \Arch\View\Carousel($tmpl);
+        $view = new \Arch\View\Carousel($tmpl);
+        $this->addContent(
+            $this->url('/arch/asset/js/bootstrap-carousel.js'),
+            'js'
+        );
+        return $view;
     }
     
     /**
@@ -1007,7 +1057,17 @@ class App implements Messenger
      */
     public function createMap($tmpl = null, \Arch\Model\Map $model = null)
     {
-        return new \Arch\View\Map($tmpl, $model);
+        $view = new \Arch\View\Map($tmpl, $model);
+        $app = \Arch\App::Instance();
+        $this->addContent($this->url('/arch/asset/css/leaflet.css'), 'css');
+        $this->addContent(
+                'http://maps.google.com/maps/api/js?v=3.2&sensor=false',
+                'js'
+        );
+        $this->addContent($this->url('/arch/asset/js/leaflet.js'), 'js');
+        $this->addContent($this->url('/arch/asset/js/leaflet.Google.js'), 'js');
+        $this->addContent($this->url('/arch/asset/js/map.js'), 'js');
+        return $view;
     }
     
     /**
@@ -1017,7 +1077,11 @@ class App implements Messenger
      */
     public function createLineChart($tmpl = null)
     {
-        return new \Arch\View\LineChart($tmpl);
+        $view = new \Arch\View\LineChart($tmpl);
+        $this->addContent($this->url('/arch/asset/css/morris.css'), 'css');
+        $this->addContent($this->url('/arch/asset/js/raphael-min.js'), 'js');
+        $this->addContent($this->url('/arch/asset/js/morris.js'), 'js');
+        return $view;
     }
     
     /**
@@ -1048,7 +1112,11 @@ class App implements Messenger
      */
     public function createPoll($tmpl = null)
     {
-        return new \Arch\View\Poll($tmpl);
+        $view = new \Arch\View\Poll($tmpl);
+        $this->addContent($this->url('/arch/asset/css/morris.css'), 'css');
+        $this->addContent($this->url('/arch/asset/js/raphael-min.js'), 'js');
+        $this->addContent($this->url('/arch/asset/js/morris.js'), 'js');
+        return $view;
     }
     
     /**

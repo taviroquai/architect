@@ -7,7 +7,10 @@ namespace Arch\View;
  */
 class Breadcrumbs extends \Arch\View
 {
-    
+    /**
+     * Returns a new breadcrumbs view
+     * @param string $tmpl The template file
+     */
 	public function __construct($tmpl = null)
     {
         if ($tmpl === null) {
@@ -21,10 +24,10 @@ class Breadcrumbs extends \Arch\View
 	}
     
     /**
-     * Parse items from action
-     * @param string $action
+     * Parse items from input action
+     * @param string $action The input action (\Arch\Input::getAction())
      */
-    public function parseAction($action)
+    public function parseAction($action, \Arch\App $app)
     {
         $items = explode('/', $action);
         $action = '';
@@ -36,7 +39,7 @@ class Breadcrumbs extends \Arch\View
                     ($i == 1) ? '/'.$item : 
                     $action.'/'.$item;
             $active = $i == count($items)-1 ? 1 : 0;
-            $this->addItem($text, \Arch\App::Instance()->url($action), $active);
+            $this->addItem($text, $app->url($action), $active);
             $i++;
         }
         return $this;

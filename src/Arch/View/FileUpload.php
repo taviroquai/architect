@@ -7,7 +7,10 @@ namespace Arch\View;
  */
 class FileUpload extends \Arch\View
 {
-	
+	/**
+     * Returns a new file upload view
+     * @param string $tmpl The template file
+     */
 	public function __construct($tmpl = null)
     {
         if ($tmpl === null) {
@@ -15,17 +18,6 @@ class FileUpload extends \Arch\View
                     array(ARCH_PATH,'theme','architect','fileupload.php'));
         }
 		parent::__construct($tmpl);
-        
-        // add view resources
-        $app = \Arch\App::Instance();
-        $app->addContent(
-            $app->url('/arch/asset/css/bootstrap-fileupload.min.css'),
-            'css'
-        );
-        $app->addContent(
-            $app->url('/arch/asset/js/bootstrap-fileupload.min.js'),
-            'js'
-        );
         
         $this->set('name', 'upload');
 	}

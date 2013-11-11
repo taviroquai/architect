@@ -8,8 +8,16 @@ namespace Arch\View;
 class TreeView extends \Arch\View
 {
 
+    /**
+     * Holds the tree root
+     * @var SimpleXMLElement
+     */
     public $tree;
     
+    /**
+     * Returns a new Tree
+     * @param string $tmpl The tree template file; note this special template
+     */
     public function __construct($tmpl = null)
     {
         if ($tmpl === null) {

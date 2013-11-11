@@ -8,6 +8,10 @@ namespace Arch\View;
 class Menu extends \Arch\View
 {
 
+    /**
+     * Returns a new menu view
+     * @param string $tmpl The template file
+     */
     public function __construct($tmpl = null)
     {
         if ($tmpl === null) {
@@ -20,6 +24,12 @@ class Menu extends \Arch\View
         $this->data['items'] = array();
     }
     
+    /**
+     * Adds an item to menu
+     * @param string $text The item text
+     * @param string $url The item URL
+     * @param string $class The class HTML attribute
+     */
     public function addItem($text, $url, $class = '')
     {
         $this->data['items'][] = (object) array(

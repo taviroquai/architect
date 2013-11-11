@@ -14,6 +14,11 @@ class Cart extends \Arch\View
      */
 	public $model;
 
+    /**
+     * Returns a new cart view
+     * @param string $tmpl The template file
+     * @param \Arch\Model\Cart $model
+     */
 	public function __construct($tmpl = null, \Arch\Model\Cart $model = null)
     {
         if ($tmpl == null) {
@@ -27,6 +32,10 @@ class Cart extends \Arch\View
         $this->set('checkoutUrl', '');
 	}
     
+    /**
+     * Renders the cart view
+     * @return string
+     */
     public function __toString()
     {
         $this->set('cart', $this->model->getCart());

@@ -7,7 +7,10 @@ namespace Arch\View;
  */
 class Carousel extends \Arch\View
 {
-    
+    /**
+     * Returns a new Carousel view
+     * @param string $tmpl The template file
+     */
 	public function __construct($tmpl = null)
     {
         if ($tmpl === null) {
@@ -16,20 +19,14 @@ class Carousel extends \Arch\View
         }
 		parent::__construct($tmpl);
         
-        $app = \Arch\App::Instance();
-        $app->addContent(
-            $app->url('/arch/asset/js/bootstrap-carousel.js'),
-            'js'
-        );
-        
         $this->set('items', array());
 	}
     
     /**
-     * Add item
-     * @param string $text
-     * @param string $url
-     * @param string $active
+     * Adds an item to the carousel (html)
+     * @param string $text The item text
+     * @param string $url The item url
+     * @param string $active Tells whether is the first slide or not
      */
     public function addItem($html, $active = 0)
     {

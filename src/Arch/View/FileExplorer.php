@@ -7,9 +7,17 @@ namespace Arch\View;
  */
 class FileExplorer extends \Arch\View
 {
-    
+    /**
+     * Holds the callback to translate server file path to client url
+     * @var function
+     */
     protected $path_to_url;
 
+    /**
+     * Returns a new file explorer
+     * @param string $path The local path
+     * @param string $tmpl The template file
+     */
     public function __construct($path, $tmpl = null)
     {
         if ($tmpl === null) {
@@ -32,7 +40,7 @@ class FileExplorer extends \Arch\View
     /**
      * Allows to redefine file path to url translation
      * @param function $fn
-     * @return string
+     * @return \Arch\View\FileExplorer
      */
     public function setPathToUrl($fn)
     {
@@ -42,6 +50,7 @@ class FileExplorer extends \Arch\View
             };
         }
         $this->path_to_url = $fn;
+        return $this;
     }
     
     /**
@@ -84,6 +93,10 @@ class FileExplorer extends \Arch\View
         return array_filter(glob($this->getPath()."/*"), 'is_file');
     }
     
+    /**
+     * Renders the file explorer view
+     * @return string
+     */
     public function __toString()
     {
         $path = $this->getPath();

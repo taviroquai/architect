@@ -13,6 +13,11 @@ class Map extends \Arch\View
      */
     public $model;
     
+    /**
+     * Returns a new Map view
+     * @param string $tmpl The template file
+     * @param \Arch\Model\Map $model The map model
+     */
 	public function __construct($tmpl = null, \Arch\Model\Map $model = null)
     {
         if ($tmpl === null) {
@@ -25,16 +30,6 @@ class Map extends \Arch\View
             $model = new \Arch\Model\Map();
         }
         $this->model = $model;
-        
-        $app = \Arch\App::Instance();
-        $app->addContent($app->url('/arch/asset/css/leaflet.css'), 'css');
-        $app->addContent(
-                'http://maps.google.com/maps/api/js?v=3.2&sensor=false',
-                'js'
-        );
-        $app->addContent($app->url('/arch/asset/js/leaflet.js'), 'js');
-        $app->addContent($app->url('/arch/asset/js/leaflet.Google.js'), 'js');
-        $app->addContent($app->url('/arch/asset/js/map.js'), 'js');
 	}
     
 }

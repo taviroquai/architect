@@ -7,7 +7,10 @@ namespace Arch\View;
  */
 class Poll extends \Arch\View
 {
-    
+    /**
+     * Returns a new poll view
+     * @param string $tmpl The template file
+     */
 	public function __construct($tmpl = null)
     {
         if ($tmpl === null) {
@@ -16,16 +19,17 @@ class Poll extends \Arch\View
         }
 		parent::__construct($tmpl);
         
-        $app = \Arch\App::Instance();
-        $app->addContent($app->url('/arch/asset/css/morris.css'), 'css');
-        $app->addContent($app->url('/arch/asset/js/raphael-min.js'), 'js');
-        $app->addContent($app->url('/arch/asset/js/morris.js'), 'js');
-        
         // initialize data
         $this->data['data'] = array();
         $this->data['ykeys'] = 'y';
 	}
     
+    /**
+     * Sets a poll item
+     * @param string $categoryName The name of the item
+     * @param integer $votes The number of votes
+     * @return \Arch\View\Poll
+     */
     public function setVotes($categoryName, $votes)
     {
         $this->data['data'][] = array(

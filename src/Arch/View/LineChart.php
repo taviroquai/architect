@@ -7,7 +7,10 @@ namespace Arch\View;
  */
 class LineChart extends \Arch\View
 {
-    
+    /**
+     * Returns a new line chart view
+     * @param string $tmpl The template file
+     */
 	public function __construct($tmpl = null)
     {
         if ($tmpl === null) {
@@ -15,11 +18,6 @@ class LineChart extends \Arch\View
                     array(ARCH_PATH,'theme','architect','linechart.php'));
         }
 		parent::__construct($tmpl);
-        
-        $app = \Arch\App::Instance();
-        $app->addContent($app->url('/arch/asset/css/morris.css'), 'css');
-        $app->addContent($app->url('/arch/asset/js/raphael-min.js'), 'js');
-        $app->addContent($app->url('/arch/asset/js/morris.js'), 'js');
 	}
     
 }
