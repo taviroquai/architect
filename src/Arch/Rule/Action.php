@@ -68,8 +68,7 @@ class Action extends \Arch\Rule
      */
     public function equals($v, $confirm)
     {
-        $type = $this->input->server('REQUEST_METHOD');
-        $confirm_value = $this->input->{$type}($confirm);
+        $confirm_value = $this->input[$confirm];
         return (bool) ($v === $confirm_value);
     }
 
