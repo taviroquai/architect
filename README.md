@@ -5,7 +5,9 @@ Architect PHP Framework uses a pragmatic and modular Web development approach.
 The idea is to create a small API but with the most common features in web 
 development.
 
+[![Latest Stable Version](https://poser.pugx.org/taviroquai/architectphp/version.png)](https://packagist.org/packages/taviroquai/architectphp)
 [![Build Status](https://travis-ci.org/taviroquai/architect.png?branch=master)](https://travis-ci.org/taviroquai/architect)
+[![Total Downloads](https://poser.pugx.org/taviroquai/architectphp/downloads.png)](https://packagist.org/packages/taviroquai/architectphp)
 
 Online Demo
 -----------
