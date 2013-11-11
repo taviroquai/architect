@@ -29,7 +29,7 @@ class Rule
      * Holds the default validation action
      * @var string
      */
-    protected $action = 'exists';
+    protected $action = 'required';
     
     /**
      * Holds the additional input params

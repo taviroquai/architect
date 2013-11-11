@@ -44,7 +44,7 @@ class RuleTest extends \PHPUnit_Framework_TestCase
         $result = $rule->getName();
         $this->assertEquals($expected, $result);
         
-        $expected = 'exists';
+        $expected = 'required';
         $result = $rule->getAction();
         $this->assertEquals($expected, $result);
         
