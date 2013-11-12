@@ -18,21 +18,21 @@ class RuleTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \Exception
      */
-    public function testInvalidRuleMessage()
+    public function testInvalidAction()
     {
-        $rule = new \Arch\Rule(null, new \Arch\Input);
-        $rule->setErrorMessage(NULL);
+        $rule = new \Arch\Rule('param', new \Arch\Input);
+        $rule->setAction(NULL);
     }
     
     /**
      * @expectedException \Exception
      */
-    public function testInvalidRuleAction()
+    public function testInvalidErrorMessage()
     {
-        $rule = new \Arch\Rule(null, new \Arch\Input);
-        $rule->setAction(NULL);
+        $rule = new \Arch\Rule('param', new \Arch\Input);
+        $rule->setErrorMessage(NULL);
     }
-
+    
     /**
      * Test create rule
      */
