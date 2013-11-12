@@ -17,61 +17,101 @@ class App implements Messenger
 {
 
     /**
-     * Holds user input
+     * Holds user input.
      * 
-     * To return a GET param: \Arch\App::Instance()->input->get('param');
-     * To return all GET param: \Arch\App::Instance()->input->get();
-     * To return a POST param use: \Arch\App::Instance()->input->post('param');
-     * To return a FILES entry use: \Arch\App::Instance()->input->file($index);
-     * To return raw input use: \Arch\App::Instance()->input->raw();
+     * To return a GET param use <b>app()->input->get('param')</b> or 
+     * <b>g('param')</b>.
      * 
-     * @var \Arch\Input
+     * To return all GET params use <b>app()->input->get()</b> or <b>g()</b>.
+     * 
+     * To return a POST param use <b>app()->input->post('param')</b> or
+     * <b>p('param')</b>.
+     * 
+     * To return a FILES entry use <b>app()->input->file($index)</b> or 
+     * <b>f($index)</b>.
+     * 
+     * To return raw input use <b>app()->input->raw()</b>
+     * 
+     * @var \Arch\Input The application input object
      */
     public  $input;
     
     /**
      * Holds application output.
-     * This can be a string, a View or a php file (template).
      * 
-     * To add HTML use: \Arch\App::Instance()->addContent('<p>Hello World</p>');
-     * To add a View use: \Arch\App::Instance()->setContent(new View('tmpl.php');
-     * To output a string use: \Arch\App::Instance()->sendOutput('Hello World!');
-     * To output a View use: \Arch\App::Instance()->sendOutput(new View('tmpl.php'));
-     * @var \Arch\Output
+     * To add HTML use <b>app()->addContent('&lt;p&gt;Hello World&lt;/p&gt;')</b>.
+     * 
+     * To add a View use <b>app()->setContent(new View('tmpl.php')</b>.
+     * 
+     * To output a string use <b>app()->sendOutput('Hello World!')</b> or 
+     * <b>o('Hello World!')</b>.
+     * 
+     * To output a View use <b>app()->sendOutput(new View('tmpl.php'))</b> or
+     * using alias <b>o(v('template.php'))</b>.
+     * 
+     * @var \Arch\Output The application output
      */
     public  $output;
     
     /**
-     * Default Router
+     * Holds the URI Router.
      * 
-     * To add a route use: \Arch\App::Instance()->addRoute('/demo', function() { ... });
-     * Then the function callback will be called when the user requests
-     * index.php/demo
+     * To add a route use <b>app()->addRoute('/demo', function() { ... })</b> or
+     * <b>r('/demo', function() { ... })</b>.
      * 
-     * @var \Arch\Router
+     * The function callback will be called when the user requests
+     * <b>index.php/demo</b>
+     * 
+     * @var \Arch\Router The URI router
      */
     public  $router;
     
     /**
-     * Default theme
+     * Holds the default theme.
      * 
-     * This will hold the theme (View) that will be used when outputing HTML
-     * You can change the theme with: \Arch\App::Instance()->loadTheme($path);
+     * This will hold the theme (Theme) that will be used when outputing HTML.
+     * 
+     * You can change the theme with <b>app()->loadTheme($path)</b>.
+     * 
      * This will load the theme configuration into the application
      * 
-     * @var \Arch\View
+     * @var \Arch\Theme The theme object
      */
     public  $theme;
     
     /**
-     * Holds user session
+     * Holds user session.
+     * 
+     * Session variables can be set using <b>app()->session->param = 'value'</b>
+     * 
+     * To use the native PHP session, you have to manually call 
+     * <b>session_start()</b> on the 'arch.session.before.load' event. Like this
+     * 
+     * <b>e('arch.session.before.load', function() { session_start(); });</b>
+     * 
+     * You can override the Session object by your own.
+     * 
      * @var \Arch\Session
      */
     public  $session;
     
     /**
-     * Holds PDO database instance
-     * @var \PDO
+     * Holds PDO database instance.
+     * 
+     * This is lazy loading; it will be loaded if the user starts a query
+     * using <b>q('tablename')</b> or <b>app()->query('tablename')</b>.
+     * 
+     * When this is requested, the application will look for the <b>default
+     * database constants</b> defined in configuration.
+     * 
+     * Database constant are:
+     * <ul>
+     * <li>DB_DSN - defines PDO dsn string</li>
+     * <li>DB_USER - defined PDO user</li>
+     * <li>DB_PASS - defined user password</li>
+     * </ul>
+     * 
+     * @var \PDO The default PDO object
      */
     public  $db;
     
@@ -171,6 +211,13 @@ class App implements Messenger
         $this->addCoreRoutes();
     }    
     
+    /**
+     * Runs the application through various stages.
+     * 
+     * It can only be called once.
+     * 
+     * @return null
+     */
     public function run()
     {
         // prevent infinit calls
@@ -216,8 +263,896 @@ class App implements Messenger
     }
     
     /**
-     * Add core routes. Return something!
+     * Loads the theme configuration.
+     * 
+     * Use it as <b>app()->loadTheme('/mytheme/')</b>
+     * 
+     * This will load <b>/theme/mytheme/config.php</b> and 
+     * <b>/theme/mytheme/slots.xml</b>.
+     * 
+     * Theme slots can be configured with <b>slots.xml</b> without programming
+     * skills.
+     * 
+     * Remember that modules that are not enable will not be displayed.
+     * 
+     * To add content do <b>app()->addContent('Hello World')</b>
+     * 
+     * @param string $path The theme path
+     * 
+     * @return \Arch\App The main application
      */
+    public function loadTheme($path)
+    {
+        $this->theme = new \Arch\Theme($path, $this);
+        // create a default idiom loader
+        $this->theme->set('idiom', $this->createIdiom());
+        // add flash messages
+        $this->theme->set(
+            'messages',
+            new \Arch\View($path.DIRECTORY_SEPARATOR.'messages.php')
+        );
+        
+        // trigger core event
+        $this->triggerEvent('arch.theme.after.load', $this->theme);
+        
+        $this->log('Theme loaded: '.$path);
+        return $this;
+    }
+    
+    /**
+     * Logs application activity.
+     * 
+     * If LOG_FILE is empty, no log happens
+     * 
+     * @param string $msg The message to be logged
+     * @param string $label Label for the log message
+     * @param boolean $nlb If true adds a line break
+     * @return boolean
+     */
+    public function log($msg, $label = 'access', $nlb = false)
+    {
+        return $this->logger->log($msg, $label, $nlb);
+    }
+    
+    /**
+     * Sets application output.
+     * 
+     * This is a fast way to send text output. It will use the Output instance 
+     * to set content
+     * 
+     * Use it as <b>app()->output('Hello World!')</b> or 
+     * <b>o('Hello World!')</b>
+     * 
+     * @param mixed $content This can be a string or a View
+     */
+    public function output($content)
+    {
+        $this->output->setContent($content);
+    }
+    
+    /**
+     * Sends a redirect HTTP header.
+     * 
+     * This will send an HTTP location header and exit application
+     * if now is true
+     * 
+     * Use it as <b>app()->redirect(app()->url('/demo'))</b> or 
+     * <b>r(u('/demo'))</b>.
+     * 
+     * @param string $url The URL to redirect to
+     * @param boolean $now If true, just exit, do not proceed to the next stage
+     */
+    public function redirect($url = null, $now = true)
+    {
+        if ($this->url($this->input->getAction()) == $url) return; 
+        if (empty($url)) {
+            $url = $this->url('/');
+        }
+        $output = new \Arch\Output();
+        $output->setHeaders(array('Location: '.$url));
+        $output->sendHeaders();
+        $output->send();
+        $this->log('Redirecting to '.$url);
+        if ($now) {
+            $this->cleanEnd();
+            exit();
+        }
+    }
+    
+    /**
+     * Creates a JSON response, sends it and exits.
+     * 
+     * You can also use it as <b>j(array('hello' => 'world'))</b>.
+     * 
+     * @param array $data
+     * @param boolean $cache
+     */
+    public function sendJSON($data, $cache = false) {
+        $headers = array();
+        if (!$cache) {
+            $headers[] = 'Cache-Control: no-cache, must-revalidate';
+            $headers[] = 'Expires: Mon, 26 Jul 1997 05:00:00 GMT';
+        }
+        $headers[] = 'Content-type: application/json; charset=utf-8';
+        $this->output->setHeaders($headers);
+        $this->output->setContent(json_encode($data));
+    }
+    
+    /**
+     * Allows to add a route and a callback.
+     * 
+     * Use it as:
+     * <b>
+     * app()->addRoute('/', function() { 
+     *     \Arch\App::Instance()->sendOutput('Home'); 
+     * });
+     * </b>
+     * 
+     * When the user calls in the browser <b/>index.php/demo</b>, the 
+     * application will look for a route with key <b>/demo</b> and call the 
+     * action callback.
+     * 
+     * You should add a default route like this:
+     * <b>
+     * r('/', function() {
+     *      o('Home');
+     * });
+     * </b>
+     * 
+     * @param string $key The input key
+     * @param function $action The route callback
+     * @return \Arch\App The application
+     */
+    public function addRoute($key, $action)
+    {
+        $result = $this->router->addRoute($key, $action);
+        if (!$result) {
+            $this->log('Add route failed: '.$key);
+        }
+        return $this;
+    }
+
+    /**
+     * Adds a message to session that can be shown in a view.
+     * 
+     * Messages are very important. A message can be added to the theme in any 
+     * part of the application.
+     * 
+     * Use it as <b>app()->addMessage('Correct answer!')</b> or 
+     * <b>m('Incorrect!', 'alert alert-error')</b>
+     * 
+     * @param string $text The message body
+     * @param string $cssClass The css class to be used in theme
+     * @return \Arch\App The application
+     */
+    public function addMessage($text, $cssClass = 'alert alert-success')
+    {
+        $this->session->addMessage(new \Arch\Message($text, $cssClass));
+        return $this;
+    }
+
+    /**
+     * Returns session messages.
+     * 
+     * @return array
+     */
+    public function getMessages()
+    {
+        return $this->session->getMessages();
+    }
+
+    /**
+     * Flushes session messages.
+     * 
+     * @return \Arch\App
+     */
+    public function clearMessages()
+    {
+        $this->session->clearMessages();
+        return $this;
+    }
+    
+    /**
+     * Adds an event and a callback.
+     * 
+     * This is very usefull to interact with other modules by not having to
+     * hack modules code.
+     * 
+     * Example:
+     * <b>
+     * app()->addEvent('demo.form.after.post', function($target = null) {
+     *     // do something with target
+     * });
+     * </b>
+     * 
+     * And then, this will be called by:
+     * <b>
+     * app()->triggerEvent('demo.form.after.post', $target); // optional target
+     * </b>
+     * 
+     * @param string $eventName The event name
+     * @param function $callback The event callback
+     * @param mixed $target An optional target
+     * @return \Arch\App The application
+     */
+    public function addEvent($eventName, $callback, $target = null)
+    {
+        if ($target === null) {
+            $target = $this;
+        }
+        try {
+            $evt = new \Arch\Event($eventName, $callback, $target);
+            $this->events[$eventName][] = $evt;
+        } catch (\Exception $e) {
+            $this->log('Event create failed: '.$e->getMessage(), 'error');
+        }
+        
+        return $this;
+    }
+    
+    /**
+     * Triggers an event by name.
+     * 
+     * Passes an option $target object
+     * 
+     * @param string $eventName The event name
+     * @param mixed $target An optional target variable
+     * @return \Arch\App The application
+     */
+    public function triggerEvent($eventName, $target = null)
+    {
+        if (isset($this->events[$eventName])) {
+            foreach ($this->events[$eventName] as $evt) {
+                $this->log('Event triggered: '.$eventName);
+                $evt->trigger($target);
+            }
+        }
+        return $this;
+    }
+    
+    /**
+     * Adds content to the default theme. USE IT!
+     * 
+     * Examples:
+     * 
+     * <b>c('Hello World')</b>
+     * 
+     * <b>c(new \My\View())</b>
+     * 
+     * <b>c(v('my_template.php'))</b>
+     * 
+     * <b>app()->addContent('Hello World')</b>
+     * 
+     * <b>app()->addContent('/path/to/template.php')</b>
+     * 
+     * <b>app()->addContent(new View('/path/to/template.php')</b>
+     * 
+     * @param mixed $content The content to be added
+     * @param string $slotName The slot name, defaults to content
+     * @param boolean $unique If true, other equal contents will be ignored
+     * @return \Arch\App The application
+     */
+    public function addContent($content, $slotName = 'content', $unique = false)
+    {
+        $this->theme->addContent($content, $slotName, $unique);
+        return $this;
+    }
+
+    /**
+     * Builds and returns an internal url.
+     * 
+     * Example:
+     * 
+     * <b>app()->url('/list', array('page' => 1))</b> will generate 
+     * <b>/index.php/list?page=1</b>
+     * 
+     * @param string $action The route action
+     * @param array $params An associative array with params
+     * @return string The resulting URL
+     */
+    public function url($action = '', $params = array())
+    {
+        $base = INDEX_FILE == '' ? rtrim(BASE_URL, '/') : BASE_URL.'/';
+        $uri = empty($action) ? '' : $action;
+        $query = empty($params) ? '' : '?';
+        $query .= http_build_query($params);
+        return $base.INDEX_FILE.$uri.$query;
+    }
+    
+    /**
+     * Returns an hash of a string.
+     * 
+     * Instead of using diferent encryptions spread in the application,
+     * use this centralized method.
+     * 
+     * Use it as <b>app()->encrypt('password')</b> or just <b>s('password')</b>
+     * 
+     * @param string $string The string to be secured
+     * @param string $algo An hash algorithmn
+     * @return string The secured string
+     */
+    public function encrypt($string, $algo = 'sha256')
+    {
+        if (in_array($algo, hash_algos())) {
+            return hash($algo, $string);
+        }
+        return (string) md5($string);
+    }
+
+    /**
+     * Verifies the submitted anti-span code.
+     * 
+     * Returns false if the code does not match.
+     * 
+     * Use it as <b>app()->getCaptcha()</b>
+     * 
+     * @return boolean!string If true the user input matches
+     */
+    public function getCaptcha()
+    {
+        $captcha = $this->session->_captcha;
+        $this->session->_captcha = null;
+        if ($captcha != $this->input->post('_captcha')) {
+            return false;
+        }
+        return $this->input->post('_captcha');
+    }
+    
+    /**
+     * Returns the URL content using cURL.
+     * 
+     * This is a GET request
+     * 
+     * Use it as <b>app()->httpGet('http://google.com')</b>
+     * 
+     * @param string $url The target URL
+     * @param boolean $debug If true, debug information will be logged
+     * @return string The response body
+     */
+    public function httpGet($url, $debug = false)
+    {
+        return $this->httpPost($url, array(), $debug);
+    }
+
+    /**
+     * Returns the URL content using cURL.
+     * 
+     * This is a POST request
+     * 
+     * Use it as:
+     * 
+     * <b>app()->httpPost(
+     *  'http://google.com', 
+     *  array('param' => 1)
+     * )</b>
+     * 
+     * @param string $url The target URL
+     * @param array $post The data to be posted
+     * @return string The response body
+     */
+    public function httpPost($url, $post = array())
+    {
+        $ch = curl_init();
+        $timeout = 5;
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        if (!empty($post)) {
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post));
+        }
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        curl_setopt($ch, CURLOPT_STDERR, $this->log);
+
+        $data = curl_exec($ch);
+        curl_close($ch);
+        return $data;
+    }
+    
+    /**
+     * Uploads a file. Supports multi-file upload.
+     * 
+     * Use it as:
+     * 
+     * $uploadEntry = app()->input->file($index);
+     * 
+     * <b>
+     * $newFile = app()->upload($uploadEntry, '/path/to/dir', 'newname');
+     * </b>
+     * 
+     * Where $index is the index of the $_FILES entry
+     * 
+     * @param array $file File entry from app()->input->file()
+     * @param string $targetDir Full target directory
+     * @param string $newName New name to the uploaded file
+     * @return boolean|string
+     */
+    public function upload($file, $targetDir, $newName = '')
+    {
+        if ($file['error']) {
+            return false;
+        }
+        if (!is_dir($targetDir) || !is_writable($targetDir)) {
+            $this->log(
+                'Upload file failed. Directory error: '.$targetDir, 
+                'error'
+            );
+            return false;
+        }
+        $name = $file['name'];
+        if (!empty($newName)) {
+            $name = $newName;
+        }
+        $destination = $targetDir.'/'.$name;
+        if (!move_uploaded_file($file['tmp_name'], $destination)) {
+            $this->log('Failed to move file: '.$destination, 'error');
+            return false;
+        }
+        $this->log('Upload file succeed');
+        return $destination;
+    }
+    
+    /**
+     * Creates a download attachment Output and exits application
+     * 
+     * Use it as <b>app()->download('/path/to/attachment.pdf')</b>
+     * 
+     * @param string $filename The file to be donwloaded
+     */
+    public function download($filename, $attachment = true)
+    {
+        if (!file_exists($filename)) {
+            $this->log('Download failed. File not found: '.$filename, 'error');
+            $this->addMessage(
+                'File to download was not found',
+                'alert alert-error'
+            );
+            \Arch\App::Instance()->redirect($this->url('/404'));
+        }
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $type = finfo_file($finfo, $filename);
+        $name = basename($filename);
+        
+        // set output
+        $this->output->setContent(file_get_contents($filename));
+        $headers = array();
+        $headers[] = 'Content-type: '.$type;
+        if ($attachment) {
+            $headers[] = 'Content-disposition: attachment; filename='.$name;
+        }
+        $this->output->setHeaders($headers);
+    }
+    
+    /**
+     * Starts a query on a database table (PDO).
+     * 
+     * Helps to get and put data to a database.
+     * 
+     * @param string $tableName The name of the table
+     * @return \Arch\Table The table object
+     */
+    public function query($tableName)
+    {
+        if (empty($this->db)) $this->initDatabase ();
+        $table = new \Arch\Table($tableName, $this->db, $this->logger);
+        return $table;
+    }
+    
+    /**
+     * Returns a new image.
+     * 
+     * It helps to create thumbs.
+     * 
+     * @param string $filename The image file path
+     * @return \Arch\Image
+     */
+    public function createImage($filename)
+    {
+        return new \Arch\Image($filename);
+    }
+    
+    /**
+     * Returns a new Idiom object.
+     * 
+     * Helps to get translations from idiom files (.xml)
+     * 
+     * @param string $code The ISO code
+     * @return \Arch\Idiom The idiom object
+     */
+    public function createIdiom(
+            $code = null, 
+            $name = 'default.xml', 
+            $module = 'app'
+    ) {
+        // resolve idiom code
+        if (empty($code)) {
+            $code = $this->input->get('idiom');
+            if (empty($code)) {
+                if (defined('DEFAULT_IDIOM')) {
+                    $code = DEFAULT_IDIOM;
+                } else {
+                    $code = 'en';
+                }
+            }
+            $this->session->idiom = $code;
+        }
+        $idiom = new \Arch\Idiom($code);
+        $filename = $idiom->resolveFilename($name, $module);
+        if (!$idiom->loadTranslation($filename)) {
+            $this->log('Translation failed: '.$filename);
+        }
+        
+        // trigger core event
+        $this->triggerEvent('arch.idiom.after.load', $this);
+        return $idiom;
+    }
+    
+    /**
+     * Returns a safe url string.
+     * 
+     * @param string $text The string to be translated
+     * @return string The resulting string
+     */
+    public function createSlug($text)
+    { 
+        $slug = preg_replace('~[^\\pL\d]+~u', '-', $text);
+        $slug = trim($slug, '-');
+        $slug = iconv('utf-8', 'us-ascii//TRANSLIT', $slug);
+        $slug = strtolower($slug);
+        $slug = preg_replace('~[^-\w]+~', '', $slug);
+        if (empty($slug)) {
+            $slug = md5($text);
+        }
+        return $slug;
+    }
+    
+    /**
+     * Returns a new input validator.
+     * 
+     * Helps to validate user input.
+     * 
+     * Use it as:
+     * 
+     * <b>
+     * $v = app()->createValidator();
+     * 
+     * $rule = $v->createRule('email')->setAction('isEmail');
+     * 
+     * $v->addRule($rule);
+     * 
+     * $result = $v->validate()->getResult();
+     * 
+     * app()->session->loadMessages($v->getMessages());
+     * </b>
+     * 
+     * @return \Arch\Validator The validator object
+     */
+    public function createValidator()
+    {
+        $type = $this->input->server('REQUEST_METHOD');
+        $input = $this->input->{$type}();
+        return new \Arch\Validator($input);
+    }
+    
+    /**
+     * Returns a new view for the given template.
+     * 
+     * The view adds methods to allow data manipulation on the template.
+     * 
+     * @param string $tmpl The template path
+     * @param array $data The associative array with data
+     * @return \Arch\View
+     */
+    public function createView($tmpl, $data = array())
+    {
+        return new \Arch\View($tmpl, $data);
+    }
+    
+    /**
+     * Returns a new date picker view.
+     * 
+     * You should use your own template. Copy the default template from
+     * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory and 
+     * pass it in the <b>$tmpl</b> param.
+     * 
+     * @param string $tmpl The date picker template
+     * @return \Arch\View\DatePicker
+     */
+    public function createDatePicker($tmpl = null)
+    {
+        $view = new \Arch\View\DatePicker($tmpl);
+        // add view resources
+        $this->addContent(
+            $this->url('/arch/asset/css/bootstrap-datetimepicker.min.css'),
+            'css'
+        );
+        $this->addContent(
+            $this->url('/arch/asset/js/bootstrap-datetimepicker.min.js'),
+            'js'
+        );
+        return $view;
+    }
+    
+    /**
+     * Returns a new file upload view.
+     * 
+     * You should use your own template. Copy the default template from
+     * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory and 
+     * pass it in the <b>$tmpl</b> param.
+     * 
+     * @param string $tmpl The upload template
+     * @return \Arch\View\FileUpload
+     */
+    public function createFileUpload($tmpl = null)
+    {
+        $view = new \Arch\View\FileUpload($tmpl);
+        // add view resources
+        $this->addContent(
+            $this->url('/arch/asset/css/bootstrap-fileupload.min.css'),
+            'css'
+        );
+        $this->addContent(
+            $this->url('/arch/asset/js/bootstrap-fileupload.min.js'),
+            'js'
+        );
+        return $view;
+    }
+    
+    /**
+     * Returns a new pagination view.
+     * 
+     * You should use your own template. Copy the default template from
+     * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory and 
+     * pass it in the <b>$tmpl</b> param.
+     * 
+     * @param string $id The view ID
+     * @param string $tmpl The pagination template file path
+     * @return \Arch\View\Pagination
+     */
+    public function createPagination($id = 1, $tmpl = null)
+    {
+        $view = new \Arch\View\Pagination($id, $tmpl);
+        $view->parseCurrent($this->input);
+        return $view;
+    }
+    
+    /**
+     * Creates a new text editor view.
+     * 
+     * You should use your own template. Copy the default template from
+     * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory and 
+     * pass it in the <b>$tmpl</b> param.
+     * 
+     * @param string $tmpl The editor template
+     * @return \Arch\View\TextEditor
+     */
+    public function createTextEditor($tmpl = null)
+    {
+        $view = new \Arch\View\TextEditor($tmpl);
+        // add view resources
+        $this->addContent(
+            $this->url('/arch/asset/css/font-awesome.min.css'),
+            'css'
+        );
+        $this->addContent(
+            $this->url('/arch/asset/css/wysiwyg.css'),
+            'css'
+        );
+        $this->addContent(
+            $this->url('/arch/asset/js/jquery.hotkeys.js'),
+            'js'
+        );
+        $this->addContent(
+            $this->url('/arch/asset/js/bootstrap-wysiwyg.js'),
+            'js'
+        );
+        return $view;
+    }
+    
+    /**
+     * Creates a new shopping cart view.
+     * 
+     * You should use your own template. Copy the default template from
+     * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory and 
+     * pass it in the <b>$tmpl</b> param.
+     * 
+     * @param string $tmpl The template file
+     * @param \Arch\Model\Cart $model The shopping cart model
+     * @return \Arch\View\Cart
+     */
+    public function createCart($tmpl = null, \Arch\Model\Cart $model = null)
+    {
+        if ($model === null) {
+            $model = new \Arch\Model\Cart ($this->session);
+        }
+        return new \Arch\View\Cart($tmpl, $model);
+    }
+    
+    /**
+     * Returns an anti-spam view.
+     * 
+     * You should use your own template. Copy the default template from
+     * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory and 
+     * pass it in the <b>$tmpl</b> param.
+     * 
+     * @return \Arch\View
+     */
+    public function createCaptcha($tmpl = null)
+    {
+        $this->session->_captcha = " ";
+        $tmpl = implode(DIRECTORY_SEPARATOR,
+                array(ARCH_PATH, 'theme', 'architect', 'captcha.php'));
+        $view = new \Arch\View($tmpl);
+        $view->set('code', $this->session->_captcha);
+        return $view;
+    }
+    
+    /**
+     * Returns a new breadcrumb view.
+     * 
+     * You should use your own template. Copy the default template from
+     * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory and 
+     * pass it in the <b>$tmpl</b> param.
+     * 
+     * @param string $tmpl The template file path
+     * @param boolena $parseInput Tells to insert items from input
+     * @return \Arch\View\Breadcrumbs
+     */
+    public function createBreadcrumbs($tmpl = null, $parseInput = true)
+    {
+        $view = new \Arch\View\Breadcrumbs($tmpl);
+        if ($parseInput) {
+            $view->parseAction($this->input->getAction(), $this);
+        }
+        return $view;
+    }
+    
+    /**
+     * Returns a new carousel view.
+     * 
+     * You should use your own template. Copy the default template from
+     * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory and 
+     * pass it in the <b>$tmpl</b> param.
+     * 
+     * @param type $tmpl The template file
+     * @return \Arch\View\Carousel
+     */
+    public function createCarousel($tmpl = null)
+    {
+        $view = new \Arch\View\Carousel($tmpl);
+        $this->addContent(
+            $this->url('/arch/asset/js/bootstrap-carousel.js'),
+            'js'
+        );
+        return $view;
+    }
+    
+    /**
+     * Returns a new comment form.
+     * 
+     * You should use your own template. Copy the default template from
+     * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory and 
+     * pass it in the <b>$tmpl</b> param.
+     * 
+     * @param string $tmpl The template file path
+     * @return \Arch\View\CommentForm
+     */
+    public function createCommentForm($tmpl = null)
+    {
+        return new \Arch\View\CommentForm($tmpl);
+    }
+    
+    /**
+     * Returns a new map view.
+     * 
+     * You should use your own template. Copy the default template from
+     * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory and 
+     * pass it in the <b>$tmpl</b> param.
+     * 
+     * @param string $tmpl The template for the map
+     * @return \Arch\View\Map
+     */
+    public function createMap($tmpl = null, \Arch\Model\Map $model = null)
+    {
+        $view = new \Arch\View\Map($tmpl, $model);
+        $app = \Arch\App::Instance();
+        $this->addContent($this->url('/arch/asset/css/leaflet.css'), 'css');
+        $this->addContent(
+                'http://maps.google.com/maps/api/js?v=3.2&sensor=false',
+                'js'
+        );
+        $this->addContent($this->url('/arch/asset/js/leaflet.js'), 'js');
+        $this->addContent($this->url('/arch/asset/js/leaflet.Google.js'), 'js');
+        $this->addContent($this->url('/arch/asset/js/map.js'), 'js');
+        return $view;
+    }
+    
+    /**
+     * Returns a new Line Chart view.
+     * 
+     * You should use your own template. Copy the default template from
+     * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory and 
+     * pass it in the <b>$tmpl</b> param.
+     * 
+     * @param string $tmpl The chart template file path
+     * @return \Arch\View\LineChart
+     */
+    public function createLineChart($tmpl = null)
+    {
+        $view = new \Arch\View\LineChart($tmpl);
+        $this->addContent($this->url('/arch/asset/css/morris.css'), 'css');
+        $this->addContent($this->url('/arch/asset/js/raphael-min.js'), 'js');
+        $this->addContent($this->url('/arch/asset/js/morris.js'), 'js');
+        return $view;
+    }
+    
+    /**
+     * Returns a new Tree view.
+     * 
+     * You should use your own template. Copy the default template from
+     * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory and 
+     * pass it in the <b>$tmpl</b> param.
+     * 
+     * @param string $tmpl The template for the tree
+     * @return \Arch\View\TreeView
+     */
+    public function createTreeView($tmpl = null)
+    {
+        return new \Arch\View\TreeView($tmpl);
+    }
+    
+    /**
+     * Returns a new File Explorer view.
+     * 
+     * You should use your own template. Copy the default template from
+     * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory and 
+     * pass it in the <b>$tmpl</b> param.
+     * 
+     * @param string $path The base path to be explored
+     * @param string $tmpl The template for explorer
+     * @return \Arch\View\FileExplorer
+     */
+    public function createFileExplorer($path, $tmpl = null)
+    {
+        return new \Arch\View\FileExplorer($path, $tmpl);
+    }
+    
+    /**
+     * Returns a new poll view.
+     * 
+     * You should use your own template. Copy the default template from
+     * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory and 
+     * pass it in the <b>$tmpl</b> param.
+     * 
+     * @param string $tmpl The template for the poll
+     * 
+     * @return \Arch\View\Poll
+     */
+    public function createPoll($tmpl = null)
+    {
+        $view = new \Arch\View\Poll($tmpl);
+        $this->addContent($this->url('/arch/asset/css/morris.css'), 'css');
+        $this->addContent($this->url('/arch/asset/js/raphael-min.js'), 'js');
+        $this->addContent($this->url('/arch/asset/js/morris.js'), 'js');
+        return $view;
+    }
+    
+    /**
+     * Returns a new forum view.
+     * 
+     * You should use your own template. Copy the default template from
+     * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory and 
+     * pass it in the <b>$tmpl</b> param.
+     * 
+     * @param string $tmpl The template file for the forum
+     * 
+     * @return \Arch\View\Forum The forum view
+     */
+    public function createForum($tmpl = null)
+    {
+        return new \Arch\View\Forum($tmpl);
+    }
+    
     private function addCoreRoutes()
     {
         // app alias
@@ -258,7 +1193,7 @@ class App implements Messenger
         if ($callback === false) {
             if ($this->router->getRoute('/404', $input) && $action != '/404') {
                 $action = '/404';
-                $callback = $this->router->getRoute($action);
+                $callback = $this->router->getRoute($action, $input);
             }
         }
         
@@ -381,769 +1316,5 @@ class App implements Messenger
         
         // close log handler
         $this->logger->close();
-    }
-    
-    /**
-     * Loads the theme configuration
-     * 
-     * For example:
-     * \Arch\App::Instance()->loadTheme('mytheme');
-     * 
-     * This will load /theme/mytheme/config.php and /theme/mytheme/theme.xml
-     * 
-     * Theme slots can be configured with theme.xml without programming
-     * Remember that modules that are not enable will not be displayed
-     * 
-     * You can also add content with, for example:
-     * \Arch\App::Instance()->theme->addContent('Hello World');
-     * 
-     * @param string $name
-     * @return \Arch\App
-     */
-    public function loadTheme($path)
-    {
-        $this->theme = new \Arch\Theme($path, $this);
-        // create a default idiom loader
-        $this->theme->set('idiom', $this->createIdiom());
-        // add flash messages
-        $this->theme->set(
-            'messages',
-            new \Arch\View($path.DIRECTORY_SEPARATOR.'messages.php')
-        );
-        
-        // trigger core event
-        $this->triggerEvent('arch.theme.after.load', $this->theme);
-        
-        $this->log('Theme loaded: '.$path);
-        return $this;
-    }
-    
-    /**
-     * Logs application activity
-     * If LOG_FILE is empty, no log happens
-     * 
-     * @param string $msg The message to be logged
-     * @param string $label Label for the log message
-     * @param boolean $nlb If true adds a line break
-     * @return boolean
-     */
-    public function log($msg, $label = 'access', $nlb = false)
-    {
-        return $this->logger->log($msg, $label, $nlb);
-    }
-    
-    /**
-     * Sets application output
-     * 
-     * This is a fast way to send text output
-     * It will use an Output instance to send
-     * 
-     * Example:
-     * app()->output('Hello World!');
-     * 
-     * @param mixed $content
-     */
-    public function output($content)
-    {
-        $this->output->setContent($content);
-    }
-    
-    /**
-     * Sends a redirect HTTP header
-     * 
-     * This will send an HTTP location header and exit application
-     * if now is true
-     * 
-     * Example:
-     * \Arch\App::Instance()->redirect(\Arch\App::Instance()->url('/demo'));
-     * 
-     * @param string $url
-     * @param boolean $now
-     */
-    public function redirect($url = null, $now = true)
-    {
-        if ($this->url($this->input->getAction()) == $url) return; 
-        if (empty($url)) {
-            $url = $this->url('/');
-        }
-        $output = new \Arch\Output();
-        $output->setHeaders(array('Location: '.$url));
-        $output->sendHeaders();
-        $output->send();
-        $this->log('Redirecting to '.$url);
-        if ($now) {
-            $this->cleanEnd();
-            exit();
-        }
-    }
-    
-    /**
-     * Creates a JSON response, sends it and exits
-     * @param array $data
-     * @param boolean $cache
-     */
-    public function sendJSON($data, $cache = false) {
-        $headers = array();
-        if (!$cache) {
-            $headers[] = 'Cache-Control: no-cache, must-revalidate';
-            $headers[] = 'Expires: Mon, 26 Jul 1997 05:00:00 GMT';
-        }
-        $headers[] = 'Content-type: application/json; charset=utf-8';
-        $this->output->setHeaders($headers);
-        $this->output->setContent(json_encode($data));
-    }
-    
-    /**
-     * Allows to add a route and a callback
-     * 
-     * This is the way to add a route.
-     * When the user calls in the browser index.php/demo, the application will
-     * look for a route with key /demo and call the action callback
-     * 
-     * You should add a default route.
-     * 
-     * Example:
-     * \Arch\App::Instance()->addRoute('/', function() { 
-     *     \Arch\App::Instance()->sendOutput('Home'); 
-     * });
-     * 
-     * @param string $key
-     * @param function $action
-     * @return \Arch\App
-     */
-    public function addRoute($key, $action)
-    {
-        $result = $this->router->addRoute($key, $action);
-        if (!$result) {
-            $this->log('Add route failed: '.$key);
-        }
-        return $this;
-    }
-
-    /**
-     * Adds a message to session that can be shown in a view
-     * 
-     * Messages are very important. A message can be added to the theme in any 
-     * part of the application.
-     * 
-     * Example:
-     * \Arch\App::Instance()->addMessage('Correct answer!');
-     * 
-     * @param string $text
-     * @param string $cssClass
-     * @return \Arch\App
-     */
-    public function addMessage($text, $cssClass = 'alert alert-success')
-    {
-        $this->session->addMessage(new \Arch\Message($text, $cssClass));
-        return $this;
-    }
-
-    /**
-     * Returns session messages
-     * 
-     * @return array
-     */
-    public function getMessages()
-    {
-        return $this->session->getMessages();
-    }
-
-    /**
-     * Flushes session messages
-     * @return \Arch\App
-     */
-    public function clearMessages()
-    {
-        $this->session->clearMessages();
-        return $this;
-    }
-    
-    /**
-     * Adds an event and a callback
-     * 
-     * This is very usefull to interact with other modules by not having to
-     * hack modules code
-     * 
-     * Example:
-     * \Arch\App::Instance()
-     *  ->addEvent('demo.form.after.post', function($target = null) {
-     *     // do something with target
-     * });
-     * 
-     * And then, this will be called by:
-     * \Arch\App::Instance()
-     *  ->triggerEvent('demo.form.after.post', $target); // optional target
-     * 
-     * @param string $eventName
-     * @param function $callback
-     * @param mixed $target
-     * @return \Arch\App
-     */
-    public function addEvent($eventName, $callback, $target = null)
-    {
-        if ($target === null) {
-            $target = $this;
-        }
-        try {
-            $evt = new \Arch\Event($eventName, $callback, $target);
-            $this->events[$eventName][] = $evt;
-        } catch (\Exception $e) {
-            $this->log('Event create failed: '.$e->getMessage(), 'error');
-        }
-        
-        return $this;
-    }
-    
-    /**
-     * Triggers an event by name
-     * Passes an option $target object
-     * 
-     * @param string $eventName
-     * @param mixed $target
-     * @return \Arch\App
-     */
-    public function triggerEvent($eventName, $target = null)
-    {
-        if (isset($this->events[$eventName])) {
-            foreach ($this->events[$eventName] as $evt) {
-                $this->log('Event triggered: '.$eventName);
-                $evt->trigger($target);
-            }
-        }
-        return $this;
-    }
-    
-    /**
-     * Adds content to the default theme
-     * 
-     * This is the common way to show output to the user. USE IT!
-     * 
-     * Examples:
-     * \Arch\App::Instance()->addContent('Hello World');
-     * \Arch\App::Instance()->addContent('/path/to/template.php');
-     * \Arch\App::Instance()->addContent(new View('/path/to/template.php');
-     * 
-     * @param mixed $content
-     * @param string $slotName
-     * @param boolean $unique
-     * @return \Arch\App
-     */
-    public function addContent($content, $slotName = 'content', $unique = false)
-    {
-        $this->theme->addContent($content, $slotName, $unique);
-        return $this;
-    }
-
-    /**
-     * Builds and returns an internal url
-     * 
-     * Example:
-     * $url = \Arch\App::Instance()->url('/list', array('page' => 1));
-     * 
-     * @param string $path
-     * @param array $params
-     * @return string
-     */
-    public function url($path = '', $params = array())
-    {
-        $base = INDEX_FILE == '' ? rtrim(BASE_URL, '/') : BASE_URL.'/';
-        $uri = empty($path) ? '' : $path;
-        $query = empty($params) ? '' : '?';
-        $query .= http_build_query($params);
-        return $base.INDEX_FILE.$uri.$query;
-    }
-    
-    /**
-     * Returns an hash of a string
-     * 
-     * Instead of using diferent encryptions spread in the application,
-     * use this centralized method.
-     * 
-     * Example:
-     * $password = \Arch\App::Instance()->encrypt('password');
-     * 
-     * @param string $string
-     * @param string $algo
-     * @param string $salt
-     * @return string
-     */
-    public function encrypt($string, $algo = 'sha256')
-    {
-        if (in_array($algo, hash_algos())) {
-            return hash($algo, $string);
-        }
-        return (string) md5($string);
-    }
-
-    /**
-     * Verifies the submitted anti-span code
-     * Returns false if the code does not match
-     * 
-     * Example:
-     * $secure = \Arch\App::Instance()->getCaptcha();;
-     * 
-     * @return boolean
-     */
-    public function getCaptcha()
-    {
-        $captcha = $this->session->_captcha;
-        $this->session->_captcha = null;
-        if ($captcha != $this->input->post('_captcha')) {
-            return false;
-        }
-        return $this->input->post('_captcha');
-    }
-    
-    /**
-     * Returns the URL content using cURL
-     * This is a GET request
-     * 
-     * This is a simple way to do a cURL request.
-     * Almost no configuration is needed.
-     * 
-     * Example:
-     * $page = \Arch\App::Instance()->httpGet('http://google.com');
-     * 
-     * @param string $url
-     * @param boolean $debug
-     * @return string
-     */
-    public function httpGet($url, $debug = false)
-    {
-        return $this->httpPost($url, array(), $debug);
-    }
-
-    /**
-     * Returns the URL content using cURL
-     * This is a POST request
-     * 
-     * Example:
-     * $page = \Arch\App::Instance()->httpPost(
-     *  'http://google.com', 
-     *  array('param' => 1)
-     * );
-     * 
-     * @param string $url
-     * @param array $post
-     * @return string
-     */
-    public function httpPost($url, $post = array())
-    {
-        $ch = curl_init();
-        $timeout = 5;
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-        if (!empty($post)) {
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post));
-        }
-        curl_setopt($ch, CURLOPT_VERBOSE, true);
-        curl_setopt($ch, CURLOPT_STDERR, $this->log);
-
-        $data = curl_exec($ch);
-        curl_close($ch);
-        return $data;
-    }
-    
-    /**
-     * Uploads a file
-     * Supports multi-file upload
-     * Use \Arch\App::Instance()->input->file($index) to get the $_FILES entry
-     * 
-     * Example:
-     * $uploadEntry = \Arch\App::Instance()->input->file($index);
-     * $newFile = \Arch\App::Instance()->upload($uploadEntry, '/path/to/dir');
-     * 
-     * @param array $file File entry from \Arch\App::Instance()->input->file()
-     * @param string $targetDir Full target directory
-     * @param string $newName New name to the uploaded file
-     * @return boolean|string
-     */
-    public function upload($file, $targetDir, $newName = '')
-    {
-        if ($file['error']) {
-            return false;
-        }
-        if (!is_dir($targetDir) || !is_writable($targetDir)) {
-            $this->log(
-                'Upload file failed. Directory error: '.$targetDir, 
-                'error'
-            );
-            return false;
-        }
-        $name = $file['name'];
-        if (!empty($newName)) {
-            $name = $newName;
-        }
-        $destination = $targetDir.'/'.$name;
-        if (!move_uploaded_file($file['tmp_name'], $destination)) {
-            $this->log('Failed to move file: '.$destination, 'error');
-            return false;
-        }
-        $this->log('Upload file succeed');
-        return $destination;
-    }
-    
-    /**
-     * Creates a download attachment Output and exits application
-     * 
-     * Example:
-     * \Arch\App::Instance()->download('/path/to/attachment.pdf');
-     * 
-     * @param string $filename
-     */
-    public function download($filename, $attachment = true)
-    {
-        if (!file_exists($filename)) {
-            $this->log('Download failed. File not found: '.$filename, 'error');
-            $this->addMessage(
-                'File to download was not found',
-                'alert alert-error'
-            );
-            \Arch\App::Instance()->redirect($this->url('/404'));
-        }
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $type = finfo_file($finfo, $filename);
-        $name = basename($filename);
-        
-        // set output
-        $this->output->setContent(file_get_contents($filename));
-        $headers = array();
-        $headers[] = 'Content-type: '.$type;
-        if ($attachment) {
-            $headers[] = 'Content-disposition: attachment; filename='.$name;
-        }
-        $this->output->setHeaders($headers);
-    }
-    
-    /**
-     * Query a database table
-     * @param string $tableName
-     * @param \PDO $db
-     * @return \Arch\Table
-     */
-    public function query($tableName)
-    {
-        if (empty($this->db)) $this->initDatabase ();
-        $table = new \Arch\Table($tableName, $this->db, $this->logger);
-        return $table;
-    }
-    
-    /**
-     * Returns a new image
-     * @param string $filename The image file path
-     * @return \Arch\Image
-     */
-    public function createImage($filename)
-    {
-        return new \Arch\Image($filename);
-    }
-    
-    /**
-     * Returns a new view for the given template
-     * The view adds methods to allow data manipulation on the template
-     * @param string $tmpl The template path
-     * @param array $data The associative array
-     * @return \Arch\View
-     */
-    public function createView($tmpl, $data = array())
-    {
-        return new \Arch\View($tmpl, $data);
-    }
-    
-    /**
-     * Returns a new Idiom object
-     * @param string $code The ISO code
-     * @return \Arch\Idiom
-     */
-    public function createIdiom(
-            $code = null, 
-            $name = 'default.xml', 
-            $module = 'app'
-    ) {
-        // resolve idiom code
-        if (empty($code)) {
-            $code = $this->input->get('idiom');
-            if (empty($code)) {
-                if (defined('DEFAULT_IDIOM')) {
-                    $code = DEFAULT_IDIOM;
-                } else {
-                    $code = 'en';
-                }
-            }
-            $this->session->idiom = $code;
-        }
-        $idiom = new \Arch\Idiom($code);
-        $filename = $idiom->resolveFilename($name, $module);
-        if (!$idiom->loadTranslation($filename)) {
-            $this->log('Translation failed: '.$filename);
-        }
-        
-        // trigger core event
-        $this->triggerEvent('arch.idiom.after.load', $this);
-        return $idiom;
-    }
-    
-    /**
-     * Returns a new date picker view
-     * @param string $tmpl The date picker template
-     * @return \Arch\View\DatePicker
-     */
-    public function createDatePicker($tmpl = null)
-    {
-        $view = new \Arch\View\DatePicker($tmpl);
-        // add view resources
-        $this->addContent(
-            $this->url('/arch/asset/css/bootstrap-datetimepicker.min.css'),
-            'css'
-        );
-        $this->addContent(
-            $this->url('/arch/asset/js/bootstrap-datetimepicker.min.js'),
-            'js'
-        );
-        return $view;
-    }
-    
-    /**
-     * Returns a new file upload view
-     * @param string $tmpl The upload template
-     * @return \Arch\View\FileUpload
-     */
-    public function createFileUpload($tmpl = null)
-    {
-        $view = new \Arch\View\FileUpload($tmpl);
-        // add view resources
-        $this->addContent(
-            $this->url('/arch/asset/css/bootstrap-fileupload.min.css'),
-            'css'
-        );
-        $this->addContent(
-            $this->url('/arch/asset/js/bootstrap-fileupload.min.js'),
-            'js'
-        );
-        return $view;
-    }
-    
-    /**
-     * Returns a new pagination view
-     * @param string $id The view ID
-     * @param string $tmpl The pagination template file path
-     * @return \Arch\View\Pagination
-     */
-    public function createPagination($id = 1, $tmpl = null)
-    {
-        $view = new \Arch\View\Pagination($id, $tmpl);
-        $view->parseCurrent($this->input);
-        return $view;
-    }
-    
-    /**
-     * Creates a new text editor view
-     * @param string $tmpl The editor template
-     * @return \Arch\View\TextEditor
-     */
-    public function createTextEditor($tmpl = null)
-    {
-        $view = new \Arch\View\TextEditor($tmpl);
-        // add view resources
-        $this->addContent(
-            $this->url('/arch/asset/css/font-awesome.min.css'),
-            'css'
-        );
-        $this->addContent(
-            $this->url('/arch/asset/css/wysiwyg.css'),
-            'css'
-        );
-        $this->addContent(
-            $this->url('/arch/asset/js/jquery.hotkeys.js'),
-            'js'
-        );
-        $this->addContent(
-            $this->url('/arch/asset/js/bootstrap-wysiwyg.js'),
-            'js'
-        );
-        return $view;
-    }
-    
-    /**
-     * Creates a new shopping cart view
-     * @param string $tmpl
-     * @param Model_Cart $model
-     * @return \Arch\View\Cart
-     */
-    public function createCart($tmpl = null, Model_Cart $model = null)
-    {
-        if ($model === null) {
-            $model = new \Arch\Model\Cart ($this->session);
-        }
-        return new \Arch\View\Cart($tmpl, $model);
-    }
-    
-    /**
-     * Returns an anti-spam view
-     * 
-     * Example:
-     * echo \Arch\App::Instance()->createCaptcha();
-     * 
-     * @return \Arch\View
-     */
-    public function createCaptcha()
-    {
-        $this->session->_captcha = " ";
-        $tmpl = implode(DIRECTORY_SEPARATOR,
-                array(ARCH_PATH, 'theme', 'architect', 'captcha.php'));
-        $view = new \Arch\View($tmpl);
-        $view->set('code', $this->session->_captcha);
-        return $view;
-    }
-    
-    /**
-     * Returns a new breadcrumb view
-     * @param string $tmpl The template file path
-     * @param boolena $parseInput Tells to insert items from input
-     * @return \Arch\View\Breadcrumbs
-     */
-    public function createBreadcrumbs($tmpl = null, $parseInput = true)
-    {
-        $view = new \Arch\View\Breadcrumbs($tmpl);
-        if ($parseInput) {
-            $view->parseAction($this->input->getAction(), $this);
-        }
-        return $view;
-    }
-    
-    /**
-     * Returns a new carousel view
-     * @param type $tmpl
-     * @return \Arch\View\Carousel
-     */
-    public function createCarousel($tmpl = null)
-    {
-        $view = new \Arch\View\Carousel($tmpl);
-        $this->addContent(
-            $this->url('/arch/asset/js/bootstrap-carousel.js'),
-            'js'
-        );
-        return $view;
-    }
-    
-    /**
-     * Returns a new input validator
-     * @return \Arch\Validator
-     */
-    public function createValidator()
-    {
-        $type = $this->input->server('REQUEST_METHOD');
-        $input = $this->input->{$type}();
-        return new \Arch\Validator($input);
-    }
-    
-    /**
-     * Returns a new comment form
-     * @param string $tmpl The template file path
-     * @return \Arch\View\CommentForm
-     */
-    public function createCommentForm($tmpl = null)
-    {
-        return new \Arch\View\CommentForm($tmpl);
-    }
-    
-    /**
-     * Returns a new map view
-     * @param string $tmpl The template for the map
-     * @return \Arch\View\Map
-     */
-    public function createMap($tmpl = null, \Arch\Model\Map $model = null)
-    {
-        $view = new \Arch\View\Map($tmpl, $model);
-        $app = \Arch\App::Instance();
-        $this->addContent($this->url('/arch/asset/css/leaflet.css'), 'css');
-        $this->addContent(
-                'http://maps.google.com/maps/api/js?v=3.2&sensor=false',
-                'js'
-        );
-        $this->addContent($this->url('/arch/asset/js/leaflet.js'), 'js');
-        $this->addContent($this->url('/arch/asset/js/leaflet.Google.js'), 'js');
-        $this->addContent($this->url('/arch/asset/js/map.js'), 'js');
-        return $view;
-    }
-    
-    /**
-     * Returns a new Line Chart view
-     * @param string $tmpl The chart template file path
-     * @return \Arch\View\LineChart
-     */
-    public function createLineChart($tmpl = null)
-    {
-        $view = new \Arch\View\LineChart($tmpl);
-        $this->addContent($this->url('/arch/asset/css/morris.css'), 'css');
-        $this->addContent($this->url('/arch/asset/js/raphael-min.js'), 'js');
-        $this->addContent($this->url('/arch/asset/js/morris.js'), 'js');
-        return $view;
-    }
-    
-    /**
-     * Returns a new Tree view
-     * @param string $tmpl The template for the tree
-     * @return \Arch\View\TreeView
-     */
-    public function createTreeView($tmpl = null)
-    {
-        return new \Arch\View\TreeView($tmpl);
-    }
-    
-    /**
-     * Returns a new File Explorer view
-     * @param string $path The base path to be explored
-     * @param string $tmpl The template for explorer
-     * @return \Arch\View\FileExplorer
-     */
-    public function createFileExplorer($path, $tmpl = null)
-    {
-        return new \Arch\View\FileExplorer($path, $tmpl);
-    }
-    
-    /**
-     * Returns a new poll view
-     * @param string $tmpl The template for the poll
-     * @return \Arch\View\Poll
-     */
-    public function createPoll($tmpl = null)
-    {
-        $view = new \Arch\View\Poll($tmpl);
-        $this->addContent($this->url('/arch/asset/css/morris.css'), 'css');
-        $this->addContent($this->url('/arch/asset/js/raphael-min.js'), 'js');
-        $this->addContent($this->url('/arch/asset/js/morris.js'), 'js');
-        return $view;
-    }
-    
-    /**
-     * Returns a new forum view
-     * @param string $tmpl The template for the forum
-     * @return \Arch\View\Forum
-     */
-    public function createForum($tmpl = null)
-    {
-        return new \Arch\View\Forum($tmpl);
-    }
-    
-    /**
-     * Returns a safe url string
-     * @param string $text
-     * @return string
-     */
-    public function createSlug($text)
-    { 
-        $slug = preg_replace('~[^\\pL\d]+~u', '-', $text);
-        $slug = trim($slug, '-');
-        $slug = iconv('utf-8', 'us-ascii//TRANSLIT', $slug);
-        $slug = strtolower($slug);
-        $slug = preg_replace('~[^-\w]+~', '', $slug);
-        if (empty($slug)) {
-            $slug = md5($text);
-        }
-        return $slug;
     }
 }

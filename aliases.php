@@ -3,27 +3,35 @@
 /**
  * App alias. The other aliases are:
  * 
- * r() Adds a new route
+ * r() - Adds a new route
  * 
- * c() Adds content to the default theme
+ * v() - Creates a new view giving a PHP template and a $data as associative array
  * 
- * u() Returns an internal URL - USE THIS!
+ * c() - Adds content to the default theme
  * 
- * g() Returns all $_GET parameters or one parameter value
+ * u() - Returns an internal URL - USE THIS!
  * 
- * m() Adds a message to be shown on output theme
+ * g() - Returns all $_GET parameters or one parameter value
  * 
- * p() Returns all $_POST parameters or one parameter value
+ * j() - Sets JSON output from associative array
  * 
- * f() Returns a $_FILES entry by index
+ * o() - Output. Sets the application Output, ie. a View or plain text
  * 
- * s() Returns a secured (encrypted) string - use for passwords
+ * m() - Adds a message to be shown on output theme
  * 
- * e() Adds a new event
+ * p() - Returns all $_POST parameters or one parameter value
  * 
- * tr() Triggers the event
+ * f() - Returns a $_FILES entry by index
  * 
- * @return \Arch\App
+ * q() - Query table. Returns a Table instance to start querying
+ * 
+ * s() - Returns a secured (encrypted) string - use for passwords
+ * 
+ * e() - Adds a new event
+ * 
+ * tr() - Triggers the event
+ * 
+ * @return \Arch\App The application main gate
  */
 function app()
 { 
@@ -31,7 +39,10 @@ function app()
 }
 
 /**
- * Add route alias
+ * Add route alias.
+ * 
+ * Use it as <b>r('/', function() { o('Home!'); });</b>
+ * 
  * @param string $uri The uri query passed in the browser
  * @param function $action The callback to be run
  */
@@ -41,7 +52,10 @@ function r($uri, $action)
 }
 
 /**
- * Alias of addContent
+ * Alias of addContent.
+ * 
+ * Use it as <b>c('Hello World!');</b> or <b>c(new My\View());</b>
+ * 
  * @param string|View $content The content to be rendered
  * @param string $slotName The name of the theme's slot
  * @param boolean $unique Tells if must be the only content
@@ -53,7 +67,16 @@ function c($content, $slotName = 'content', $unique = false)
 }
 
 /**
- * Add event alias
+ * Add event alias.
+ * 
+ * Use it as 
+ * 
+ * <b>
+ * e('arch.session.before.load', function() {
+ *     session_start();
+ * });
+ * </b>
+ * 
  * @param string $eventName The event name
  * @param function $callback The callback to be run
  * @param mixed $target An optional object to be passed to the callback
@@ -65,7 +88,10 @@ function e($eventName, $callback, $target = null)
 }
 
 /**
- * Input $_FILES alias
+ * Input $_FILES alias. Supports multiple files.
+ * 
+ * Use it as <b>f(0)</b> to get the $_FILES['file'][0];
+ * 
  * @param integer $index The index of the file, default to 0
  * @return array Returns the $_FILES entry
  */
@@ -75,7 +101,8 @@ function f($index)
 }
 
 /**
- * $_GET alias
+ * $_GET alias.
+ * 
  * @param string $param The name of the $_GET param
  * @return boolean|mixed Returns all params or the param value or false
  */
@@ -85,7 +112,8 @@ function g($param = null)
 }
 
 /**
- * Send JSON alias
+ * Send JSON alias.
+ * 
  * @param array $data The associative array containing data
  * @param boolean $cache Tells application to send cache headers
  */
@@ -94,7 +122,8 @@ function j($data, $cache = false) {
 }
 
 /**
- * Add message alias
+ * Add message alias.
+ * 
  * @param string $text The message to be shown
  * @param string $cssClass The css class to style
  */
@@ -104,7 +133,8 @@ function m($text, $cssClass = 'alert alert-success')
 }
 
 /**
- * $_POST alias
+ * $_POST alias.
+ * 
  * @param string $param The name of the $_POST param
  * @return boolean|mixed Returns all params or the param value or false
  */
@@ -114,7 +144,12 @@ function p($param = null)
 }
 
 /**
- * Database table query alias
+ * Database table query alias.
+ * 
+ * Use it as:
+ * 
+ * <b>q('tablename')->select()->fetchAll()</b>
+ * 
  * @param string $tableName The name of the relational database table
  * @param \PDO $db A PDO instance if not using application default
  * @return \Arch\Table The table to start querying
@@ -125,13 +160,14 @@ function q($tableName, \PDO $db = null)
 }
 
 /**
- * app()->output() alias
+ * Output alias
  * 
  * This is a fast way to send text output
  * It will use an Output instance to send
  * 
  * Example:
- * o('Hello World!');
+ * 
+ * <b>o('Hello World!');</b>
  * 
  * @param mixed $content The content to be sent
  * @return \Arch\Output The output object
@@ -142,7 +178,8 @@ function o($content = null)
 }
 
 /**
- * Encrypt string alias
+ * Encrypt string alias.
+ * 
  * @param string $string The string to be encrypted
  * @param string $algo The algorithmn to be used for encryption
  * @param string $salt An optional salt
@@ -154,7 +191,8 @@ function s($string, $algo = 'sha256', $salt = '!Zz$9y#8x%7!')
 }
 
 /**
- * Trigger event alias
+ * Trigger event alias.
+ * 
  * @param string $eventName The event name
  * @param mixed $target An optional object to be passed
  * @return \Arch\App The application singleton
@@ -165,7 +203,8 @@ function tr($eventName, $target = null)
 }
 
 /**
- * Build internal URL alias
+ * Build internal URL alias.
+ * 
  * @param string $path The internal route key
  * @param array $params Optional QUERY params
  * @return string The final URL
@@ -176,7 +215,8 @@ function u($path, $params = array())
 }
 
 /**
- * Create view alias
+ * Create view alias.
+ * 
  * @param string $tmpl The template path
  * @param array $data The data to be passed to the template
  * @return \Arch\View The created View
