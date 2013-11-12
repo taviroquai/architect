@@ -17,26 +17,6 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Test empty filename
-     * @expectedException \Exception
-     */
-    public function testEmptyFilename()
-    {
-        new \Arch\Logger('');
-    }
-    
-    /**
-     * Test fail open file
-     * @expectedException \Exception
-     */
-    public function testFailLogFile()
-    {
-        $logger = new \Arch\Logger(RESOURCE_PATH.'/forbidden/dummy');
-        $result = $logger->isOpen();
-        $this->assertFalse($result);
-    }
-    
-    /**
      * Test success create logger
      */
     public function testSuccessCreateLogger()

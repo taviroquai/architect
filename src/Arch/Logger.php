@@ -28,17 +28,12 @@ class Logger
      */
     public function __construct($filename = '')
     {
-        if  (
-                !is_string($filename) || 
-                empty($filename) || 
-                !file_exists($filename)
-            )
-        {
+        if  (!is_string($filename)) {
             throw new \Exception('Invalid filename');
         }
         $this->filename = $filename;
         
-        if (is_writable($this->filename)) {
+        if (is_file($filename) && is_writable($this->filename)) {
             $this->handler = @fopen($filename, 'a');
         }
     }
