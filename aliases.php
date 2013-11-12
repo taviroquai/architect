@@ -156,7 +156,7 @@ function p($param = null)
  */
 function q($tableName, \PDO $db = null)
 {
-    return \Arch\App::Instance()->query($tableName, $db);
+    return app()->createQuery($tableName, $db);
 }
 
 /**

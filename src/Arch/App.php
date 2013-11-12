@@ -226,40 +226,31 @@ class App implements Messenger
         // update stage
         $this->stage = 'run';
         
-        // send cached version
-        if ($cached = $this->output->isCached($this->input->genCacheKey())) {
-            $this->log('Loading output from cache...');
-            $this->output->setContent($cached);
-            $this->sendOutput();
-            unset($cached);
-        } else {
-
-            // bypass user modules if it is a core action (arch)
-            // main purpose is to improve performance
-            if (!$this->input->isArchAction()) {
-                // load enabled modules
-                $this->loadModules();
-            }
-
-            // trigger core event
-            $this->triggerEvent('arch.session.before.load');
-            $this->session->load();
-            $this->log('Session loaded');
-
-            // load default theme if exists
-            if (defined('DEFAULT_THEME')) {
-                $this->loadTheme(THEME_PATH.DIRECTORY_SEPARATOR.DEFAULT_THEME);
-            }
-
-            // execute action
-            $this->execute();
-
-            // send output
-            $this->sendOutput();
-
-            // close resources
-            $this->cleanEnd();
+        // bypass user modules if it is a core action (arch)
+        // main purpose is to improve performance
+        if (!$this->input->isArchAction()) {
+            // load enabled modules
+            $this->loadModules();
         }
+
+        // trigger core event
+        $this->triggerEvent('arch.session.before.load');
+        $this->session->load();
+        $this->log('Session loaded');
+
+        // load default theme if exists
+        if (defined('DEFAULT_THEME')) {
+            $this->loadTheme(THEME_PATH.DIRECTORY_SEPARATOR.DEFAULT_THEME);
+        }
+
+        // execute action
+        $this->execute();
+
+        // send output
+        $this->sendOutput();
+
+        // close resources
+        $this->cleanEnd();
     }
     
     /**
@@ -724,14 +715,33 @@ class App implements Messenger
     }
     
     /**
-     * Starts a query on a database table (PDO).
+     * Returns a safe url string.
      * 
-     * Helps to get and put data to a database.
+     * @param string $text The string to be translated
+     * @return string The resulting string
+     */
+    public function slug($text)
+    { 
+        $slug = preg_replace('~[^\\pL\d]+~u', '-', $text);
+        $slug = trim($slug, '-');
+        $slug = iconv('utf-8', 'us-ascii//TRANSLIT', $slug);
+        $slug = strtolower($slug);
+        $slug = preg_replace('~[^-\w]+~', '', $slug);
+        if (empty($slug)) {
+            $slug = md5($text);
+        }
+        return $slug;
+    }
+    
+    /**
+     * Returns a new query on a database table (PDO).
+     * 
+     * Helps to get and put data onto a database.
      * 
      * @param string $tableName The name of the table
      * @return \Arch\Table The table object
      */
-    public function query($tableName)
+    public function createQuery($tableName)
     {
         if (empty($this->db)) $this->initDatabase ();
         $table = new \Arch\Table($tableName, $this->db, $this->logger);
@@ -785,25 +795,6 @@ class App implements Messenger
         // trigger core event
         $this->triggerEvent('arch.idiom.after.load', $this);
         return $idiom;
-    }
-    
-    /**
-     * Returns a safe url string.
-     * 
-     * @param string $text The string to be translated
-     * @return string The resulting string
-     */
-    public function createSlug($text)
-    { 
-        $slug = preg_replace('~[^\\pL\d]+~u', '-', $text);
-        $slug = trim($slug, '-');
-        $slug = iconv('utf-8', 'us-ascii//TRANSLIT', $slug);
-        $slug = strtolower($slug);
-        $slug = preg_replace('~[^-\w]+~', '', $slug);
-        if (empty($slug)) {
-            $slug = md5($text);
-        }
-        return $slug;
     }
     
     /**
