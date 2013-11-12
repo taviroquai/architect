@@ -7,7 +7,10 @@
  */
 class TableTest extends \PHPUnit_Framework_TestCase
 {
-    
+    /**
+     * Provider of PDO connection
+     * @return array
+     */
     public function providerConnection()
     {
         return array(
@@ -16,6 +19,44 @@ class TableTest extends \PHPUnit_Framework_TestCase
                     \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
                 )),
                 new \Arch\Logger(RESOURCE_PATH.'dummy')
+            )
+        );
+    }
+    
+    /**
+     * Provider for testing PDO param value
+     * @return array
+     */
+    public function providerConnectionInsertInvalidValue()
+    {
+        return array(
+            array(
+                new \PDO(DB_DSN, DB_USER, DB_PASS, array(
+                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+                )),
+                new \Arch\Logger(RESOURCE_PATH.'dummy'),
+                null
+            ),
+            array(
+                new \PDO(DB_DSN, DB_USER, DB_PASS, array(
+                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+                )),
+                new \Arch\Logger(RESOURCE_PATH.'dummy'),
+                array()
+            ),
+            array(
+                new \PDO(DB_DSN, DB_USER, DB_PASS, array(
+                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+                )),
+                new \Arch\Logger(RESOURCE_PATH.'dummy'),
+                new stdClass()
+            ),
+            array(
+                new \PDO(DB_DSN, DB_USER, DB_PASS, array(
+                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+                )),
+                new \Arch\Logger(RESOURCE_PATH.'dummy'),
+                function() { }
             )
         );
     }
@@ -66,6 +107,8 @@ class TableTest extends \PHPUnit_Framework_TestCase
     {
         $table = new \Arch\Table('test_table1', $pdo, $logger);
         $result = $table->install(RESOURCE_PATH.'not_found');
+        $this->assertFalse($result);
+        $result = $table->install(RESOURCE_PATH.'db/fail.sql');
         $this->assertFalse($result);
     }
     
@@ -132,45 +175,6 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $table = new \Arch\Table('test_table1', $pdo, $logger);
         $result = $table->s('dummy')->run();
         $this->assertFalse($result);
-    }
-    
-    /**
-     * Test select fetch all
-     * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
-     */
-    public function testSelectFetchAll($pdo, $logger)
-    {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
-        $result = $table->s()->fetchAll();
-        $this->assertInternalType('array', $result);
-    }
-    
-    /**
-     * Test select fetch object
-     * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
-     */
-    public function testSelectFetchObject($pdo, $logger)
-    {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
-        $result = $table->s()->fetchObject();
-        $this->assertInstanceOf('\stdClass', $result);
-    }
-    
-    /**
-     * Test select fetch column
-     * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
-     */
-    public function testSelectFetchColumn($pdo, $logger)
-    {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
-        $result = $table->s()->fetchColumn();
-        $this->assertInternalType('array', $result);
     }
     
     /**
@@ -319,6 +323,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\PDOStatement', $result);
         $id = $table->getInsertId();
         $this->assertNotEmpty($id);
+        
+        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $result = $table->i(array('field1' => false))->run();
+        $this->assertInstanceOf('\PDOStatement', $result);
+        $id = $table->getInsertId();
+        $this->assertNotEmpty($id);
     }
     
     /**
@@ -350,6 +360,45 @@ class TableTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Test select fetch all
+     * @dataProvider providerConnection
+     * @param \PDO $pdo
+     * @param \Arch\Logger $logger
+     */
+    public function testSelectFetchAll($pdo, $logger)
+    {
+        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $result = $table->s()->fetchAll();
+        $this->assertInternalType('array', $result);
+    }
+    
+    /**
+     * Test select fetch object
+     * @dataProvider providerConnection
+     * @param \PDO $pdo
+     * @param \Arch\Logger $logger
+     */
+    public function testSelectFetchObject($pdo, $logger)
+    {
+        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $result = $table->s()->fetchObject();
+        $this->assertInstanceOf('\stdClass', $result);
+    }
+    
+    /**
+     * Test select fetch column
+     * @dataProvider providerConnection
+     * @param \PDO $pdo
+     * @param \Arch\Logger $logger
+     */
+    public function testSelectFetchColumn($pdo, $logger)
+    {
+        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $result = $table->s()->fetchColumn();
+        $this->assertInternalType('array', $result);
+    }
+    
+    /**
      * Test delete
      * @dataProvider providerConnection
      * @param \PDO $pdo
@@ -362,6 +411,95 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\PDOStatement', $result);
         $rows = $table->getRowCount();
         $this->assertInternalType('integer', $rows);
+    }
+    
+    /**
+     * Test invalid statement on select fetch all
+     * @dataProvider providerConnection
+     * @param \PDO $pdo
+     * @param \Arch\Logger $logger
+     */
+    public function testFailStatementSelectFetchAll($pdo, $logger)
+    {
+        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $result = $table->s()
+                ->where('field1 = ?', array(new stdClass))
+                ->fetchAll();
+        $this->assertInternalType('array', $result);
+    }
+    
+    /**
+     * Test invalid statement on select fetch object
+     * @dataProvider providerConnection
+     * @param \PDO $pdo
+     * @param \Arch\Logger $logger
+     */
+    public function testFailStatementSelectFetchObject($pdo, $logger)
+    {
+        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $result = $table->s()
+                ->where('field1 = ?', array(new stdClass))
+                ->fetchObject();
+        $this->assertFalse($result);
+    }
+    
+    /**
+     * Test invalid statement on select fetch column
+     * @dataProvider providerConnection
+     * @param \PDO $pdo
+     * @param \Arch\Logger $logger
+     */
+    public function testFailStatementSelectFetchColumn($pdo, $logger)
+    {
+        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $result = $table->s()
+                ->where('field1 = ?', array(new stdClass))
+                ->fetchColumn();
+        $this->assertInternalType('array', $result);
+    }
+    
+    /**
+     * Test invalid statement on insert
+     * @dataProvider providerConnection
+     * @param \PDO $pdo
+     * @param \Arch\Logger $logger
+     */
+    public function testFailStatementInsert($pdo, $logger)
+    {
+        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $result = $table->i(array('field1' => 'insert'))
+                ->where('field1 = ?', array(new stdClass))
+                ->getInsertId();
+        $this->assertFalse($result);
+    }
+    
+    /**
+     * Test invalid statement on update
+     * @dataProvider providerConnection
+     * @param \PDO $pdo
+     * @param \Arch\Logger $logger
+     */
+    public function testFailStatementUpdate($pdo, $logger)
+    {
+        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $result = $table->u(array('field1' => 'update'))
+                ->where('field1 = ?', array(new stdClass))
+                ->getRowCount();
+        $this->assertFalse($result);
+    }
+    
+    /**
+     * Test insert with invalid values
+     * @dataProvider providerConnectionInsertInvalidValue
+     * @param \PDO $pdo The PDO connection
+     * @param \Arch\Logger $logger The logger
+     * @param mixed $value The value to be tested
+     */
+    public function testInsertInvalidValue($pdo, $logger, $value)
+    {
+        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $result = $table->i(array('field1' => $value))->getInsertId();
+        $this->assertFalse($result);
     }
 
 }

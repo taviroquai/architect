@@ -395,11 +395,6 @@ class Table
                 $this->dbBindParams($params);
             }
             
-            // fail if there is no statement
-            if ($this->stm === false) {
-                throw new \PDOException('Invalid database statement');
-            }
-            
             // finally execute query
             $this->stm->execute();
         } catch (\PDOException $e) {
@@ -470,16 +465,24 @@ class Table
             $type = \PDO::PARAM_STR;
             
             // try to find a match
-            if (is_numeric($v)) {
+            if (is_null($v)) {
+                $type = \PDO::PARAM_INT;
+            } elseif (is_numeric($v)) {
                 if (is_integer($v)) $type = \PDO::PARAM_INT;
-            } elseif (is_bool($v)) $type = \PDO::PARAM_BOOL;
+            } elseif (is_bool($v)) {
+                $type = \PDO::PARAM_BOOL;
+            } elseif (is_array( $v ) ) {
+                throw new \PDOException("DB bind param $i failed");
+            } elseif (is_object( $v ) ) {
+                if (get_class($v) == 'Closure') {
+                    $v = $v();
+                } elseif (!method_exists( $v, '__toString' )) {
+                    throw new \PDOException("DB bind param $i failed");
+                }
+            }
             
             // bind param
-            try {
-                $this->stm->bindParam($i, $v, $type);
-            } catch (\PDOException $e) {
-                $this->logger->log("DB bind param $i failed", 'error');
-            }
+            $this->stm->bindParam($i, $v, $type);
             $i++;
         }
     }
