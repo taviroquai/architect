@@ -5,12 +5,11 @@ require_once realpath(__DIR__ . '/../vendor/autoload.php');
 require_once realpath(__DIR__ . '/../aliases.php');
 
 // Create application
-$config_path = realpath('config/config.xml');
-$app = \Arch\App::Instance($config_path);
+$app = \Arch\App::Instance('config.xml');
 
 // Add default route
-$app->addRoute('/', function () use ($app) {
-    $app->output->setContent('Hello Architect!');
+r('/', function () {
+    o('Hello Architect!');
 });
 
 // Run application

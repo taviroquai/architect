@@ -6,12 +6,12 @@
     <item name="DISPLAY_ERRORS">1</item>
     
     <!-- Default paths -->
-    <item name="THEME_PATH">/theme</item>
-    <item name="MODULE_PATH">/module</item>
-    <item name="IDIOM_PATH">/idiom</item>
-    <item name="CACHE_PATH">/cache</item>
-    <item name="LOG_FILE">/log/log.txt</item>
-    <item name="BASE_URL">/architectphp/oldtest</item>
+    <item name="THEME_PATH">./theme</item>
+    <item name="MODULE_PATH">./module</item>
+    <item name="IDIOM_PATH">./idiom</item>
+    <item name="CACHE_PATH">./cache</item>
+    <item name="LOG_FILE">./log/log.txt</item>
+    <item name="BASE_URL">/architectphp/apptest</item>
     <!-- empty INDEX_FILE if you use URL rewrite -->
     <item name="INDEX_FILE">index.php</item>
     
