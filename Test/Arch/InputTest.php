@@ -160,6 +160,7 @@ class InputTest extends \PHPUnit_Framework_TestCase
         $expected = $get;
         $input = new \Arch\Input();
         $input->setHttpGet($get);
+        $input->parseGlobal();
         $result = $input->get();
         $this->assertEquals($expected, $result);
     }
@@ -188,6 +189,7 @@ class InputTest extends \PHPUnit_Framework_TestCase
         $expected = $post;
         $input = new \Arch\Input();
         $input->setHttpPost($post);
+        $input->parseGlobal();
         $result = $input->post();
         $this->assertEquals($expected, $result);
     }
