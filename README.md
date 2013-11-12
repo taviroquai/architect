@@ -151,16 +151,6 @@ changing the core system. These are:
     'arch.session.before.save'
     'arch.before.end'
 
-### DATABASE
-    app()->db // Gets a PDO instance
-    app()->query('tablename')->select()->run(); // runs and returns a PDOStatement
-    app()->query('user')->insert(array('username' => 'admin')->run();
-    q('user')->s()->w('id = ?', array(1))->run(); // select user where id = 1
-    q('user')->i(array('username' => 'admin'))->run(); // insert into user
-    q('user')->u(array('username' => 'guest'))->w('id = ?', array(1))->run(); // update
-    q('user')->d('id = ?', array(1))->run(); // delete from user where id = 1
-    q('user')->s('group.*')->j('usergroup', 'usergroup.id_group = group.id')->run(); // join
-
 ### IDIOM
     $i = app()->createIdiom();  // tries to find a default idiom by session or input
     $i->loadTranslation('filename', 'optional module name'); // loads a translation file
@@ -198,6 +188,16 @@ changing the core system. These are:
     download by sending attachment HTTP headers
     app()->download('/var/www/architect/theme/data/image.jpg', false); // do
     not send attachment headers
+
+### DATABASE
+    app()->db // Gets a PDO instance
+    app()->createQuery('tablename')->select()->run(); // runs and returns a PDOStatement
+    app()->createQuery('user')->insert(array('username' => 'admin')->run();
+    q('user')->s()->w('id = ?', array(1))->run(); // select user where id = 1
+    q('user')->i(array('username' => 'admin'))->run(); // insert into user
+    q('user')->u(array('username' => 'guest'))->w('id = ?', array(1))->run(); // update
+    q('user')->d('id = ?', array(1))->run(); // delete from user where id = 1
+    q('user')->s('group.*')->j('usergroup', 'usergroup.id_group = group.id')->run(); // join
 
 ### DATEPICKER
     app()->createDatepicker(); // returns a HTML date picker view
