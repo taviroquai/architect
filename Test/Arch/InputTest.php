@@ -241,7 +241,7 @@ class InputTest extends \PHPUnit_Framework_TestCase
             'file' => $expected
         );
         $input = new \Arch\Input();
-        $input->setHttpFiles($data['file']);
+        $input->setHttpFiles($data);
         $result = $input->file($index);
         $this->assertEquals($expected, $result);
     }
@@ -258,7 +258,7 @@ class InputTest extends \PHPUnit_Framework_TestCase
                 'name' => array('test1', 'test2'))
         );
         $input = new \Arch\Input();
-        $input->setHttpFiles($data['file']);
+        $input->setHttpFiles($data);
         $result = $input->file($index);
         $this->assertEquals($expected, $result);
     }

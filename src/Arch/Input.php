@@ -288,6 +288,7 @@ class Input
     
     private function remapFiles($files)
     {
+        $files = reset($files);
         if (is_array($files['name'])) {
             $new = array();
             foreach( $files as $key => $all ){
