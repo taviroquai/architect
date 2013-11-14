@@ -71,17 +71,20 @@
         <a class="btn" data-edit="redo" title="Redo (Ctrl/Cmd+Y)">
             <i class="icon-repeat"></i></a>
       </div>
-      <input type="text" data-edit="inserttext" id="voiceBtn" x-webkit-speech="">
+      <input type="text" data-edit="inserttext" id="voiceBtn" x-webkit-speech="" />
     </div>
-    <div class="editor" 
-         style="min-height: 84px">
-    </div>
+    <div class="editor" style="min-height: 84px"><?=$value?></div>
+    <input name="<?=$name?>" type="hidden" value="" />
     <?php $this->slot('content', function($item) { ?>
         <?=$item?>
     <?})?>
 </div>
 <script type="text/javascript">
     jQuery(function($) {
-        $('#<?=$_id?> .editor').wysiwyg();
+        var editor = $('#<?=$_id?> .editor').wysiwyg();
+        var input = $('input[name="<?=$name?>"]');
+        editor.closest('form').on('submit', function() {
+            input.val(editor[0].innerHTML);
+        });
     });
 </script>

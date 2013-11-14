@@ -19,6 +19,7 @@ class DatePicker extends \Arch\View
         }
 		parent::__construct($tmpl);
         
-        $this->set('default', date('Y-m-d'));
+        $this->set('name', 'date1');
+        $this->set('value', date('Y-m-d'));
 	}
 }

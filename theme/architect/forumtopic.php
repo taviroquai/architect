@@ -26,10 +26,10 @@
     <?php if (!empty($topic->id)) { ?>
         <h4>Add Post</h4>
         <form method="post">
-            <textarea style="width: 100%" rows="5" name="body"
+            <textarea style="width: 100%" rows="5" name="post[body]"
                       placeholder="Text body"></textarea>
-            <input type="hidden" name="id_topic" value="<?=$topic->id?>" />
-            <input type="submit" name="post" value="Send" class="btn" />
+            <input type="hidden" name="post[id_topic]" value="<?=$topic->id?>" />
+            <button type="submit" class="btn">Send</button>
         </form>
     <?php } ?>
     <?php $this->slot('content', function($item) { ?>

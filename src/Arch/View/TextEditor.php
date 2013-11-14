@@ -19,5 +19,8 @@ class TextEditor extends \Arch\View
                     array(ARCH_PATH,'theme','architect','wysiwyg.php'));
         }
 		parent::__construct($tmpl);
+        
+        $this->set('name', 'editor1');
+        $this->set('value', '');
 	}
 }

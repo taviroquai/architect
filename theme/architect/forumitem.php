@@ -39,14 +39,14 @@
     <h4>Add Topic</h4>
     <form method="post">
         <label>Title</label>
-        <input type="text" name="title" value="" placeholder="Title" />
-        <textarea style="width: 100%" rows="5" name="body"
+        <input type="text" name="topic[title]" value="" placeholder="Title" />
+        <textarea style="width: 100%" rows="5" name="post[body]"
                   placeholder="Text body"></textarea>
         <label>Keywords</label>
-        <input type="text" name="keywords" value="" placeholder="keyword1,keyword2" />
-        <input type="hidden" name="id_forum" value="<?=$forum->id?>" />
+        <input type="text" name="topic[keywords]" value="" placeholder="keyword1,keyword2" />
+        <input type="hidden" name="topic[id_forum]" value="<?=$forum->id?>" />
         <label></label>
-        <input type="submit" name="topic" value="Send" class="btn" />
+        <button type="submit" class="btn">Send</button>
     </form>
     <?php $this->slot('content', function($item) { ?>
         <?=$item?>
