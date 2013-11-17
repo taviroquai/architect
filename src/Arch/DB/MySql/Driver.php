@@ -17,13 +17,19 @@ class Driver extends \Arch\DB\Driver
     
     /**
      * Returns a new MySql driver
+     * @param string $dbname The database name
      * @param string $host The hostname
      * @param string $user The database user
      * @param string $pass The user password
      * @param \Arch\Logger The application logger
      */
-    public function __construct($host, $user, $pass, \Arch\Logger $logger)
-    {
+    public function __construct(
+        $dbname,
+        $host,
+        $user,
+        $pass,
+        \Arch\Logger $logger
+    ) {
         $this->schema = self::createPDO(
             $host,
             'information_schema',
@@ -31,6 +37,11 @@ class Driver extends \Arch\DB\Driver
             $pass
         );
         $this->schema->setAttribute(
+            \PDO::ATTR_ERRMODE, 
+            \PDO::ERRMODE_EXCEPTION
+        );
+        $this->connect($host, $dbname, $user, $pass);
+        $this->db_pdo->setAttribute(
             \PDO::ATTR_ERRMODE, 
             \PDO::ERRMODE_EXCEPTION
         );

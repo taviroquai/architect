@@ -1225,12 +1225,12 @@ class App implements Messenger
             switch (DB_DRIVER) {
                 default:
                     $this->db = new \Arch\DB\MySql\Driver(
+                        DB_DATABASE,
                         DB_HOST,
                         DB_USER,
                         DB_PASS,
                         $this->logger
                     );
-                    $this->db->connect(DB_HOST, DB_DATABASE, DB_USER, DB_PASS);
             }
             
             // trigger core event
