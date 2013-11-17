@@ -98,18 +98,13 @@ abstract class Driver
      * @param string $tablename The table name
      * @return \Arch\DB\Table
      */
-    public function createTable($tablename)
-    {
-        
-    }
+    public abstract function createTable($tablename);
 
     /**
      * Returns a list of tables
      * @return array
      */
-    public function getTables() {
-        
-    }
+    public abstract function getTables();
     
     /**
      * Returns the column foreign key if exists
@@ -117,20 +112,14 @@ abstract class Driver
      * @param string $column_name The column
      * @return array
      */
-    public function getForeignKeys($table_name, $column_name)
-    {
-        
-    }
+    public abstract function getForeignKeys($table_name, $column_name);
 
     /**
      * Returns the table info
      * @param string $table_name The table name
      * @return array
      */
-    public function getTableInfo($table_name)
-    {
-        
-    }
+    public abstract function getTableInfo($table_name);
     
     /**
      * Returns the relation column between two tables, if exists
@@ -138,8 +127,6 @@ abstract class Driver
      * @param string $second_table The related table name
      * @return string
      */
-    public function getRelationColumn($first_table, $second_table)
-    {
-        
-    }
+    public abstract function getRelationColumn($first_table, $second_table);
+    
 }

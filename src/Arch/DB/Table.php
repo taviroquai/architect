@@ -572,8 +572,6 @@ abstract class Table
         return $items;
     }
     
-    protected function nodeToString()
-    {
-        
-    }
+    protected abstract function nodeToString();
+
 }
