@@ -171,7 +171,7 @@ abstract class Table
      * @param int $type The type of rows (array or class)
      * @return array
      */
-    public function fetch($type = \PDO::FETCH_CLASS)
+    public function fetch($type = \PDO::FETCH_ASSOC)
     {
         $stm = $this->execute();
         if ($stm) {
@@ -185,7 +185,7 @@ abstract class Table
      * @param int $type The type of rows (array or class)
      * @return array
      */
-    public function fetchAll($type = \PDO::FETCH_CLASS)
+    public function fetchAll($type = \PDO::FETCH_OBJ)
     {
         $stm = $this->execute();
         if ($stm) {
