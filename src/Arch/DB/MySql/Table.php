@@ -10,6 +10,16 @@ namespace Arch\DB\MySql;
 class Table extends \Arch\DB\Table
 {
     /**
+     * Returns a new MySql Table
+     * @param string $name The table name
+     * @param \Arch\DB\Driver $driver
+     */
+    public function __construct($name, \Arch\DB\Driver $driver)
+    {
+        parent::__construct($name, $driver);
+    }
+
+    /**
      * Transforms this node tree to SQL string
      * @return string
      * @throws \PDOException
