@@ -89,10 +89,14 @@ class Driver extends \Arch\DB\Driver
         $sql = 'SELECT TABLE_NAME, COLUMN_NAME, CONSTRAINT_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME ' .
             'FROM KEY_COLUMN_USAGE ' .
             'WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ? AND REFERENCED_TABLE_NAME IS NOT NULL';
-        $stm = $this->schema->prepare($sql);
-        $this->logger->log('DB schema query: '.$stm->queryString);
-        if ($stm->execute($data)) {
-            $result =  $stm->fetch(\PDO::FETCH_ASSOC);
+        try {
+            $stm = $this->schema->prepare($sql);
+            $this->logger->log('DB schema query: '.$stm->queryString);
+            if ($stm->execute($data)) {
+                $result =  $stm->fetch(\PDO::FETCH_ASSOC);
+            }
+        } catch (\PDOException $e) {
+            $this->logger->log('DB query error: '.$e->getMessage(), 'error');
         }
         return $result;
     }
@@ -106,10 +110,14 @@ class Driver extends \Arch\DB\Driver
     {
         $result = array();
         $sql = "DESCRIBE `$table_name`";
-        $stm = $this->db_pdo->prepare($sql);
-        $this->logger->log('DB query: '.$stm->queryString);
-        if ($stm->execute()) {
-            $result = $stm->fetchAll(\PDO::FETCH_ASSOC);
+        try {
+            $stm = $this->db_pdo->prepare($sql);
+            $this->logger->log('DB query: '.$stm->queryString);
+            if ($stm->execute()) {
+                $result = $stm->fetchAll(\PDO::FETCH_ASSOC);
+            }
+        } catch (\PDOException $e) {
+            $this->logger->log('DB query error: '.$e->getMessage(), 'error');
         }
         return $result;
     }
