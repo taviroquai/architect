@@ -74,6 +74,17 @@ class MySqlDriverTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Test fail get table info
+     * @dataProvider providerDriver
+     * @param \Arch\DB\Driver $driver
+     */
+    public function testFailGetTableInfo($driver)
+    {
+        $result = $driver->getTableInfo('test_table');
+        $this->assertInternalType('array', $result);
+    }
+    
+    /**
      * Test get table foreign keys
      * @dataProvider providerDriver
      * @param \Arch\DB\Driver $driver
@@ -81,6 +92,17 @@ class MySqlDriverTest extends \PHPUnit_Framework_TestCase
     public function testGetTableForeignKeys($driver)
     {
         $result = $driver->getForeignKeys('test_nmrelation', 'id_table1');
+        $this->assertInternalType('array', $result);
+    }
+    
+    /**
+     * Test fail get table foreign keys
+     * @dataProvider providerDriver
+     * @param \Arch\DB\Driver $driver
+     */
+    public function testFailGetTableForeignKeys($driver)
+    {
+        $result = $driver->getForeignKeys('test_nmrelatio', 'id_table1');
         $this->assertInternalType('array', $result);
     }
     
