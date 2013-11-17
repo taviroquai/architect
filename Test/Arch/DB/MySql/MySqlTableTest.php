@@ -247,6 +247,18 @@ class TableTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Test select and join
+     * @dataProvider providerConnection
+     * @param \Arch\DB\Driver $driver
+     */
+    public function testSelectJoinAuto($driver)
+    {
+        $table = new \Arch\DB\MySql\Table('test_nmrelation', $driver);
+        $result = $table->s()->joinAuto()->run();
+        $this->assertInstanceOf('\PDOStatement', $result);
+    }
+    
+    /**
      * Test fail select and group
      * @dataProvider providerConnection
      * @param \Arch\DB\Driver $driver
@@ -353,6 +365,18 @@ class TableTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Test select fetch first
+     * @dataProvider providerConnection
+     * @param \Arch\DB\Driver $driver
+     */
+    public function testSelectFetch($driver)
+    {
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
+        $result = $table->s()->fetch();
+        $this->assertInternalType('array', $result);
+    }
+    
+    /**
      * Test select fetch all
      * @dataProvider providerConnection
      * @param \Arch\DB\Driver $driver
@@ -400,6 +424,20 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\PDOStatement', $result);
         $rows = $table->getRowCount();
         $this->assertInternalType('integer', $rows);
+    }
+    
+    /**
+     * Test invalid statement on select fetch
+     * @dataProvider providerConnection
+     * @param \Arch\DB\Driver $driver
+     */
+    public function testFailStatementSelectFetch($driver)
+    {
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
+        $result = $table->s()
+                ->where('field1 = ?', array(new stdClass))
+                ->fetch();
+        $this->assertInternalType('array', $result);
     }
     
     /**
