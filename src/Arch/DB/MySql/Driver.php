@@ -84,6 +84,7 @@ class Driver extends \Arch\DB\Driver
      */
     public function getForeignKeys($table_name, $column_name)
     {
+        $result = array();
         $data = array($this->dbname, $table_name, $column_name);
         $sql = 'SELECT TABLE_NAME, COLUMN_NAME, CONSTRAINT_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME ' .
             'FROM KEY_COLUMN_USAGE ' .
@@ -91,9 +92,9 @@ class Driver extends \Arch\DB\Driver
         $stm = $this->schema->prepare($sql);
         $this->logger->log('DB schema query: '.$stm->queryString);
         if ($stm->execute($data)) {
-            return $stm->fetch(\PDO::FETCH_ASSOC);
+            $result =  $stm->fetch(\PDO::FETCH_ASSOC);
         }
-        return array();
+        return $result;
     }
 
     /**
@@ -103,13 +104,14 @@ class Driver extends \Arch\DB\Driver
      */
     public function getTableInfo($table_name)
     {
+        $result = array();
         $sql = "DESCRIBE `$table_name`";
         $stm = $this->db_pdo->prepare($sql);
         $this->logger->log('DB query: '.$stm->queryString);
         if ($stm->execute()) {
-            return $stm->fetchAll(\PDO::FETCH_ASSOC);
+            $result = $stm->fetchAll(\PDO::FETCH_ASSOC);
         }
-        return array();
+        return $result;
     }
     
     /**
@@ -120,15 +122,17 @@ class Driver extends \Arch\DB\Driver
      */
     public function getRelationColumn($first_table, $second_table)
     {
+        $result = '';
         $table = $this->getTableInfo($first_table);
         foreach ($table as $item) {
             $relitem = $this->getForeignKeys($first_table, $item['Field']);
             if (isset($relitem['REFERENCED_TABLE_NAME'])
                 && $relitem['REFERENCED_TABLE_NAME'] == $second_table) {
-                return $item['Field'];
+                $result = $item['Field'];
+                break;
             }
         }
-        return '';
+        return $result;
     }
     
 }
