@@ -32,11 +32,11 @@ class AutoPanel extends \Arch\View
         $this->config = $config;
         $this->driver = $driver;
         
-        if (!isset($this->config['table'])) {
-            throw new \Exception('DBPanel configuration: table is required');
+        if (empty($this->config['table'])) {
+            throw new \Exception('AutoPanel configuration: table is required');
         }
-        if (!isset($this->config['select'])) {
-            throw new \Exception('DBPanel configuration: select is required');
+        if (empty($this->config['select'])) {
+            throw new \Exception('AutoPanel configuration: select is required');
         }
     }
 }
