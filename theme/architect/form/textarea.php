@@ -1,0 +1,1 @@
+<textarea name="<?=$name?>" class="span12"><?=$value?></textarea>

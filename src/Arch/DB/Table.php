@@ -1,6 +1,6 @@
 <?php
 
-namespace Arch;
+namespace Arch\DB;
 
 /**
  * Table class
@@ -8,7 +8,7 @@ namespace Arch;
  * Allows to build SQL query requests using PDO
  * TODO: separate in varous drivers (MySql, PostgreSQL, SQLite)
  */
-class Table
+abstract class Table
 {
     /**
      * Holds the ralational table name
@@ -17,10 +17,16 @@ class Table
     protected $name;
     
     /**
-     * Holds the PDO instance
-     * @var \PDO
+     * Holds the database name which it belongs
+     * @var string
      */
-    protected $db;
+    protected $dbname;
+    
+    /**
+     * Holds the PDO instance
+     * @var \Arch\DB\Driver
+     */
+    protected $driver;
     
     /**
      * Holds the current statement
@@ -41,30 +47,22 @@ class Table
     protected $node;
     
     /**
-     * Holds the error logger
-     * @var \Arch\Logger
-     */
-    protected $logger;
-    
-    /**
      * Returns a new Table to start querying
      * All these queries are simple and only affect 1 table based on the name
      * For more complex queries, use PDO directly
      * 
      * @param string $name The tablename
-     * @param PDO $db The PDO database handler to query
+     * @param \Arch\DB\Driver $driver The PDO database handler to query
      * @param \Arch\Logger $logger The logs handler
      */
-    public function __construct($name, \PDO $db, \Arch\Logger $logger)
+    public function __construct($name, \Arch\DB\Driver $driver)
     {
         if  (!is_string($name) || empty($name)) {
             throw new \Exception('Invalid table name');
         }
         $this->name = $name;
-        $this->db = $db;
-        $this->logger = $logger;
+        $this->driver = $driver;
         $this->node = $this->createSelect();
-        
     }
     
     /**
@@ -161,12 +159,25 @@ class Table
      * Execute alias
      * @param string $sql The sql to execute (optional), build if empty
      * @param array $params The SQL params
-     * @param string $redirect Redirect on error
      * @return \PDOStatement
      */
-    public function run($sql = '', $params = null, $redirect = '/404')
+    public function run($sql = '', $params = null)
     {
-        return $this->execute($sql, $params, $redirect);
+        return $this->execute($sql, $params);
+    }
+    
+    /**
+     * Runs the query and returns the first record
+     * @param int $type The type of rows (array or class)
+     * @return array
+     */
+    public function fetch($type = \PDO::FETCH_CLASS)
+    {
+        $stm = $this->execute();
+        if ($stm) {
+            return $stm->fetch($type);
+        }
+        return array();
     }
     
     /**
@@ -223,7 +234,7 @@ class Table
     {
         $stm = $this->execute();
         if ($stm) {
-            return $this->db->lastInsertId($name);
+            return $this->driver->getPDO()->lastInsertId($name);
         }
         return false;
     }
@@ -326,6 +337,25 @@ class Table
     }
     
     /**
+     * Joins the relations got from database driver (if any)
+     * @return \Arch\Table
+     */
+    public function joinAuto()
+    {
+        $info = $this->driver->getTableInfo($this->name);
+        foreach ($info as $c) {
+            $cn = $c['Field'];
+            $fk = $this->driver->getForeignKeys($this->name, $cn);
+            if (!empty($fk) && isset($fk['REFERENCED_TABLE_NAME'])) {
+                $fkt = $fk['REFERENCED_TABLE_NAME'];
+                $fkc = $fk['REFERENCED_COLUMN_NAME'];
+                $this->join($fkt, "`$this->name`.`$cn` = `$fkt`.`$fkc`");
+            }
+        }
+        return $this;
+    }
+    
+    /**
      * Set limit and offset
      * @param integer $limit The limit, an integer
      * @param integer $offset The offset, an integer
@@ -361,7 +391,7 @@ class Table
         try {
             if (empty($sql)) {
                 // build operation syntax
-                $sql = self::nodeToString($this->node);
+                $sql = $this->nodeToString();
             }
 
             // now we have SQL
@@ -369,13 +399,13 @@ class Table
             unset($sql);
 
             // provoke failures
-            $this->db->setAttribute(
+            $this->driver->getPDO()->setAttribute(
                 \PDO::ATTR_ERRMODE, 
                 \PDO::ERRMODE_EXCEPTION
             );
             
             // prepare statement
-            $this->stm = $this->db->prepare($this->sql);
+            $this->stm = $this->driver->getPDO()->prepare($this->sql);
             
             // Get PDO params
             if ($params === null) {    
@@ -388,7 +418,7 @@ class Table
                     $params = array_merge ($params, $this->node->where);
                 }
             }
-            $this->logger->log('DB query params count: '.count($params));
+            $this->driver->getLogger()->log('DB query params count: '.count($params));
             
             // build PDO params
             if (is_array($params) && !empty($params)) {
@@ -401,18 +431,18 @@ class Table
             
             // fail if there is no statement
             if (empty($this->stm)) {
-                $this->logger->log('Invalid database statement');
+                $this->driver->getLogger()->log('Invalid database statement');
             } else {
                 // Log the error information and show an error page to the user
-                $this->logger->log('DB query failed: '.
+                $this->driver->getLogger()->log('DB query failed: '.
                         $this->stm->queryString, 'error');
-                $this->logger->log('Details: '.$e->getMessage(), 'error');
+                $this->driver->getLogger()->log('Details: '.$e->getMessage(), 'error');
             }
             return false;
         }
         
         // log the valid query
-        $this->logger->log('DB query is valid: '.$this->stm->queryString);
+        $this->driver->getLogger()->log('DB query is valid: '.$this->stm->queryString);
         
         // return PDOStatement for further operations
         return $this->stm;
@@ -434,20 +464,20 @@ class Table
             }
             $sql = file_get_contents($filename);
             
-            $this->db->setAttribute(
+            $this->driver->getPDO()->setAttribute(
                 \PDO::ATTR_ERRMODE, 
                 \PDO::ERRMODE_EXCEPTION
             );
-            $this->db->beginTransaction();
-            $this->db->exec($sql);
-            $this->db->commit();
+            $this->driver->getPDO()->beginTransaction();
+            $this->driver->getPDO()->exec($sql);
+            $this->driver->getPDO()->commit();
             return true;
             
         } catch (\PDOException $e) {
-            $this->db->rollBack();
-            $this->logger->log('PDO Exception: '.$e->getMessage(), 'error');
+            $this->driver->getPDO()->rollBack();
+            $this->driver->getLogger()->log('PDO Exception: '.$e->getMessage(), 'error');
         } catch (\Exception $e) {
-            $this->logger->log('Exception: '.$e->getMessage(), 'error');
+            $this->driver->getLogger()->log('Exception: '.$e->getMessage(), 'error');
         }
         return false;
     }
@@ -533,61 +563,6 @@ class Table
         return $node;
     }
     
-    protected static function nodeToString($node)
-    {
-        $sql = '';
-        switch ($node->_type) {
-            case 'SELECT':
-                $sql .= $node->_type.' '.
-                    self::addBackTicks($node->fields, true).
-                    ' FROM '.
-                    self::addBackTicks($node->from);
-                breaK;
-            case 'INSERT':
-                if (count($node->values) == 0) {
-                    throw new \PDOException('Invalid insert values');
-                }
-                $sql .= $node->_type.
-                    ' INTO '.
-                    self::addBackTicks($node->table).
-                    ' ('.
-                    implode(',', self::addBackTicks($node->fields)).
-                    ') VALUES ('.
-                    implode(',', array_fill(0, count($node->values), '?')).
-                    ')';
-                break;
-            case 'UPDATE':
-                if (count($node->set) == 0) {
-                    throw new \PDOException('Invalid update values');
-                }
-                $set = $node->set;
-                foreach ($set as $k => &$v) $v = "`$k` = ?";
-                $sql .= $node->_type.' '.
-                    self::addBackTicks($node->table).' SET '.
-                    implode(',', $set);
-                break;
-            case 'DELETE':
-                $sql .= $node->_type.' FROM '.
-                    self::addBackTicks($node->table);
-                break;
-        }
-        if (!empty($node->join)) {
-            foreach ($node->join as $item) {
-                $sql .= " {$item->type} JOIN ".$item->sql.' ON '.$item->on;
-            }
-        }
-        if (!empty($node->condition)) {
-            $sql .= ' WHERE '.$node->condition;
-        }
-        if (!empty($node->groupby)) {
-            $sql .= ' GROUP BY '.$node->groupby;
-        }
-        if (!empty($node->limit)) {
-            $sql .= ' LIMIT '.$node->limit.', '.$node->offset;
-        }
-        return $sql;
-    }
-    
     protected static function addBackTicks($items, $skip = false)
     {
         if (!is_array($items)) return $skip ? $items : "`$items`";
@@ -595,5 +570,10 @@ class Table
             $field = "`$field`";
         }
         return $items;
+    }
+    
+    protected function nodeToString()
+    {
+        
     }
 }

@@ -183,6 +183,7 @@ class View
      */
     public function get($key)
     {
+        if (!isset($this->data[$key])) return false;
         return $this->data[$key];
     }
     

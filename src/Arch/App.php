@@ -104,14 +104,16 @@ class App implements Messenger
      * When this is requested, the application will look for the <b>default
      * database constants</b> defined in configuration.
      * 
-     * Database constant are:
+     * Database constants are:
      * <ul>
-     * <li>DB_DSN - defines PDO dsn string</li>
+     * <li>DB_DRIVER - defines DSN driver string</li>
+     * <li>DB_DATABASE - defined the default database</li>
+     * <li>DB_HOST - defined the default database host</li>
      * <li>DB_USER - defined PDO user</li>
      * <li>DB_PASS - defined user password</li>
      * </ul>
      * 
-     * @var \PDO The default PDO object
+     * @var \DBDriver The default database driver
      */
     public  $db;
     
@@ -744,8 +746,30 @@ class App implements Messenger
     public function createQuery($tableName)
     {
         if (empty($this->db)) $this->initDatabase ();
-        $table = new \Arch\Table($tableName, $this->db, $this->logger);
+        $table = $this->db->createTable($tableName);
         return $table;
+    }
+    
+    /**
+     * Returns a new automatic table
+     * @param array $config The configuration
+     * @return \Arch\View\AutoPanel\AutoTable
+     */
+    public function createAutoTable($config)
+    {
+        if (empty($this->db)) $this->initDatabase ();
+        return new \Arch\View\AutoPanel\AutoTable($config, $this->db);
+    }
+    
+    /**
+     * Returns a new automatic form
+     * @param array $config The configuration
+     * @return \Arch\View\AutoPanel\AutoForm
+     */
+    public function createAutoForm($config)
+    {
+        if (empty($this->db)) $this->initDatabase ();
+        return new \Arch\View\AutoPanel\AutoForm($config, $this->db);
     }
     
     /**
@@ -1198,11 +1222,16 @@ class App implements Messenger
     private function initDatabase()
     {
         try {
-            $this->db = new \PDO(DB_DSN.';charset=UTF8', DB_USER, DB_PASS);
-            $this->db->setAttribute(
-                \PDO::ATTR_ERRMODE, 
-                \PDO::ERRMODE_EXCEPTION
-            );
+            switch (DB_DRIVER) {
+                default:
+                    $this->db = new \Arch\DB\MySql\Driver(
+                        DB_HOST,
+                        DB_USER,
+                        DB_PASS,
+                        $this->logger
+                    );
+                    $this->db->connect(DB_HOST, DB_DATABASE, DB_USER, DB_PASS);
+            }
             
             // trigger core event
             $this->triggerEvent('arch.db.after.load', $this->db);
