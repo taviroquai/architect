@@ -72,10 +72,8 @@ class Driver extends \Arch\DB\Driver
             'WHERE TABLE_SCHEMA = ?';
         $stm = $this->schema->prepare($sql);
         $this->logger->log('DB schema query: '.$stm->queryString);
-        if ($stm->execute($data)) {
-            return $stm->fetchAll(\PDO::FETCH_ASSOC);
-        }
-        return array();
+        $stm->execute($data);
+        return $stm->fetchAll(\PDO::FETCH_ASSOC);
     }
     
     /**
