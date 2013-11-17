@@ -92,11 +92,17 @@ class AutoForm extends \Arch\View\AutoPanel
         if (empty($config['tmpl'])) {
             $tmpl = __DIR__.'/../../../../theme/architect/form/label.php';
         }
+        if (empty($config['label'])) {
+            $config['label'] = '';
+        }
         return new \Arch\View($tmpl, $config);
     }
     
     public function createInputHidden($config)
     {
+        if (empty($config['property'])) {
+            return '';
+        }
         if (empty($config['tmpl'])) {
             $tmpl = __DIR__.'/../../../../theme/architect/form/input/hidden.php';
         }
@@ -112,6 +118,9 @@ class AutoForm extends \Arch\View\AutoPanel
     
     public function createInputPassword($config)
     {
+        if (empty($config['property'])) {
+            return '';
+        }
         if (empty($config['tmpl'])) {
             $tmpl = __DIR__.'/../../../../theme/architect/form/input/password.php';
         }
@@ -143,6 +152,12 @@ class AutoForm extends \Arch\View\AutoPanel
         if (empty($config['tmpl'])) {
             $tmpl = __DIR__.'/../../../../theme/architect/form/submit.php';
         }
+        if (empty($config['label'])) {
+            $config['label'] = '';
+        }
+        if (empty($config['class'])) {
+            $config['class'] = '';
+        }
         $v = new \Arch\View($tmpl, $config);
         return $v;
     }
@@ -155,11 +170,16 @@ class AutoForm extends \Arch\View\AutoPanel
         if (empty($config['name'])) {
             $config['name'] = $config['property'];
         }
-        $v = new \Arch\View($tmpl, $config);
-        $value = empty($config['value']) ? 
-            $this->record[$config['property']] : $config['value'];
-        $v->set('value', $value);
-        return $v;
+        if (!isset($config['value'])) {
+            $config['value'] = '';
+            if (
+                isset($config['property']) 
+                && isset($this->record[$config['property']])
+            ) {
+                $config['value'] = $this->record[$config['property']];
+            }
+        }
+        return new \Arch\View($tmpl, $config);
     }
     
     public function createTextArea($config)
@@ -170,11 +190,16 @@ class AutoForm extends \Arch\View\AutoPanel
         if (empty($config['name'])) {
             $config['name'] = $config['property'];
         }
-        $v = new \Arch\View($tmpl, $config);
-        $value = empty($config['value']) ? 
-            $this->record[$config['property']] : $config['value'];
-        $v->set('value', $value);
-        return $v;
+        if (!isset($config['value'])) {
+            $config['value'] = '';
+            if (
+                isset($config['property']) 
+                && isset($this->record[$config['property']])
+            ) {
+                $config['value'] = $this->record[$config['property']];
+            }
+        }
+        return new \Arch\View($tmpl, $config);
     }
     
     public function createSelect($config)
@@ -185,32 +210,28 @@ class AutoForm extends \Arch\View\AutoPanel
         if (empty($config['name'])) {
             $config['name'] = $config['property'];
         }
-        $v = new \Arch\View($tmpl, $config);
-        $v->set('record', $this->record);
         
         if (!isset($config['items'])) {
-            $items = array();
+            $config['items'] = array();
             if (!empty($config['items_table'])) {
                 $table = $this->driver->createTable($config['items_table']);
-                $items = $table->select()->fetchAll(\PDO::FETCH_ASSOC);
+                $config['items'] = $table->select()->fetchAll(\PDO::FETCH_ASSOC);
             }
-            $v->set('items', $items);
         }
         
         if (!isset($config['selected'])) {
-            $selected = array();
+            $config['selected'] = array();
             if ($this->record && !empty($config['items_table'])) {
                 $fk = $this->driver->getRelationColumn(
                     $this->config['table'],
                     $config['items_table']
                 );
                 if (isset($this->record[$fk])) {
-                    $selected[] = $this->record[$fk];
+                    $config['selected'][] = $this->record[$fk];
                 }
             }
-            $v->set('selected', $selected);
         }
-        return $v;
+        return new \Arch\View($tmpl, $config);
     }
     
     public function createCheckList($config)
@@ -221,39 +242,34 @@ class AutoForm extends \Arch\View\AutoPanel
         if (empty($config['name'])) {
             $config['name'] = $config['property'];
         }
-        $v = new \Arch\View($tmpl, $config);
-        $v->set('record', $this->record);
         
         if (!isset($config['items'])) {
-            $items = array();
+            $config['items'] = array();
             if (!empty($config['items_table'])) {
                 $table = $this->driver->createTable($config['items_table']);
-                $items = $table->select()->fetchAll(\PDO::FETCH_ASSOC);
+                $config['items'] = $table->select()->fetchAll(\PDO::FETCH_ASSOC);
             }
-            $v->set('items', $items);
         }
         
         if (!isset($config['selected'])) {
-            $selected = array();
+            $config['selected'] = array();
             if (
                 !empty($config['selected_items_table']) 
                 && !empty($config['items_table']) 
                 && $this->record
             ) {
-                echo 1;
-                $selected = $this->getNMSelectedItems(
+                $config['selected'] = $this->getNMSelectedItems(
                     $config['selected_items_table'],
                     $config['items_table'],
                     $this->config['table'],
                     $this->record['id']
                 );
             }
-            $v->set('selected', $selected);
         }
         if (!isset($config['class'])) {
-            $v->set('class', 'checkbox');
+            $config['class'] = 'checkbox';
         }
-        return $v;
+        return new \Arch\View($tmpl, $config);
     }
     
     public function createRadioList($config)
@@ -261,6 +277,9 @@ class AutoForm extends \Arch\View\AutoPanel
         if (empty($config['tmpl'])) {
             $config['tmpl'] = 
                 __DIR__.'/../../../../theme/architect/form/radiolist.php';
+        }
+        if (!isset($config['class'])) {
+            $config['class'] = 'radio';
         }
         return $this->renderCheckList($config);
     }

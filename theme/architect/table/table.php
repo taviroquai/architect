@@ -2,7 +2,7 @@
     <thead>
         <tr>
         <?php foreach ($columns as $col) { ?>
-        <th><?=$col['label']?></th>
+        <th><?=empty($col['label']) ? '' : $col['label']?></th>
         <?php } ?>
         </tr>
     </thead>

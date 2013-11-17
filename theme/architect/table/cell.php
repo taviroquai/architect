@@ -1,1 +1,1 @@
-<div><?=$record[$property]?></div>
+<div><?=$value?></div>

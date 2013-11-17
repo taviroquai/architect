@@ -1,3 +1,3 @@
-<a class="btn btn-primary" href="<?=$action?><?=$record['id']?>">
-    <i class="icon-white <?=$icon?>"></i>
+<a class="<?=$class?>" href="<?=$action?>">
+    <i class="<?=$icon?>"></i>
 </a>

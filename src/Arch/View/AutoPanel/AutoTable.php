@@ -41,6 +41,15 @@ class AutoTable extends \Arch\View\AutoPanel
         if (empty($config['tmpl'])) {
             $tmpl = __DIR__.'/../../../../theme/architect/table/rowaction.php';
         }
+        if (!isset($config['action'])) {
+            $config['action'] = '';
+        }
+        if (!empty($config['property'])) {
+            $config['action'] .= $record[$config['property']];
+        }
+        if (!isset($config['class'])) {
+            $config['class'] = 'btn';
+        }
         $v = new \Arch\View($tmpl, $config);
         $v->set('record', $record);
         return $v;
@@ -57,6 +66,11 @@ class AutoTable extends \Arch\View\AutoPanel
         if (empty($config['tmpl'])) {
             $tmpl = __DIR__.'/../../../../theme/architect/table/cell.php';
         }
+        if (empty($config['property'])) {
+            return 'undefined';
+        }
+        $config['value'] = isset($record[$config['property']]) ?
+            $record[$config['property']] : '';
         $v = new \Arch\View($tmpl, $config);
         $v->set('record', $record);
         return $v;

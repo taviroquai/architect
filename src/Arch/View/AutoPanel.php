@@ -32,9 +32,6 @@ class AutoPanel extends \Arch\View
         $this->config = $config;
         $this->driver = $driver;
         
-        if (!isset($this->config['database'])) {
-            throw new \Exception('DBPanel configuration: database is required');
-        }
         if (!isset($this->config['table'])) {
             throw new \Exception('DBPanel configuration: table is required');
         }
