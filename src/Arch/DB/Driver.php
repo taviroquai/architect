@@ -56,24 +56,6 @@ abstract class Driver
     }
     
     /**
-     * Returns the query logger
-     * @return \Arch\Logger
-     */
-    public function getLogger()
-    {
-        return $this->logger;
-    }
-
-    /**
-     * Returns the default database connection
-     * @return \PDO
-     */
-    public function getPDO()
-    {
-        return $this->db_pdo;
-    }
-
-        /**
      * Connects to the default database
      * @param type $host The database host
      * @param type $database The database name
@@ -90,6 +72,24 @@ abstract class Driver
                 \PDO::ERRMODE_EXCEPTION
             );
         }
+    }
+    
+    /**
+     * Returns the query logger
+     * @return \Arch\Logger
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     * Returns the default database connection
+     * @return \PDO
+     */
+    public function getPDO()
+    {
+        return $this->db_pdo;
     }
     
     /**
