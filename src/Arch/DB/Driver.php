@@ -63,17 +63,8 @@ abstract class Driver
     {
         return $this->logger;
     }
-    
-    /**
-     * Returns the default database name
-     * @return string
-     */
-    public function getDbname()
-    {
-        return $this->dbname;
-    }
 
-        /**
+    /**
      * Returns the default database connection
      * @return \PDO
      */
@@ -105,7 +96,7 @@ abstract class Driver
      * Returns a new table
      * 
      * @param string $tablename The table name
-     * @return \Arch\Table
+     * @return \Arch\DB\Table
      */
     public function createTable($tablename)
     {
@@ -114,7 +105,7 @@ abstract class Driver
 
     /**
      * Returns a list of tables
-     * @return boolean|array
+     * @return array
      */
     public function getTables() {
         
@@ -123,8 +114,8 @@ abstract class Driver
     /**
      * Returns the column foreign key if exists
      * @param string $table_name The table name
-     * @param type $column_name The column
-     * @return boolean|array
+     * @param string $column_name The column
+     * @return array
      */
     public function getForeignKeys($table_name, $column_name)
     {
@@ -145,7 +136,7 @@ abstract class Driver
      * Returns the relation column between two tables, if exists
      * @param string $first_table The first table name
      * @param string $second_table The related table name
-     * @return boolean
+     * @return string
      */
     public function getRelationColumn($first_table, $second_table)
     {
