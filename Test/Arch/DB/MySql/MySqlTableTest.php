@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Description of TableTest
+ * Description of database TableTest
  *
  * @author mafonso
  */
@@ -15,10 +15,13 @@ class TableTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array(
-                new \PDO(DB_DSN, DB_USER, DB_PASS, array(
-                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
-                )),
-                new \Arch\Logger(RESOURCE_PATH.'dummy')
+                new \Arch\DB\MySql\Driver(
+                    DB_DATABASE,
+                    DB_HOST,
+                    DB_USER,
+                    DB_PASS,
+                    new \Arch\Logger(RESOURCE_PATH.'dummy')
+                )
             )
         );
     }
@@ -31,31 +34,43 @@ class TableTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array(
-                new \PDO(DB_DSN, DB_USER, DB_PASS, array(
-                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
-                )),
-                new \Arch\Logger(RESOURCE_PATH.'dummy'),
+                new \Arch\DB\MySql\Driver(
+                    DB_DATABASE,
+                    DB_HOST,
+                    DB_USER,
+                    DB_PASS,
+                    new \Arch\Logger(RESOURCE_PATH.'dummy')
+                ),
                 null
             ),
             array(
-                new \PDO(DB_DSN, DB_USER, DB_PASS, array(
-                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
-                )),
-                new \Arch\Logger(RESOURCE_PATH.'dummy'),
+                new \Arch\DB\MySql\Driver(
+                    DB_DATABASE,
+                    DB_HOST,
+                    DB_USER,
+                    DB_PASS,
+                    new \Arch\Logger(RESOURCE_PATH.'dummy')
+                ),
                 array()
             ),
             array(
-                new \PDO(DB_DSN, DB_USER, DB_PASS, array(
-                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
-                )),
-                new \Arch\Logger(RESOURCE_PATH.'dummy'),
+                new \Arch\DB\MySql\Driver(
+                    DB_DATABASE,
+                    DB_HOST,
+                    DB_USER,
+                    DB_PASS,
+                    new \Arch\Logger(RESOURCE_PATH.'dummy')
+                ),
                 new stdClass()
             ),
             array(
-                new \PDO(DB_DSN, DB_USER, DB_PASS, array(
-                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
-                )),
-                new \Arch\Logger(RESOURCE_PATH.'dummy'),
+                new \Arch\DB\MySql\Driver(
+                    DB_DATABASE,
+                    DB_HOST,
+                    DB_USER,
+                    DB_PASS,
+                    new \Arch\Logger(RESOURCE_PATH.'dummy')
+                ),
                 function() { }
             )
         );
@@ -64,48 +79,44 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \Exception
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testInvalidTable($pdo, $logger)
+    public function testInvalidTable($driver)
     {
-        $result = new \Arch\Table(null, $pdo, $logger);
-        $this->assertInstanceOf('\Arch\Table', $result);
+        $result = new \Arch\DB\MySql\Table(null, $driver);
+        $this->assertInstanceOf('\Arch\DB\MySql\Table', $result);
     }
     
     /**
      * @expectedException \Exception
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testEmptyTable($pdo, $logger)
+    public function testEmptyTable($driver)
     {
-        $result = new \Arch\Table('', $pdo, $logger);
-        $this->assertInstanceOf('\Arch\Table', $result);
+        $result = new \Arch\DB\MySql\Table('', $driver);
+        $this->assertInstanceOf('\Arch\DB\MySql\Table', $result);
     }
     
     /**
      * Test create table
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testCreateTable($pdo, $logger)
+    public function testCreateTable($driver)
     {
-        $result = new \Arch\Table('test_table1', $pdo, $logger);
-        $this->assertInstanceOf('\Arch\Table', $result);
+        $result = new \Arch\DB\MySql\Table('test_table1', $driver);
+        $this->assertInstanceOf('\Arch\DB\MySql\Table', $result);
     }
     
     /**
      * Test fail install
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testFailInstall($pdo, $logger)
+    public function testFailInstall($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->install(RESOURCE_PATH.'not_found');
         $this->assertFalse($result);
         $result = $table->install(RESOURCE_PATH.'db/fail.sql');
@@ -115,12 +126,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test install
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testInstall($pdo, $logger)
+    public function testInstall($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->install(RESOURCE_PATH.'db/install.sql');
         $this->assertTrue($result);
     }
@@ -128,12 +138,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test fail execute statement
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testFailStatement($pdo, $logger)
+    public function testFailStatement($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->run('select from');
         $this->assertFalse($result);
     }
@@ -141,12 +150,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test fail select
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testFailRun($pdo, $logger)
+    public function testFailRun($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->run();
         $this->assertFalse($result);
     }
@@ -154,12 +162,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test select
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testSelect($pdo, $logger)
+    public function testSelect($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->s()->run();
         $this->assertInstanceOf('\PDOStatement', $result);
     }
@@ -167,12 +174,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test fail select
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testFailSelect($pdo, $logger)
+    public function testFailSelect($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->s('dummy')->run();
         $this->assertFalse($result);
     }
@@ -180,12 +186,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test select with where
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testSelectWhere($pdo, $logger)
+    public function testSelectWhere($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->s()->w(1)->run();
         $this->assertInstanceOf('\PDOStatement', $result);
     }
@@ -193,12 +198,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test fail where
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testFailSelectWhere($pdo, $logger)
+    public function testFailSelectWhere($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->s()->w('field')->run();
         $this->assertFalse($result);
     }
@@ -206,12 +210,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test select, where and wrong number of params
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testFailSelectWhereParams($pdo, $logger)
+    public function testFailSelectWhereParams($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->s()->w('field1 = ?', array())->run();
         $this->assertFalse($result);
     }
@@ -219,12 +222,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test select, where and params
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testSelectWhereParams($pdo, $logger)
+    public function testSelectWhereParams($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->s()->w('field1 = ?', array(1))->run();
         $this->assertInstanceOf('\PDOStatement', $result);
     }
@@ -232,12 +234,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test select and join
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testSelectJoin($pdo, $logger)
+    public function testSelectJoin($driver)
     {
-        $table = new \Arch\Table('test_nmrelation', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_nmrelation', $driver);
         $result = $table->s()->j(
                 'test_table1',
                 'test_table1.id = test_nmrelation.id_table1'
@@ -248,12 +249,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test fail select and group
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testFailSelectGroup($pdo, $logger)
+    public function testFailSelectGroup($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->s()->g('dummy')->run();
         $this->assertFalse($result);
     }
@@ -261,12 +261,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test select and group
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testSelectGroup($pdo, $logger)
+    public function testSelectGroup($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->s()->g('id')->run();
         $this->assertInstanceOf('\PDOStatement', $result);
     }
@@ -274,12 +273,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test fail select and limit
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testFailSelectLimit($pdo, $logger)
+    public function testFailSelectLimit($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->s()->l('dummy')->run();
         $this->assertFalse($result);
     }
@@ -287,12 +285,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test select and limit
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testSelectLimit($pdo, $logger)
+    public function testSelectLimit($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->s()->l(1)->run();
         $this->assertInstanceOf('\PDOStatement', $result);
     }
@@ -300,12 +297,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test fail insert
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testFailInsert($pdo, $logger)
+    public function testFailInsert($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->i(array())->run();
         $this->assertFalse($result);
     }
@@ -313,18 +309,17 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test insert
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testInsert($pdo, $logger)
+    public function testInsert($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->i(array('field1' => 'insert'))->run();
         $this->assertInstanceOf('\PDOStatement', $result);
         $id = $table->getInsertId();
         $this->assertNotEmpty($id);
         
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->i(array('field1' => false))->run();
         $this->assertInstanceOf('\PDOStatement', $result);
         $id = $table->getInsertId();
@@ -334,12 +329,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test fail update
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testFailUpdate($pdo, $logger)
+    public function testFailUpdate($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->u(array())->run();
         $this->assertFalse($result);
     }
@@ -347,12 +341,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test update
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testUpdate($pdo, $logger)
+    public function testUpdate($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->u(array('field1' => 'update'))->run();
         $this->assertInstanceOf('\PDOStatement', $result);
         $rows = $table->getRowCount();
@@ -362,12 +355,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test select fetch all
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testSelectFetchAll($pdo, $logger)
+    public function testSelectFetchAll($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->s()->fetchAll();
         $this->assertInternalType('array', $result);
     }
@@ -375,12 +367,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test select fetch object
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testSelectFetchObject($pdo, $logger)
+    public function testSelectFetchObject($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->s()->fetchObject();
         $this->assertInstanceOf('\stdClass', $result);
     }
@@ -388,12 +379,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test select fetch column
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testSelectFetchColumn($pdo, $logger)
+    public function testSelectFetchColumn($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->s()->fetchColumn();
         $this->assertInternalType('array', $result);
     }
@@ -401,12 +391,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test delete
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testDelete($pdo, $logger)
+    public function testDelete($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->d()->run();
         $this->assertInstanceOf('\PDOStatement', $result);
         $rows = $table->getRowCount();
@@ -416,12 +405,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test invalid statement on select fetch all
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testFailStatementSelectFetchAll($pdo, $logger)
+    public function testFailStatementSelectFetchAll($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->s()
                 ->where('field1 = ?', array(new stdClass))
                 ->fetchAll();
@@ -431,12 +419,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test invalid statement on select fetch object
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testFailStatementSelectFetchObject($pdo, $logger)
+    public function testFailStatementSelectFetchObject($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->s()
                 ->where('field1 = ?', array(new stdClass))
                 ->fetchObject();
@@ -446,12 +433,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test invalid statement on select fetch column
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testFailStatementSelectFetchColumn($pdo, $logger)
+    public function testFailStatementSelectFetchColumn($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->s()
                 ->where('field1 = ?', array(new stdClass))
                 ->fetchColumn();
@@ -461,12 +447,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test invalid statement on insert
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testFailStatementInsert($pdo, $logger)
+    public function testFailStatementInsert($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->i(array('field1' => 'insert'))
                 ->where('field1 = ?', array(new stdClass))
                 ->getInsertId();
@@ -476,12 +461,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test invalid statement on update
      * @dataProvider providerConnection
-     * @param \PDO $pdo
-     * @param \Arch\Logger $logger
+     * @param \Arch\DB\Driver $driver
      */
-    public function testFailStatementUpdate($pdo, $logger)
+    public function testFailStatementUpdate($driver)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->u(array('field1' => 'update'))
                 ->where('field1 = ?', array(new stdClass))
                 ->getRowCount();
@@ -491,13 +475,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test insert with invalid values
      * @dataProvider providerConnectionInsertInvalidValue
-     * @param \PDO $pdo The PDO connection
-     * @param \Arch\Logger $logger The logger
+     * @param \Arch\DB\Driver $driver
      * @param mixed $value The value to be tested
      */
-    public function testInsertInvalidValue($pdo, $logger, $value)
+    public function testInsertInvalidValue($driver, $value)
     {
-        $table = new \Arch\Table('test_table1', $pdo, $logger);
+        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
         $result = $table->i(array('field1' => $value))->getInsertId();
         $this->assertFalse($result);
     }
