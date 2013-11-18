@@ -79,7 +79,7 @@ class AutoForm extends \Arch\View\AutoPanel
         return parent::__toString();
     }
     
-    public function createBreakLine($config)
+    protected function createBreakLine($config)
     {
         if (empty($config['tmpl'])) {
             $tmpl = __DIR__.'/../../../../theme/architect/form/breakline.php';
@@ -87,7 +87,7 @@ class AutoForm extends \Arch\View\AutoPanel
         return new \Arch\View($tmpl, $config);
     }
     
-    public function createLabel($config)
+    protected function createLabel($config)
     {
         if (empty($config['tmpl'])) {
             $tmpl = __DIR__.'/../../../../theme/architect/form/label.php';
@@ -98,7 +98,7 @@ class AutoForm extends \Arch\View\AutoPanel
         return new \Arch\View($tmpl, $config);
     }
     
-    public function createInputHidden($config)
+    protected function createInputHidden($config)
     {
         if (empty($config['property'])) {
             return '';
@@ -116,7 +116,7 @@ class AutoForm extends \Arch\View\AutoPanel
         return $v;
     }
     
-    public function createInputPassword($config)
+    protected function createInputPassword($config)
     {
         if (empty($config['property'])) {
             return '';
@@ -131,7 +131,7 @@ class AutoForm extends \Arch\View\AutoPanel
         return $v;
     }
     
-    public function createButton($config)
+    protected function createButton($config)
     {
         if (empty($config['tmpl'])) {
             $tmpl = __DIR__.'/../../../../theme/architect/form/button.php';
@@ -147,7 +147,7 @@ class AutoForm extends \Arch\View\AutoPanel
         return $v;
     }
     
-    public function createButtonSubmit($config)
+    protected function createButtonSubmit($config)
     {
         if (empty($config['tmpl'])) {
             $tmpl = __DIR__.'/../../../../theme/architect/form/submit.php';
@@ -162,7 +162,7 @@ class AutoForm extends \Arch\View\AutoPanel
         return $v;
     }
     
-    public function createInputText($config)
+    protected function createInputText($config)
     {
         if (empty($config['tmpl'])) {
             $tmpl = __DIR__.'/../../../../theme/architect/form/input/text.php';
@@ -182,7 +182,7 @@ class AutoForm extends \Arch\View\AutoPanel
         return new \Arch\View($tmpl, $config);
     }
     
-    public function createTextArea($config)
+    protected function createTextArea($config)
     {
         if (empty($config['tmpl'])) {
             $tmpl = __DIR__.'/../../../../theme/architect/form/input/textarea.php';
@@ -202,7 +202,7 @@ class AutoForm extends \Arch\View\AutoPanel
         return new \Arch\View($tmpl, $config);
     }
     
-    public function createSelect($config)
+    protected function createSelect($config)
     {
         if (empty($config['tmpl'])) {
             $tmpl = __DIR__.'/../../../../theme/architect/form/select.php';
@@ -234,7 +234,7 @@ class AutoForm extends \Arch\View\AutoPanel
         return new \Arch\View($tmpl, $config);
     }
     
-    public function createCheckList($config)
+    protected function createCheckList($config)
     {
         if (empty($config['tmpl'])) {
             $tmpl = __DIR__.'/../../../../theme/architect/form/checklist.php';
@@ -272,7 +272,7 @@ class AutoForm extends \Arch\View\AutoPanel
         return new \Arch\View($tmpl, $config);
     }
     
-    public function createRadioList($config)
+    protected function createRadioList($config)
     {
         if (empty($config['tmpl'])) {
             $config['tmpl'] = 
