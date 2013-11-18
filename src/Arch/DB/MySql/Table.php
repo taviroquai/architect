@@ -74,7 +74,7 @@ class Table extends \Arch\DB\Table
             $sql .= ' GROUP BY '.$this->node->groupby;
         }
         if (!empty($this->node->limit)) {
-            $sql .= ' LIMIT '.$this->node->limit.', '.$this->node->offset;
+            $sql .= ' LIMIT '.$this->node->limit.' OFFSET '.$this->node->offset;
         }
         return $sql;
     }
