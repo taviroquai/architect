@@ -233,5 +233,33 @@ changing the core system. These are:
 ### FORUM
     app()->createForum();
 
+### AUTO TABLE
+    $config = array(
+        'table'     => 'demo_user',
+        'select'    => 'demo_user.*',
+        'columns'   => array(
+            array('type' => 'value', 'label' => 'Email', 'property'  => 'email'),
+            array('type' => 'action',   'icon'  => 'icon-edit', 
+                'action' => u('/demo/crud/'), 'property' => 'id')
+        )
+    );
+    app()->createAutoTable($config); // returns an html table view from config
+
+### AUTO FORM
+    $config = array(
+        'table'     => 'demo_user',
+        'select'    => 'demo_user.*',
+        'action'    => u('/demo/crud/save'),
+        'items'     => array(
+            array('type' => 'hidden',   'property'  => 'id'),
+            array('type' => 'label',    'label' => 'Email'),
+            array('type' => 'text',     'property'  => 'email'),
+            array('type' => 'breakline'),
+            array('type' => 'submit',   'label' => 'Save', 
+                'class' => 'btn btn-success inline')
+        )
+    );
+    app()->createAutoForm($config); // returns an html form view from config
+
 ROAD MAP (TODO)
 ===============
