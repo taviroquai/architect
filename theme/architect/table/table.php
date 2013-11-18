@@ -24,3 +24,6 @@
         <?php } ?>
     </tbody>
 </table>
+<?php $this->slot('content', function($item) { ?>
+    <?=$item?>
+<?})?>

@@ -7,8 +7,20 @@ namespace Arch\View\AutoPanel;
  * @author mafonso
  */
 class AutoTable extends \Arch\View\AutoPanel
-{   
+{
     /**
+     * Holds the table pagination
+     * @var \Arch\View\Pagination
+     */
+    public $pagination;
+    
+    /**
+     * Holds the database table
+     * @var \Arch\DB\Table
+     */
+    protected $table;
+
+        /**
      * Returns a new panel to be rendered
      * @param array $config The panel configuration
      * @param \Arch\Driver $driver The database driver
@@ -24,10 +36,16 @@ class AutoTable extends \Arch\View\AutoPanel
             throw new \Exception('DBPanel configuration: attribute columns is required');
         }
         $this->set('columns', $config['columns']);
-        $table = $driver->createTable($this->config['table']);
-        $records = $table->select($this->config['select'])
-                ->joinAuto()->fetchAll(\PDO::FETCH_ASSOC);
-        $this->set('records', $records);
+        if (empty($config['pagination'])) {
+            $config['pagination'] = 10;
+        }
+        $this->table = $driver->createTable($this->config['table']);
+        $all = $this->table->select($this->config['select'])
+                ->joinAuto()
+                ->fetchAll(\PDO::FETCH_ASSOC);
+        $this->pagination = new \Arch\View\Pagination();
+        $this->pagination->limit = $config['pagination'];
+        $this->pagination->total = ceil(count($all) / $config['pagination']);
     }
     
     /**
@@ -36,7 +54,7 @@ class AutoTable extends \Arch\View\AutoPanel
      * @param array $record The record to be used
      * @return 
      */
-    public function createActionButton($config, $record)
+    protected function createActionButton($config, $record)
     {
         if (empty($config['tmpl'])) {
             $tmpl = __DIR__.'/../../../../theme/architect/table/rowaction.php';
@@ -61,7 +79,7 @@ class AutoTable extends \Arch\View\AutoPanel
      * @param array $record The record
      * @return \Arch\View
      */
-    public function createCellValue($config, $record)
+    protected function createCellValue($config, $record)
     {
         if (empty($config['tmpl'])) {
             $tmpl = __DIR__.'/../../../../theme/architect/table/cell.php';
@@ -74,5 +92,16 @@ class AutoTable extends \Arch\View\AutoPanel
         $v = new \Arch\View($tmpl, $config);
         $v->set('record', $record);
         return $v;
+    }
+    
+    public function __toString()
+    {
+        $records = $this->table->select($this->config['select'])
+            ->joinAuto()
+            ->limit($this->pagination->limit, $this->pagination->getOffset())
+            ->fetchAll(\PDO::FETCH_ASSOC);
+        $this->set('records', $records);
+        $this->addContent($this->pagination);
+        return parent::__toString();
     }
 }
