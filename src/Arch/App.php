@@ -1133,6 +1133,22 @@ class App implements Messenger
     }
     
     /**
+     * Returns a new Image Gallery view.
+     * 
+     * You should use your own template. Copy the default template from
+     * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory and 
+     * pass it in the <b>$tmpl</b> param.
+     * 
+     * @param string $path The base path to be explored
+     * @param string $tmpl The gallery html template
+     * @return \Arch\View\ImageGallery
+     */
+    public function createImageGallery($path, $tmpl = null)
+    {
+        return new \Arch\View\ImageGallery($path, $tmpl);
+    }
+    
+    /**
      * Returns a new poll view.
      * 
      * You should use your own template. Copy the default template from
