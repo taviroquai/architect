@@ -569,7 +569,7 @@ abstract class Table
         foreach ($items as &$field) {
             $field = "`$field`";
         }
-        return $items;
+        return (string) implode(',', $items);
     }
     
     protected abstract function nodeToString();

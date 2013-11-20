@@ -42,7 +42,7 @@ class Table extends \Arch\DB\Table
                     ' INTO '.
                     self::addBackTicks($this->node->table).
                     ' ('.
-                    implode(',', self::addBackTicks($this->node->fields)).
+                    self::addBackTicks($this->node->fields).
                     ') VALUES ('.
                     implode(',', array_fill(0, count($this->node->values), '?')).
                     ')';
