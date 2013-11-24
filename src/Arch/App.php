@@ -545,7 +545,10 @@ class App implements Messenger
      */
     public function url($action = '', $params = array())
     {
+        $host = $this->input->server('HTTP_HOST');
+        $protocol = $this->input->server('HTTPS') ? 'https://' : 'http://';
         $base = INDEX_FILE == '' ? rtrim(BASE_URL, '/') : BASE_URL.'/';
+        $base = $protocol . $host . $base;
         $uri = empty($action) ? '' : $action;
         $query = empty($params) ? '' : '?';
         $query .= http_build_query($params);
