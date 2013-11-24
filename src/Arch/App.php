@@ -200,10 +200,6 @@ class App implements Messenger
         $this->input->getAction();
         $this->log('Input finish loading: '.
                 $this->input->server('HTTP_USER_AGENT'));
-        unset($_SERVER);
-        unset($_GET);
-        unset($_POST);
-        unset($_FILES);
 
         // set default Output
         $this->output = new Output();
