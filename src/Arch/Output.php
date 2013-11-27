@@ -80,6 +80,17 @@ class Output
     }
     
     /**
+     * Adds cache headers
+     */
+    public function addCacheHeaders($seconds = 300)
+    {
+        $ts = gmdate("D, d M Y H:i:s", time()+$seconds)." GMT";
+        $this->headers[] = "Expires: $ts";
+        $this->headers[] = "Pragma: cache";
+        $this->headers[] = "Cache-Control: max-age=".$seconds;
+    }
+    
+    /**
      * Sends HTTP Headers
      */
     public function sendHeaders()
@@ -137,10 +148,7 @@ class Output
 
         // send cache headers
         $asset_cache = 300;
-        $ts = gmdate("D, d M Y H:i:s", time()+$asset_cache)." GMT";
-        $this->headers[] = "Expires: $ts";
-        $this->headers[] = "Pragma: cache";
-        $this->headers[] = "Cache-Control: max-age=".$asset_cache;
+        $this->addCacheHeaders($asset_cache);
 
         $this->sendHeaders();
         readfile($filename);
