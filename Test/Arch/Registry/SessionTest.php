@@ -15,7 +15,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateSession()
     {
-        $session = new \Arch\Session();
+        $session = new \Arch\Registry\Session();
         $this->assertNotEmpty($session->name);
     }
     
@@ -24,15 +24,13 @@ class SessionTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadData()
     {
-        $session = new \Arch\Session();
-        
-        $session->load();
-        $this->assertEmpty($session->param);
-        
+        $session = new \Arch\Registry\Session();
+        $session->load($_SESSION);
+        $this->assertEmpty($session->get('param'));
         $expected = 'value';
         $_SESSION['param'] = $expected;
-        $session->load();
-        $this->assertEquals($expected, $session->param);
+        $session->load($_SESSION);
+        $this->assertEquals($expected, $session->get('param'));
     }
     
     /**
@@ -42,9 +40,9 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     {
         $expected = 'value';
         $_SESSION = array();
-        $session = new \Arch\Session();
-        $session->param = $expected;
-        $session->save();
+        $session = new \Arch\Registry\Session();
+        $session->set('param', $expected);
+        $session->save($_SESSION);
         $this->assertEquals($expected, $_SESSION['param']);
     }
     
@@ -55,9 +53,9 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     {
         $expected = 'value';
         $_SESSION['oldparam'] = 'oldvalue';
-        $session = new \Arch\Session();
-        $session->param = $expected;
-        $_SESSION = $session->save();
+        $session = new \Arch\Registry\Session();
+        $session->set('param', $expected);
+        $session->save($_SESSION);
         $this->assertEquals($expected, $_SESSION['param']);
     }
     
@@ -67,10 +65,10 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     public function testResetSession()
     {
         $expected = null;
-        $session = new \Arch\Session();
-        $session->param = 'value';
+        $session = new \Arch\Registry\Session();
+        $session->set('param', 'value');
         $session->reset();
-        $this->assertEquals($expected, $session->param);
+        $this->assertEquals($expected, $session->get('param'));
     }
     
     /**
@@ -79,8 +77,8 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     public function testFailGetParam()
     {
         $expected = null;
-        $session = new \Arch\Session();
-        $this->assertEquals($expected, $session->param);
+        $session = new \Arch\Registry\Session();
+        $this->assertEquals($expected, $session->get('param'));
     }
     
     /**
@@ -89,9 +87,9 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     public function testSetObjectParam()
     {
         $expected = new stdClass;
-        $session = new \Arch\Session();
-        $session->param = $expected;
-        $this->assertEquals($expected, $session->param);
+        $session = new \Arch\Registry\Session();
+        $session->set('param', $expected);
+        $this->assertEquals($expected, $session->get('param'));
     }
     
     /**
@@ -100,10 +98,10 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     public function testUnsetParam()
     {
         $expected = null;
-        $session = new \Arch\Session();
-        $session->param = new stdClass;
-        unset($session->param);
-        $this->assertEquals($expected, $session->param);
+        $session = new \Arch\Registry\Session();
+        $session->set('param', new stdClass);
+        $session->delete('param');
+        $this->assertEquals($expected, $session->get('param'));
     }
     
     /**
@@ -112,9 +110,9 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     public function testExistsParam()
     {
         $expected = true;
-        $session = new \Arch\Session();
-        $session->param = new stdClass;
-        $result = isset($session->param);
+        $session = new \Arch\Registry\Session();
+        $session->set('param', new stdClass);
+        $result = $session->exists('param');
         $this->assertEquals($expected, $result);
     }
 
@@ -123,7 +121,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetMessages()
     {
-        $session = new \Arch\Session();
+        $session = new \Arch\Registry\Session();
         $expected = array();
         $this->assertEquals($expected, $session->getMessages());
         
@@ -138,7 +136,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
      */
     public function testClearMessages()
     {
-        $session = new \Arch\Session();
+        $session = new \Arch\Registry\Session();
         $expected = array();
         $session->addMessage(new \Arch\Message('test'));
         $session->clearMessages();
@@ -153,7 +151,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $message = new \Arch\Message('test');
         $expected = array($message);
         
-        $session = new \Arch\Session();
+        $session = new \Arch\Registry\Session();
         $session->loadMessages($expected);
         $this->assertEquals($expected, $session->getMessages());
     }

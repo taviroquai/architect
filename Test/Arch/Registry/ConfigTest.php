@@ -12,7 +12,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testConfigFileNotFound()
     {
-        $item = new \Arch\Config();
+        $item = new \Arch\Registry\Config();
         $item->load('config.xml');
     }
     
@@ -21,7 +21,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidConfig()
     {
-        $item = new \Arch\Config();
+        $item = new \Arch\Registry\Config();
         $item->load(RESOURCE_PATH.'configInvalid.xml');
     }
     
@@ -30,7 +30,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testIncompleteConfig()
     {
-        $item = new \Arch\Config();
+        $item = new \Arch\Registry\Config();
         $item->load(RESOURCE_PATH.'configIncomplete.xml');
     }
     
@@ -39,9 +39,9 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testValidConfig()
     {
-        $config = new \Arch\Config();
+        $config = new \Arch\Registry\Config();
         $result = $config->load(RESOURCE_PATH.'configValid.xml');
-        $this->assertInstanceOf('\Arch\Config', $result);
+        $this->assertInstanceOf('\Arch\Registry\Config', $result);
     }
     
     /**
@@ -49,7 +49,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testApplyConfig()
     {
-        $config = new \Arch\Config();
+        $config = new \Arch\Registry\Config();
         $config->load(RESOURCE_PATH.'configValid.xml');
         $config->apply();
         $this->assertTrue(defined('BASE_URL'));

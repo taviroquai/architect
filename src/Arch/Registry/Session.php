@@ -1,23 +1,17 @@
 <?php
 
-namespace Arch;
+namespace Arch\Registry;
 
 /**
  * Session class
  */
-class Session
+class Session extends \Arch\Registry
 {
     /**
      * Holds the session identifier
      * @var string
      */
     public $name;
-    
-    /**
-     * Holds a list of values
-     * @var array
-     */
-    protected $storage;
     
     /**
      * Returns a new Session
@@ -29,21 +23,19 @@ class Session
     }
 
     /**
-     * Loads data from $_SESSION into storage
+     * Loads data into storage
      * Initiates session messages storage
      */
-    public function load()
+    public function load($data)
     {
-        if (isset($_SESSION)) {
-            foreach ($_SESSION as $prop => $value) {
-                if (
-                        strpos($prop, 'user.') === false
-                        && strpos($prop, 'arch.') === false
-                ) {
-                    $prop = 'user.'.$prop;
-                }
-                $this->storage[$prop] = $value;
+        foreach ($data as $prop => $value) {
+            if (
+                    strpos($prop, 'user.') === false
+                    && strpos($prop, 'arch.') === false
+            ) {
+                $prop = 'user.'.$prop;
             }
+            $this->storage[$prop] = $value;
         }
         
         if (!isset($this->storage['arch.message'])) {
@@ -54,14 +46,15 @@ class Session
     /**
      * Saves current storage to $data and close session
      */
-    public function save()
+    public function save(&$data)
     {
-        $_SESSION = array();
+        $data = array();
         foreach ($this->storage as $prop => $value) {
-            if (strpos($prop, 'user.') === 0) $prop = substr($prop, 5);
-            $_SESSION[$prop] = $value;
+            if (strpos($prop, 'user.') === 0) {
+                $prop = substr($prop, 5);
+            }
+            $data[$prop] = $value;
         }
-        return $_SESSION;
     }
     
     /**
@@ -118,11 +111,11 @@ class Session
         }
     }
     
-    public function __get($prop) {
-        $prop = 'user.'.$prop;
-        if (!isset($this->storage[$prop])) {
+    public function get($prop) {
+        if (!$this->exists($prop)) {
             return null;
         }
+        $prop = 'user.'.$prop;
         $value = @unserialize($this->storage[$prop]);
         if ($value !== false) {
             return $value;
@@ -130,22 +123,22 @@ class Session
         return $this->storage[$prop];
     }
     
-    public function __set($prop, $value) {
+    public function set($prop, $value) {
         $prop = 'user.'.$prop;
         if (is_array($value) || is_object($value)) {
-            $this->storage[$prop] = serialize($value);
+            parent::set($prop, serialize($value));
         } else {
-            $this->storage[$prop] = $value;
+            parent::set($prop, $value);
         }
     }
     
-    public function __isset($prop) {
+    public function exists($prop) {
         $prop = 'user.'.$prop;
-        return isset($this->storage[$prop]);
+        return parent::exists($prop);
     }
 
-    public function __unset($prop) {
+    public function delete($prop) {
         $prop = 'user.'.$prop;
-        unset($this->storage[$prop]);
+        parent::delete($prop);
     }
 }

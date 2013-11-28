@@ -176,28 +176,15 @@ class Input
     }
     
     /**
-     * Returns true or false if pattern matches action
-     * Matches are populated in $this->params
-     * 
-     * @param string $pattern
-     * @param string $action
-     * @return boolean
+     * Sets the input params
+     * @param array $params The input params
      */
-    public function getActionParams($pattern, $action)
+    public function setParams($params)
     {
-        $pattern = str_replace(
-            array(':any', ':num'), 
-            array('[^/]+', '[0-9]+'), 
-            $pattern
-        );
-        $match = preg_match('#^'.$pattern.'$#', $action, $params);
-        if (!$match) return false;
-        array_shift($params);
         $this->params = $params;
-        return true;
     }
-    
-    /**
+
+        /**
      * Generates an unique input key
      * @return string
      */

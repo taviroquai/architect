@@ -58,6 +58,9 @@ class InputTest extends \PHPUnit_Framework_TestCase
      */
     public function testParseGlobalServer()
     {
+        if (!defined('BASE_URL')) define('BASE_URL', '/');
+        if (!defined('INDEX_FILE')) define('INDEX_FILE', 'index.php');
+        
         $expected = '/';
         $input = new \Arch\Input();
         $input->setRawInput('');
@@ -271,20 +274,6 @@ class InputTest extends \PHPUnit_Framework_TestCase
         $input = new \Arch\Input();
         $result = $input->file(0);
         $this->assertFalse($result);
-    }
-    
-    /**
-     * Test parse params by pattern
-     */
-    public function testParseActionParams()
-    {
-        $pattern = '/(:any)/(:num)';
-        $action = '/test/1';
-        $expected = array('test', '1');
-        $input = new \Arch\Input();
-        $input->getActionParams($pattern, $action);
-        $result = $input->getParam();
-        $this->assertEquals($expected, $result);
     }
     
     /**

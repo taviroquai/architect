@@ -13,7 +13,7 @@ define('ARCH_PATH', realpath(__DIR__ . '/../../'));
  * Use alias \Arch\App::Instance() is recomended
  * 
  */
-class App implements Messenger
+class App implements \Arch\Messenger
 {
 
     /**
@@ -62,7 +62,7 @@ class App implements Messenger
      * The function callback will be called when the user requests
      * <b>index.php/demo</b>
      * 
-     * @var \Arch\Router The URI router
+     * @var \Arch\Registry\Router The URI router
      */
     public  $router;
     
@@ -91,7 +91,7 @@ class App implements Messenger
      * 
      * You can override the Session object by your own.
      * 
-     * @var \Arch\Session
+     * @var \Arch\Registry\Session
      */
     public  $session;
     
@@ -119,15 +119,15 @@ class App implements Messenger
     
     /**
      * Holds loaded modules
-     * @var array
+     * @var \Arch\Registry\Modules
      */
-    private  $modules = array();
+    private  $modules;
     
     /**
      * Holds global application events
-     * @var array
+     * @var \Arch\Events\Registry
      */
-    private  $events = array();
+    private  $events;
     
     /**
      * Holds the application logger
@@ -155,7 +155,7 @@ class App implements Messenger
     public static function Instance($filename = 'config.xml')
     {
         if (self::$inst === null) {
-            self::$inst = new App($filename);
+            self::$inst = new \Arch\App($filename);
         }
         return self::$inst;
     }
@@ -171,7 +171,7 @@ class App implements Messenger
         
         // load configuration and apply
         try {
-            $config = new Config();
+            $config = new \Arch\Registry\Config();
             $config->load($filename);
             $config->apply();
         }
@@ -183,11 +183,14 @@ class App implements Messenger
         $this->logger = new \Arch\Logger(LOG_FILE);
         $this->log('Loaded configuration from '.$filename, 'access', true);
         
+        // set events registry
+        $this->events = new \Arch\Registry\Events();
+        
         // set session handler
-        $this->session = new Session();
+        $this->session = new \Arch\Registry\Session();
 
         // set default output
-        $this->theme = new View();
+        $this->theme = new \Arch\View();
         $this->theme->addSlot('css')->addSlot('js');
         
         // set input
@@ -202,11 +205,14 @@ class App implements Messenger
                 $this->input->server('HTTP_USER_AGENT'));
 
         // set default Output
-        $this->output = new Output();
+        $this->output = new \Arch\Output();
         
         // set default routes
-        $this->router = new Router($this);
+        $this->router = new \Arch\Registry\Router();
         $this->addCoreRoutes();
+        
+        // set modules registry
+        $this->modules = new \Arch\Registry\Modules();
     }    
     
     /**
@@ -232,8 +238,7 @@ class App implements Messenger
         }
 
         // trigger core event
-        $this->triggerEvent('arch.session.before.load');
-        $this->session->load();
+        $this->triggerEvent('arch.session.load');
         $this->log('Session loaded');
 
         // load default theme if exists
@@ -249,6 +254,9 @@ class App implements Messenger
 
         // close resources
         $this->cleanEnd();
+        
+        // trigger core event
+        $this->triggerEvent('arch.before.end');
     }
     
     /**
@@ -340,7 +348,6 @@ class App implements Messenger
         $output = new \Arch\Output();
         $output->setHeaders(array('Location: '.$url));
         $output->sendHeaders();
-        $output->send();
         $this->log('Redirecting to '.$url);
         if ($now) {
             $this->cleanEnd();
@@ -470,8 +477,7 @@ class App implements Messenger
             $target = $this;
         }
         try {
-            $evt = new \Arch\Event($eventName, $callback, $target);
-            $this->events[$eventName][] = $evt;
+            $this->events->addEvent($eventName, $callback, $target);
         } catch (\Exception $e) {
             $this->log('Event create failed: '.$e->getMessage(), 'error');
         }
@@ -490,12 +496,8 @@ class App implements Messenger
      */
     public function triggerEvent($eventName, $target = null)
     {
-        if (isset($this->events[$eventName])) {
-            foreach ($this->events[$eventName] as $evt) {
-                $this->log('Event triggered: '.$eventName);
-                $evt->trigger($target);
-            }
-        }
+        $this->events->triggerEvent($eventName, $target);
+        $this->log('Event triggered: '.$eventName);
         return $this;
     }
     
@@ -582,8 +584,8 @@ class App implements Messenger
      */
     public function getCaptcha()
     {
-        $captcha = $this->session->_captcha;
-        $this->session->_captcha = null;
+        $captcha = $this->session->get('_captcha');
+        $this->session->set('_captcha', null);
         if ($captcha != $this->input->post('_captcha')) {
             return false;
         }
@@ -744,7 +746,9 @@ class App implements Messenger
      */
     public function createQuery($tableName)
     {
-        if (empty($this->db)) $this->initDatabase ();
+        if (empty($this->db)) {
+            $this->initDatabase ();
+        }
         $table = $this->db->createTable($tableName);
         return $table;
     }
@@ -756,7 +760,9 @@ class App implements Messenger
      */
     public function createAutoTable($config)
     {
-        if (empty($this->db)) $this->initDatabase ();
+        if (empty($this->db)) {
+            $this->initDatabase ();
+        }
         return new \Arch\View\AutoPanel\AutoTable($config, $this->db);
     }
     
@@ -767,7 +773,9 @@ class App implements Messenger
      */
     public function createAutoForm($config)
     {
-        if (empty($this->db)) $this->initDatabase ();
+        if (empty($this->db)) {
+            $this->initDatabase ();
+        }
         return new \Arch\View\AutoPanel\AutoForm($config, $this->db);
     }
     
@@ -807,7 +815,7 @@ class App implements Messenger
                     $code = 'en';
                 }
             }
-            $this->session->idiom = $code;
+            $this->session->set('idiom', $code);
         }
         $idiom = new \Arch\Idiom($code);
         $filename = $idiom->resolveFilename($name, $module);
@@ -993,11 +1001,11 @@ class App implements Messenger
      */
     public function createCaptcha($tmpl = null)
     {
-        $this->session->_captcha = " ";
+        $this->session->set('_captcha', " ");
         $tmpl = implode(DIRECTORY_SEPARATOR,
                 array(ARCH_PATH, 'theme', 'architect', 'captcha.php'));
         $view = new \Arch\View($tmpl);
-        $view->set('code', $this->session->_captcha);
+        $view->set('code', $this->session->get('_captcha'));
         return $view;
     }
     
@@ -1218,20 +1226,13 @@ class App implements Messenger
     {
         $input =& $this->input;
         $action = $input->getAction();
-        $callback = $this->router->getRoute($input->getAction(), $input);
-
-        if ($callback === false) {
-            if ($this->router->getRoute('/404', $input) && $action != '/404') {
-                $action = '/404';
-                $callback = $this->router->getRoute($action, $input);
-            }
-        }
+        $callback = $this->router->getRouteCallback($action, $input);
         
         // trigger core event
         $this->triggerEvent('arch.action.before.call', $action);
         
         $this->log('User action: '.$action);
-        return call_user_func_array($callback, $input->getParam());
+        return call_user_func_array($callback, $this->input->getParam());
     }
     
     private function initDatabase()
@@ -1268,33 +1269,7 @@ class App implements Messenger
             return false;
         }
         
-        $modules = glob(MODULE_PATH.
-                DIRECTORY_SEPARATOR.'enable'.
-                DIRECTORY_SEPARATOR.'*', GLOB_ONLYDIR);
-
-        foreach($modules as $name) {
-            $m_loader = $name.DIRECTORY_SEPARATOR.'src'.
-                        DIRECTORY_SEPARATOR.'autoload.php';
-            if (file_exists($m_loader)) {
-                require_once $m_loader;
-            }
-            $m_config = $name.DIRECTORY_SEPARATOR.'config.php';
-            if (file_exists($m_config)) {
-                require_once $m_config;
-            }
-            $this->log('Module loaded: '.$name);
-        }
-
-        // clean up
-        unset($name);
-        unset($m_loader);
-        unset($m_config);
-        
-        // save modules directories
-        $this->modules = $modules;
-        
-        // clean up
-        unset($modules);
+        $this->modules->load(MODULE_PATH);
         
         // trigger core event
         $this->triggerEvent('arch.module.after.load', $this->modules);
@@ -1336,18 +1311,13 @@ class App implements Messenger
     
     private function cleanEnd()
     {
-        // trigger core event
-        $this->triggerEvent('arch.before.end');
+        $this->triggerEvent('arch.session.save');
+        $this->log('Session closed');
         
         // close output buffer
-        if (ob_get_status()) ob_end_flush();
-        
-        // trigger core event
-        if (isset($this->session)) {
-            $this->session->save();
+        if (ob_get_status()) {
+            ob_end_flush();
         }
-        $this->triggerEvent('arch.session.after.save');
-        $this->log('Session closed');
         
         // close log handler
         $this->logger->close();

@@ -11,9 +11,9 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     /**
      * Test create router
      */
-    public function testCreateOutput()
+    public function testCreateRouter()
     {
-        new \Arch\Output();
+        new \Arch\Registry\Router();
     }
     
     /**
@@ -21,7 +21,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddInvalidRouteKey()
     {
-        $router = new \Arch\Router();
+        $router = new \Arch\Registry\Router();
         $router->addRoute(null, null);
     }
     
@@ -30,7 +30,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddEmptyRouteKey()
     {
-        $router = new \Arch\Router();
+        $router = new \Arch\Registry\Router();
         $router->addRoute('', null);
     }
     
@@ -39,8 +39,21 @@ class RouterTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddInvalidRouteCallback()
     {
-        $router = new \Arch\Router();
+        $router = new \Arch\Registry\Router();
         $router->addRoute('test', null);
+    }
+    
+    /**
+     * Test parse params by pattern
+     */
+    public function testParseActionParams()
+    {
+        $pattern = '/(:any)/(:num)';
+        $action = '/test/1';
+        $expected = array('test', '1');
+        $router = new \Arch\Registry\Router();
+        $result = $router->getActionParams($pattern, $action);
+        $this->assertEquals($expected, $result);
     }
     
     /**
@@ -51,9 +64,10 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $expected = function() {
             return true;
         };
-        $router = new \Arch\Router();
+        $router = new \Arch\Registry\Router();
         $router->addRoute('test', $expected);
-        $result = $router->getRoute('test', new \Arch\Input);
+        $pattern = 'test';
+        $result = $router->getRouteCallback($pattern, new \Arch\Input);
         $this->assertEquals($expected, $result);
     }
     
@@ -62,11 +76,12 @@ class RouterTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetInvalidRoute()
     {
-        $router = new \Arch\Router();
+        $router = new \Arch\Registry\Router();
         $router->addRoute('test', function() {
             return true;
         });
-        $result = $router->getRoute(NULL, new \Arch\Input);
-        $this->assertFalse($result);
+        $pattern = NULL;
+        $result = $router->getRouteCallback($pattern, new \Arch\Input);
+        $this->assertInstanceOf('Closure', $result);
     }
 }
