@@ -70,13 +70,6 @@ class Config extends \Arch\Registry
      */
     public function apply()
     {
-        // setup required items
-        foreach ($this->required as $item) {
-            if (!defined($item)) {
-                define($item, $this->get($item));
-            }
-        }
-        
         // extra configuration
         foreach ($this->storage as $key => $value) {
             switch ($key) {
@@ -84,10 +77,6 @@ class Config extends \Arch\Registry
                     ini_set('display_errors', (int) $this->get($key)); break;
                 case 'ERROR_REPORTING':
                     error_reporting((int) $this->get($key)); break;
-                default:
-                    if (!defined($key)) {
-                        define($key, $value);
-                    }
             }
         }
         

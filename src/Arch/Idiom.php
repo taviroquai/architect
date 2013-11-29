@@ -18,19 +18,19 @@ class Idiom
      * Holds the translation strings
      * @var array
      */
-	protected $storage = array();
+    protected $storage = array();
 
     /**
      * Returns a new Idiom object
      * @param string $code The language code
      */
-	public function __construct($code = 'en')
+    public function __construct($code = 'en')
     {
         if (!is_string($code) || empty($code)) {
             throw new \Exception('Invalid ISO code');
         }
         $this->code = $code;
-	}
+    }
     
     /**
      * Sets the language code
@@ -102,13 +102,18 @@ class Idiom
      * @param string $module The requested module name
      * @return string
      */
-    public function resolveFilename($name, $module = 'app')
+    public function resolveFilename(
+            $name,
+            $module = 'app',
+            $idiom_path = '/idiom',
+            $module_path = '/module'
+    )
     {
         if ($module == 'app') {
-            $filename = IDIOM_PATH.DIRECTORY_SEPARATOR.$this->code.
+            $filename = $idiom_path.DIRECTORY_SEPARATOR.$this->code.
                     DIRECTORY_SEPARATOR.$name;
         } else {
-            $filename = MODULE_PATH.DIRECTORY_SEPARATOR.'enable'.
+            $filename = $module_path.DIRECTORY_SEPARATOR.'enable'.
                     DIRECTORY_SEPARATOR.$module.
                     DIRECTORY_SEPARATOR.'idiom'.
                     DIRECTORY_SEPARATOR.$this->code.

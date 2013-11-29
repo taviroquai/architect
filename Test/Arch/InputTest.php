@@ -58,9 +58,6 @@ class InputTest extends \PHPUnit_Framework_TestCase
      */
     public function testParseGlobalServer()
     {
-        if (!defined('BASE_URL')) define('BASE_URL', '/');
-        if (!defined('INDEX_FILE')) define('INDEX_FILE', 'index.php');
-        
         $expected = '/';
         $input = new \Arch\Input();
         $input->setRawInput('');

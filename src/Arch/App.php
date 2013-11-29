@@ -15,7 +15,12 @@ define('ARCH_PATH', realpath(__DIR__ . '/../../'));
  */
 class App implements \Arch\Messenger
 {
-
+    /**
+     * Holds the application default configuration
+     * @var \Arch\Registry\Config
+     */
+    public $config;
+    
     /**
      * Holds user input.
      * 
@@ -171,16 +176,16 @@ class App implements \Arch\Messenger
         
         // load configuration and apply
         try {
-            $config = new \Arch\Registry\Config();
-            $config->load($filename);
-            $config->apply();
+            $this->config = new \Arch\Registry\Config();
+            $this->config->load($filename);
+            $this->config->apply();
         }
         catch (\Exception $e) {
             die($e->getMessage());
         }
         
         // ready to start logging now
-        $this->logger = new \Arch\Logger(LOG_FILE);
+        $this->logger = new \Arch\Logger($this->config->get('LOG_FILE'));
         $this->log('Loaded configuration from '.$filename, 'access', true);
         
         // set events registry
@@ -199,7 +204,12 @@ class App implements \Arch\Messenger
         if ($_POST) $this->input->setHttpPost ($_POST);
         if (!empty($_FILES)) $this->input->setHttpFiles($_FILES);
         $this->input->setRawInput(file_get_contents("php://input"));
-        $this->input->parseGlobal(php_sapi_name(), $_SERVER);
+        $this->input->parseGlobal(
+            php_sapi_name(), 
+            $_SERVER,
+            $this->config->get('BASE_URL'),
+            $this->config->get('INDEX_FILE')
+        );
         $this->input->getAction();
         $this->log('Input finish loading: '.
                 $this->input->server('HTTP_USER_AGENT'));
@@ -242,8 +252,14 @@ class App implements \Arch\Messenger
         $this->log('Session loaded');
 
         // load default theme if exists
-        if (defined('DEFAULT_THEME')) {
-            $this->loadTheme(THEME_PATH.DIRECTORY_SEPARATOR.DEFAULT_THEME);
+        if (
+                $this->config->get('THEME_PATH') 
+                && $this->config->get('DEFAULT_THEME')
+           ) {
+            $this->loadTheme(
+                $this->config->get('THEME_PATH')
+                .DIRECTORY_SEPARATOR.$this->config->get('DEFAULT_THEME')
+            );
         }
 
         // execute action
@@ -280,7 +296,7 @@ class App implements \Arch\Messenger
      */
     public function loadTheme($path)
     {
-        $this->theme = new \Arch\Theme($path, $this);
+        $this->theme = new \Arch\Theme($path);
         // create a default idiom loader
         $this->theme->set('idiom', $this->createIdiom());
         // add flash messages
@@ -543,14 +559,16 @@ class App implements \Arch\Messenger
      */
     public function url($action = '', $params = array())
     {
+        $base_url = $this->config->get('BASE_URL');
+        $index_file = $this->config->get('INDEX_FILE');
         $host = $this->input->server('HTTP_HOST');
         $protocol = $this->input->server('HTTPS') ? 'https://' : 'http://';
-        $base = INDEX_FILE == '' ? rtrim(BASE_URL, '/') : BASE_URL.'/';
+        $base = $index_file == '' ? rtrim($base_url, '/') : $base_url.'/';
         $base = $protocol . $host . $base;
         $uri = empty($action) ? '' : $action;
         $query = empty($params) ? '' : '?';
         $query .= http_build_query($params);
-        return $base.INDEX_FILE.$uri.$query;
+        return $base.$index_file.$uri.$query;
     }
     
     /**
@@ -809,8 +827,8 @@ class App implements \Arch\Messenger
         if (empty($code)) {
             $code = $this->input->get('idiom');
             if (empty($code)) {
-                if (defined('DEFAULT_IDIOM')) {
-                    $code = DEFAULT_IDIOM;
+                if ($this->config->get('DEFAULT_IDIOM')) {
+                    $code = $this->config->get('DEFAULT_IDIOM');
                 } else {
                     $code = 'en';
                 }
@@ -818,7 +836,12 @@ class App implements \Arch\Messenger
             $this->session->set('idiom', $code);
         }
         $idiom = new \Arch\Idiom($code);
-        $filename = $idiom->resolveFilename($name, $module);
+        $filename = $idiom->resolveFilename(
+            $name,
+            $module,
+            $this->config->get('IDIOM_PATH'),
+            $this->config->get('MODULE_PATH')
+        );
         if (!$idiom->loadTranslation($filename)) {
             $this->log('Translation failed: '.$filename);
         }
@@ -1222,13 +1245,13 @@ class App implements \Arch\Messenger
     private function initDatabase()
     {
         try {
-            switch (DB_DRIVER) {
+            switch ($this->config->get('DB_DRIVER')) {
                 default:
                     $this->db = new \Arch\DB\MySql\Driver(
-                        DB_DATABASE,
-                        DB_HOST,
-                        DB_USER,
-                        DB_PASS,
+                        $this->config->get('DB_DATABASE'),
+                        $this->config->get('DB_HOST'),
+                        $this->config->get('DB_USER'),
+                        $this->config->get('DB_PASS'),
                         $this->logger
                     );
             }
@@ -1248,12 +1271,13 @@ class App implements \Arch\Messenger
     
     private function loadModules()
     {
-        if (!is_dir(MODULE_PATH)) {
+        $module_path = $this->config->get('MODULE_PATH');
+        if (!is_dir($module_path)) {
             $this->log('Module path not found!', 'error');
             return false;
         }
         
-        $this->modules->load(MODULE_PATH);
+        $this->modules->load($module_path);
         
         // trigger core event
         $this->triggerEvent('arch.module.after.load', $this->modules);

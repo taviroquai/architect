@@ -85,10 +85,6 @@ class IdiomTest extends \PHPUnit_Framework_TestCase
      */
     public function testResolveAppTranslation()
     {
-        // default values
-        if (!defined('IDIOM_PATH')) define('IDIOM_PATH', '/idiom');
-        if (!defined('MODULE_PATH')) define('MODULE_PATH', '/module');
-
         $expected = '/idiom/en/default.xml';
         $idiom = new \Arch\Idiom('en');
         $result = $idiom->resolveFilename('default.xml');

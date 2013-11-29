@@ -7,6 +7,7 @@ namespace Arch;
  */
 class Input
 {
+    protected $default = '/';
     protected $api = 'apache';
     protected $httpGet = array();
     protected $httpPost = array();
@@ -15,6 +16,8 @@ class Input
     protected $files = array();
     protected $raw;
     protected $action;
+    protected $base_url = 'http://localhost/';
+    protected $index_file = 'index.php';
     
     /**
      * Constructor
@@ -36,7 +39,9 @@ class Input
      */
     public function parseGlobal(
         $api    = 'server', 
-        $server = array('REQUEST_URI' => '/', 'argv' => array())
+        $server = array('REQUEST_URI' => '/', 'argv' => array()),
+        $base_url = 'http://localhost/',
+        $index_file = 'index.php'
     ) {
         $this->api = $api;
         if ($server) $this->httpServer = $server;
@@ -48,6 +53,8 @@ class Input
             } elseif (!empty($this->httpPost)) {
                 $this->params = array_values($this->httpPost);
             }
+            $this->base_url = $base_url;
+            $this->index_file = $index_file;
         }
     }
     
@@ -139,23 +146,22 @@ class Input
     {
         // parse action if no action is set
         if (empty($this->action)) {
-            $this->action = $this->parseAction();
+            $this->action = $this->parseAction($this->default);
         }
         return $this->action;
     }
     
     /**
      * Tries to find user action through all input
-     * @param string $default The user action string
+     * @param string $action The user action string
      * @return string
      */
-    public function parseAction($default = '/')
+    public function parseAction($action)
     {
         // parse action if no action is set
-        $action = $default;
         if (!$this->isCli()) {
             $uri = str_replace(
-                array(BASE_URL.'/',INDEX_FILE), 
+                array($this->base_url.'/',$this->index_file), 
                 '', 
                 $this->httpServer['REQUEST_URI']
             );

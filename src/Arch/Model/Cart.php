@@ -14,7 +14,7 @@ class Cart
     public $quantity_options;
     protected $session;
     
-    public function __construct(\Arch\Session &$session)
+    public function __construct(\Arch\Registry\Session &$session)
     {
         $this->session = $session;
         $this->currency_options = array('EUR');

@@ -52,11 +52,11 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $config = new \Arch\Registry\Config();
         $config->load(RESOURCE_PATH.'configValid.xml');
         $config->apply();
-        $this->assertTrue(defined('BASE_URL'));
-        $this->assertTrue(defined('INDEX_FILE'));
-        $this->assertTrue(defined('LOG_FILE'));
-        $this->assertTrue(defined('MODULE_PATH'));
-        $this->assertTrue(defined('THEME_PATH'));
-        $this->assertTrue(defined('IDIOM_PATH'));
+        $this->assertTrue((bool) $config->get('BASE_URL'));
+        $this->assertTrue((bool) $config->get('INDEX_FILE'));
+        $this->assertTrue((bool) $config->get('LOG_FILE'));
+        $this->assertTrue((bool) $config->get('MODULE_PATH'));
+        $this->assertTrue((bool) $config->get('THEME_PATH'));
+        $this->assertTrue((bool) $config->get('IDIOM_PATH'));
     }
 }

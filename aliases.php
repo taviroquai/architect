@@ -3,6 +3,8 @@
 /**
  * App alias. The other aliases are:
  * 
+ * conf() - Returns a configuration item
+ * 
  * r() - Adds a new route
  * 
  * v() - Creates a new view giving a PHP template and a $data as associative array
@@ -36,6 +38,17 @@
 function app()
 { 
     return \Arch\App::Instance();
+}
+
+/**
+ * Returns a configuration item by key
+ * 
+ * @param string $key
+ * @return string
+ */
+function conf($key)
+{
+    return app()->config->get($key);
 }
 
 /**
