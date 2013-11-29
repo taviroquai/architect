@@ -1,27 +1,18 @@
 <?php
 
 /**
- * Description of RuleTest
+ * Description of RequiredTest
  *
  * @author mafonso
  */
-class RuleTest extends \PHPUnit_Framework_TestCase
+class RequiredTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @expectedException \Exception
      */
     public function testInvalidRule()
     {
-        new \Arch\Rule(null, new \Arch\Input);
-    }
-    
-    /**
-     * @expectedException \Exception
-     */
-    public function testInvalidAction()
-    {
-        $rule = new \Arch\Rule('param', new \Arch\Input);
-        $rule->setAction(NULL);
+        new \Arch\Rule\Required(null);
     }
     
     /**
@@ -29,7 +20,7 @@ class RuleTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidErrorMessage()
     {
-        $rule = new \Arch\Rule('param', new \Arch\Input);
+        $rule = new \Arch\Rule\Required('param');
         $rule->setErrorMessage(NULL);
     }
     
@@ -40,17 +31,8 @@ class RuleTest extends \PHPUnit_Framework_TestCase
     public function testCreateRule()
     {
         $expected = 'test';
-        $rule = new \Arch\Rule($expected, new \Arch\Input);
+        $rule = new \Arch\Rule\Required($expected);
         $result = $rule->getName();
-        $this->assertEquals($expected, $result);
-        
-        $expected = 'required';
-        $result = $rule->getAction();
-        $this->assertEquals($expected, $result);
-        
-        $expected = 'test';
-        $rule->setAction($expected);
-        $result = $rule->getAction();
         $this->assertEquals($expected, $result);
         
         $expected = 'test';

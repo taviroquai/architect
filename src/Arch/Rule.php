@@ -5,14 +5,8 @@ namespace Arch;
 /**
  * Rule class
  */
-class Rule
+abstract class Rule
 {
-    /**
-     * Holds the user input
-     * @var \Arch\Input
-     */
-    protected $input;
-    
     /**
      * Holds the rule input name
      * @var string
@@ -26,12 +20,6 @@ class Rule
     protected $msg = 'Invalid input';
     
     /**
-     * Holds the default validation action
-     * @var string
-     */
-    protected $action = 'required';
-    
-    /**
      * Holds the additional input params
      * @var array
      */
@@ -43,19 +31,22 @@ class Rule
      */
     protected $result = true;
 
-
     /**
      * Returns a new input validation rule
      * @param string $name The input param
      */
-    public function __construct($name, $input = array())
+    public function __construct($name)
     {
         if  (!is_string($name) || empty($name)) {
             throw new \Exception('Invalid rule name');
         }
         $this->name = $name;
-        $this->input = $input;
     }
+    
+    /**
+     * Executes the rule
+     */
+    public abstract function execute();
     
     /**
      * Sets the error message on fail
@@ -68,21 +59,6 @@ class Rule
             throw new \Exception('Invalid rule error message');
         }
         $this->msg = $msg;
-        return $this;
-    }
-    
-    /**
-     * Sets the validator action
-     * Please see validations actions manual
-     * @param string $action The name of the validation action
-     * @return \Arch\Rule
-     */
-    public function setAction($action)
-    {
-        if  (!is_string($action) || empty($action)) {
-            throw new \Exception('Invalid rule action');
-        }
-        $this->action = $action;
         return $this;
     }
     
@@ -138,15 +114,6 @@ class Rule
     {
         return $this->msg;
     }
-    
-    /**
-     * Returns the validator action
-     * @return string
-     */
-    public function getAction()
-    {
-        return $this->action;
-    }
 
     /**
      * Returns the action params
@@ -165,7 +132,7 @@ class Rule
     {
         return $this->result;
     }
-    
+
     /**
      * Check whether the value is an associative array
      * @param array $v
