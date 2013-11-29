@@ -28,7 +28,9 @@ class Modules extends \Arch\Registry {
                 DIRECTORY_SEPARATOR.'*', GLOB_ONLYDIR);
 
         foreach($modules as $name) {
-            $this->set(dirname($name), new \Arch\Module($name));
+            $module = new \Arch\Module($name);
+            $this->set(dirname($name), $module);
+            $module->loadConfig();
         }
     }
 }
