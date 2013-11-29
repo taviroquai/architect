@@ -54,7 +54,6 @@ below.
 * Built-in line chart
 * Built-in tree view
 * Built-in file explorer (list and gallery templates)
-* Built-in forum
 * Built-in leaflet map
 * More to come...
 
@@ -229,9 +228,6 @@ changing the core system. These are:
 
 ### MAP
     app()->createMap();
-
-### FORUM
-    app()->createForum();
 
 ### AUTO TABLE
     $config = array(

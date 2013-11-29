@@ -1175,22 +1175,6 @@ class App implements \Arch\Messenger
         return $view;
     }
     
-    /**
-     * Returns a new forum view.
-     * 
-     * You should use your own template. Copy the default template from
-     * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory and 
-     * pass it in the <b>$tmpl</b> param.
-     * 
-     * @param string $tmpl The template file for the forum
-     * 
-     * @return \Arch\View\Forum The forum view
-     */
-    public function createForum($tmpl = null)
-    {
-        return new \Arch\View\Forum($tmpl);
-    }
-    
     private function addCoreRoutes()
     {
         // app alias
