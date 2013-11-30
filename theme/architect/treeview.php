@@ -52,4 +52,4 @@ jQuery(function ($) {
 </script>
 <?php $this->slot('content', function($item) { ?>
     <?=$item?>
-<?})?>
+<?php })?>

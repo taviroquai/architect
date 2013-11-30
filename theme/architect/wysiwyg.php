@@ -77,7 +77,7 @@
     <input name="<?=$name?>" type="hidden" value="" />
     <?php $this->slot('content', function($item) { ?>
         <?=$item?>
-    <?})?>
+    <?php })?>
 </div>
 <script type="text/javascript">
     jQuery(function($) {

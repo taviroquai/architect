@@ -15,4 +15,4 @@
 <div class="clearfix"></div>
 <?php $this->slot('content', function($item) { ?>
     <?=$item?>
-<?})?>
+<?php })?>
