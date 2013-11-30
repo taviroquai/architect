@@ -18,7 +18,7 @@ class Map extends \Arch\View
      * @param string $tmpl The template file
      * @param \Arch\Model\Map $model The map model
      */
-	public function __construct($tmpl = null, \Arch\Model\Map $model = null)
+    public function __construct($tmpl = null, \Arch\Model\Map $model = null)
     {
         if ($tmpl === null) {
             $tmpl = implode(DIRECTORY_SEPARATOR,
@@ -30,6 +30,10 @@ class Map extends \Arch\View
             $model = new \Arch\Model\Map();
         }
         $this->model = $model;
-	}
+        
+        $this->data['lon'] = 0;
+        $this->data['lat'] = 0;
+        $this->data['zoom'] = 1;
+    }
     
 }

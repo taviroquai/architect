@@ -11,7 +11,7 @@ class Poll extends \Arch\View
      * Returns a new poll view
      * @param string $tmpl The template file
      */
-	public function __construct($tmpl = null)
+    public function __construct($tmpl = null)
     {
         if ($tmpl === null) {
             $tmpl = implode(DIRECTORY_SEPARATOR,
@@ -22,7 +22,9 @@ class Poll extends \Arch\View
         // initialize data
         $this->data['data'] = array();
         $this->data['ykeys'] = 'y';
-	}
+        $this->data['show_votes'] = false;
+        $this->data['input_name'] = 'poll1';
+    }
     
     /**
      * Sets a poll item

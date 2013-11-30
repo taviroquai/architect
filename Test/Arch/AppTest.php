@@ -461,7 +461,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testCreateView($app)
     {
         $tmpl = RESOURCE_PATH.'template/div.php';
-        $app->createView($tmpl);
+        $view = $app->createView($tmpl);
+        $this->assertInternalType('string', (string)$view);
     }
     
     /**
@@ -470,7 +471,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateDatePicker($app)
     {
-        $app->createDatePicker();
+        $datepickerui = $app->createDatePicker();
+        $this->assertInternalType('string', (string)$datepickerui);
     }
     
     /**
@@ -479,7 +481,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateFileUpload($app)
     {
-        $app->createFileUpload();
+        $uploadui = $app->createFileUpload();
+        $this->assertInternalType('string', (string)$uploadui);
     }
     
     /**
@@ -493,6 +496,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $pagination->getUrl();
         $pagination->getOffset();
         $pagination->setTotalItems(10);
+        $this->assertInternalType('string', (string)$pagination);
     }
     
     /**
@@ -501,7 +505,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateTextEditor($app)
     {
-        $app->createTextEditor();
+        $editor = $app->createTextEditor();
+        $this->assertInternalType('string', (string)$editor);
     }
     
     /**
@@ -510,7 +515,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateCart($app)
     {
-        $app->createCart();
+        $cart = $app->createCart();
+        $this->assertInternalType('string', (string)$cart);
     }
     
     /**
@@ -519,7 +525,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateCaptcha($app)
     {
-        $app->createCaptcha();
+        $captcha = $app->createCaptcha();
+        $this->assertInternalType('string', (string)$captcha);
     }
     
     /**
@@ -528,7 +535,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateBreadcrumbs($app)
     {
-        $app->createBreadcrumbs();
+        $breadcrumbs = $app->createBreadcrumbs();
+        $this->assertInternalType('string', (string)$breadcrumbs);
     }
     
     /**
@@ -539,6 +547,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     {
         $carousel = $app->createCarousel();
         $carousel->addItem('<span></span>');
+        $this->assertInternalType('string', (string)$carousel);
     }
     
     /**
@@ -547,7 +556,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateCommentForm($app)
     {
-        $app->createCommentForm();
+        $form = $app->createCommentForm();
+        $this->assertInternalType('string', (string)$form);
     }
     
     /**
@@ -556,7 +566,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateMap($app)
     {
-        $app->createMap();
+        $map = $app->createMap();
+        $this->assertInternalType('string', (string)$map);
     }
     
     /**
@@ -565,7 +576,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateLineChart($app)
     {
-        $app->createLineChart();
+        $linechart = $app->createLineChart();
+        $this->assertInternalType('string', (string)$linechart);
     }
     
     /**
@@ -577,6 +589,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $treeview = $app->createTreeView();
         $treeview->getRoot();
         $treeview->createNode('test', 'test');
+        $this->assertInternalType('string', (string)$treeview);
     }
     
     /**
@@ -592,7 +605,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $explorer->getPath();
         $explorer->getFolders();
         $explorer->getFiles();
-        //(string) $explorer;
+        $this->assertInternalType('string', (string)$explorer);
     }
     
     /**
@@ -601,7 +614,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateImageGallery($app)
     {
-        $app->createImageGallery(RESOURCE_PATH);
+        $gallery = $app->createImageGallery(RESOURCE_PATH);
+        $this->assertInternalType('string', (string)$gallery);
     }
     
     /**
@@ -612,6 +626,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     {
         $poll = $app->createPoll();
         $poll->setVotes('category', 1);
+        $this->assertInternalType('string', (string)$poll);
     }
     
 }

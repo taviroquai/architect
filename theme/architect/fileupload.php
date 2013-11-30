@@ -1,6 +1,6 @@
 <div id="<?=$_id?>" class="fileupload fileupload-new" data-provides="fileupload">
     <div class="fileupload-new thumbnail" style="width: 50px; height: 50px;">
-        <img src="<?=u('/arch/asset/img/placehold-thumb.gif')?>" />
+        <img src="<?=$default_img?>" />
     </div>
     <div class="fileupload-preview fileupload-exists thumbnail" 
          style="width: 50px; height: 50px;"></div>
