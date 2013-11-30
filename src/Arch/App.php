@@ -5,7 +5,9 @@ namespace Arch;
 /**
  * Define Architect base path
  */
-define('ARCH_PATH', realpath(__DIR__ . '/../../'));
+if (!defined('ARCH_PATH')) {
+    define('ARCH_PATH', realpath(__DIR__ . '/../../'));
+}
 
 /**
  * Application API
@@ -160,7 +162,8 @@ class App implements \Arch\Messenger
     public static function Instance($filename = 'config.xml')
     {
         if (self::$inst === null) {
-            self::$inst = new \Arch\App($filename);
+            $app = new \Arch\App($filename);
+            self::$inst = $app;
         }
         return self::$inst;
     }
@@ -169,20 +172,15 @@ class App implements \Arch\Messenger
      * Returns a new application
      * @param string $filename Full configuration file path
      */
-    private function __construct($filename = 'config.xml')
+    public function __construct($filename = 'config.xml')
     {   
         // update stage
         $this->stage = 'init';
         
         // load configuration and apply
-        try {
-            $this->config = new \Arch\Registry\Config();
-            $this->config->load($filename);
-            $this->config->apply();
-        }
-        catch (\Exception $e) {
-            die($e->getMessage());
-        }
+        $this->config = new \Arch\Registry\Config();
+        $this->config->load($filename);
+        $this->config->apply();
         
         // ready to start logging now
         $this->logger = new \Arch\Logger($this->config->get('LOG_FILE'));
@@ -230,12 +228,14 @@ class App implements \Arch\Messenger
      * 
      * It can only be called once.
      * 
-     * @return null
+     * @return boolean
      */
     public function run()
     {
         // prevent infinit calls
-        if ($this->stage === 'run') return;
+        if ($this->stage === 'run') {
+            return false;
+        }
         
         // update stage
         $this->stage = 'run';
@@ -253,9 +253,9 @@ class App implements \Arch\Messenger
 
         // load default theme if exists
         if (
-                $this->config->get('THEME_PATH') 
-                && $this->config->get('DEFAULT_THEME')
-           ) {
+            $this->config->get('THEME_PATH') 
+            && $this->config->get('DEFAULT_THEME')
+        ) {
             $this->loadTheme(
                 $this->config->get('THEME_PATH')
                 .DIRECTORY_SEPARATOR.$this->config->get('DEFAULT_THEME')
@@ -273,6 +273,7 @@ class App implements \Arch\Messenger
         
         // trigger core event
         $this->triggerEvent('arch.before.end');
+        return true;
     }
     
     /**
@@ -417,10 +418,7 @@ class App implements \Arch\Messenger
      */
     public function addRoute($key, $action)
     {
-        $result = $this->router->addRoute($key, $action);
-        if (!$result) {
-            $this->log('Add route failed: '.$key);
-        }
+        $this->router->addRoute($key, $action);
         return $this;
     }
 
@@ -492,12 +490,7 @@ class App implements \Arch\Messenger
         if ($target === null) {
             $target = $this;
         }
-        try {
-            $this->events->addEvent($eventName, $callback, $target);
-        } catch (\Exception $e) {
-            $this->log('Event create failed: '.$e->getMessage(), 'error');
-        }
-        
+        $this->events->addEvent($eventName, $callback, $target);
         return $this;
     }
     
@@ -654,7 +647,7 @@ class App implements \Arch\Messenger
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post));
         }
         curl_setopt($ch, CURLOPT_VERBOSE, true);
-        curl_setopt($ch, CURLOPT_STDERR, $this->log);
+        curl_setopt($ch, CURLOPT_STDERR, $this->logger->getHandler());
 
         $data = curl_exec($ch);
         curl_close($ch);
@@ -681,7 +674,11 @@ class App implements \Arch\Messenger
      */
     public function upload($file, $targetDir, $newName = '')
     {
-        if ($file['error']) {
+        if (!empty($file['error'])) {
+            return false;
+        }
+        if (empty($file['name']) || empty($file['tmp_name'])) {
+            $this->log('Upload file error. Empty name.', 'error');
             return false;
         }
         if (!is_dir($targetDir) || !is_writable($targetDir)) {
@@ -719,7 +716,7 @@ class App implements \Arch\Messenger
                 'File to download was not found',
                 'alert alert-error'
             );
-            \Arch\App::Instance()->redirect($this->url('/404'));
+            $this->redirect($this->url('/404'));
         }
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $type = finfo_file($finfo, $filename);
@@ -748,9 +745,6 @@ class App implements \Arch\Messenger
         $slug = iconv('utf-8', 'us-ascii//TRANSLIT', $slug);
         $slug = strtolower($slug);
         $slug = preg_replace('~[^-\w]+~', '', $slug);
-        if (empty($slug)) {
-            $slug = md5($text);
-        }
         return $slug;
     }
     
@@ -765,7 +759,7 @@ class App implements \Arch\Messenger
     public function createQuery($tableName)
     {
         if (empty($this->db)) {
-            $this->initDatabase ();
+            $this->initDatabase();
         }
         $table = $this->db->createTable($tableName);
         return $table;
@@ -872,10 +866,9 @@ class App implements \Arch\Messenger
      * 
      * @return \Arch\Validator The validator object
      */
-    public function createValidator()
+    public function createValidator($method = 'post')
     {
-        $type = $this->input->server('REQUEST_METHOD');
-        $input = $this->input->{$type}();
+        $input = $this->input->{$method}();
         return new \Arch\Validator($input);
     }
     
@@ -1266,6 +1259,7 @@ class App implements \Arch\Messenger
                 'error'
             );
             $this->log('Database could not be initialized', 'error');
+            throw new \Exception('Could not initialize database');
         }
     }
     
@@ -1293,12 +1287,6 @@ class App implements \Arch\Messenger
             }
         }
         
-        // clean application buffer; only 1 output allowed
-        // not good for debugging; please use app()->log($msg) for debugging
-        while (ob_get_level() > 0) {
-            ob_end_clean();
-        }
-
         // send output
         $this->log('Sending output...');
         if (!$this->input->isCli()) {
@@ -1321,11 +1309,6 @@ class App implements \Arch\Messenger
     {
         $this->triggerEvent('arch.session.save');
         $this->log('Session closed');
-        
-        // close output buffer
-        if (ob_get_status()) {
-            ob_end_flush();
-        }
         
         // close log handler
         $this->logger->close();

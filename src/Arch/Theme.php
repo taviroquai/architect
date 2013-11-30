@@ -62,7 +62,7 @@ class Theme extends \Arch\View
         // add theme configuration
         $filename = $this->theme_path.DIRECTORY_SEPARATOR.'config.php';
         if (file_exists($filename)) {
-            require_once $filename;
+            require $filename;
         }
     }
 }

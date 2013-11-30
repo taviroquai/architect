@@ -70,6 +70,7 @@ class Pagination extends \Arch\View
      */
     public function parseCurrent(\Arch\Input $input)
     {
+        $this->url = $input->server('REQUEST_URI');
         if ($input->get('p'.$this->id) != false) {
             $this->current = $input->get('p'.$this->id);
             $pid = $input->get('p'.$this->id);
@@ -78,8 +79,6 @@ class Pagination extends \Arch\View
                 '', 
                 $input->server('REQUEST_URI')
             );
-        } else {
-            $this->url = $input->server('REQUEST_URI');
         }
     }
 
@@ -88,7 +87,7 @@ class Pagination extends \Arch\View
      * @param integer $page The page number
      * @return string
      */
-    public function getUrl($page)
+    public function getUrl($page = 1)
     {
         if ($page < 1 || $page > $this->total) return '#';
         $url = $this->url;

@@ -74,11 +74,21 @@ class Logger
      * Closes the resource handler
      * @return boolean
      */
-    public function close() {
+    public function close()
+    {
         if (is_resource($this->handler)) {
             return fclose ($this->handler);
         }
         return true;
+    }
+    
+    /**
+     * Returns the logger handler
+     * @return resource
+     */
+    public function getHandler()
+    {
+        return $this->handler;
     }
 }
 

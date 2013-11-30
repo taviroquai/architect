@@ -37,7 +37,11 @@ abstract class Driver
     public static function createPDO($host, $database, $user, $pass = '')
     {
         $dsn = self::getDSN($host, $database);
-        return new \PDO($dsn, $user, $pass);
+        $pdo = new \PDO($dsn, $user, $pass);
+        if (empty($pdo)) {
+            throw new \PDOException('Invalid database configuration');
+        }
+        return $pdo;
     }
     
     /**

@@ -12,6 +12,12 @@ class FileExplorer extends \Arch\View
      * @var function
      */
     protected $path_to_url;
+    
+    /**
+     * Holds the param input
+     * @var string
+     */
+    protected $input_param;
 
     /**
      * Returns a new file explorer
@@ -44,12 +50,9 @@ class FileExplorer extends \Arch\View
      */
     public function setPathToUrl($fn)
     {
-        if (!is_callable($fn)) {
-            $fn = function ($path) {
-                return $path;
-            };
+        if (is_callable($fn)) {
+            $this->path_to_url = $fn;
         }
-        $this->path_to_url = $fn;
         return $this;
     }
     
@@ -64,13 +67,23 @@ class FileExplorer extends \Arch\View
     }
     
     /**
+     * Sets the input param
+     * @param string $value
+     */
+    public function setInputParam($value)
+    {
+        $this->input_param = $value;
+    }
+
+
+    /**
      * Resolves current path based on $_GET
      * @return string
      */
     public function getPath()
     {
-        $path = g($this->data['param']) ? 
-            $this->data['base'].g($this->data['param']) : 
+        $path = $this->input_param ? 
+            $this->data['base'].$this->input_param : 
             $this->data['base'];
         return rtrim($path, '/');
     }

@@ -6,18 +6,25 @@
     <item name="DISPLAY_ERRORS">1</item>
     
     <!-- Default paths -->
-    <item name="THEME_PATH">/theme</item>
-    <item name="MODULE_PATH">/module</item>
-    <item name="IDIOM_PATH">/idiom</item>
-    <item name="LOG_FILE">/log/log.txt</item>
+    <item name="THEME_PATH">./TestResource</item>
+    <item name="MODULE_PATH">./TestResource/module</item>
+    <item name="IDIOM_PATH">./TestResource/idiom</item>
+    <item name="LOG_FILE">./TestResource/dummy</item>
     <item name="BASE_URL">/</item>
     <!-- empty INDEX_FILE if you use URL rewrite -->
     <item name="INDEX_FILE">index.php</item>
     
     <!-- Default theme -->
-    <item name="DEFAULT_THEME">default</item>
+    <item name="DEFAULT_THEME">theme</item>
     
     <!-- Default idiom -->
     <item name="DEFAULT_IDIOM">en</item>
+    
+    <!-- Database -->
+    <item name="DB_DRIVER">mysql</item>
+    <item name="DB_DATABASE">test_architect</item>
+    <item name="DB_HOST">localhost</item>
+    <item name="DB_USER">root</item>
+    <item name="DB_PASS">toor</item>
     
 </config>
