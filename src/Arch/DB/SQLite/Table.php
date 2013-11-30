@@ -1,6 +1,6 @@
 <?php
 
-namespace Arch\DB\MySql;
+namespace Arch\DB\SQLite;
 
 /**
  * Table class
@@ -79,6 +79,7 @@ class Table extends \Arch\DB\Table
         return $sql;
     }
     
+    
     /**
      * Joins the relations got from database driver (if any)
      * @return \Arch\Table
@@ -87,11 +88,11 @@ class Table extends \Arch\DB\Table
     {
         $info = $this->driver->getTableInfo($this->name);
         foreach ($info as $c) {
-            $cn = $c['Field'];
+            $cn = $c['name'];
             $fk = $this->driver->getForeignKeys($this->name, $cn);
-            if (!empty($fk) && isset($fk['REFERENCED_TABLE_NAME'])) {
-                $fkt = $fk['REFERENCED_TABLE_NAME'];
-                $fkc = $fk['REFERENCED_COLUMN_NAME'];
+            if (!empty($fk) && isset($fk['table'])) {
+                $fkt = $fk['table'];
+                $fkc = $fk['to'];
                 $this->join($fkt, "`$this->name`.`$cn` = `$fkt`.`$fkc`");
             }
         }

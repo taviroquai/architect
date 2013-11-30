@@ -1,8 +1,8 @@
 <?php
-namespace Arch\DB\MySql;
+namespace Arch\DB\SQLite;
 
 /**
- * Description of MySql driver
+ * Description of SQLite driver
  *
  * @author mafonso
  */
@@ -16,7 +16,7 @@ class Driver extends \Arch\DB\Driver
     protected $schema;
     
     /**
-     * Returns a new MySql driver
+     * Returns a new SQLite driver
      * @param string $dbname The database name
      * @param string $host The hostname
      * @param string $user The database user
@@ -32,7 +32,7 @@ class Driver extends \Arch\DB\Driver
     ) {
         $this->schema = $this->createPDO(
             $host,
-            'information_schema',
+            $dbname,
             $user,
             $pass
         );
@@ -56,11 +56,7 @@ class Driver extends \Arch\DB\Driver
      */
     public function getDSN($host, $database, $user, $pass = '')
     {
-        $items = array();
-        $items[] = 'hostname='.$host;
-        $items[] = 'dbname='.$database;
-        $items[] = 'charset=UTF8';
-        return 'mysql:'.implode(';', $items);
+        return 'sqlite:'.$database;
     }
 
     /**
@@ -71,7 +67,7 @@ class Driver extends \Arch\DB\Driver
      */
     public function createTable($tablename)
     {
-        $table = new \Arch\DB\MySql\Table($tablename, $this);
+        $table = new \Arch\DB\SQLite\Table($tablename, $this);
         return $table;
     }
 
@@ -81,10 +77,11 @@ class Driver extends \Arch\DB\Driver
      */
     public function getTables()
     {
-        $data = array($this->dbname);
-        $sql = 'SELECT DISTINCT TABLE_NAME as name '
-                . 'FROM COLUMNS '
-                . 'WHERE TABLE_SCHEMA = ?';
+        $data = array('table', 'sqlite_sequence');
+        $sql = 'SELECT DISTINCT name as name '
+                . 'FROM '.$this->dbname.'.sqlite_master '
+                . 'WHERE type = ? '
+                . 'AND name != ?';
         $stm = $this->schema->prepare($sql);
         $this->logger->log('DB schema query: '.$stm->queryString);
         $stm->execute($data);
@@ -100,14 +97,16 @@ class Driver extends \Arch\DB\Driver
     public function getForeignKeys($table_name, $column_name)
     {
         $result = array();
-        $data = array($this->dbname, $table_name, $column_name);
-        $sql = 'SELECT TABLE_NAME, COLUMN_NAME, CONSTRAINT_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME ' .
-            'FROM KEY_COLUMN_USAGE ' .
-            'WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ? AND REFERENCED_TABLE_NAME IS NOT NULL';
+        $sql = "PRAGMA foreign_key_list(`$table_name`)";
         $stm = $this->schema->prepare($sql);
         $this->logger->log('DB schema query: '.$stm->queryString);
-        if ($stm->execute($data) && $t = $stm->fetch(\PDO::FETCH_ASSOC)) {
-            $result = $t;
+        if ($stm->execute() && $rows = $stm->fetchAll(\PDO::FETCH_ASSOC)) {
+            foreach ($rows as $row) {
+                if ($row['from'] == $column_name) {
+                    $result = $row;
+                    break;
+                }
+            }
         }
         return $result;
     }
@@ -120,7 +119,8 @@ class Driver extends \Arch\DB\Driver
     public function getTableInfo($table_name)
     {
         $result = array();
-        $sql = "DESCRIBE `$table_name`";
+        $sql = "PRAGMA table_info(`$table_name`)";
+        $data = array($table_name);
         try {
             $stm = $this->db_pdo->prepare($sql);
             $this->logger->log('DB query: '.$stm->queryString);
@@ -144,10 +144,10 @@ class Driver extends \Arch\DB\Driver
         $result = '';
         $table = $this->getTableInfo($first_table);
         foreach ($table as $item) {
-            $relitem = $this->getForeignKeys($first_table, $item['Field']);
-            if (isset($relitem['REFERENCED_TABLE_NAME'])
-                && $relitem['REFERENCED_TABLE_NAME'] == $second_table) {
-                $result = $item['Field'];
+            $relitem = $this->getForeignKeys($first_table, $item['name']);
+            if (isset($relitem['table'])
+                && $relitem['table'] == $second_table) {
+                $result = $item['name'];
                 break;
             }
         }

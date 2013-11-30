@@ -1,6 +1,6 @@
 <?php
 
-namespace Arch\DB\MySql;
+namespace Arch\DB\PostgreSQL;
 
 /**
  * Table class
@@ -17,6 +17,20 @@ class Table extends \Arch\DB\Table
     public function __construct($name, \Arch\DB\Driver $driver)
     {
         parent::__construct($name, $driver);
+    }
+    
+    /**
+     * Runs the query and returns the last insert id
+     * @param string $name The auto-increment field name
+     * @return boolean
+     */
+    public function getInsertId($name = 'id')
+    {
+        $stm = $this->execute();
+        if ($stm) {
+            return $stm->fetchColumn(0);
+        }
+        return false;
     }
 
     /**
@@ -46,6 +60,7 @@ class Table extends \Arch\DB\Table
                     ') VALUES ('.
                     implode(',', array_fill(0, count($this->node->values), '?')).
                     ')';
+                $sql .= ' RETURNING id';
                 break;
             case 'UPDATE':
                 if (count($this->node->set) == 0) {
@@ -87,14 +102,23 @@ class Table extends \Arch\DB\Table
     {
         $info = $this->driver->getTableInfo($this->name);
         foreach ($info as $c) {
-            $cn = $c['Field'];
+            $cn = $c['column_name'];
             $fk = $this->driver->getForeignKeys($this->name, $cn);
-            if (!empty($fk) && isset($fk['REFERENCED_TABLE_NAME'])) {
-                $fkt = $fk['REFERENCED_TABLE_NAME'];
-                $fkc = $fk['REFERENCED_COLUMN_NAME'];
+            if (!empty($fk) && isset($fk['foreign_table_name'])) {
+                $fkt = $fk['foreign_table_name'];
+                $fkc = $fk['foreign_column_name'];
                 $this->join($fkt, "`$this->name`.`$cn` = `$fkt`.`$fkc`");
             }
         }
         return $this;
+    }
+    
+    protected function addBackTicks($items, $skip = false)
+    {
+        if (!is_array($items)) return $skip ? $items : '"'.$items.'"';
+        foreach ($items as &$field) {
+            $field = '"'.$field.'"';
+        }
+        return (string) implode(',', $items);
     }
 }

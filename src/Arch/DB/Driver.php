@@ -34,29 +34,12 @@ abstract class Driver
      * @param string $pass The user password
      * @return \PDO
      */
-    public static function createPDO($host, $database, $user, $pass = '')
+    public function createPDO($host, $database, $user, $pass = '')
     {
-        $dsn = self::getDSN($host, $database);
+        $dsn = $this->getDSN($host, $database, $user, $pass);
         $pdo = new \PDO($dsn, $user, $pass);
-        if (empty($pdo)) {
-            throw new \PDOException('Invalid database configuration');
-        }
+        
         return $pdo;
-    }
-    
-    /**
-     * Returns a Data Source Name
-     * @param string $host The hostname
-     * @param string $database The database name
-     * @return string
-     */
-    public static function getDSN($host, $database)
-    {
-        $items = array();
-        $items[] = 'hostname='.$host;
-        $items[] = 'dbname='.$database;
-        $items[] = 'charset=UTF8';
-        return 'mysql:'.implode(';', $items);
     }
     
     /**
@@ -68,7 +51,7 @@ abstract class Driver
      */
     public function connect($host, $database, $user, $pass)
     {
-        $this->db_pdo = self::createPDO($host, $database, $user, $pass);
+        $this->db_pdo = $this->createPDO($host, $database, $user, $pass);
         if ($this->db_pdo) {
             $this->dbname = $database;
             $this->db_pdo->setAttribute(
@@ -95,6 +78,14 @@ abstract class Driver
     {
         return $this->db_pdo;
     }
+    
+    /**
+     * Returns a Data Source Name
+     * @param string $host The hostname
+     * @param string $database The database name
+     * @return string
+     */
+    public abstract function getDSN($host, $database, $user, $pass = '');
     
     /**
      * Returns a new table

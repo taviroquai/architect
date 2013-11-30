@@ -340,20 +340,7 @@ abstract class Table
      * Joins the relations got from database driver (if any)
      * @return \Arch\Table
      */
-    public function joinAuto()
-    {
-        $info = $this->driver->getTableInfo($this->name);
-        foreach ($info as $c) {
-            $cn = $c['Field'];
-            $fk = $this->driver->getForeignKeys($this->name, $cn);
-            if (!empty($fk) && isset($fk['REFERENCED_TABLE_NAME'])) {
-                $fkt = $fk['REFERENCED_TABLE_NAME'];
-                $fkc = $fk['REFERENCED_COLUMN_NAME'];
-                $this->join($fkt, "`$this->name`.`$cn` = `$fkt`.`$fkc`");
-            }
-        }
-        return $this;
-    }
+    public abstract function joinAuto();
     
     /**
      * Set limit and offset
@@ -563,7 +550,7 @@ abstract class Table
         return $node;
     }
     
-    protected static function addBackTicks($items, $skip = false)
+    protected function addBackTicks($items, $skip = false)
     {
         if (!is_array($items)) return $skip ? $items : "`$items`";
         foreach ($items as &$field) {

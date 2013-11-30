@@ -1239,6 +1239,24 @@ class App implements \Arch\Messenger
     {
         try {
             switch ($this->config->get('DB_DRIVER')) {
+                case 'sqlite':
+                    $this->db = new \Arch\DB\SQLite\Driver(
+                        $this->config->get('DB_DATABASE'),
+                        $this->config->get('DB_HOST'),
+                        $this->config->get('DB_USER'),
+                        $this->config->get('DB_PASS'),
+                        $this->logger
+                    );
+                    break;
+                case 'pgsql':
+                    $this->db = new \Arch\DB\PostgreSQL\Driver(
+                        $this->config->get('DB_DATABASE'),
+                        $this->config->get('DB_HOST'),
+                        $this->config->get('DB_USER'),
+                        $this->config->get('DB_PASS'),
+                        $this->logger
+                    );
+                    break;
                 default:
                     $this->db = new \Arch\DB\MySql\Driver(
                         $this->config->get('DB_DATABASE'),
@@ -1259,7 +1277,7 @@ class App implements \Arch\Messenger
                 'error'
             );
             $this->log('Database could not be initialized', 'error');
-            throw new \Exception('Could not initialize database');
+            throw new \Exception('Could not initialize database: '.$e->getMessage());
         }
     }
     

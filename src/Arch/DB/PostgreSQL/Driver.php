@@ -1,5 +1,5 @@
 <?php
-namespace Arch\DB\MySql;
+namespace Arch\DB\PostgreSQL;
 
 /**
  * Description of MySql driver
@@ -32,7 +32,7 @@ class Driver extends \Arch\DB\Driver
     ) {
         $this->schema = $this->createPDO(
             $host,
-            'information_schema',
+            $dbname,
             $user,
             $pass
         );
@@ -57,10 +57,30 @@ class Driver extends \Arch\DB\Driver
     public function getDSN($host, $database, $user, $pass = '')
     {
         $items = array();
-        $items[] = 'hostname='.$host;
+        $items[] = 'host='.$host;
         $items[] = 'dbname='.$database;
-        $items[] = 'charset=UTF8';
-        return 'mysql:'.implode(';', $items);
+        $items[] = 'user='.$user;
+        $items[] = 'password='.$pass;
+        return 'pgsql:'.implode(';', $items);
+    }
+    
+    /**
+     * Connects to the default database
+     * @param type $host The database host
+     * @param type $database The database name
+     * @param type $user The connection user
+     * @param type $pass The user password
+     */
+    public function connect($host, $database, $user, $pass)
+    {
+        $this->db_pdo = $this->createPDO($host, $database, $user, $pass);
+        if ($this->db_pdo) {
+            $this->dbname = $database;
+            $this->db_pdo->setAttribute(
+                \PDO::ATTR_ERRMODE, 
+                \PDO::ERRMODE_EXCEPTION
+            );
+        }
     }
 
     /**
@@ -71,7 +91,7 @@ class Driver extends \Arch\DB\Driver
      */
     public function createTable($tablename)
     {
-        $table = new \Arch\DB\MySql\Table($tablename, $this);
+        $table = new \Arch\DB\PostgreSQL\Table($tablename, $this);
         return $table;
     }
 
@@ -81,9 +101,9 @@ class Driver extends \Arch\DB\Driver
      */
     public function getTables()
     {
-        $data = array($this->dbname);
+        $data = array('public');
         $sql = 'SELECT DISTINCT TABLE_NAME as name '
-                . 'FROM COLUMNS '
+                . 'FROM information_schema.table '
                 . 'WHERE TABLE_SCHEMA = ?';
         $stm = $this->schema->prepare($sql);
         $this->logger->log('DB schema query: '.$stm->queryString);
@@ -100,10 +120,19 @@ class Driver extends \Arch\DB\Driver
     public function getForeignKeys($table_name, $column_name)
     {
         $result = array();
-        $data = array($this->dbname, $table_name, $column_name);
-        $sql = 'SELECT TABLE_NAME, COLUMN_NAME, CONSTRAINT_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME ' .
-            'FROM KEY_COLUMN_USAGE ' .
-            'WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ? AND REFERENCED_TABLE_NAME IS NOT NULL';
+        $data = array($table_name, $column_name);
+        $sql =  'SELECT '
+                . 'tc.constraint_name, tc.table_name, kcu.column_name, '
+                . 'ccu.table_name AS foreign_table_name, '
+                . 'ccu.column_name AS foreign_column_name '
+                . 'FROM '
+                    . 'information_schema.table_constraints AS tc '
+                . 'JOIN information_schema.key_column_usage AS kcu '
+                    . 'ON tc.constraint_name = kcu.constraint_name '
+                . 'JOIN information_schema.constraint_column_usage AS ccu '
+                    . 'ON ccu.constraint_name = tc.constraint_name '
+                . 'WHERE constraint_type = \'FOREIGN KEY\' '
+                . 'AND tc.table_name = ? AND kcu.column_name = ?';
         $stm = $this->schema->prepare($sql);
         $this->logger->log('DB schema query: '.$stm->queryString);
         if ($stm->execute($data) && $t = $stm->fetch(\PDO::FETCH_ASSOC)) {
@@ -120,11 +149,15 @@ class Driver extends \Arch\DB\Driver
     public function getTableInfo($table_name)
     {
         $result = array();
-        $sql = "DESCRIBE `$table_name`";
+        $data = array($table_name);
+        $sql =  "SELECT * "
+                . "FROM information_schema.columns "
+                . "WHERE table_schema = 'public' "
+                . "AND table_name = ?";
         try {
             $stm = $this->db_pdo->prepare($sql);
             $this->logger->log('DB query: '.$stm->queryString);
-            if ($stm->execute()) {
+            if ($stm->execute($data)) {
                 $result = $stm->fetchAll(\PDO::FETCH_ASSOC);
             }
         } catch (\PDOException $e) {
@@ -144,10 +177,10 @@ class Driver extends \Arch\DB\Driver
         $result = '';
         $table = $this->getTableInfo($first_table);
         foreach ($table as $item) {
-            $relitem = $this->getForeignKeys($first_table, $item['Field']);
-            if (isset($relitem['REFERENCED_TABLE_NAME'])
-                && $relitem['REFERENCED_TABLE_NAME'] == $second_table) {
-                $result = $item['Field'];
+            $relitem = $this->getForeignKeys($first_table, $item['column_name']);
+            if (isset($relitem['foreign_table_name'])
+                && $relitem['foreign_table_name'] == $second_table) {
+                $result = $item['column_name'];
                 break;
             }
         }
