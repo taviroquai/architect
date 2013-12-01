@@ -201,6 +201,30 @@ class AppTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Test create idiom
+     * @dataProvider providerApp
+     * @param \Arch\App $app The application instance
+     */
+    public function testCreateIdiom($app)
+    {
+        $app->session->set('idiom', false);
+        $idiom = $app->createIdiom(null, 'default.xml', 'app');
+        $this->assertInstanceOf('\Arch\Idiom', $idiom);
+        $app->session->set('idiom', false);
+        $app->config->set('DEFAULT_IDIOM', 'en');
+        $idiom = $app->createIdiom(null, 'default.xml', 'app');
+        $this->assertInstanceOf('\Arch\Idiom', $idiom);
+        $app->session->set('idiom', 'en');
+        $idiom = $app->createIdiom(null, 'default.xml', 'app');
+        $this->assertInstanceOf('\Arch\Idiom', $idiom);
+        $app->input->setHttpGet(array('idiom' => 'en'));
+        $idiom = $app->createIdiom(null, 'default.xml', 'app');
+        $this->assertInstanceOf('\Arch\Idiom', $idiom);
+        $idiom = $app->createIdiom(null, 'other.xml');
+        $this->assertInstanceOf('\Arch\Idiom', $idiom);
+    }
+    
+    /**
      * Test create URL
      * @dataProvider providerApp
      * @param \Arch\App $app The application instance

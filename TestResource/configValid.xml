@@ -5,7 +5,7 @@
     <item name="ERROR_REPORTING">32767</item>
     <item name="DISPLAY_ERRORS">1</item>
     
-    <!-- Default paths -->
+    <!-- Required items -->
     <item name="THEME_PATH">./TestResource</item>
     <item name="MODULE_PATH">./TestResource/module</item>
     <item name="IDIOM_PATH">./TestResource/idiom</item>
@@ -16,9 +16,6 @@
     
     <!-- Default theme -->
     <item name="DEFAULT_THEME">theme</item>
-    
-    <!-- Default idiom -->
-    <item name="DEFAULT_IDIOM">en</item>
     
     <!-- Database -->
     <item name="DB_DRIVER">mysql</item>

@@ -813,20 +813,24 @@ class App implements \Arch\Messenger
      * @return \Arch\Idiom The idiom object
      */
     public function createIdiom(
-            $code = null, 
+            $code = null,
             $name = 'default.xml', 
             $module = 'app'
     ) {
         // resolve idiom code
-        if (empty($code)) {
+        if (empty($code) && $this->input->get('idiom')) {
             $code = $this->input->get('idiom');
-            if (empty($code)) {
-                if ($this->config->get('DEFAULT_IDIOM')) {
-                    $code = $this->config->get('DEFAULT_IDIOM');
-                } else {
-                    $code = 'en';
-                }
-            }
+        }
+        if (empty($code) && $this->session->get('idiom')) {
+            $code = $this->session->get('idiom');
+        }
+        if (empty($code) && $this->config->get('DEFAULT_IDIOM')) {
+            $code = $this->config->get('DEFAULT_IDIOM');
+        }
+        if (empty($code)) {
+            $code = 'en';
+        }
+        if (!$this->session->get('idiom')) {
             $this->session->set('idiom', $code);
         }
         $idiom = new \Arch\Idiom($code);
