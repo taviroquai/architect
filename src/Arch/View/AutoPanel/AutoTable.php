@@ -60,7 +60,10 @@ class AutoTable extends \Arch\View\AutoPanel
     protected function createActionButton($config, $record)
     {
         if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/table/rowaction.php';
+            $tmpl = implode(
+                DIRECTORY_SEPARATOR,
+                array(ARCH_PATH, 'theme', 'table', 'rowaction.php')
+            );
         }
         if (!isset($config['action'])) {
             $config['action'] = '';
@@ -85,13 +88,16 @@ class AutoTable extends \Arch\View\AutoPanel
     protected function createCellValue($config, $record)
     {
         if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/table/cell.php';
+            $tmpl = implode(
+                DIRECTORY_SEPARATOR,
+                array(ARCH_PATH, 'theme', 'table', 'cell.php')
+            );
         }
-        if (empty($config['property'])) {
-            return 'undefined';
+        $config['value'] = 'undefined';
+        if (!empty($config['property'])) {
+            $config['value'] = isset($record[$config['property']]) ?
+                $record[$config['property']] : '';
         }
-        $config['value'] = isset($record[$config['property']]) ?
-            $record[$config['property']] : '';
         $v = new \Arch\View($tmpl, $config);
         $v->set('record', $record);
         return $v;

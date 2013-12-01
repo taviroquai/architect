@@ -27,7 +27,7 @@ class Events extends \Arch\Registry {
     public function addEvent($name, $callback, $target = null)
     {
         if (!is_string($name) || !is_callable($callback)) {
-            throw new Exception('Invalid event name or event callback');
+            throw new \Exception('Invalid event name or event callback');
         }
         $evt = new \Arch\Event($name, $callback, $target);
         $this->storage[$name][] = $evt;

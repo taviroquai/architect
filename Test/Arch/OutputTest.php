@@ -70,6 +70,17 @@ class OutputTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Test add cache headers
+     */
+    public function testAddCacheHeaders()
+    {
+        $output = new \Arch\Output();
+        $output->addCacheHeaders();
+        $result = $output->getHeaders();
+        $this->assertEquals(3, count($result));
+    }
+    
+    /**
      * Test send output
      */
     public function testSend()
@@ -85,18 +96,16 @@ class OutputTest extends \PHPUnit_Framework_TestCase
     /**
      * Test read static file
      * param string $filename The filename to be read
-     * dataProvider providerReadFile
-     * runInSeparateProcess
+     * @dataProvider providerReadFile
      */
-    /*
     public function testReadFile($filename)
     { 
         $expected = file_get_contents($filename);
         $output = new \Arch\Output();
         ob_start();
         $output->readfile($filename);
+        $output->send();
         $result = ob_get_clean();
         $this->assertEquals($expected, $result);
     }
-     */
 }

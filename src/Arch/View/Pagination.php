@@ -113,7 +113,7 @@ class Pagination extends \Arch\View
      */
     public function setTotalItems($total)
     {
-        $this->total = $total % $this->limit;
+        $this->total = ceil($total / $this->limit);
     }
     
     /**

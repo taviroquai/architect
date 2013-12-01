@@ -37,7 +37,7 @@ class Cart
     	}
     }
 
-	public function insertItem($item, $index, $quantity)
+    public function insertItem($item, $index, $quantity)
     {
         $cart = $this->session->cart;
 		$cart->items[$index] = (object) array(
@@ -45,27 +45,27 @@ class Cart
 			'quantity' => $quantity);
         $this->session->cart = $cart;
         $this->getTotal();
-	}
+    }
 
-	public function getItem($index)
+    public function getItem($index)
     {
-		if (!isset($this->session->cart->items[$index])) {
-            return false;
+        $item = false;
+        if (isset($this->session->cart->items[$index])) {
+            $item =& $this->session->cart->items[$index];
         }
-		return $this->session->cart->items[$index];
-	}
+        return $item;
+    }
 
     public function updateQuantity($index, $quantity)
     {
-        if (!isset($this->session->cart->items[$index])) {
-            return false;
+        if (isset($this->session->cart->items[$index])) {
+            if ($quantity == 0) {
+                unset($this->session->cart->items[$index]);
+            } else {
+                $this->session->cart->items[$index]->quantity = $quantity;
+            }
+            $this->getTotal();
         }
-        if ($quantity == 0) {
-            unset($this->session->cart->items[$index]);
-        } else {
-            $this->session->cart->items[$index]->quantity = $quantity;
-        }
-        $this->getTotal();
     }
 
 	public function updateTaxCost($tax)

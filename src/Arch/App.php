@@ -1218,7 +1218,8 @@ class App implements \Arch\Messenger
                 $app->redirect ('/404');
             } else {
                 $app->output->readfile($filename);
-                exit();
+                // add cache headers
+                $app->output->addCacheHeaders();
             }
         });
     }

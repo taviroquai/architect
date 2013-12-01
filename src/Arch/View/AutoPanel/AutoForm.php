@@ -39,6 +39,8 @@ class AutoForm extends \Arch\View\AutoPanel
                 ->where($this->config['table'].'.id = ?', array($id))
                 ->fetch(\PDO::FETCH_ASSOC);
         }
+        $this->config['action'] = empty($this->config['action']) ? '' 
+                : $this->config['action'];
     }
     
     public function __toString()
@@ -79,6 +81,7 @@ class AutoForm extends \Arch\View\AutoPanel
                     $this->addContent($this->createInputText($item));
             }
         }
+        $this->set('action', $this->config['action']);
         return parent::__toString();
     }
     
@@ -95,43 +98,41 @@ class AutoForm extends \Arch\View\AutoPanel
         if (empty($config['tmpl'])) {
             $tmpl = __DIR__.'/../../../../theme/form/label.php';
         }
-        if (empty($config['label'])) {
-            $config['label'] = '';
-        }
+        $config['label'] = empty($config['label']) ? '' : $config['label'];
         return new \Arch\View($tmpl, $config);
     }
     
     protected function createInputHidden($config)
     {
-        if (empty($config['property'])) {
-            return '';
+        $view = '';
+        if (!empty($config['property'])) {
+            if (empty($config['tmpl'])) {
+                $tmpl = __DIR__.'/../../../../theme/form/input/hidden.php';
+            }
+            if (empty($config['name'])) {
+                $config['name'] = $config['property'];
+            }
+            $view = new \Arch\View($tmpl, $config);
+            $value = empty($config['value']) ? 
+                $this->record[$config['property']] : $config['value'];
+            $view->set('value', $value);
         }
-        if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/form/input/hidden.php';
-        }
-        if (empty($config['name'])) {
-            $config['name'] = $config['property'];
-        }
-        $v = new \Arch\View($tmpl, $config);
-        $value = empty($config['value']) ? 
-            $this->record[$config['property']] : $config['value'];
-        $v->set('value', $value);
-        return $v;
+        return $view;
     }
     
     protected function createInputPassword($config)
     {
-        if (empty($config['property'])) {
-            return '';
+        $view = '';
+        if (!empty($config['property'])) {
+            if (empty($config['tmpl'])) {
+                $tmpl = __DIR__.'/../../../../theme/form/input/password.php';
+            }
+            if (empty($config['name'])) {
+                $config['name'] = $config['property'];
+            }
+            $view = new \Arch\View($tmpl, $config);
         }
-        if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/form/input/password.php';
-        }
-        if (empty($config['name'])) {
-            $config['name'] = $config['property'];
-        }
-        $v = new \Arch\View($tmpl, $config);
-        return $v;
+        return $view;
     }
     
     protected function createButton($config)
@@ -155,12 +156,8 @@ class AutoForm extends \Arch\View\AutoPanel
         if (empty($config['tmpl'])) {
             $tmpl = __DIR__.'/../../../../theme/form/submit.php';
         }
-        if (empty($config['label'])) {
-            $config['label'] = '';
-        }
-        if (empty($config['class'])) {
-            $config['class'] = '';
-        }
+        $config['label'] = empty($config['label']) ? '' : $config['label'];
+        $config['class'] = empty($config['class']) ? '' : $config['class'];
         $v = new \Arch\View($tmpl, $config);
         return $v;
     }
@@ -239,8 +236,9 @@ class AutoForm extends \Arch\View\AutoPanel
     
     protected function createCheckList($config)
     {
-        if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/form/checklist.php';
+        $tmpl = __DIR__.'/../../../../theme/form/checklist.php';
+        if (!empty($config['tmpl'])) {
+            $tmpl = $config['tmpl'];
         }
         if (empty($config['name'])) {
             $config['name'] = $config['property'];
@@ -269,9 +267,8 @@ class AutoForm extends \Arch\View\AutoPanel
                 );
             }
         }
-        if (!isset($config['class'])) {
-            $config['class'] = 'checkbox';
-        }
+        $config['class'] = empty($config['class']) ? 
+                'checkbox' : $config['class'];
         return new \Arch\View($tmpl, $config);
     }
     
@@ -281,10 +278,9 @@ class AutoForm extends \Arch\View\AutoPanel
             $config['tmpl'] = 
                 __DIR__.'/../../../../theme/form/radiolist.php';
         }
-        if (!isset($config['class'])) {
-            $config['class'] = 'radio';
-        }
-        return $this->renderCheckList($config);
+        $config['class'] = empty($config['class']) ? 
+                'radio' : $config['class'];
+        return $this->createCheckList($config);
     }
     
     protected function getNMSelectedItems($table1, $table2, $table3, $id)
@@ -293,15 +289,14 @@ class AutoForm extends \Arch\View\AutoPanel
         if ($table1 != $table2) {
             $column1 = $this->driver->getRelationColumn($table1, $table2);
             $column2 = $this->driver->getRelationColumn($table1, $table3);
-            if (!$column1 || !$column2) {
-                return $data;
-            }
-            $table = $this->driver->createTable($table1);
-            $selected = $table->select($table1.'.'.$column1)
-                    ->where($table1.".$column2 = ?", array($id))
-                    ->fetchAll(\PDO::FETCH_ASSOC);
-            foreach ($selected as $row) {
-                $data[] = $row[$column1];
+            if ($column1 && $column2) {
+                $table = $this->driver->createTable($table1);
+                $selected = $table->select($table1.'.'.$column1)
+                        ->where($table1.".$column2 = ?", array($id))
+                        ->fetchAll(\PDO::FETCH_ASSOC);
+                foreach ($selected as $row) {
+                    $data[] = $row[$column1];
+                }
             }
         }
         return $data;

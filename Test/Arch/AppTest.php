@@ -166,7 +166,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testFailAddEvent($app)
     {
-        $app->addEvent(NULL);
+        $app->addEvent(NULL, NULL);
     }
     
     /**
@@ -177,6 +177,17 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testAddEvent($app)
     {
         $app->addEvent('test', function() {});
+    }
+    
+    /**
+     * Test trigger event
+     * @dataProvider providerApp
+     * @param \Arch\App $app The application instance
+     */
+    public function testTriggerEvent($app)
+    {
+        $app->addEvent('test', function() {});
+        $app->triggerEvent('test');
     }
     
     /**
@@ -368,13 +379,16 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testCreateAutoTable($app)
     {
         $config = array(
-            'table' => 'test_table1',
-            'select'=> 'test_table1.*',
+            'table' => 'test_table2',
+            'select'=> 'test_table2.*',
             'columns' => array(
-                array('type' => 'value', 'property' => 'field1')
+                array('type' => 'value', 'property' => 'field1'),
+                array('type' => 'action',   'icon'  => 'icon-edit', 
+                'property' => 'id'),
             )
         );
-        $app->createAutoTable($config);
+        $autotable = $app->createAutoTable($config);
+        $this->assertInternalType('string', (string)$autotable);
     }
     
     /**
@@ -414,14 +428,54 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateAutoForm($app)
     {
+        // insert records to test relations
+        $table1 = $app->createQuery('test_table1');
+        $id1 = $table1->insert(array('field1' => 'test'))->getInsertId();
+        $table1 = $app->createQuery('test_table2');
+        $id2 = $table1->insert(array('field1' => 'test'))->getInsertId();
+        $tablenm = $app->createQuery('test_nmrelation');
+        $tablenm->insert(array('id_table1' => $id1, 'id_table2' => $id2))
+                ->getInsertId();
+        
+        // test forms
         $config = array(
-            'table' => 'test_table1',
-            'select'=> 'test_table1.*',
+            'table' => 'test_table2',
+            'select'=> 'test_table2.*',
+            'record_id' => 1,
             'items' => array(
-                array('type' => 'label', 'label' => 'filed1')
+                array('type' => 'breakline'),
+                array('type' => 'label', 'label' => 'field1'),
+                array('type' => 'hidden',   'property'  => 'field1'),
+                array('type' => 'password', 'property'  => 'field1'),
+                array('type' => 'submit', 'label' => 'label', 'class' => 'btn'),
+                array('type' => 'button', 'label' => 'label', 'action' => '#',
+                    'class' => 'btn', 'onclick' => '', 'property' => 'id'),
+                array('type' => 'text',     'property'  => 'field1'),
+                array('type' => 'textarea', 'property'  => 'field1'),
+                array('type' => 'checklist', 'property'  => 'id', 
+                    'class' => 'checklist',
+                    'items_table' => 'test_table1', 'prop_label' => 'id',
+                    'selected_items_table' => 'test_nmrelation'),
+                array('type' => 'radiolist', 'property'  => 'id', 
+                    'class' => 'radiolist',
+                    'items_table' => 'test_table1', 'prop_label' => 'id',
+                    'selected_items_table' => 'test_nmrelation')
             )
         );
-        $app->createAutoForm($config);
+        $autoform = $app->createAutoForm($config);
+        $this->assertInternalType('string', (string)$autoform);
+        
+        $config = array(
+            'table' => 'test_nmrelation',
+            'select'=> 'test_nmrelation.*',
+            'record_id' => 1,
+            'items' => array(
+                array('type' => 'select', 'property'  => 'id',
+                    'items_table' => 'test_table1', 'prop_label' => 'field1')
+            )
+        );
+        $autoform = $app->createAutoForm($config);
+        $this->assertInternalType('string', (string)$autoform);
     }
     
     /**
@@ -494,8 +548,9 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $app->input->setHttpGet(array('p1' => 1));
         $pagination = $app->createPagination();
         $pagination->getUrl();
+        $pagination->limit = 2;
+        $pagination->setTotalItems(6);
         $pagination->getOffset();
-        $pagination->setTotalItems(10);
         $this->assertInternalType('string', (string)$pagination);
     }
     
@@ -516,6 +571,21 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testCreateCart($app)
     {
         $cart = $app->createCart();
+        $item = (object) array('name' => 'Product1', 'price' => 30, 'tax' => 0.21);
+        $cart->model->insertItem($item, 1, 2);
+        $cart->model->getItem(1);
+        $cart->model->addShippingOption('New');
+        $cart->model->addPaymentOption('New');
+        $cart->model->addCurrencyOption('USD');
+        $cart->model->setCurrency('EUR');
+        $cart->model->setShipping('Standard');
+        $cart->model->setPayment('PayPal');
+        $cart->model->updateQuantity(1, 3);
+        $cart->model->updateTaxCost(5);
+        $cart->model->updateShippingCost(5);
+        $cart->model->updateQuantity(1, 0);
+        $cart->model->getTotal();
+        $cart->model->setUser(1);
         $this->assertInternalType('string', (string)$cart);
     }
     
@@ -567,6 +637,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testCreateMap($app)
     {
         $map = $app->createMap();
+        $marker = $map->model->createMarker(0, 0, 'Hello Architect!', true);
+        $map->model->addMarker($marker);
         $this->assertInternalType('string', (string)$map);
     }
     
@@ -599,6 +671,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testCreateFileExplorer($app)
     {
         $explorer = $app->createFileExplorer(RESOURCE_PATH);
+        $explorer->translatePath('/');
         $explorer->setPathToUrl(function($path){});
         $explorer->translatePath('/');
         $explorer->setInputParam('/');

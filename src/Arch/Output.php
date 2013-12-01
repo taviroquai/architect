@@ -144,13 +144,13 @@ class Output
             case 'js':
                 $this->headers[] = "Content-type: text/javascript";
             break;
+            default:
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $type = finfo_file($finfo, $filename);
+                $this->headers[] = "Content-type: ".$type;
         }
-
-        // send cache headers
-        $asset_cache = 300;
-        $this->addCacheHeaders($asset_cache);
-
-        $this->sendHeaders();
-        readfile($filename);
+        
+        // load file contents
+        $this->setContent(file_get_contents($filename));
     }
 }
