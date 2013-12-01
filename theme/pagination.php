@@ -1,11 +1,10 @@
 <div id="<?=$_id?>" class="pagination pagination-centered" title="Pagination">
     <ul>
-        <?php
-        $class = '';
-        if ($this->current == 1) $class = 'disabled' ?>
-        <li class="<?=$class?>">
-            <a href="<?=$this->getUrl($this->current - 1)?>">&laquo;</a>
-        </li>
+        <?php if ($this->current > 1) { ?>
+            <li>
+                <a href="<?=$this->getUrl($this->current - 1)?>">&laquo;</a>
+            </li>
+        <?php } ?>
         <?php foreach ($this->items as $i => $item) { 
             if ($this->current == $i) $item->class = 'active';
         ?>
@@ -13,12 +12,11 @@
             <a href="<?=$item->url?>"><?=$item->text?></a>
         </li>
         <?php } ?>
-        <?php
-        $class = '';
-        if ($this->current == $this->total) $class = 'disabled' ?>
-        <li class="<?=$class?>">
-            <a href="<?=$this->getUrl($this->current + 1)?>">&raquo;</a>
-        </li>
+        <?php if ($this->current < $this->total) { ?>
+            <li>
+                <a href="<?=$this->getUrl($this->current + 1)?>">&raquo;</a>
+            </li>
+        <?php } ?>
     </ul>
     <?php $this->slot('content', function($item) { ?>
         <?=$item?>

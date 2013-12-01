@@ -72,13 +72,12 @@ class Pagination extends \Arch\View
     {
         $this->url = $input->server('REQUEST_URI');
         if ($input->get('p'.$this->id) != false) {
-            $this->current = $input->get('p'.$this->id);
+            $current = $input->get('p'.$this->id);
+            $current = $current > $this->total ? $this->total : $current;
+            $current = $current < 1 ? 1 : $current;
+            $this->current = $current;
             $pid = $input->get('p'.$this->id);
-            $this->url = str_replace(
-                '&p'.$this->id.'='.$pid, 
-                '', 
-                $input->server('REQUEST_URI')
-            );
+            $this->url = str_replace('&p'.$this->id.'='.$pid, '', $this->url);
         }
     }
 
@@ -130,6 +129,9 @@ class Pagination extends \Arch\View
                 'class' => '');
             $this->items[$i] = $item;
         }
+        
+        // hide if there is only 1 page
+        if ($this->total == 1) $this->hide ();
         
         // render
         return parent::__toString();

@@ -48,7 +48,7 @@ class AutoTable extends \Arch\View\AutoPanel
                 ->fetchAll(\PDO::FETCH_ASSOC);
         $this->pagination = new \Arch\View\Pagination();
         $this->pagination->limit = $config['pagination'];
-        $this->pagination->total = ceil(count($all) / $config['pagination']);
+        $this->pagination->setTotalItems(count($all));
     }
     
     /**
