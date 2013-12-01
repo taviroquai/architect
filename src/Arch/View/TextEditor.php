@@ -16,7 +16,7 @@ class TextEditor extends \Arch\View
     {
         if ($tmpl === null) {
             $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','architect','wysiwyg.php'));
+                    array(ARCH_PATH,'theme','wysiwyg.php'));
         }
 		parent::__construct($tmpl);
         

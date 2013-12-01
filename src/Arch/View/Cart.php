@@ -23,7 +23,7 @@ class Cart extends \Arch\View
     {
         if ($tmpl == null) {
             $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','architect','cart.php'));
+                    array(ARCH_PATH,'theme','cart.php'));
         }
         $this->model = $model;
 		parent::__construct($tmpl);

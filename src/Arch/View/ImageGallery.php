@@ -16,7 +16,7 @@ class ImageGallery extends \Arch\View\FileExplorer {
     public function __construct($path, $tmpl = null) {
         if ($tmpl === null) {
             $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','architect','imagegallery.php'));
+                    array(ARCH_PATH,'theme','imagegallery.php'));
         }
         parent::__construct($path, $tmpl);
     }

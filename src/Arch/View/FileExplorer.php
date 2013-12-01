@@ -28,7 +28,7 @@ class FileExplorer extends \Arch\View
     {
         if ($tmpl === null) {
             $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','architect','filelist.php'));
+                    array(ARCH_PATH,'theme','filelist.php'));
         }
         parent::__construct($tmpl);
         

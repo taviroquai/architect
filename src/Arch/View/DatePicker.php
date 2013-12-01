@@ -15,7 +15,7 @@ class DatePicker extends \Arch\View
     {
         if ($tmpl === null) {
             $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','architect','datepicker.php'));
+                    array(ARCH_PATH,'theme','datepicker.php'));
         }
 		parent::__construct($tmpl);
         

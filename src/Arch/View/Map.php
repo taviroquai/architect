@@ -22,7 +22,7 @@ class Map extends \Arch\View
     {
         if ($tmpl === null) {
             $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','architect','map.php'));
+                    array(ARCH_PATH,'theme','map.php'));
         }
 		parent::__construct($tmpl);
         

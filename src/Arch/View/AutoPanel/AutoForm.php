@@ -24,7 +24,10 @@ class AutoForm extends \Arch\View\AutoPanel
     public function __construct($config, $driver, $tmpl = '')
     {
         if (empty($tmpl)) {
-            $tmpl = __DIR__.'/../../../../theme/architect/form/form.php';
+            $tmpl = implode(
+                DIRECTORY_SEPARATOR,
+                array(ARCH_PATH, 'theme', 'form', 'form.php')
+            );
         }
         parent::__construct($tmpl, $config, $driver);
         
@@ -82,7 +85,7 @@ class AutoForm extends \Arch\View\AutoPanel
     protected function createBreakLine($config)
     {
         if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/architect/form/breakline.php';
+            $tmpl = __DIR__.'/../../../../theme/form/breakline.php';
         }
         return new \Arch\View($tmpl, $config);
     }
@@ -90,7 +93,7 @@ class AutoForm extends \Arch\View\AutoPanel
     protected function createLabel($config)
     {
         if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/architect/form/label.php';
+            $tmpl = __DIR__.'/../../../../theme/form/label.php';
         }
         if (empty($config['label'])) {
             $config['label'] = '';
@@ -104,7 +107,7 @@ class AutoForm extends \Arch\View\AutoPanel
             return '';
         }
         if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/architect/form/input/hidden.php';
+            $tmpl = __DIR__.'/../../../../theme/form/input/hidden.php';
         }
         if (empty($config['name'])) {
             $config['name'] = $config['property'];
@@ -122,7 +125,7 @@ class AutoForm extends \Arch\View\AutoPanel
             return '';
         }
         if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/architect/form/input/password.php';
+            $tmpl = __DIR__.'/../../../../theme/form/input/password.php';
         }
         if (empty($config['name'])) {
             $config['name'] = $config['property'];
@@ -134,7 +137,7 @@ class AutoForm extends \Arch\View\AutoPanel
     protected function createButton($config)
     {
         if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/architect/form/button.php';
+            $tmpl = __DIR__.'/../../../../theme/form/button.php';
         }
         if (
             !empty($config['action'])
@@ -150,7 +153,7 @@ class AutoForm extends \Arch\View\AutoPanel
     protected function createButtonSubmit($config)
     {
         if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/architect/form/submit.php';
+            $tmpl = __DIR__.'/../../../../theme/form/submit.php';
         }
         if (empty($config['label'])) {
             $config['label'] = '';
@@ -165,7 +168,7 @@ class AutoForm extends \Arch\View\AutoPanel
     protected function createInputText($config)
     {
         if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/architect/form/input/text.php';
+            $tmpl = __DIR__.'/../../../../theme/form/input/text.php';
         }
         if (empty($config['name'])) {
             $config['name'] = $config['property'];
@@ -185,7 +188,7 @@ class AutoForm extends \Arch\View\AutoPanel
     protected function createTextArea($config)
     {
         if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/architect/form/input/textarea.php';
+            $tmpl = __DIR__.'/../../../../theme/form/input/textarea.php';
         }
         if (empty($config['name'])) {
             $config['name'] = $config['property'];
@@ -205,7 +208,7 @@ class AutoForm extends \Arch\View\AutoPanel
     protected function createSelect($config)
     {
         if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/architect/form/select.php';
+            $tmpl = __DIR__.'/../../../../theme/form/select.php';
         }
         if (empty($config['name'])) {
             $config['name'] = $config['property'];
@@ -237,7 +240,7 @@ class AutoForm extends \Arch\View\AutoPanel
     protected function createCheckList($config)
     {
         if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/architect/form/checklist.php';
+            $tmpl = __DIR__.'/../../../../theme/form/checklist.php';
         }
         if (empty($config['name'])) {
             $config['name'] = $config['property'];
@@ -276,7 +279,7 @@ class AutoForm extends \Arch\View\AutoPanel
     {
         if (empty($config['tmpl'])) {
             $config['tmpl'] = 
-                __DIR__.'/../../../../theme/architect/form/radiolist.php';
+                __DIR__.'/../../../../theme/form/radiolist.php';
         }
         if (!isset($config['class'])) {
             $config['class'] = 'radio';

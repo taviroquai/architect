@@ -15,7 +15,7 @@ class Breadcrumbs extends \Arch\View
     {
         if ($tmpl === null) {
             $tmpl = implode(DIRECTORY_SEPARATOR, 
-                    array(ARCH_PATH,'theme','architect','breadcrumbs.php'));
+                    array(ARCH_PATH,'theme','breadcrumbs.php'));
         }
 		parent::__construct($tmpl);
         

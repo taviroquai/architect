@@ -15,7 +15,7 @@ class CommentForm extends \Arch\View
     {
         if ($tmpl === null) {
             $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','architect','comment.php'));
+                    array(ARCH_PATH,'theme','comment.php'));
         }
 		parent::__construct($tmpl);
 	}

@@ -15,7 +15,7 @@ class Poll extends \Arch\View
     {
         if ($tmpl === null) {
             $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','architect','pollchart.php'));
+                    array(ARCH_PATH,'theme','pollchart.php'));
         }
 		parent::__construct($tmpl);
         

@@ -53,7 +53,7 @@ class Pagination extends \Arch\View
     {
         if ($tmpl === null) {
             $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','architect','pagination.php'));
+                    array(ARCH_PATH,'theme','pagination.php'));
         }
 		parent::__construct($tmpl);
         

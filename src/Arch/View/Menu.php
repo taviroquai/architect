@@ -16,7 +16,7 @@ class Menu extends \Arch\View
     {
         if ($tmpl === null) {
             $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','architect','main_menu.php'));
+                    array(ARCH_PATH,'theme','main_menu.php'));
         }
         parent::__construct($tmpl);
         

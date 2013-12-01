@@ -15,7 +15,7 @@ class Carousel extends \Arch\View
     {
         if ($tmpl === null) {
             $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','architect','carousel.php'));
+                    array(ARCH_PATH,'theme','carousel.php'));
         }
 		parent::__construct($tmpl);
         

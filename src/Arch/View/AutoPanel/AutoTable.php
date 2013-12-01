@@ -28,7 +28,10 @@ class AutoTable extends \Arch\View\AutoPanel
     public function __construct($config, $driver, $tmpl = '')
     {
         if (empty($tmpl)) {
-            $tmpl = __DIR__.'/../../../../theme/architect/table/table.php';
+            $tmpl = implode(
+                DIRECTORY_SEPARATOR, 
+                array(ARCH_PATH, 'theme', 'table', 'table.php')
+            );
         }
         parent::__construct($tmpl, $config, $driver);
         
@@ -57,7 +60,7 @@ class AutoTable extends \Arch\View\AutoPanel
     protected function createActionButton($config, $record)
     {
         if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/architect/table/rowaction.php';
+            $tmpl = __DIR__.'/../../../../theme/table/rowaction.php';
         }
         if (!isset($config['action'])) {
             $config['action'] = '';
@@ -82,7 +85,7 @@ class AutoTable extends \Arch\View\AutoPanel
     protected function createCellValue($config, $record)
     {
         if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/architect/table/cell.php';
+            $tmpl = __DIR__.'/../../../../theme/table/cell.php';
         }
         if (empty($config['property'])) {
             return 'undefined';

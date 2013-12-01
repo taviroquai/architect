@@ -15,7 +15,7 @@ class FileUpload extends \Arch\View
     {
         if ($tmpl === null) {
             $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','architect','fileupload.php'));
+                    array(ARCH_PATH,'theme','fileupload.php'));
         }
 		parent::__construct($tmpl);
         

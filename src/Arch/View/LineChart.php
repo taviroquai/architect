@@ -15,7 +15,7 @@ class LineChart extends \Arch\View
     {
         if ($tmpl === null) {
             $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','architect','linechart.php'));
+                    array(ARCH_PATH,'theme','linechart.php'));
         }
 	parent::__construct($tmpl);
         

@@ -22,7 +22,7 @@ class TreeView extends \Arch\View
     {
         if ($tmpl === null) {
             $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','architect','treeview.php'));
+                    array(ARCH_PATH,'theme','treeview.php'));
         }
         parent::__construct($tmpl);
         

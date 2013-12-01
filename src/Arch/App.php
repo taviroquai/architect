@@ -1019,7 +1019,7 @@ class App implements \Arch\Messenger
     {
         $this->session->set('_captcha', " ");
         $tmpl = implode(DIRECTORY_SEPARATOR,
-                array(ARCH_PATH, 'theme', 'architect', 'captcha.php'));
+                array(ARCH_PATH, 'theme', 'captcha.php'));
         $view = new \Arch\View($tmpl);
         $view->set('code', $this->session->get('_captcha'));
         return $view;
@@ -1210,12 +1210,13 @@ class App implements \Arch\Messenger
         $this->router->addRoute(
                 '/arch/asset/(:any)/(:any)', 
                 function($dir, $filename) use ($app) {
-            $filename = ARCH_PATH.DIRECTORY_SEPARATOR.
-                    'theme'.DIRECTORY_SEPARATOR.
-                    'architect'.DIRECTORY_SEPARATOR.
-                     $dir.DIRECTORY_SEPARATOR.$filename;
-            if (!file_exists($filename)) $app->redirect ('/404');
-            else {
+            $filename = implode(
+                DIRECTORY_SEPARATOR,
+                array(ARCH_PATH,'theme',$dir,$filename)
+            );
+            if (!file_exists($filename)) {
+                $app->redirect ('/404');
+            } else {
                 $app->output->readfile($filename);
                 exit();
             }
