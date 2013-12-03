@@ -112,10 +112,13 @@ class AutoForm extends \Arch\View\AutoPanel
             if (empty($config['name'])) {
                 $config['name'] = $config['property'];
             }
+            if (!isset($config['value'])) {
+                $config['value'] = '';
+                if (isset($this->record[$config['property']])) {
+                    $config['value'] = $this->record[$config['property']];
+                }
+            }
             $view = new \Arch\View($tmpl, $config);
-            $value = empty($config['value']) ? 
-                $this->record[$config['property']] : $config['value'];
-            $view->set('value', $value);
         }
         return $view;
     }
