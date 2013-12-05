@@ -11,9 +11,6 @@ if (!defined('ARCH_PATH')) {
 
 /**
  * Application API
- * 
- * Use alias \Arch\App::Instance() is recomended
- * 
  */
 class App implements \Arch\Messenger
 {
@@ -147,26 +144,6 @@ class App implements \Arch\Messenger
      * @var string
      */
     private  $stage = '';
-    
-    /**
-     * Application singleton instance
-     * @var \Arch\App
-     */
-    private static $inst = null;
-
-    /**
-     * Gets application singleton
-     * @param string $filename Full configuration file path
-     * @return \Arch\App The application singleton
-     */
-    public static function Instance($filename = 'config.xml')
-    {
-        if (self::$inst === null) {
-            $app = new \Arch\App($filename);
-            self::$inst = $app;
-        }
-        return self::$inst;
-    }
 
     /**
      * Returns a new application
@@ -221,7 +198,7 @@ class App implements \Arch\Messenger
         
         // set modules registry
         $this->modules = new \Arch\Registry\Modules();
-    }    
+    }
     
     /**
      * Runs the application through various stages.
@@ -397,7 +374,7 @@ class App implements \Arch\Messenger
      * Use it as:
      * <b>
      * app()->addRoute('/', function() { 
-     *     \Arch\App::Instance()->sendOutput('Home'); 
+     *     app()->sendOutput('Home'); 
      * });
      * </b>
      * 
@@ -1101,7 +1078,6 @@ class App implements \Arch\Messenger
     public function createMap($tmpl = null, \Arch\Model\Map $model = null)
     {
         $view = new \Arch\View\Map($tmpl, $model);
-        $app = \Arch\App::Instance();
         $this->addContent($this->url('/arch/asset/css/leaflet.css'), 'css');
         $this->addContent(
                 'http://maps.google.com/maps/api/js?v=3.2&sensor=false',

@@ -8,22 +8,11 @@
 class AppTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Test fail create
-     * @expectedException \Exception
-     */
-    public function testFailCreateApplication()
-    {
-        \Arch\App::Instance();
-    }
-
-    /**
      * Test create application
      */
     public function testCreateApplication()
     {
         $config = RESOURCE_PATH.'/configValid.xml';
-        $app = \Arch\App::Instance($config);
-        $this->assertInstanceOf('\Arch\App', $app);
         $app = new \Arch\App($config);
         $this->assertInstanceOf('\Arch\App', $app);
     }

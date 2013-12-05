@@ -94,6 +94,7 @@ The first letter gives an idea of what it does.
 Remember to use IDE type hinting to know how the alias works.
 
 app() - **A**pplication. The main gate to access features  
+conf() - **C**onfiguration item. Returns a configuration item  
 r() - **R**oute. Adds a new route  
 c() - **C**ontent. Adds content to the default theme  
 u() - **U**RL. Returns an internal URL. Use this to generate internal URLs  
@@ -109,7 +110,7 @@ e() - **E**vent. Adds a new event
 tr() - **TR**igger. Triggers the event
 
 ### APP
-    app() // return the application singleton
+    app() // returns the application instance
 
 ### ROUTER
     app()->addRoute('/my/path', function() { ... }); // PHP5 anonymous function

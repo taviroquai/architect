@@ -69,7 +69,7 @@ class Session extends \Arch\Registry
 
     /**
      * Stores a message in session
-     * To display messages use: \Arch\App::Instance()->showMessages($template);
+     * To display messages use: app()->showMessages($template);
      * 
      * @param \Arch\Message $message
      */

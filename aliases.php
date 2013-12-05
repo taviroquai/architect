@@ -35,9 +35,18 @@
  * 
  * @return \Arch\App The application main gate
  */
-function app()
+function app(\Arch\App $app = null)
 { 
-    return \Arch\App::Instance();
+    if ($app) {
+        $GLOBALS['arch'] = $app;
+    }
+    if (
+        !isset($GLOBALS['arch'])
+        || get_class($GLOBALS['arch']) !== 'Arch\App'
+    ) {
+        throw new Exception('Please define $arch = new \Arch\App() first');
+    }
+    return $GLOBALS['arch'];
 }
 
 /**
