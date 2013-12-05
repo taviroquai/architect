@@ -9,6 +9,7 @@
         <blacklist>
             <directory suffix=".php">./vendor/</directory>
             <directory suffix=".php">./TestResource/</directory>
+            <directory suffix=".php">./theme/</directory>
         </blacklist>
     </filter>
     <php>
