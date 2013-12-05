@@ -175,17 +175,18 @@ class App implements \Arch\Messenger
         
         // set input
         $this->input = new \Arch\Input();
-        if ($_GET) $this->input->setHttpGet ($_GET);
-        if ($_POST) $this->input->setHttpPost ($_POST);
-        if (!empty($_FILES)) $this->input->setHttpFiles($_FILES);
-        $this->input->setRawInput(file_get_contents("php://input"));
         $this->input->parseGlobal(
-            php_sapi_name(), 
+            php_sapi_name(),
             $_SERVER,
+            $_GET,
+            $_POST,
+            $_FILES,
+            file_get_contents("php://input")
+        );
+        $this->input->parseAction(
             $this->config->get('BASE_URL'),
             $this->config->get('INDEX_FILE')
         );
-        $this->input->getAction();
         $this->log('Input finish loading: '.
                 $this->input->server('HTTP_USER_AGENT'));
 
@@ -647,11 +648,17 @@ class App implements \Arch\Messenger
      * @param array $file File entry from app()->input->file()
      * @param string $targetDir Full target directory
      * @param string $newName New name to the uploaded file
+     * @param boolean $is_upload Tells whether thi file was uploaded
      * @return boolean|string
      */
-    public function upload($file, $targetDir, $newName = '')
+    public function upload($file, $targetDir, $newName = '', $is_upload = true)
     {
+        if (!$is_upload) {
+            $this->log('Upload file error. Not an uploaded file', 'error');
+            return false;
+        }
         if (!empty($file['error'])) {
+            $this->log('Upload file error: '.$file['error'], 'error');
             return false;
         }
         if (empty($file['name']) || empty($file['tmp_name'])) {
@@ -670,10 +677,11 @@ class App implements \Arch\Messenger
             $name = $newName;
         }
         $destination = $targetDir.'/'.$name;
-        if (!move_uploaded_file($file['tmp_name'], $destination)) {
+        if (!@rename($file['tmp_name'], $destination)) {
             $this->log('Failed to move file: '.$destination, 'error');
             return false;
         }
+        chmod($destination, 0644);
         $this->log('Upload file succeed');
         return $destination;
     }
@@ -684,6 +692,7 @@ class App implements \Arch\Messenger
      * Use it as <b>app()->download('/path/to/attachment.pdf')</b>
      * 
      * @param string $filename The file to be donwloaded
+     * @return boolean
      */
     public function download($filename, $attachment = true)
     {
@@ -693,7 +702,7 @@ class App implements \Arch\Messenger
                 'File to download was not found',
                 'alert alert-error'
             );
-            $this->redirect($this->url('/404'));
+            return false;
         }
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $type = finfo_file($finfo, $filename);
@@ -707,6 +716,7 @@ class App implements \Arch\Messenger
             $headers[] = 'Content-disposition: attachment; filename='.$name;
         }
         $this->output->setHeaders($headers);
+        return true;
     }
     
     /**

@@ -275,15 +275,46 @@ class AppTest extends \PHPUnit_Framework_TestCase
     {
         $file = null;
         $targetDir = 'fail';
-        $app->upload($file, $targetDir);
+        $result = $app->upload($file, $targetDir);
+        $this->assertFalse($result);
+        
         $file = array('error' => 1);
-        $app->upload($file, $targetDir);
-        $file = array('tmp_name' => RESOURCE_PATH.'dummy', 'name' => 'dummy');
-        $app->upload($file, $targetDir);
+        $targetDir = 'fail';
+        $result = $app->upload($file, $targetDir);
+        $this->assertFalse($result);
+        
+        $file = array('error' => 1);
+        $targetDir = RESOURCE_PATH;
+        $result = $app->upload($file, $targetDir, 'test', false);
+        $this->assertFalse($result);
+        
+        $file = array('tmp_name' => RESOURCE_PATH.'dummy', 'name' => 'test');
+        $targetDir = 'fail';
+        $result = $app->upload($file, $targetDir);
+        $this->assertFalse($result);
+        
+        $file = array('tmp_name' => RESOURCE_PATH.'dummy', 'name' => 'test');
+        $targetDir = RESOURCE_PATH;
+        $newName = '../dummy/test';
+        $result = $app->upload($file, $targetDir, $newName);
+        $this->assertFalse($result);
+        
+        $expected = RESOURCE_PATH.'img/test/test';
+        copy(RESOURCE_PATH.'dummy', RESOURCE_PATH.'dummy_test');
+        $file = array('tmp_name' => RESOURCE_PATH.'dummy_test', 'name' => 'test');
         $targetDir = RESOURCE_PATH.'img/test';
-        $app->upload($file, $targetDir);
+        $result = $app->upload($file, $targetDir);
+        $this->assertEquals($expected, $result);
+        unlink($expected);
+        
+        $expected = RESOURCE_PATH.'img/test/dummy_copy';
+        copy(RESOURCE_PATH.'dummy', RESOURCE_PATH.'dummy_test');
+        $file = array('tmp_name' => RESOURCE_PATH.'dummy_test', 'name' => 'test');
+        $targetDir = RESOURCE_PATH.'img/test';
         $newname = 'dummy_copy';
-        $app->upload($file, $targetDir, $newname);
+        $result = $app->upload($file, $targetDir, $newname);
+        $this->assertEquals($expected, $result);
+        unlink($expected);
     }
     
     /**
@@ -293,7 +324,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testFailDownload($app)
     {
-        //$app->download(RESOURCE_PATH.'dumm');
+        $result = $app->download(RESOURCE_PATH.'dumm');
+        $this->assertFalse($result);
     }
     
     /**

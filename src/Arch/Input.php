@@ -16,14 +16,12 @@ class Input
     protected $files = array();
     protected $raw;
     protected $action;
-    protected $base_url = 'http://localhost/';
-    protected $index_file = 'index.php';
     
     /**
      * Constructor
      * 
      */
-    public function __construct($action = '')
+    public function __construct($action = '/')
     {
         $this->action = $action;
     }
@@ -31,19 +29,25 @@ class Input
     /**
      * Parse global server input
      * @param string $api
+     * @param null|array $server
      * @param null|array $get
      * @param null|array $post
-     * @param null|array $server
      * @param null|array $files
      * @param null|string $raw
      */
     public function parseGlobal(
         $api    = 'server', 
         $server = array('REQUEST_URI' => '/', 'argv' => array()),
-        $base_url = 'http://localhost/',
-        $index_file = 'index.php'
+        $get = null,
+        $post = null,
+        $files = null,
+        $raw = ''
     ) {
         $this->api = $api;
+        if (!empty($get)) $this->setHttpGet ($get);
+        if (!empty($post)) $this->setHttpPost ($post);
+        if (!empty($files)) $this->setHttpFiles($files);
+        if (!empty($raw)) $this->setRawInput($raw);
         if ($server) $this->httpServer = $server;
         if ($this->isCli()) {
             $this->params = $this->httpServer['argv'];
@@ -53,8 +57,6 @@ class Input
             } elseif (!empty($this->httpPost)) {
                 $this->params = array_values($this->httpPost);
             }
-            $this->base_url = $base_url;
-            $this->index_file = $index_file;
         }
     }
     
@@ -135,7 +137,7 @@ class Input
         }
         return $this->files[$index];
     }
-    
+
     /**
      * Gets user input action
      * If using command line, will return the first parameter
@@ -144,24 +146,20 @@ class Input
      */
     public function getAction()
     {
-        // parse action if no action is set
-        if (empty($this->action)) {
-            $this->action = $this->parseAction($this->default);
-        }
         return $this->action;
     }
     
     /**
      * Tries to find user action through all input
-     * @param string $action The user action string
-     * @return string
+     * @param string $base_url The application base url
+     * @param string $index_file The application index filename
      */
-    public function parseAction($action)
+    public function parseAction($base_url = '/', $index_file = 'index.php')
     {
         // parse action if no action is set
         if (!$this->isCli()) {
             $uri = str_replace(
-                array($this->base_url.'/',$this->index_file), 
+                array($base_url.'/',$index_file), 
                 '', 
                 $this->httpServer['REQUEST_URI']
             );
@@ -170,15 +168,14 @@ class Input
                     strpos($uri, '?');
             $uri = '/'.trim(substr($uri, 0, $end), '/');
             if (!empty($uri)) {
-                $action = $uri;
+                $this->action = $uri;
             }
         }
         else {
             if (!empty($this->params[1])) {
-                $action = $this->params[1];
+                $this->action = $this->params[1];
             }
         }
-        return $action;
     }
     
     /**

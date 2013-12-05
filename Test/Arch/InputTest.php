@@ -48,7 +48,7 @@ class InputTest extends \PHPUnit_Framework_TestCase
     public function testCreateAction()
     {
         $expected = '/';
-        $input = new \Arch\Input($expected);
+        $input = new \Arch\Input();
         $result = $input->getAction();
         $this->assertEquals($expected, $result);
     }
@@ -77,7 +77,9 @@ class InputTest extends \PHPUnit_Framework_TestCase
         $index = 1;
         $server = array('REQUEST_URI' => $request_uri, 'argv' => $argv);
         $expected = '/';
-        if (isset($server['argv'][$index])) $expected = $server['argv'][$index];
+        if (isset($server['argv'][$index])) {
+            $expected = $server['argv'][$index];
+        }
         $input = new \Arch\Input();
         $input->parseGlobal('cli', $server);
         $result = $input->getAction();
@@ -131,6 +133,16 @@ class InputTest extends \PHPUnit_Framework_TestCase
         $input->parseGlobal('apache', $server);
         $result = $input->server();
         $this->assertEquals($expected, $result);
+        
+        $expected = null;
+        $input->parseGlobal('apache', $server, array('a' => $expected));
+        $result = $input->getParam(0);
+        $this->assertEquals($expected, $result);
+        
+        $expected = null;
+        $input->parseGlobal('apache', $server, null, array('a' => $expected));
+        $result = $input->getParam(0);
+        $this->assertEquals($expected, $result);
     }
     
     /**
@@ -151,6 +163,37 @@ class InputTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Test parse user action from cli
+     */
+    public function testParseCliAction()
+    {
+        $argv = array('index.php', '/');
+        $server = array('REQUEST_URI' => null, 'argv' => $argv);
+        $input = new \Arch\Input();
+        $input->parseGlobal('cli', $server);
+        
+        $expected = '/';
+        $input->parseAction();
+        $result = $input->getAction();
+        $this->assertEquals($expected, $result);
+    }
+    
+    /**
+     * Test parse user action from web server
+     */
+    public function testParseUriAction()
+    {
+        $server = array('REQUEST_URI' => '/', 'argv' => array());
+        $input = new \Arch\Input();
+        $input->parseGlobal('apache', $server);
+        
+        $expected = '/';
+        $input->parseAction();
+        $result = $input->getAction();
+        $this->assertEquals($expected, $result);
+    }
+    
+    /**
      * Test HTTP GET params
      * @param $get The $_GET params
      * @dataProvider providerDataGET
@@ -160,7 +203,7 @@ class InputTest extends \PHPUnit_Framework_TestCase
         $expected = $get;
         $input = new \Arch\Input();
         $input->setHttpGet($get);
-        $input->parseGlobal();
+        //$input->parseGlobal();
         $result = $input->get();
         $this->assertEquals($expected, $result);
     }
