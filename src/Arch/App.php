@@ -687,7 +687,7 @@ class App implements \Arch\Messenger
     }
     
     /**
-     * Creates a download attachment Output and exits application
+     * Creates a download attachment Output and loads target file
      * 
      * Use it as <b>app()->download('/path/to/attachment.pdf')</b>
      * 
