@@ -47,7 +47,7 @@ class AutoTable extends \Arch\View\AutoPanel
                 ->joinAuto()
                 ->fetchAll(\PDO::FETCH_ASSOC);
         $this->pagination = new \Arch\View\Pagination();
-        $this->pagination->limit = $config['pagination'];
+        $this->pagination->setLimit($config['pagination']);
         $this->pagination->setTotalItems(count($all));
     }
     
@@ -107,9 +107,28 @@ class AutoTable extends \Arch\View\AutoPanel
     {
         $records = $this->table->select($this->config['select'])
             ->joinAuto()
-            ->limit($this->pagination->limit, $this->pagination->getOffset())
+            ->limit(
+                $this->pagination->getLimit(),
+                $this->pagination->getOffset()
+            )
             ->fetchAll(\PDO::FETCH_ASSOC);
-        $this->set('records', $records);
+        $rows = array();
+        foreach ($records as $record) {
+            $cols = array();
+            foreach ($this->config['columns'] as $col) {
+                switch ($col['type']) {
+                    case 'action':
+                        $v = $this->createActionButton($col, $record);
+                        $cols[] = '<td style="width: 30px">'.$v.'</td>';
+                        break;
+                    default:
+                        $v = $this->createCellValue($col, $record);
+                        $cols[] = '<td>'.$v.'</td>';
+                }
+            }
+            $rows[] = $cols;
+        }
+        $this->set('rows', $rows);
         $this->addContent($this->pagination);
         return parent::__toString();
     }

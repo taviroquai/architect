@@ -3,7 +3,7 @@
         <div class="pull-right">
             <label>Currency</label>
             <select name="currency">
-                <?php foreach ($this->model->currency_options as $opt) { ?>
+                <?php foreach ($currency_options as $opt) { ?>
                 <option <?=$cart->currency == $opt ? 'selected' : ''?> 
                     value="<?=$opt?>"><?=$opt?></option>
                 <?php } ?>
@@ -36,7 +36,7 @@
                     <td>
                         <select name="quantity[<?=$i?>]" class="span1">
                             <?php 
-                            foreach ($this->model->quantity_options as $opt) { ?>
+                            foreach ($quantity_options as $opt) { ?>
                             <option <?=$item->quantity == $opt ? 'selected' : ''?> 
                                 value="<?=$opt?>"><?=$opt?></option>
                             <?php } ?>
@@ -58,7 +58,7 @@
                     <td colspan="2">
                         <select name="shipping">
                             <?php 
-                            foreach ($this->model->shipping_options as $opt) { ?>
+                            foreach ($shipping_options as $opt) { ?>
                             <option <?=$cart->shipping == $opt ? 'selected' : ''?> 
                                 value="<?=$opt?>"><?=$opt?></option>
                             <?php } ?>
@@ -79,7 +79,7 @@
                     <td colspan="2">
                         <select name="payment">
                             <?php 
-                            foreach ($this->model->payment_options as $opt) { ?>
+                            foreach ($payment_options as $opt) { ?>
                             <option <?=$cart->payment == $opt ? 'selected' : ''?> 
                                 value="<?=$opt?>"><?=$opt?></option>
                             <?php } ?>
@@ -102,7 +102,4 @@
         </div>
         <div class="clearfix"></div>
     </form>
-    <?php $this->slot('content', function($item) { ?>
-        <?=$item?>
-    <?php })?>
 </div>

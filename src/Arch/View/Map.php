@@ -36,4 +36,9 @@ class Map extends \Arch\View
         $this->data['zoom'] = 1;
     }
     
+    public function __toString() {
+        $this->set('markers', $this->model->getMarkers());
+        return parent::__toString();
+    }
+    
 }

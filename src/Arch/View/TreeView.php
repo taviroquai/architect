@@ -59,4 +59,13 @@ class TreeView extends \Arch\View
         $parent->appendChild($node);
         return $node;
     }
+    
+    /**
+     * Returns the view as a string
+     * @return string
+     */
+    public function __toString() {
+        $this->set('tree', $this->tree);
+        return parent::__toString();
+    }
 }

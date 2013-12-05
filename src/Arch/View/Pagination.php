@@ -7,62 +7,56 @@ namespace Arch\View;
  */
 class Pagination extends \Arch\View
 {
-    /**
-     * Holds the pagination ID; this will be used in URI to identify the
-     * pagination item
-     * @var string
-     */
-    public $id      = 1;
     
     /**
      * Holds the total pages
      * @var integer
      */
-    public $total   = 3;
+    protected $total   = 3;
     
     /**
      * Holds the base url
      * @var string
      */
-    public $url;
+    protected $url;
     
     /**
      * Holds the limit of items per page
      * @var integer
      */
-    public $limit   = 1;
+    protected $limit   = 1;
     
     /**
      * Holds the pagination items; not the user items to be paged
      * @var array
      */
-    public $items   = array();
+    protected $items   = array();
     
     /**
      * Holds the currect page number
      * @var integer
      */
-    public $current = 1;
+    protected $current = 1;
 	
     /**
      * Returns a new pagination view
      * @param string $id The pagination id; this will be used in URI requests
      * @param integer $tmpl The template file
      */
-	public function __construct($id = 1, $tmpl = null)
+    public function __construct($id = 1, $tmpl = null)
     {
         if ($tmpl === null) {
             $tmpl = implode(DIRECTORY_SEPARATOR,
                     array(ARCH_PATH,'theme','pagination.php'));
         }
-		parent::__construct($tmpl);
+        parent::__construct($tmpl);
         
         // get pager id
         $this->id = $id;
         
         // get user input
         $this->current = 1;
-	}
+    }
     
     /**
      * Parses input and sets the current page and url
@@ -107,6 +101,24 @@ class Pagination extends \Arch\View
     }
     
     /**
+     * Returns the limit of items per page
+     * @return int
+     */
+    public function getLimit()
+    {
+        return $this->limit;
+    }
+
+    /**
+     * Sets the limit of items per page
+     * @param int $limit The limit of items per page
+     */
+    public function setLimit($limit)
+    {
+        $this->limit = (int) $limit;
+    }
+
+    /**
      * Sets the total items
      * @param integer $total The total page items
      */
@@ -132,6 +144,12 @@ class Pagination extends \Arch\View
         
         // hide if there is only 1 page
         if ($this->total == 1) $this->hide ();
+        
+        $this->set('total', $this->total);
+        $this->set('current', $this->current);
+        $this->set('items', $this->items);
+        $this->set('previous_url', $this->getUrl($this->current - 1));
+        $this->set('next_url', $this->getUrl($this->current - 1));
         
         // render
         return parent::__toString();

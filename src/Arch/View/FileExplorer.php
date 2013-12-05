@@ -105,18 +105,6 @@ class FileExplorer extends \Arch\View
     {
         return array_filter(glob($this->getPath()."/*"), 'is_file');
     }
-    
-    /**
-     * Returns a link
-     * @param string $action The action
-     * @param array $params The link params
-     * @return string
-     */
-    public function getLink($action, $params = array())
-    {
-        return \Arch\App::Instance()->url($action, $params);
-    }
-
 
     /**
      * Renders the file explorer view
@@ -130,9 +118,8 @@ class FileExplorer extends \Arch\View
         
         $parent = str_replace($this->data['base'], '', dirname($path));
         $this->set('parent', $parent == '' ? '/' : $parent);
-        $backlink = $this->getLink($this->get('url'), 
-            array($this->get('param') => $this->get('parent'))
-        );
+        $backlink = $this->get('url') . '&'
+            . $this->get('param') . '=' . $this->get('parent');
         $this->set('backlink', $backlink);
         $folders = $this->getFolders();
         $files = $this->getFiles();

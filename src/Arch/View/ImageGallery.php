@@ -6,8 +6,8 @@ namespace Arch\View;
  *
  * @author mafonso
  */
-class ImageGallery extends \Arch\View\FileExplorer {
-    
+class ImageGallery extends \Arch\View\FileExplorer
+{    
     /**
      * Returns a new image gallery
      * @param string $path The local path

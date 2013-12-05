@@ -1,7 +1,7 @@
 <ul id="<?=$_id?>" class="nav nav-list" title="File List">
     <?php if ($path != $base) { ?>
     <li>
-        <a class="label" href="<?=$this->getLink($url, array($param => $parent))?>">
+        <a class="label" href="<?=$url.'&'.$param.'='.$parent?>">
             <i class="icon icon-backward"></i>
             .. Back
         </a>
@@ -12,7 +12,7 @@
         <?php if (is_dir($item)) {
             $folder = str_replace($base, '', $item);
         ?>
-        <a href="<?=$this->getLink($url, array($param => $folder))?>" 
+        <a href="<?=$url.'&'.$param.'='.$folder?>" 
            class="directory">
             <i class="icon icon-folder-open"></i>
             <?=basename($item)?>
@@ -30,6 +30,3 @@
     </li>
     <?php } ?>
 </ul>
-<?php $this->slot('content', function($item) { ?>
-    <?=$item?>
-<?php })?>

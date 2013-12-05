@@ -9,8 +9,5 @@
         <label></label>
         <button type="submit" class="btn">Send</button>
     </form>
-    <?php $this->slot('content', function($item) { ?>
-        <?=$item?>
-    <?php })?>
 </div>
 

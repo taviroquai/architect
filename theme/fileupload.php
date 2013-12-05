@@ -12,7 +12,4 @@
     <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">
         Remove
     </a>
-    <?php $this->slot('content', function($item) { ?>
-        <?=$item?>
-    <?php })?>
 </div>

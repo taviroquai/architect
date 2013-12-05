@@ -928,6 +928,10 @@ class App implements \Arch\Messenger
     public function createFileUpload($tmpl = null)
     {
         $view = new \Arch\View\FileUpload($tmpl);
+        $view->set(
+            'default_img',
+            $this->url('/arch/asset/img/placehold-thumb.gif')
+        );
         // add view resources
         $this->addContent(
             $this->url('/arch/asset/css/bootstrap-fileupload.min.css'),

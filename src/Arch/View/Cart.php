@@ -39,6 +39,10 @@ class Cart extends \Arch\View
     public function __toString()
     {
         $this->set('cart', $this->model->getCart());
+        $this->set('currency_options', $this->model->currency_options);
+        $this->set('payment_options', $this->model->payment_options);
+        $this->set('quantity_options', $this->model->quantity_options);
+        $this->set('shipping_options', $this->model->shipping_options);
         return parent::__toString();
     }
 }

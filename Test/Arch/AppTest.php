@@ -572,7 +572,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $app->input->setHttpGet(array('p1' => 1));
         $pagination = $app->createPagination();
         $pagination->getUrl();
-        $pagination->limit = 2;
+        $pagination->setLimit(2);
         $pagination->setTotalItems(6);
         $pagination->getOffset();
         $this->assertInternalType('string', (string)$pagination);

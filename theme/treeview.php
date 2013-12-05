@@ -1,6 +1,5 @@
-<?=$this->tree->saveXML()?>
 <ul id="<?=$_id?>" class="nav nav-list" title="Tree View">
-    <?php foreach ($this->tree->documentElement->childNodes as $lvl1) { ?>
+    <?php foreach ($tree->documentElement->childNodes as $lvl1) { ?>
     <?php if ($lvl1->hasChildNodes()) { ?>
     <li><label class="tree-toggler nav-header"><?=$lvl1->getAttribute('label')?></label>
         <ul class="nav nav-list tree">
@@ -50,6 +49,3 @@ jQuery(function ($) {
 	});
 });
 </script>
-<?php $this->slot('content', function($item) { ?>
-    <?=$item?>
-<?php })?>

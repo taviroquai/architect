@@ -7,23 +7,12 @@
         </tr>
     </thead>
     <tbody>
-        <?php foreach ($records as $record) { ?>
+        <?php foreach ($rows as $row) { ?>
         <tr>
-            <?php foreach ($columns as $col) { ?>
-                <?php switch ($col['type']) {
-                    case 'action':
-                        $v = $this->createActionButton($col, $record);
-                        echo '<td style="width: 30px">'.$v.'</td>';
-                        break;
-                    default:
-                        $v = $this->createCellValue($col, $record);
-                        echo '<td>'.$v.'</td>';
-                } ?>
+            <?php foreach ($row as $item) { ?>
+                <?=$item?>
             <?php } ?>
         </tr>
         <?php } ?>
     </tbody>
 </table>
-<?php $this->slot('content', function($item) { ?>
-    <?=$item?>
-<?php })?>

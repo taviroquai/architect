@@ -75,9 +75,6 @@
     </div>
     <div class="editor" style="min-height: 84px"><?=$value?></div>
     <input name="<?=$name?>" type="hidden" value="" />
-    <?php $this->slot('content', function($item) { ?>
-        <?=$item?>
-    <?php })?>
 </div>
 <script type="text/javascript">
     jQuery(function($) {
