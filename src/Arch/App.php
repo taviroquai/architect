@@ -461,15 +461,14 @@ class App implements \Arch\Messenger
      * @param string $eventName The event name
      * @param function $callback The event callback
      * @param mixed $target An optional target
-     * @return \Arch\App The application
+     * @return \Arch\Event The new event
      */
     public function addEvent($eventName, $callback, $target = null)
     {
         if ($target === null) {
             $target = $this;
         }
-        $this->events->addEvent($eventName, $callback, $target);
-        return $this;
+        return $this->events->addEvent($eventName, $callback, $target);
     }
     
     /**
@@ -533,6 +532,7 @@ class App implements \Arch\Messenger
         $base_url = $this->config->get('BASE_URL');
         $index_file = $this->config->get('INDEX_FILE');
         $host = $this->input->server('HTTP_HOST');
+        $host = empty($host) ? 'localhost' : $host;
         $protocol = $this->input->server('HTTPS') ? 'https://' : 'http://';
         $base = $index_file == '' ? rtrim($base_url, '/') : $base_url.'/';
         $base = $protocol . $host . $base;

@@ -114,16 +114,6 @@ class AppTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Test add message
-     * @dataProvider providerApp
-     * @param \Arch\App $app The application instance
-     */
-    public function testAddMessage($app)
-    {
-        $app->addMessage('test');
-    }
-    
-    /**
      * Test get messages
      * @dataProvider providerApp
      * @param \Arch\App $app The application instance
@@ -132,6 +122,19 @@ class AppTest extends \PHPUnit_Framework_TestCase
     {
         $result = $app->getMessages();
         $this->assertEquals(array(), $result);
+    }
+    
+    /**
+     * Test add message
+     * @dataProvider providerApp
+     * @param \Arch\App $app The application instance
+     */
+    public function testAddMessage($app)
+    {
+        $app->addMessage('test');
+        $expected = array(new \Arch\Message('test'));
+        $result = $app->getMessages();
+        $this->assertEquals($expected, $result);
     }
     
     /**
@@ -165,7 +168,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddEvent($app)
     {
-        $app->addEvent('test', function() {});
+        $event = $app->addEvent('test', function() {});
+        $this->assertInstanceOf('Arch\Event', $event);
     }
     
     /**
@@ -176,7 +180,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testTriggerEvent($app)
     {
         $app->addEvent('test', function() {});
-        $app->triggerEvent('test');
+        $result = $app->triggerEvent('test');
+        $this->assertInstanceOf('Arch\App', $result);
     }
     
     /**
@@ -186,7 +191,14 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddContent($app)
     {
-        $app->addContent('test');
+        $expected = 'test';
+        $app->addContent($expected, 'content');
+        ob_start();
+        $app->theme->slot('content', function($item) {
+            echo $item;
+        });
+        $result = ob_get_clean();
+        $this->assertEquals($expected, $result);
     }
     
     /**
@@ -220,7 +232,9 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateURL($app)
     {
-        $app->url('/test');
+        $url = $app->url('/test');
+        $result = (bool) filter_var($url, FILTER_VALIDATE_URL);
+        $this->assertTrue($result);
     }
     
     /**
@@ -230,8 +244,13 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testEncrypt($app)
     {
-        $app->encrypt('test');
-        $app->encrypt('test', 'other');
+        $expected = '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08';
+        $result = $app->encrypt('test');
+        $this->assertEquals($expected, $result);
+        
+        $expected = '098f6bcd4621d373cade4e832627b4f6';
+        $result = $app->encrypt('test', 'other');
+        $this->assertEquals($expected, $result);
     }
     
     /**
@@ -241,9 +260,19 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetCaptcha($app)
     {
-        $app->getCaptcha();
-        $app->session->set('_captcha', 'test');
-        $app->getCaptcha();
+        $result = $app->getCaptcha();
+        $this->assertFalse($result);
+        
+        $expected = 'test';
+        $app->session->set('_captcha', $expected);
+        $result = $app->getCaptcha();
+        $this->assertFalse($result);
+        
+        $expected = 'test';
+        $app->session->set('_captcha', $expected);
+        $app->input->setHttpPost(array('_captcha' => $expected));
+        $result = $app->getCaptcha();
+        $this->assertEquals($expected, $result);
     }
     
     /**
@@ -335,7 +364,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testDownload($app)
     {
-        $app->download(RESOURCE_PATH.'dummy');
+        $result = $app->download(RESOURCE_PATH.'dummy');
+        $this->assertTrue($result);
     }
     
     /**
@@ -345,7 +375,9 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testSlug($app)
     {
-        $app->slug('My.ó/ç');
+        $result = $app->slug('My.ó/ç');
+        $expected = 'my-o-c';
+        $this->assertEquals($expected, $result);
     }
     
     /**
@@ -379,7 +411,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateQuery($app)
     {
-        $app->createQuery('test_table1');
+        $result = $app->createQuery('test_table1');
+        $this->assertInstanceOf('Arch\DB\Table', $result);
     }
     
     /**
@@ -541,7 +574,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testCreateImage($app)
     {
         $filename = RESOURCE_PATH.'img/landscape.jpg';
-        $app->createImage($filename);
+        $result = $app->createImage($filename);
+        $this->assertInstanceOf('Arch\Image', $result);
     }
     
     /**
@@ -550,7 +584,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateValidator($app)
     {
-        $app->createValidator();
+        $result = $app->createValidator();
+        $this->assertInstanceOf('Arch\Validator', $result);
     }
     
     /**
@@ -561,6 +596,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     {
         $tmpl = RESOURCE_PATH.'template/div.php';
         $view = $app->createView($tmpl);
+        $this->assertInstanceOf('Arch\View', $view);
         $this->assertInternalType('string', (string)$view);
     }
     
@@ -571,6 +607,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testCreateDatePicker($app)
     {
         $datepickerui = $app->createDatePicker();
+        $this->assertInstanceOf('Arch\View\DatePicker', $datepickerui);
         $this->assertInternalType('string', (string)$datepickerui);
     }
     
@@ -581,6 +618,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testCreateFileUpload($app)
     {
         $uploadui = $app->createFileUpload();
+        $this->assertInstanceOf('Arch\View\FileUpload', $uploadui);
         $this->assertInternalType('string', (string)$uploadui);
     }
     
@@ -592,6 +630,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     {
         $app->input->setHttpGet(array('p1' => 1));
         $pagination = $app->createPagination();
+        $this->assertInstanceOf('Arch\View\Pagination', $pagination);
         $pagination->getUrl();
         $pagination->setLimit(2);
         $pagination->setTotalItems(6);
@@ -606,6 +645,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testCreateTextEditor($app)
     {
         $editor = $app->createTextEditor();
+        $this->assertInstanceOf('Arch\View\TextEditor', $editor);
         $this->assertInternalType('string', (string)$editor);
     }
     
@@ -616,6 +656,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testCreateCart($app)
     {
         $cart = $app->createCart();
+        $this->assertInstanceOf('Arch\View\Cart', $cart);
         $item = (object) array('name' => 'Product1', 'price' => 30, 'tax' => 0.21);
         $cart->model->insertItem($item, 1, 2);
         $cart->model->getItem(1);
@@ -641,6 +682,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testCreateCaptcha($app)
     {
         $captcha = $app->createCaptcha();
+        $this->assertInstanceOf('Arch\View', $captcha);
         $this->assertInternalType('string', (string)$captcha);
     }
     
@@ -651,6 +693,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testCreateBreadcrumbs($app)
     {
         $breadcrumbs = $app->createBreadcrumbs();
+        $this->assertInstanceOf('Arch\View\Breadcrumbs', $breadcrumbs);
         $this->assertInternalType('string', (string)$breadcrumbs);
     }
     
@@ -661,6 +704,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testCreateCarousel($app)
     {
         $carousel = $app->createCarousel();
+        $this->assertInstanceOf('Arch\View\Carousel', $carousel);
         $carousel->addItem('<span></span>');
         $this->assertInternalType('string', (string)$carousel);
     }
@@ -672,6 +716,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testCreateCommentForm($app)
     {
         $form = $app->createCommentForm();
+        $this->assertInstanceOf('Arch\View\CommentForm', $form);
         $this->assertInternalType('string', (string)$form);
     }
     
@@ -682,6 +727,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testCreateMap($app)
     {
         $map = $app->createMap();
+        $this->assertInstanceOf('Arch\View\Map', $map);
         $marker = $map->model->createMarker(0, 0, 'Hello Architect!', true);
         $map->model->addMarker($marker);
         $this->assertInternalType('string', (string)$map);
@@ -694,6 +740,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testCreateLineChart($app)
     {
         $linechart = $app->createLineChart();
+        $this->assertInstanceOf('Arch\View\LineChart', $linechart);
         $this->assertInternalType('string', (string)$linechart);
     }
     
@@ -704,6 +751,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testCreateTreeView($app)
     {
         $treeview = $app->createTreeView();
+        $this->assertInstanceOf('Arch\View\TreeView', $treeview);
         $treeview->getRoot();
         $treeview->createNode('test', 'test');
         $this->assertInternalType('string', (string)$treeview);
@@ -716,6 +764,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testCreateFileExplorer($app)
     {
         $explorer = $app->createFileExplorer(RESOURCE_PATH);
+        $this->assertInstanceOf('Arch\View\FileExplorer', $explorer);
         $explorer->translatePath('/');
         $explorer->setPathToUrl(function($path){});
         $explorer->translatePath('/');
@@ -733,6 +782,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testCreateImageGallery($app)
     {
         $gallery = $app->createImageGallery(RESOURCE_PATH);
+        $this->assertInstanceOf('Arch\View\ImageGallery', $gallery);
         $this->assertInternalType('string', (string)$gallery);
     }
     
@@ -743,6 +793,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
     public function testCreatePoll($app)
     {
         $poll = $app->createPoll();
+        $this->assertInstanceOf('Arch\View\Poll', $poll);
         $poll->setVotes('category', 1);
         $this->assertInternalType('string', (string)$poll);
     }

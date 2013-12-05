@@ -23,6 +23,7 @@ class Events extends \Arch\Registry {
      * @param mixed $callback
      * @param mixed $target
      * @throws Exception
+     * @return \Arch\Event The newly created event
      */
     public function addEvent($name, $callback, $target = null)
     {
@@ -31,6 +32,7 @@ class Events extends \Arch\Registry {
         }
         $evt = new \Arch\Event($name, $callback, $target);
         $this->storage[$name][] = $evt;
+        return $evt;
     }
     
     /**
