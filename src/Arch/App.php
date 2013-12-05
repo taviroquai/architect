@@ -837,33 +837,6 @@ class App implements \Arch\Messenger
     }
     
     /**
-     * Returns a new input validator.
-     * 
-     * Helps to validate user input.
-     * 
-     * Use it as:
-     * 
-     * <b>
-     * $v = app()->createValidator();
-     * 
-     * $rule = $v->createRule('email')->setAction('isEmail');
-     * 
-     * $v->addRule($rule);
-     * 
-     * $result = $v->validate()->getResult();
-     * 
-     * app()->session->loadMessages($v->getMessages());
-     * </b>
-     * 
-     * @return \Arch\Validator The validator object
-     */
-    public function createValidator($method = 'post')
-    {
-        $input = $this->input->{$method}();
-        return new \Arch\Validator($input);
-    }
-    
-    /**
      * Returns a new view for the given template.
      * 
      * The view adds methods to allow data manipulation on the template.

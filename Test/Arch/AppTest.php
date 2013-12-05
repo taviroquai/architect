@@ -592,16 +592,6 @@ class AppTest extends \PHPUnit_Framework_TestCase
      * @dataProvider providerApp
      * @param \Arch\App $app The application instance
      */
-    public function testCreateValidator($app)
-    {
-        $result = $app->createValidator();
-        $this->assertInstanceOf('Arch\Validator', $result);
-    }
-    
-    /**
-     * @dataProvider providerApp
-     * @param \Arch\App $app The application instance
-     */
     public function testCreateView($app)
     {
         $tmpl = RESOURCE_PATH.'template/div.php';

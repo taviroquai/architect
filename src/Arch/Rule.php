@@ -30,7 +30,7 @@ abstract class Rule
      * @var boolean
      */
     protected $result = true;
-
+    
     /**
      * Returns a new input validation rule
      * @param string $name The input param

@@ -9,6 +9,7 @@ class Input
 {
     protected $default = '/';
     protected $api = 'apache';
+    protected $method = 'get';
     protected $httpGet = array();
     protected $httpPost = array();
     protected $httpServer = array();
@@ -18,12 +19,46 @@ class Input
     protected $action;
     
     /**
+     * Holds the available rule names
+     * @var array
+     */
+    protected $typesList = array();
+    
+    /**
+     * Holds the validation rules
+     * @var array
+     */
+    protected $rules;
+    
+    /**
+     * Holds the validation messages
+     * @var array
+     */
+    protected $messages;
+    
+    /**
+     * Holds the final validation result
+     * @var boolean
+     */
+    protected $validation;
+    
+    /**
      * Constructor
      * 
      */
     public function __construct($action = '/')
     {
         $this->action = $action;
+        $this->method = 'get';
+        $this->rules = array();
+        $this->messages = array();
+        $this->validation = true;
+        
+        $items = glob(__DIR__.'/Rule/*.php');
+        array_walk($items, function(&$item) {
+            $item = str_replace('.php', '', basename($item));
+        });
+        $this->typesList = $items;
     }
     
     /**
@@ -37,18 +72,37 @@ class Input
      */
     public function parseGlobal(
         $api    = 'server', 
-        $server = array('REQUEST_URI' => '/', 'argv' => array()),
+        $server = array(
+            'REQUEST_METHOD' => 'GET',
+            'REQUEST_URI' => '/',
+            'argv' => array()
+        ),
         $get = null,
         $post = null,
         $files = null,
         $raw = ''
     ) {
         $this->api = $api;
-        if (!empty($get)) $this->setHttpGet ($get);
-        if (!empty($post)) $this->setHttpPost ($post);
-        if (!empty($files)) $this->setHttpFiles($files);
-        if (!empty($raw)) $this->setRawInput($raw);
-        if ($server) $this->httpServer = $server;
+        $this->method = isset($server['REQUEST_METHOD']) ?
+            strtolower($server['REQUEST_METHOD'])
+            : 'get';
+        if (!empty($get)) {
+            $this->sanitize ($get);
+            $this->setHttpGet ($get);
+        }
+        if (!empty($post)) {
+            $this->sanitize ($post);
+            $this->setHttpPost ($post);
+        }
+        if (!empty($files)) {
+            $this->setHttpFiles($files);
+        }
+        if (!empty($raw)) {
+            $this->setRawInput($raw);
+        }
+        if ($server) {
+            $this->httpServer = $server;
+        }
         if ($this->isCli()) {
             $this->params = $this->httpServer['argv'];
         } else {
@@ -294,5 +348,177 @@ class Input
                 $this->files[0][$key] = $files[$key];
             }
         }
+    }
+    
+    /**
+     * Sanitizes a GET parameter
+     * @param string $name The param key to sanitize
+     * @param string $filter The type of sanitize filter
+     */
+    public function sanitizeGet($name, $filter = FILTER_SANITIZE_STRING)
+    {
+        $this->sanitize($this->httpGet[$name], $filter);
+    }
+    
+    /**
+     * Sanitizes a POST parameter
+     * @param string $name The param key to sanitize
+     * @param string $filter The type of sanitize filter
+     */
+    public function sanitizePost($name, $filter = FILTER_SANITIZE_STRING)
+    {
+        $this->sanitize($this->httpPost[$name], $filter);
+    }
+
+    /**
+     * Does a primary sanitization
+     * @param array $mixed
+     */
+    protected function sanitize(&$mixed, $filter = FILTER_SANITIZE_STRING)
+    {
+        if (is_array($mixed)) {
+            foreach ($mixed as $k => &$v) {
+                $v = filter_var($v, $filter);
+            }
+        } else {
+            $mixed = filter_var($mixed, $filter);
+        }
+    }
+    
+    /**
+     * Runs all the validation rules
+     * @return \Arch\Validator
+     */
+    public function validate()
+    {
+        $this->messages = array();
+        $this->validation = true;
+        foreach ($this->rules as &$rule) {
+            $rule->execute();
+            $this->validation = $rule->getResult() && $this->validation;
+            if (!$rule->getResult()) {
+                $message = new \Arch\Message(
+                    $rule->getErrorMessage(), 'alert alert-error'
+                );
+                $this->messages[] = $message;
+            }
+        }
+        return $this;
+    }
+    
+    /**
+     * Returns a new validation rule
+     * @param string $name The input param
+     * @param string $type The type of rule
+     * @return \Arch\Rule
+     */
+    public function createRule($name, $type = 'Required')
+    {
+        if (!in_array($type, $this->typesList)) {
+            throw new \Exception(
+                'Invalid validator rule. Only accept '
+                .implode(',', $this->typesList)
+            );
+        }
+        $sanitizeMethod = 'sanitize'.ucfirst($this->method);
+        $input = $this->{$this->method}();
+        switch ($type) {
+            case 'After':
+                $rule = new \Arch\Rule\After($name, $input);
+                break;
+            case 'Before':
+                $rule = new \Arch\Rule\Before($name, $input);
+                break;
+            case 'Between':
+                $rule = new \Arch\Rule\Between($name, $input);
+                break;
+            case 'Depends':
+                $rule = new \Arch\Rule\Depends($name, $input);
+                break;
+            case 'Equals':
+                $rule = new \Arch\Rule\Equals($name, $input);
+                break;
+            case 'IsAlphaExcept':
+                $rule = new \Arch\Rule\IsAlphaExcept($name, $input);
+                break;
+            case 'IsAlphaNumeric':
+                $rule = new \Arch\Rule\IsAlphaNumeric($name, $input);
+                break;
+            case 'IsDate':
+                $rule = new \Arch\Rule\IsDate($name, $input);
+                break;
+            case 'IsEmail':
+                $rule = new \Arch\Rule\IsEmail($name, $input);
+                $this->$sanitizeMethod($name, FILTER_SANITIZE_EMAIL);
+                break;
+            case 'IsImage':
+                $rule = new \Arch\Rule\IsImage($name, $input);
+                break;
+            case 'IsInteger':
+                $rule = new \Arch\Rule\IsInteger($name, $input);
+                $this->$sanitizeMethod($name, FILTER_SANITIZE_NUMBER_INT);
+                break;
+            case 'IsMime':
+                $rule = new \Arch\Rule\IsMime($name, $input);
+                break;
+            case 'IsTime':
+                $rule = new \Arch\Rule\IsTime($name, $input);
+                break;
+            case 'IsUrl':
+                $rule = new \Arch\Rule\IsUrl($name, $input);
+                $this->$sanitizeMethod($name, FILTER_SANITIZE_URL);
+                break;
+            case 'Matches':
+                $rule = new \Arch\Rule\Matches($name, $input);
+                break;
+            case 'OneOf':
+                $rule = new \Arch\Rule\OneOf($name, $input);
+                break;
+            case 'Unique':
+                $rule = new \Arch\Rule\Unique($name, $input);
+                break;
+            default:
+                $rule = new \Arch\Rule\Required($name, $input);
+        }
+        $rule->addParam($this->{$this->method}($name));
+        return $rule;
+    }
+    
+    /**
+     * Adds a new validation rule
+     * @param \Arch\Rule $rule The validation rule
+     * @return \Arch\Validator
+     */
+    public function addRule(\Arch\Rule $rule)
+    {
+        $this->rules[] = $rule;
+        return $this;
+    }
+    
+    /**
+     * Returns the final validation result
+     * @return bool
+     */
+    public function getResult()
+    {
+        return $this->validation;
+    }
+    
+    /**
+     * Returns the error messages
+     * @return array
+     */
+    public function getMessages()
+    {
+        return $this->messages;
+    }
+    
+    /**
+     * Returns the number of rules
+     * @return integer
+     */
+    public function countRules()
+    {
+        return count($this->rules);
     }
 }

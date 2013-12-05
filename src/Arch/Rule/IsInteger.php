@@ -13,7 +13,8 @@ class IsInteger extends \Arch\Rule
      */
     public function execute()
     {
-        $this->result = (bool) is_int($this->params[0]);
+        $this->params[0] = (string) $this->params[0];
+        $this->result = (bool) ctype_digit($this->params[0]);
         return $this;
     }
 }
