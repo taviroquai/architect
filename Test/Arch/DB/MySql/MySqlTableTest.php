@@ -419,7 +419,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
      */
     public function testDelete($driver)
     {
-        $table = new \Arch\DB\MySql\Table('test_nmrelation', $driver);
+        $table = new \Arch\DB\MySql\Table('test_dummy', $driver);
         $result = $table->d()->run();
         $this->assertInstanceOf('\PDOStatement', $result);
         $rows = $table->getRowCount();

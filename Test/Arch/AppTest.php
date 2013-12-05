@@ -456,6 +456,12 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateAutoTable($app)
     {
+        // prepare database
+        // prepare database
+        $table = $app->createQuery('test_table1');
+        $table->install(RESOURCE_PATH.'db/install.sql');
+        
+        // setup configuration
         $config = array(
             'table' => 'test_table2',
             'select'=> 'test_table2.*',
@@ -506,6 +512,10 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateAutoForm($app)
     {
+        // prepare database
+        $table = $app->createQuery('test_table1');
+        $table->install(RESOURCE_PATH.'db/install.sql');
+        
         // insert records to test relations
         $table1 = $app->createQuery('test_table1');
         $id1 = $table1->insert(array('field1' => 'test'))->getInsertId();
@@ -519,7 +529,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $config = array(
             'table' => 'test_table2',
             'select'=> 'test_table2.*',
-            'record_id' => 1,
+            'record_id' => 2,
             'items' => array(
                 array('type' => 'breakline'),
                 array('type' => 'label', 'label' => 'field1'),
@@ -530,11 +540,11 @@ class AppTest extends \PHPUnit_Framework_TestCase
                     'class' => 'btn', 'onclick' => '', 'property' => 'id'),
                 array('type' => 'text',     'property'  => 'field1'),
                 array('type' => 'textarea', 'property'  => 'field1'),
-                array('type' => 'checklist', 'property'  => 'id', 
+                array('type' => 'checklist', 'property'  => 'id_table1', 
                     'class' => 'checklist',
                     'items_table' => 'test_table1', 'prop_label' => 'id',
                     'selected_items_table' => 'test_nmrelation'),
-                array('type' => 'radiolist', 'property'  => 'id', 
+                array('type' => 'radiolist', 'property'  => 'id_table1', 
                     'class' => 'radiolist',
                     'items_table' => 'test_table1', 'prop_label' => 'id',
                     'selected_items_table' => 'test_nmrelation')

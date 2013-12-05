@@ -42,6 +42,12 @@ CREATE INDEX `table2_fk_idx` ON `test_nmrelation` (`id_table2`);
 ALTER TABLE `test_nmrelation` ADD CONSTRAINT `nmrelation_table1_fk` FOREIGN KEY (`id_table1`) REFERENCES `test_table1` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION;
 ALTER TABLE `test_nmrelation` ADD CONSTRAINT `nmrelation_table2_fk` FOREIGN KEY (`id_table2`) REFERENCES `test_table2` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
+CREATE TABLE IF NOT EXISTS `test_dummy` (
+  `id` int(11) NOT NULL,
+  `dummy` varchar(60) NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
 --
 -- Insert default data
 --
@@ -53,3 +59,6 @@ INSERT INTO `test_table2` (`id`, `field1`) VALUES
 (1, 'table2_field1_value');
 
 --INSERT INTO `test_nmrelation` (`id`, `id_table1`, `id_table2`) VALUES (1, 1, 1);
+
+INSERT INTO `test_dummy` (`id`, `dummy`) VALUES
+(1, 'value');
