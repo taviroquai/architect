@@ -359,17 +359,11 @@ class InputTest extends \PHPUnit_Framework_TestCase
     public function testRule()
     {
         $input = new \Arch\Input();
-        $this->assertEquals(0, $input->countRules());
         
-        $rule = $input->createRule('param');
+        $rule = $input->createRule('param', 'Required', 'message');
         $this->assertInstanceOf('\Arch\Rule\Required', $rule);
         
-        $input->addRule($rule);
-        $this->assertEquals(1, $input->countRules());
-        
-        $input->validate();
-        
-        $result = $input->getResult();
+        $result = $input->validate(array($rule));
         $this->assertInternalType('boolean', $result);
         
         $messages = $input->getMessages();
@@ -386,13 +380,11 @@ class InputTest extends \PHPUnit_Framework_TestCase
         $input = new \Arch\Input();
         $input->parseGlobal();
         $input->setHttpGet($get);
-        $rule = $input->createRule('param', 'OneOf');
+        $rule = $input->createRule('param', 'OneOf', 'message');
         foreach ($params as &$param) {
             $rule->addParam($param);
         }
-        $input->addRule($rule);
-        $input->validate();
-        $result = $input->getResult();
+        $result = $input->validate(array($rule));
         $this->assertInternalType('boolean', $result);
     }
     
@@ -404,7 +396,7 @@ class InputTest extends \PHPUnit_Framework_TestCase
     {
         $input = new \Arch\Input();
         $input->setHttpGet(array('params' => null));
-        $input->createRule('param', '');
+        $input->createRule('param', '', '');
     }
     
     public function providerValidationTestData()
@@ -482,7 +474,7 @@ class InputTest extends \PHPUnit_Framework_TestCase
     {
         $validator = new \Arch\Input();
         $validator->setHttpGet($input);
-        $rule = $validator->createRule($name, $rulename);
+        $rule = $validator->createRule($name, $rulename, 'message');
         foreach ($params as &$param) {
             $rule->addParam($param);
         }

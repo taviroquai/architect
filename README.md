@@ -107,7 +107,8 @@ f() - **F**ILES. Returns a FILES entry by index
 q() - **Q**uery table. Returns a Table instance to start querying  
 s() - **S**ecure. Returns a secured (encrypted) string  
 e() - **E**vent. Adds a new event  
-tr() - **TR**igger. Triggers the event
+tr() - **TR**igger. Triggers the event  
+rule() - **RULE**. Creates a new input validation rule  
 
 ### APP
     app() // returns the application instance
@@ -173,8 +174,9 @@ changing the core system. These are:
     app()->redirect('http://www.google.com'); // redirects to an url
 
 ### VALIDATION
-    $v = app()->createValidator();
-    $v->addRule($v->createRule('email')->setAction('isEmail'));
+    $rules[] = rule('email', 'isEmail', 'Invalid email message);
+    $result = app()->input->validate($rules);
+    app()->session->loadMessages(app()->input->getMessages());
 
 ### HTTP
     app()->httpGet('http://google.com'); // gets the url content

@@ -25,22 +25,10 @@ class Input
     protected $typesList = array();
     
     /**
-     * Holds the validation rules
-     * @var array
-     */
-    protected $rules;
-    
-    /**
      * Holds the validation messages
      * @var array
      */
     protected $messages;
-    
-    /**
-     * Holds the final validation result
-     * @var boolean
-     */
-    protected $validation;
     
     /**
      * Constructor
@@ -50,9 +38,7 @@ class Input
     {
         $this->action = $action;
         $this->method = 'get';
-        $this->rules = array();
         $this->messages = array();
-        $this->validation = true;
         
         $items = glob(__DIR__.'/Rule/*.php');
         array_walk($items, function(&$item) {
@@ -390,13 +376,13 @@ class Input
      * Runs all the validation rules
      * @return \Arch\Validator
      */
-    public function validate()
+    public function validate($rules)
     {
+        $result = true;
         $this->messages = array();
-        $this->validation = true;
-        foreach ($this->rules as &$rule) {
+        foreach ($rules as &$rule) {
             $rule->execute();
-            $this->validation = $rule->getResult() && $this->validation;
+            $result = $rule->getResult() && $result;
             if (!$rule->getResult()) {
                 $message = new \Arch\Message(
                     $rule->getErrorMessage(), 'alert alert-error'
@@ -404,16 +390,17 @@ class Input
                 $this->messages[] = $message;
             }
         }
-        return $this;
+        return $result;
     }
     
     /**
      * Returns a new validation rule
      * @param string $name The input param
      * @param string $type The type of rule
+     * @param string $error_msg The message if invalid input
      * @return \Arch\Rule
      */
-    public function createRule($name, $type = 'Required')
+    public function createRule($name, $type, $error_msg)
     {
         if (!in_array($type, $this->typesList)) {
             throw new \Exception(
@@ -482,27 +469,8 @@ class Input
                 $rule = new \Arch\Rule\Required($name, $input);
         }
         $rule->addParam($this->{$this->method}($name));
+        $rule->setErrorMessage($error_msg);
         return $rule;
-    }
-    
-    /**
-     * Adds a new validation rule
-     * @param \Arch\Rule $rule The validation rule
-     * @return \Arch\Validator
-     */
-    public function addRule(\Arch\Rule $rule)
-    {
-        $this->rules[] = $rule;
-        return $this;
-    }
-    
-    /**
-     * Returns the final validation result
-     * @return bool
-     */
-    public function getResult()
-    {
-        return $this->validation;
     }
     
     /**
@@ -512,14 +480,5 @@ class Input
     public function getMessages()
     {
         return $this->messages;
-    }
-    
-    /**
-     * Returns the number of rules
-     * @return integer
-     */
-    public function countRules()
-    {
-        return count($this->rules);
     }
 }

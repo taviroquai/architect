@@ -1,5 +1,3 @@
-<div id="<?=$_id?>">
-    <input type="text" name="_captcha" 
-       style="visibility: hidden" value="<?=$code?>" />
-</div>
+<input id="<?=$_id?>" type="text" name="_captcha" 
+       style="display: none" value="<?=$code?>" />
 

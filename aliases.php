@@ -247,3 +247,15 @@ function v($tmpl, $data = array())
 {
     return app()->createView($tmpl, $data);
 }
+
+/**
+ * Returns a new validation rule
+ * @param string $name The input param
+ * @param string $type The type of rule
+ * @param string $error_msg The message if invalid input
+ * @return \Arch\Rule
+ */
+function rule($name, $type, $error_msg)
+{
+    return app()->input->createRule($name, $type, $error_msg);
+}
