@@ -374,11 +374,12 @@ class Input
      * Does a primary sanitization
      * @param array $mixed
      */
-    protected function sanitize(&$mixed, $filter = FILTER_SANITIZE_STRING)
+    protected function sanitize(&$mixed, $filter = FILTER_SANITIZE_STRING, $i = 0)
     {
+        if ($i > 3) return false;
         if (is_array($mixed)) {
             foreach ($mixed as $k => &$v) {
-                $v = filter_var($v, $filter);
+                $this->sanitize($v, $filter, $i+1);
             }
         } else {
             $mixed = filter_var($mixed, $filter);
