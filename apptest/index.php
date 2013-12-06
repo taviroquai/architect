@@ -5,7 +5,7 @@ require_once realpath(__DIR__ . '/../vendor/autoload.php');
 require_once realpath(__DIR__ . '/../aliases.php');
 
 // Create application
-$app = \Arch\App::Instance('config.xml');
+$arch = new \Arch\App('config.xml');
 
 // Add default route
 r('/', function () {
@@ -13,4 +13,4 @@ r('/', function () {
 });
 
 // Run application
-$app->run();
+$arch->run();
