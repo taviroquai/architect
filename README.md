@@ -34,28 +34,20 @@ Most features can be called in 1 line of code, ie. **app()->featureName()**. If
 you prefer to use functions style, there are also core functions aliases. Se
 below.
 
-* Supports multiple themes
-* Supports multiple idiom
-* Plugin routes with PHP5 anonymous functions
-* Supports events for inter-module actions
-* Supports screen messages
-* Core application logging
-* Generate consistent URLs
-* Centralized encryption
-* Built-in shopping cart
-* Built-in anti-span field
-* Built-in GET/POST cURL requests
-* Built-in file uploads and download attachments
-* Built-in datepicker field
-* Built-in pagination
-* Built-in breadcrumbs
-* Built-in carousel
-* Built-in input validation
-* Built-in line chart
-* Built-in tree view
-* Built-in file explorer (list and gallery templates)
-* Built-in leaflet map
+* Multiple themes
+* Multiple idioms
+* Routes with PHP5 anonymous functions
+* Events for inter-module actions
+* Fluent Interface DB queries - supports MySQL, PostgreSQL and SQLite
+* Flash messages
+* Application logging
+* Input validation and sanitization
+* Generic views as shopping cart, anti-span input field, file upload, datepicker,
+pagination, breadcrumbs, carousel, line chart, tree view, file explorer, leaflet 
+map, comment form, automatic table/form from database tables, image gallery,
+poll and text editor
 * More to come...
+
 
 This is an on-going work and there is not yet a stable version
 
@@ -143,13 +135,13 @@ There are core events that allows to change application workflow without
 changing the core system. These are:
 
     'arch.module.after.load'
-    'arch.session.before.load'
+    'arch.session.load'
     'arch.theme.after.load'
     'arch.db.after.init'
     'arch.action.before.call'
     'arch.http.before.headers'
     'arch.output.before.send'
-    'arch.session.before.save'
+    'arch.session.save'
     'arch.before.end'
 
 ### IDIOM
