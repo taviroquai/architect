@@ -37,24 +37,26 @@ class Pagination extends \Arch\View
      * @var integer
      */
     protected $current = 1;
+    
+    /**
+     * Holds the user input
+     * @var \Arch\Input
+     */
+    protected $input;
 	
     /**
      * Returns a new pagination view
      * @param string $id The pagination id; this will be used in URI requests
      * @param integer $tmpl The template file
      */
-    public function __construct($id = 1, $tmpl = null)
+    public function __construct(\Arch\Input $input)
     {
-        if ($tmpl === null) {
-            $tmpl = implode(DIRECTORY_SEPARATOR,
+        $tmpl = implode(DIRECTORY_SEPARATOR,
                     array(ARCH_PATH,'theme','pagination.php'));
-        }
         parent::__construct($tmpl);
         
-        // get pager id
-        $this->id = $id;
-        
         // get user input
+        $this->input = $input;
         $this->current = 1;
     }
     
@@ -62,15 +64,15 @@ class Pagination extends \Arch\View
      * Parses input and sets the current page and url
      * @param \Arch\Input $input The application input
      */
-    public function parseCurrent(\Arch\Input $input)
+    public function parseCurrent()
     {
-        $this->url = $input->server('REQUEST_URI');
-        if ($input->get('p'.$this->id) != false) {
-            $current = $input->get('p'.$this->id);
+        $this->url = $this->input->getRequestUri();
+        if ($this->input->get('p'.$this->id) != false) {
+            $current = $this->input->get('p'.$this->id);
             $current = $current > $this->total ? $this->total : $current;
             $current = $current < 1 ? 1 : $current;
             $this->current = $current;
-            $pid = $input->get('p'.$this->id);
+            $pid = $this->input->get('p'.$this->id);
             $this->url = str_replace('&p'.$this->id.'='.$pid, '', $this->url);
         }
     }

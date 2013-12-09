@@ -16,14 +16,11 @@ class TreeView extends \Arch\View
     
     /**
      * Returns a new Tree
-     * @param string $tmpl The tree template file; note this special template
      */
-    public function __construct($tmpl = null)
+    public function __construct()
     {
-        if ($tmpl === null) {
-            $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','treeview.php'));
-        }
+        $tmpl = implode(DIRECTORY_SEPARATOR,
+                array(ARCH_PATH,'theme','treeview.php'));
         parent::__construct($tmpl);
         
         // init items

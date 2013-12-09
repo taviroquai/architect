@@ -9,15 +9,12 @@ class Carousel extends \Arch\View
 {
     /**
      * Returns a new Carousel view
-     * @param string $tmpl The template file
      */
-	public function __construct($tmpl = null)
+	public function __construct()
     {
-        if ($tmpl === null) {
-            $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','carousel.php'));
-        }
-		parent::__construct($tmpl);
+        $tmpl = implode(DIRECTORY_SEPARATOR,
+                array(ARCH_PATH,'theme','carousel.php'));
+        parent::__construct($tmpl);
         
         $this->set('items', array());
 	}

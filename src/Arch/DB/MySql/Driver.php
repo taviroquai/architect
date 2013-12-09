@@ -6,7 +6,7 @@ namespace Arch\DB\MySql;
  *
  * @author mafonso
  */
-class Driver extends \Arch\DB\Driver
+class Driver extends \Arch\DB\IDriver
 {
 
     /**
@@ -16,20 +16,13 @@ class Driver extends \Arch\DB\Driver
     protected $schema;
     
     /**
-     * Returns a new MySql driver
-     * @param string $dbname The database name
-     * @param string $host The hostname
-     * @param string $user The database user
-     * @param string $pass The user password
-     * @param \Arch\Logger The application logger
+     * Connect to MySql database
+     * @param string $host
+     * @param string $database
+     * @param string $user
+     * @param string $pass
      */
-    public function __construct(
-        $dbname,
-        $host,
-        $user,
-        $pass,
-        \Arch\Logger $logger
-    ) {
+    public function connect($host, $database, $user, $pass) {
         $this->schema = $this->createPDO(
             $host,
             'information_schema',
@@ -40,15 +33,10 @@ class Driver extends \Arch\DB\Driver
             \PDO::ATTR_ERRMODE, 
             \PDO::ERRMODE_EXCEPTION
         );
-        $this->connect($host, $dbname, $user, $pass);
-        $this->db_pdo->setAttribute(
-            \PDO::ATTR_ERRMODE, 
-            \PDO::ERRMODE_EXCEPTION
-        );
-        $this->logger = $logger;
+        parent::connect($host, $database, $user, $pass);
     }
-    
-    /**
+
+        /**
      * Returns a Data Source Name
      * @param string $host The hostname
      * @param string $database The database name

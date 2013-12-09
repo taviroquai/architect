@@ -21,14 +21,13 @@ class AutoForm extends \Arch\View\AutoPanel
      * @param array $config The panel configuration
      * @param \Arch\Driver\MySql $driver The database driver
      */
-    public function __construct($config, $driver, $tmpl = '')
+    public function __construct($config, $driver)
     {
-        if (empty($tmpl)) {
-            $tmpl = implode(
-                DIRECTORY_SEPARATOR,
-                array(ARCH_PATH, 'theme', 'form', 'form.php')
-            );
-        }
+        
+        $tmpl = implode(
+            DIRECTORY_SEPARATOR,
+            array(ARCH_PATH, 'theme', 'form', 'form.php')
+        );
         parent::__construct($tmpl, $config, $driver);
         
         if (!empty($this->config['record_id'])) {

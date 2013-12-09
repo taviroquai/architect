@@ -5,48 +5,33 @@ namespace Arch;
 /**
  * Output class
  */
-class Output
+abstract class Output
 {
-    
     /**
-     * Holds the output type, defaults to HTTP
+     * Holds the output buffer
      * @var string
      */
-    protected $type;
-    
-    /**
-     * Holds the HTTP headers
-     * @var array
-     */
-    protected $headers = array();
-    
-    /**
-     * Holds the output content
-     * @var string
-     */
-    protected $content;
+    protected $buffer;
     
     /**
      * Returns a new Output Object
      * 
      * @param string $content The output content
-     * @param string $type The output type, defaults to HTTP
      */
-    public function __construct($content = '', $type = 'HTTP')
+    public function __construct($buffer = '')
     {
-        $this->content = $content;
-        $this->type = $type;
+        $this->buffer = $buffer;
     }
     
     /**
-     * Sets the output content string
+     * Sets the output buffer
      * 
-     * @param string $content The content to be sent
+     * @param string $buffer The content to be sent
      * @return \Arch\Output
      */
-    public function setContent($content)
+    public function setBuffer($content)
     {
-        $this->content = (string) $content;
+        $this->buffer = (string) $content;
         return $this;
     }
     
@@ -54,103 +39,28 @@ class Output
      * Returns the output content
      * @return string
      */
-    public function & getContent()
+    public function & getBuffer()
     {
-        return $this->content;
-    }
-    
-    /**
-     * Sets HTTP headers to be used on HTTP type
-     * @param array $headers The list of headers to be sent
-     * @return \Arch\Output
-     */
-    public function setHeaders($headers)
-    {
-        $this->headers = (array) $headers;
-        return $this;
-    }
-    
-    /**
-     * Returns the output headers
-     * @return array
-     */
-    public function & getHeaders()
-    {
-        return $this->headers;
-    }
-    
-    /**
-     * Adds cache headers
-     */
-    public function addCacheHeaders($seconds = 300)
-    {
-        $ts = gmdate("D, d M Y H:i:s", time()+$seconds)." GMT";
-        $this->headers[] = "Expires: $ts";
-        $this->headers[] = "Pragma: cache";
-        $this->headers[] = "Cache-Control: max-age=".$seconds;
-    }
-    
-    /**
-     * Sends HTTP Headers
-     */
-    public function sendHeaders()
-    {        
-        if (!empty($this->headers)) {
-            foreach ($this->headers as $item) {
-                header($item);
-            }
-        }
+        return $this->buffer;
     }
     
     /**
      * Send the output
      */
-    public function send()
-    {
-        echo $this->content;
-    }
+    abstract public function send();
     
     /**
      * Outputs a static file
      * @param string $filename
      */
-    public function readfile($filename) {
+    public function import($filename) {
         
-        // clear headers
-        $this->headers = array();
-        
-        // send unknown mime type resolved by readfile
-        $parts = explode('.', $filename);
-        $ext = end($parts);
-        switch ($ext) {
-            case 'svg': 
-                $this->headers[] = "Content-type: image/svg+xml";
-            break;
-            case 'ttf': 
-                $this->headers[] = "Content-type: application/x-font-truetype";
-            break;
-            case 'otf': 
-                $this->headers[] = "Content-type: application/x-font-opentype";
-            break;
-            case 'woff':
-                $this->headers[] = "Content-type: application/font-woff";
-            break;
-            case 'eot': 
-                $this->headers[] = "Content-type: application/vnd.ms-fontobject";
-            break;
-            case 'css':
-                $this->headers[] = "Content-type: text/css";
-            break;
-            case 'js':
-                $this->headers[] = "Content-type: text/javascript";
-            break;
-            default:
-                $finfo = finfo_open(FILEINFO_MIME_TYPE);
-                $type = finfo_file($finfo, $filename);
-                $this->headers[] = "Content-type: ".$type;
+        if (!file_exists($filename)) {
+            return false;
         }
         
         // load file contents
-        $this->setContent(file_get_contents($filename));
+        $this->setBuffer(file_get_contents($filename));
+        return true;
     }
 }

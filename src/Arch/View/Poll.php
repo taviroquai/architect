@@ -9,15 +9,12 @@ class Poll extends \Arch\View
 {
     /**
      * Returns a new poll view
-     * @param string $tmpl The template file
      */
-    public function __construct($tmpl = null)
+    public function __construct()
     {
-        if ($tmpl === null) {
-            $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','pollchart.php'));
-        }
-		parent::__construct($tmpl);
+        $tmpl = implode(DIRECTORY_SEPARATOR,
+                array(ARCH_PATH,'theme','pollchart.php'));
+	parent::__construct($tmpl);
         
         // initialize data
         $this->data['data'] = array();

@@ -12,25 +12,25 @@ class Cart extends \Arch\View
      * the cart model
      * @var Model_Cart
      */
-	public $model;
+    public $model;
 
     /**
      * Returns a new cart view
      * @param string $tmpl The template file
      * @param \Arch\Model\Cart $model
      */
-	public function __construct($tmpl = null, \Arch\Model\Cart $model = null)
+    public function __construct(\Arch\Model\Cart $model = null)
     {
-        if ($tmpl == null) {
-            $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','cart.php'));
-        }
+        $tmpl = implode(DIRECTORY_SEPARATOR,
+                array(ARCH_PATH,'theme','cart.php'));
+	parent::__construct($tmpl);
+        
+        // set model
         $this->model = $model;
-		parent::__construct($tmpl);
-
+        
         // default checkoutUrl
         $this->set('checkoutUrl', '');
-	}
+    }
     
     /**
      * Renders the cart view

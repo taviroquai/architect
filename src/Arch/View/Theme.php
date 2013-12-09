@@ -1,6 +1,6 @@
 <?php
 
-namespace Arch;
+namespace Arch\View;
 
 /**
  * Theme class
@@ -12,22 +12,25 @@ class Theme extends \Arch\View
      * @var string
      */
     protected $theme_path;
-
+    
     /**
-     * Constructor
-     * 
-     * @param string $path
+     * Loas a theme directory
+     * @param string $path The theme directory
+     * @throws \Exception
      */
-    public function __construct($path)
+    public function load($path)
     {
-        parent::__construct();
-        
         if (!is_dir($path)) {
-            throw new \Exception('Default theme not found: '.$path);
+            throw new \Exception('Theme directory not found: '.$path);
         }
+        
+        // clean current data
+        parent::__construct();
         $this->theme_path = $path;
         
         // add default theme slots
+        $this->slot = array();
+        $this->addSlot('content');
         $this->addSlot('css');
         $this->addSlot('js');
         
@@ -64,5 +67,11 @@ class Theme extends \Arch\View
         if (file_exists($filename)) {
             require $filename;
         }
+        
+        // add flash messages slot
+        $this->set(
+            'messages',
+            new \Arch\View($this->theme_path.DIRECTORY_SEPARATOR.'messages.php')
+        );
     }
 }

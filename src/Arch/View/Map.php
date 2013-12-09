@@ -15,16 +15,14 @@ class Map extends \Arch\View
     
     /**
      * Returns a new Map view
-     * @param string $tmpl The template file
      * @param \Arch\Model\Map $model The map model
      */
-    public function __construct($tmpl = null, \Arch\Model\Map $model = null)
+    public function __construct(\Arch\Model\Map $model = null)
     {
-        if ($tmpl === null) {
-            $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','map.php'));
-        }
-		parent::__construct($tmpl);
+        
+        $tmpl = implode(DIRECTORY_SEPARATOR,
+                array(ARCH_PATH,'theme','map.php'));
+	parent::__construct($tmpl);
         
         if ($model === null) {
             $model = new \Arch\Model\Map();

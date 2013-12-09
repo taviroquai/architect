@@ -10,14 +10,11 @@ class Menu extends \Arch\View
 
     /**
      * Returns a new menu view
-     * @param string $tmpl The template file
      */
-    public function __construct($tmpl = null)
+    public function __construct()
     {
-        if ($tmpl === null) {
-            $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','main_menu.php'));
-        }
+        $tmpl = implode(DIRECTORY_SEPARATOR,
+                array(ARCH_PATH,'theme','main_menu.php'));
         parent::__construct($tmpl);
         
         // init items

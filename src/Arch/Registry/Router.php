@@ -51,7 +51,7 @@ class Router extends \Arch\Registry
             $params = $this->getActionParams($key, $action);
             if ( $params !== false && is_callable($cb)) {
                 $result = $cb;
-                $input->setParams($params);
+                $input->setActionParams($params);
                 break;
             }
         }
@@ -80,8 +80,44 @@ class Router extends \Arch\Registry
             $pattern
         );
         $match = preg_match('#^'.$pattern.'$#', $action, $params);
-        if (!$match) return false;
+        if (!$match) {
+            return false;
+        }
         array_shift($params);
         return $params;
+    }
+    
+    /**
+     * Adds core routes to router
+     * @param \Arch\App $app
+     */
+    public function addCoreRoutes(\Arch\App $app)
+    {   
+        // Add route 404! Show something if everything else fails...
+        $this->addRoute('/404', function() use ($app) {
+            $app->getOutput()->setHeaders(
+                array('HTTP/1.0 404 Not Found', 'Status: 404 Not Found')
+            );
+            // set 404 content
+            $content = '<h1>404 Not Found</h1>';
+            $app->getOutput()->setBuffer($content);
+        });
+        
+        // Add get static core file route
+        $this->addRoute(
+                '/arch/asset/(:any)/(:any)', 
+                function($dir, $filename) use ($app) {
+            $filename = implode(
+                DIRECTORY_SEPARATOR,
+                array(ARCH_PATH,'theme',$dir,$filename)
+            );
+            if (!file_exists($filename)) {
+                $app->redirect ('/404');
+            } else {
+                $app->getOutput()->import($filename);
+                // add cache headers
+                $app->getOutput()->addCacheHeaders();
+            }
+        });
     }
 }

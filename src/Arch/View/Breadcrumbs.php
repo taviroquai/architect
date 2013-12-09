@@ -9,15 +9,13 @@ class Breadcrumbs extends \Arch\View
 {
     /**
      * Returns a new breadcrumbs view
-     * @param string $tmpl The template file
      */
-	public function __construct($tmpl = null)
+	public function __construct()
     {
-        if ($tmpl === null) {
-            $tmpl = implode(DIRECTORY_SEPARATOR, 
-                    array(ARCH_PATH,'theme','breadcrumbs.php'));
-        }
-		parent::__construct($tmpl);
+
+        $tmpl = implode(DIRECTORY_SEPARATOR, 
+                array(ARCH_PATH,'theme','breadcrumbs.php'));
+	parent::__construct($tmpl);
         
         $this->set('items', array());
         $this->set('home', 'Home');
@@ -39,7 +37,11 @@ class Breadcrumbs extends \Arch\View
                     ($i == 1) ? '/'.$item : 
                     $action.'/'.$item;
             $active = $i == count($items)-1 ? 1 : 0;
-            $this->addItem($text, $app->url($action), $active);
+            $this->addItem(
+                $text,
+                $app->getHelperFactory()->url($action),
+                $active
+            );
             $i++;
         }
         return $this;

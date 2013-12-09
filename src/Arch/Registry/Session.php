@@ -5,66 +5,67 @@ namespace Arch\Registry;
 /**
  * Session class
  */
-class Session extends \Arch\Registry
+abstract class Session extends \Arch\Registry 
+implements \Arch\Messenger
 {
     /**
      * Holds the session identifier
      * @var string
      */
-    public $name;
+    public $id;
     
+    /**
+     * Holds the system messages
+     * @var array
+     */
+    protected $messages;
+
+
     /**
      * Returns a new Session
      */
     public function __construct()
     {
         $this->storage = array();
-        $this->name = 'arch-'.md5(time());
-    }
-
-    /**
-     * Loads data into storage
-     * Initiates session messages storage
-     */
-    public function load($data)
-    {
-        foreach ($data as $prop => $value) {
-            if (
-                    strpos($prop, 'user.') === false
-                    && strpos($prop, 'arch.') === false
-            ) {
-                $prop = 'user.'.$prop;
-            }
-            $this->storage[$prop] = $value;
-        }
-        
-        if (!isset($this->storage['arch.message'])) {
-            $this->storage['arch.message'] = array();
-        }
+        $this->messages = array();
     }
     
     /**
-     * Saves current storage to $data and close session
+     * Generates a session ID
      */
-    public function save(&$data)
-    {
-        $data = array();
-        foreach ($this->storage as $prop => $value) {
-            if (strpos($prop, 'user.') === 0) {
-                $prop = substr($prop, 5);
-            }
-            $data[$prop] = $value;
-        }
-    }
+    public abstract function generateId();
+
+    /**
+     * Returns the session id
+     */
+    public abstract function getId();
+
+    /**
+     * Loads all data into storages
+     * Initiates session messages storage
+     */
+    public abstract function load();
+    
+    /**
+     * Saves all session storage and closes session
+     */
+    public abstract function save();
     
     /**
      * Resets storage session
      */
-    public function reset()
+    public abstract function reset();
+    
+    /**
+     * Creates a new message
+     * @param string $text The message body
+     * @param string $cssClass The css class to be used in theme
+     * @return \Arch\App The application
+     */
+    public function createMessage($text, $cssClass = 'alert alert-success')
     {
-        foreach ($this->storage as $prop => $value) {
-            unset($this->storage[$prop]);
-        }
+        $this->addMessage(new \Arch\Message($text, $cssClass));
+        return $this;
     }
 
     /**
@@ -75,7 +76,7 @@ class Session extends \Arch\Registry
      */
     public function addMessage(\Arch\Message $message)
     {
-        $this->storage['arch.message'][] = $message;
+        $this->messages[] = $message;
     }
     
     /**
@@ -84,18 +85,14 @@ class Session extends \Arch\Registry
      */
     public function getMessages()
     {
-        if (!isset($this->storage['arch.message'])) {
-            $this->storage['arch.message'] = array();
-        }
-        return $this->storage['arch.message'];
+        return $this->messages;
     }
     
     /**
      * Clears all messages from session
      */
     public function clearMessages() {
-        unset($this->storage['arch.message']);
-        $this->storage['arch.message'] = array();
+        $this->messages = array();
     }
     
     /**
@@ -109,36 +106,5 @@ class Session extends \Arch\Registry
                 $this->addMessage($message);
             }
         }
-    }
-    
-    public function get($prop) {
-        if (!$this->exists($prop)) {
-            return null;
-        }
-        $prop = 'user.'.$prop;
-        $value = @unserialize($this->storage[$prop]);
-        if ($value !== false) {
-            return $value;
-        }
-        return $this->storage[$prop];
-    }
-    
-    public function set($prop, $value) {
-        $prop = 'user.'.$prop;
-        if (is_array($value) || is_object($value)) {
-            parent::set($prop, serialize($value));
-        } else {
-            parent::set($prop, $value);
-        }
-    }
-    
-    public function exists($prop) {
-        $prop = 'user.'.$prop;
-        return parent::exists($prop);
-    }
-
-    public function delete($prop) {
-        $prop = 'user.'.$prop;
-        parent::delete($prop);
     }
 }

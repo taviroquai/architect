@@ -25,14 +25,12 @@ class AutoTable extends \Arch\View\AutoPanel
      * @param array $config The panel configuration
      * @param \Arch\Driver $driver The database driver
      */
-    public function __construct($config, $driver, $tmpl = '')
+    public function __construct($config, $driver, $pagination)
     {
-        if (empty($tmpl)) {
-            $tmpl = implode(
-                DIRECTORY_SEPARATOR, 
-                array(ARCH_PATH, 'theme', 'table', 'table.php')
-            );
-        }
+        $tmpl = implode(
+            DIRECTORY_SEPARATOR, 
+            array(ARCH_PATH, 'theme', 'table', 'table.php')
+        );
         parent::__construct($tmpl, $config, $driver);
         
         if (!isset($this->config['columns'])) {
@@ -46,7 +44,7 @@ class AutoTable extends \Arch\View\AutoPanel
         $all = $this->table->select($this->config['select'])
                 ->joinAuto()
                 ->fetchAll(\PDO::FETCH_ASSOC);
-        $this->pagination = new \Arch\View\Pagination();
+        $this->pagination = $pagination;
         $this->pagination->setLimit($config['pagination']);
         $this->pagination->setTotalItems(count($all));
     }

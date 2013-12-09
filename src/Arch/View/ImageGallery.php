@@ -11,13 +11,11 @@ class ImageGallery extends \Arch\View\FileExplorer
     /**
      * Returns a new image gallery
      * @param string $path The local path
-     * @param string $tmpl The template file
      */
-    public function __construct($path, $tmpl = null) {
-        if ($tmpl === null) {
-            $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','imagegallery.php'));
-        }
-        parent::__construct($path, $tmpl);
+    public function __construct($path)
+    {
+        parent::__construct($path);
+        $this->template = implode(DIRECTORY_SEPARATOR,
+                array(ARCH_PATH,'theme','imagegallery.php'));
     }
 }

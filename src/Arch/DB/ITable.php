@@ -8,7 +8,7 @@ namespace Arch\DB;
  * Allows to build SQL query requests using PDO
  * TODO: separate in varous drivers (MySql, PostgreSQL, SQLite)
  */
-abstract class Table
+abstract class ITable
 {
     /**
      * Holds the ralational table name
@@ -55,7 +55,7 @@ abstract class Table
      * @param \Arch\DB\Driver $driver The PDO database handler to query
      * @param \Arch\Logger $logger The logs handler
      */
-    public function __construct($name, \Arch\DB\Driver $driver)
+    public function __construct($name, \Arch\DB\IDriver $driver)
     {
         if  (!is_string($name) || empty($name)) {
             throw new \Exception('Invalid table name');

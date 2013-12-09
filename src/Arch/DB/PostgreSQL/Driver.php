@@ -6,7 +6,7 @@ namespace Arch\DB\PostgreSQL;
  *
  * @author mafonso
  */
-class Driver extends \Arch\DB\Driver
+class Driver extends \Arch\DB\IDriver
 {
 
     /**
@@ -14,39 +14,6 @@ class Driver extends \Arch\DB\Driver
      * @var \PDO
      */
     protected $schema;
-    
-    /**
-     * Returns a new MySql driver
-     * @param string $dbname The database name
-     * @param string $host The hostname
-     * @param string $user The database user
-     * @param string $pass The user password
-     * @param \Arch\Logger The application logger
-     */
-    public function __construct(
-        $dbname,
-        $host,
-        $user,
-        $pass,
-        \Arch\Logger $logger
-    ) {
-        $this->schema = $this->createPDO(
-            $host,
-            $dbname,
-            $user,
-            $pass
-        );
-        $this->schema->setAttribute(
-            \PDO::ATTR_ERRMODE, 
-            \PDO::ERRMODE_EXCEPTION
-        );
-        $this->connect($host, $dbname, $user, $pass);
-        $this->db_pdo->setAttribute(
-            \PDO::ATTR_ERRMODE, 
-            \PDO::ERRMODE_EXCEPTION
-        );
-        $this->logger = $logger;
-    }
     
     /**
      * Returns a Data Source Name
@@ -62,25 +29,6 @@ class Driver extends \Arch\DB\Driver
         $items[] = 'user='.$user;
         $items[] = 'password='.$pass;
         return 'pgsql:'.implode(';', $items);
-    }
-    
-    /**
-     * Connects to the default database
-     * @param type $host The database host
-     * @param type $database The database name
-     * @param type $user The connection user
-     * @param type $pass The user password
-     */
-    public function connect($host, $database, $user, $pass)
-    {
-        $this->db_pdo = $this->createPDO($host, $database, $user, $pass);
-        if ($this->db_pdo) {
-            $this->dbname = $database;
-            $this->db_pdo->setAttribute(
-                \PDO::ATTR_ERRMODE, 
-                \PDO::ERRMODE_EXCEPTION
-            );
-        }
     }
 
     /**
@@ -105,7 +53,7 @@ class Driver extends \Arch\DB\Driver
         $sql = 'SELECT DISTINCT TABLE_NAME as name '
                 . 'FROM information_schema.table '
                 . 'WHERE TABLE_SCHEMA = ?';
-        $stm = $this->schema->prepare($sql);
+        $stm = $this->db_pdo->prepare($sql);
         $this->logger->log('DB schema query: '.$stm->queryString);
         $stm->execute($data);
         return $stm->fetchAll(\PDO::FETCH_ASSOC);
@@ -133,7 +81,7 @@ class Driver extends \Arch\DB\Driver
                     . 'ON ccu.constraint_name = tc.constraint_name '
                 . 'WHERE constraint_type = \'FOREIGN KEY\' '
                 . 'AND tc.table_name = ? AND kcu.column_name = ?';
-        $stm = $this->schema->prepare($sql);
+        $stm = $this->db_pdo->prepare($sql);
         $this->logger->log('DB schema query: '.$stm->queryString);
         if ($stm->execute($data) && $t = $stm->fetch(\PDO::FETCH_ASSOC)) {
             $result = $t;

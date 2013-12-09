@@ -17,19 +17,19 @@ class View
      * Defines if the view should be rendered or not
      * @var boolean
      */
-    protected $hidden = false;
+    protected $hidden;
     
     /**
      * Holds the user data
      * @var array
      */
-    protected $data = array();
+    protected $data;
     
     /**
      * Holds the view slots
      * @var array
      */
-    protected $slot = array('content' => array());
+    protected $slot;
     
     /**
      * Holds the template file
@@ -51,6 +51,10 @@ class View
      */
     public function __construct($content = '', $data = array())
     {
+        // reset properties
+        $this->slot = array('content' => array());
+        $this->hidden = false;
+        
         // check if $mixed is a file path
         if (file_exists($content)) {
             $this->template = $content;

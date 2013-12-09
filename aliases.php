@@ -13,15 +13,13 @@
  * 
  * u() - Returns an internal URL - USE THIS!
  * 
- * g() - Returns all $_GET parameters or one parameter value
+ * i() - Returns all $_REQUEST parameters or one parameter value
  * 
  * j() - Sets JSON output from associative array
  * 
  * o() - Output. Sets the application Output, ie. a View or plain text
  * 
  * m() - Adds a message to be shown on output theme
- * 
- * p() - Returns all $_POST parameters or one parameter value
  * 
  * f() - Returns a $_FILES entry by index
  * 
@@ -57,7 +55,68 @@ function app(\Arch\App $app = null)
  */
 function conf($key)
 {
-    return app()->config->get($key);
+    return app()->getConfig()->get($key);
+}
+
+
+/**
+ * Returns the views factory
+ * @return \Arch\IFactory\GenericViewFactory The view factory
+ */
+function view()
+{
+    return app()->getViewFactory();
+}
+
+/**
+ * Returns the helper factory
+ * @return \Arch\IFactory\HelperFactory The helper factory
+ */
+function help()
+{
+    return app()->getHelperFactory();
+}
+
+/**
+ * Loads a theme directory
+ * 
+ * Use it as <b>theme('/mytheme/')</b>
+ * 
+ * This will load <b>/theme/mytheme/config.php</b> and 
+ * <b>/theme/mytheme/slots.xml</b>.
+ * 
+ * Theme slots can be configured with <b>slots.xml</b> without programming
+ * skills.
+ * 
+ * Remember that modules that are not enable will not be displayed.
+ * 
+ * To add content do <b>c('Hello World')</b>
+ * 
+ * @param string $path The theme path or empty to get current theme
+ * 
+ * @return \Arch\App The main application
+ */
+function theme($path = null)
+{
+    if (is_string($path)) {
+        app()->getTheme()->load($path);
+        app()->getTheme()->set('idiom', help()->createIdiom());
+    }
+    return app()->getTheme();
+}
+
+/**
+ * Session alias - Sets or gets a parameter
+ * @param string $key The item key to get or set
+ * @param mixed $value The item value to set or mpty to get
+ * @return mixed
+ */
+function session($key, $value = null)
+{
+    if (!is_null($value)) {
+        app()->getSession()->set($key, $value);
+    }
+    return app()->getSession()->get($key);
 }
 
 /**
@@ -70,7 +129,7 @@ function conf($key)
  */
 function r($uri, $action)
 {
-    app()->addRoute($uri, $action);
+    app()->getRouter()->addRoute($uri, $action);
 }
 
 /**
@@ -85,7 +144,7 @@ function r($uri, $action)
  */
 function c($content, $slotName = 'content', $unique = false)
 {
-    return app()->theme->addContent($content, $slotName, $unique);
+    return theme()->addContent($content, $slotName, $unique);
 }
 
 /**
@@ -106,7 +165,7 @@ function c($content, $slotName = 'content', $unique = false)
  */
 function e($eventName, $callback, $target = null)
 {
-    return app()->addEvent($eventName, $callback, $target);
+    return app()->getEvents()->addEvent($eventName, $callback, $target);
 }
 
 /**
@@ -119,18 +178,18 @@ function e($eventName, $callback, $target = null)
  */
 function f($index)
 {
-    return app()->input->file($index);
+    return app()->getInput()->getFileByIndex($index);
 }
 
 /**
- * $_GET alias.
+ * Returns a HTTP param (from $_GET or $_POST)
  * 
  * @param string $param The name of the $_GET param
  * @return boolean|mixed Returns all params or the param value or false
  */
-function g($param = null)
+function i($param = null)
 {
-    return app()->input->get($param);
+    return app()->getInput()->get($param);
 }
 
 /**
@@ -140,7 +199,7 @@ function g($param = null)
  * @param boolean $cache Tells application to send cache headers
  */
 function j($data, $cache = false) {
-    app()->sendJSON($data, $cache);
+    help()->sendJSON($data, $cache);
 }
 
 /**
@@ -151,18 +210,7 @@ function j($data, $cache = false) {
  */
 function m($text, $cssClass = 'alert alert-success')
 {
-    app()->addMessage($text, $cssClass);
-}
-
-/**
- * $_POST alias.
- * 
- * @param string $param The name of the $_POST param
- * @return boolean|mixed Returns all params or the param value or false
- */
-function p($param = null)
-{
-    return app()->input->post($param);
+    app()->getSession()->createMessage($text, $cssClass);
 }
 
 /**
@@ -178,7 +226,7 @@ function p($param = null)
  */
 function q($tableName, \PDO $db = null)
 {
-    return app()->createQuery($tableName, $db);
+    return help()->createQuery($tableName, $db);
 }
 
 /**
@@ -196,7 +244,7 @@ function q($tableName, \PDO $db = null)
  */
 function o($content = null)
 {
-    return app()->output->setContent($content);
+    return app()->getOutput()->setBuffer($content);
 }
 
 /**
@@ -209,7 +257,7 @@ function o($content = null)
  */
 function s($string, $algo = 'sha256', $salt = '!Zz$9y#8x%7!')
 {
-    return app()->encrypt($string, $algo, $salt);
+    return help()->encrypt($string, $algo, $salt);
 }
 
 /**
@@ -221,7 +269,7 @@ function s($string, $algo = 'sha256', $salt = '!Zz$9y#8x%7!')
  */
 function tr($eventName, $target = null)
 {
-    return app()->triggerEvent($eventName, $target);
+    return app()->getEvents()->triggerEvent($eventName, $target);
 }
 
 /**
@@ -233,29 +281,16 @@ function tr($eventName, $target = null)
  */
 function u($path, $params = array())
 {
-    return app()->url($path, $params);
+    return help()->url($path, $params);
 }
 
 /**
- * Create view alias.
- * 
- * @param string $tmpl The template path
- * @param array $data The data to be passed to the template
- * @return \Arch\View The created View
+ * Alias to create a view
+ * @param string $tmpl The template file
+ * @param array $data The associative data array
+ * @return \Arch\View
  */
 function v($tmpl, $data = array())
 {
-    return app()->createView($tmpl, $data);
-}
-
-/**
- * Returns a new validation rule
- * @param string $name The input param
- * @param string $type The type of rule
- * @param string $error_msg The message if invalid input
- * @return \Arch\Rule
- */
-function rule($name, $type, $error_msg)
-{
-    return app()->input->createRule($name, $type, $error_msg);
+    return view()->createView($tmpl, $data);
 }

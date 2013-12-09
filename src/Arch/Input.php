@@ -5,178 +5,65 @@ namespace Arch;
 /**
  * Input class
  */
-class Input
+abstract class Input
 {
-    protected $default = '/';
-    protected $api = 'apache';
-    protected $method = 'get';
-    protected $httpGet = array();
-    protected $httpPost = array();
-    protected $httpServer = array();
-    protected $params = array();
-    protected $files = array();
+    /**
+     * The parsed global input API
+     * @var string
+     */
+    protected $api;
+    
+    /**
+     * The list of input params
+     * @var array
+     */
+    protected $action_params = array();
+    
+    /**
+     * Holds the raw php input
+     * @var string
+     */
     protected $raw;
+    
+    /**
+     * The resulting parsed input action
+     * @var string
+     */
     protected $action;
-    
-    /**
-     * Holds the available rule names
-     * @var array
-     */
-    protected $typesList = array();
-    
-    /**
-     * Holds the validation messages
-     * @var array
-     */
-    protected $messages;
     
     /**
      * Constructor
      * 
      */
-    public function __construct($action = '/')
+    public function __construct($action = '/', $api = 'apache2handler')
     {
         $this->action = $action;
-        $this->method = 'get';
-        $this->messages = array();
-        
-        $items = glob(__DIR__.'/Rule/*.php');
-        array_walk($items, function(&$item) {
-            $item = str_replace('.php', '', basename($item));
-        });
-        $this->typesList = $items;
-    }
-    
-    /**
-     * Parse global server input
-     * @param string $api
-     * @param null|array $server
-     * @param null|array $get
-     * @param null|array $post
-     * @param null|array $files
-     * @param null|string $raw
-     */
-    public function parseGlobal(
-        $api    = 'server', 
-        $server = array(
-            'REQUEST_METHOD' => 'GET',
-            'REQUEST_URI' => '/',
-            'argv' => array()
-        ),
-        $get = null,
-        $post = null,
-        $files = null,
-        $raw = ''
-    ) {
         $this->api = $api;
-        $this->method = isset($server['REQUEST_METHOD']) ?
-            strtolower($server['REQUEST_METHOD'])
-            : 'get';
-        if (!empty($get)) {
-            $this->sanitize ($get);
-            $this->setHttpGet ($get);
-        }
-        if (!empty($post)) {
-            $this->sanitize ($post);
-            $this->setHttpPost ($post);
-        }
-        if (!empty($files)) {
-            $this->setHttpFiles($files);
-        }
-        if (!empty($raw)) {
-            $this->setRawInput($raw);
-        }
-        if ($server) {
-            $this->httpServer = $server;
-        }
-        if ($this->isCli()) {
-            $this->params = $this->httpServer['argv'];
-        } else {
-            if (!empty($this->httpGet)) {
-                $this->params = array_values($this->httpGet);
-            } elseif (!empty($this->httpPost)) {
-                $this->params = array_values($this->httpPost);
-            }
-        }
+        $this->raw = file_get_contents("php://input");
     }
     
     /**
-     * Returnr whether input is cli or not
+     * Tries to find user action through all input
+     * @param string $base_url The application base url
+     * @param string $index_file The application index filename
+     */
+    public abstract function parseAction(
+        $base_url = '/',
+        $index_file = 'index.php'
+    );
+    
+    /**
+     * Tells whether or not is a CLI input
      * @return boolean
      */
-    public function isCli()
-    {
-        return $this->api === 'cli' ? true : false;
-    }
+    public abstract function isCli();
     
     /**
-     * Returns a $_GET param
-     * If using command line, will return all parameters
-     * 
-     * @param string $param
-     * @return boolean|string
-     */
-    public function get($param = null)
-    {
-        if (empty($param)) {
-            return $this->httpGet;
-        }
-        if (empty($this->httpGet[$param])) {
-            return false;
-        }
-        return $this->httpGet[$param];
-    }
-    
-    /**
-     * Returns a $_POST param
-     * 
-     * @param string $param
-     * @return boolean|string
-     */
-    public function post($param = null)
-    {
-        if (empty($param)) {
-            return $this->httpPost;
-        }
-        if (empty($this->httpPost[$param])) {
-            return false;
-        }
-        return $this->httpPost[$param];
-    }
-    
-    /**
-     * Returns a $_SERVER param
-     * 
-     * @param string $param
-     * @return boolean|string
-     */
-    public function server($param = null)
-    {
-        if (empty($param)) {
-            return $this->httpServer;
-        }
-        if (empty($this->httpServer[$param])) {
-            return false;
-        }
-        return $this->httpServer[$param];
-    }
-    
-    /**
-     * Return an entry from $_FILES
-     * 
-     * Example:
-     * file(0) will return the first file uploaded result
-     * 
-     * @param int $index
+     * Returns an uploaded file or false if does not exists
+     * @param $index The uploaded file index
      * @return boolean
      */
-    public function file($index)
-    {
-        if (empty($this->files[$index])) {
-            return false;
-        }
-        return $this->files[$index];
-    }
+    public abstract function getFileByIndex($index);
 
     /**
      * Gets user input action
@@ -190,51 +77,57 @@ class Input
     }
     
     /**
-     * Tries to find user action through all input
-     * @param string $base_url The application base url
-     * @param string $index_file The application index filename
+     * Sets the raw php input
+     * @param string $raw
      */
-    public function parseAction($base_url = '/', $index_file = 'index.php')
+    public function setRaw($raw)
     {
-        // parse action if no action is set
-        if (!$this->isCli()) {
-            $uri = str_replace(
-                array($base_url.'/',$index_file), 
-                '', 
-                $this->httpServer['REQUEST_URI']
-            );
-            $end = strpos($uri, '?') === false ? 
-                    strlen($uri) : 
-                    strpos($uri, '?');
-            $uri = '/'.trim(substr($uri, 0, $end), '/');
-            if (!empty($uri)) {
-                $this->action = $uri;
-            }
-        }
-        else {
-            if (!empty($this->params[1])) {
-                $this->action = $this->params[1];
-            }
-        }
+        $this->raw = $raw;
+    }
+
+    /**
+     * Returns the raw php input
+     * @return string
+     */
+    public function getRaw()
+    {
+        return $this->raw;
     }
     
+    /**
+     * Returns the input api
+     * @return string
+     */
+    public function getAPI()
+    {
+        return $this->api;
+    }
+
     /**
      * Sets the input params
      * @param array $params The input params
      */
-    public function setParams($params)
+    public function setActionParams($params)
     {
-        $this->params = $params;
+        $this->action_params = $params;
     }
-
-        /**
-     * Generates an unique input key
-     * @return string
+    
+    /**
+     * Returns a param by index
+     * If index is not provided, returns all params
+     * 
+     * @param integer $index
+     * @return boolean
      */
-    public function genCacheKey()
+    public function getActionParam($index = null)
     {
-        return 'arch.input.'.
-                md5($this->action.$this->server('QUERY_STRING'));
+        if ($index === null) {
+            return $this->action_params;
+        }
+        if (!isset($this->action_params[$index])) {
+            return false;
+        }
+        return $this->action_params[$index];
     }
     
     /**
@@ -254,231 +147,35 @@ class Input
     }
     
     /**
-     * Returns a param by index
-     * If index is not provided, returns all params
-     * 
-     * @param integer $index
-     * @return boolean
+     * Returns a new input validator
+     * @return \Arch\Validator
      */
-    public function getParam($index = null)
+    public function createValidator()
     {
-        if ($index === null) {
-            return $this->params;
-        }
-        if (!isset($this->params[$index])) {
-            return false;
-        }
-        return $this->params[$index];
-    }
-    
-    /**
-     * Sets the SERVER variables
-     * @param array $array
-     */
-    public function setHttpServer($array)
-    {
-        $this->httpServer = $array;
-    }
-    
-    /**
-     * Sets the HTTP GET params
-     * @param array $array
-     */
-    public function setHttpGet($array)
-    {
-        $this->httpGet = $array;
-    }
-    
-    /**
-     * Sets the HTTP POST params
-     * @param array $array
-     */
-    public function setHttpPost($array)
-    {
-        $this->httpPost = $array;
-    }
-    
-    /**
-     * Loads HTTP FILES information
-     * @param array $array
-     */
-    public function setHttpFiles($array)
-    {
-        $this->remapFiles($array);
-    }
-    
-    /**
-     * Sets the raw input (usually php://input)
-     * @param string $raw
-     */
-    public function setRawInput($raw)
-    {
-        $this->raw = $raw;
-    }
-    
-    private function remapFiles($files)
-    {
-        $files = reset($files);
-        if (is_array($files['name'])) {
-            $new = array();
-            foreach( $files as $key => $all ){
-                foreach( $all as $i => $val ){
-                    $new[$i][$key] = $val;    
-                }    
-            }
-            $this->files = $new;
-        }
-        else {
-            $file_keys = array_keys($files);
-            foreach ($file_keys as $key) {
-                $this->files[0][$key] = $files[$key];
-            }
-        }
-    }
-    
-    /**
-     * Sanitizes a GET parameter
-     * @param string $name The param key to sanitize
-     * @param string $filter The type of sanitize filter
-     */
-    public function sanitizeGet($name, $filter = FILTER_SANITIZE_STRING)
-    {
-        $this->sanitize($this->httpGet[$name], $filter);
-    }
-    
-    /**
-     * Sanitizes a POST parameter
-     * @param string $name The param key to sanitize
-     * @param string $filter The type of sanitize filter
-     */
-    public function sanitizePost($name, $filter = FILTER_SANITIZE_STRING)
-    {
-        $this->sanitize($this->httpPost[$name], $filter);
+        return new \Arch\Validator($this);
     }
 
     /**
      * Does a primary sanitization
-     * @param array $mixed
+     * @param string
      */
-    protected function sanitize(&$mixed, $filter = FILTER_SANITIZE_STRING, $i = 0)
+    public function sanitize($key, $filter = FILTER_SANITIZE_STRING)
     {
-        if ($i > 3) return false;
-        if (is_array($mixed)) {
-            foreach ($mixed as $k => &$v) {
-                $this->sanitize($v, $filter, $i+1);
-            }
-        } else {
-            $mixed = filter_var($mixed, $filter);
-        }
-    }
-    
-    /**
-     * Runs all the validation rules
-     * @return \Arch\Validator
-     */
-    public function validate($rules)
-    {
-        $result = true;
-        $this->messages = array();
-        foreach ($rules as &$rule) {
-            $rule->execute();
-            $result = $rule->getResult() && $result;
-            if (!$rule->getResult()) {
-                $message = new \Arch\Message(
-                    $rule->getErrorMessage(), 'alert alert-error'
-                );
-                $this->messages[] = $message;
+        if (isset($this->params[$key])) {
+            if (is_array($this->params[$key])) {
+                foreach ($this->params[$key] as $k => &$v) {
+                    $this->params[$key][$k] = filter_var($v, $filter);
+                    if ($filter == FILTER_SANITIZE_NUMBER_INT) {
+                        $v = (int) $v;
+                    }
+                }
+                unset($v);
+            } else {
+                $this->params[$key] = filter_var($this->params[$key], $filter);
+                if ($filter == FILTER_SANITIZE_NUMBER_INT) {
+                    $this->params[$key] = (int) $this->params[$key];
+                }
             }
         }
-        return $result;
-    }
-    
-    /**
-     * Returns a new validation rule
-     * @param string $name The input param
-     * @param string $type The type of rule
-     * @param string $error_msg The message if invalid input
-     * @return \Arch\Rule
-     */
-    public function createRule($name, $type, $error_msg)
-    {
-        if (!in_array($type, $this->typesList)) {
-            throw new \Exception(
-                'Invalid validator rule. Only accept '
-                .implode(',', $this->typesList)
-            );
-        }
-        $sanitizeMethod = 'sanitize'.ucfirst($this->method);
-        $input = $this->{$this->method}();
-        switch ($type) {
-            case 'After':
-                $rule = new \Arch\Rule\After($name, $input);
-                break;
-            case 'Before':
-                $rule = new \Arch\Rule\Before($name, $input);
-                break;
-            case 'Between':
-                $rule = new \Arch\Rule\Between($name, $input);
-                break;
-            case 'Depends':
-                $rule = new \Arch\Rule\Depends($name, $input);
-                break;
-            case 'Equals':
-                $rule = new \Arch\Rule\Equals($name, $input);
-                break;
-            case 'IsAlphaExcept':
-                $rule = new \Arch\Rule\IsAlphaExcept($name, $input);
-                break;
-            case 'IsAlphaNumeric':
-                $rule = new \Arch\Rule\IsAlphaNumeric($name, $input);
-                break;
-            case 'IsDate':
-                $rule = new \Arch\Rule\IsDate($name, $input);
-                break;
-            case 'IsEmail':
-                $rule = new \Arch\Rule\IsEmail($name, $input);
-                $this->$sanitizeMethod($name, FILTER_SANITIZE_EMAIL);
-                break;
-            case 'IsImage':
-                $rule = new \Arch\Rule\IsImage($name, $input);
-                break;
-            case 'IsInteger':
-                $rule = new \Arch\Rule\IsInteger($name, $input);
-                $this->$sanitizeMethod($name, FILTER_SANITIZE_NUMBER_INT);
-                break;
-            case 'IsMime':
-                $rule = new \Arch\Rule\IsMime($name, $input);
-                break;
-            case 'IsTime':
-                $rule = new \Arch\Rule\IsTime($name, $input);
-                break;
-            case 'IsUrl':
-                $rule = new \Arch\Rule\IsUrl($name, $input);
-                $this->$sanitizeMethod($name, FILTER_SANITIZE_URL);
-                break;
-            case 'Matches':
-                $rule = new \Arch\Rule\Matches($name, $input);
-                break;
-            case 'OneOf':
-                $rule = new \Arch\Rule\OneOf($name, $input);
-                break;
-            case 'Unique':
-                $rule = new \Arch\Rule\Unique($name, $input);
-                break;
-            default:
-                $rule = new \Arch\Rule\Required($name, $input);
-        }
-        $rule->addParam($this->{$this->method}($name));
-        $rule->setErrorMessage($error_msg);
-        return $rule;
-    }
-    
-    /**
-     * Returns the error messages
-     * @return array
-     */
-    public function getMessages()
-    {
-        return $this->messages;
     }
 }

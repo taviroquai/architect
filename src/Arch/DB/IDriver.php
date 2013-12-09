@@ -1,4 +1,5 @@
 <?php
+
 namespace Arch\DB;
 
 /**
@@ -6,7 +7,7 @@ namespace Arch\DB;
  *
  * @author mafonso
  */
-abstract class Driver
+abstract class IDriver
 {
     /**
      * Holds the application logger
@@ -25,7 +26,7 @@ abstract class Driver
      * @var \PDO
      */
     protected $db_pdo;
-    
+
     /**
      * Returns a new \PDO object
      * @param string $host The hostname
@@ -79,6 +80,15 @@ abstract class Driver
         return $this->db_pdo;
     }
     
+    /**
+     * Sets the query logger
+     * @param \Arch\Logger $logger
+     */
+    public function setLogger(\Arch\Logger $logger)
+    {
+        $this->logger = $logger;
+    }
+
     /**
      * Returns a Data Source Name
      * @param string $host The hostname

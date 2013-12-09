@@ -22,14 +22,11 @@ class FileExplorer extends \Arch\View
     /**
      * Returns a new file explorer
      * @param string $path The local path
-     * @param string $tmpl The template file
      */
-    public function __construct($path, $tmpl = null)
+    public function __construct($path)
     {
-        if ($tmpl === null) {
-            $tmpl = implode(DIRECTORY_SEPARATOR,
-                    array(ARCH_PATH,'theme','filelist.php'));
-        }
+        $tmpl = implode(DIRECTORY_SEPARATOR,
+                array(ARCH_PATH,'theme','filelist.php'));
         parent::__construct($tmpl);
         
         // init items

@@ -6,48 +6,8 @@ namespace Arch\DB\SQLite;
  *
  * @author mafonso
  */
-class Driver extends \Arch\DB\Driver
+class Driver extends \Arch\DB\IDriver
 {
-
-    /**
-     * Holds the database connection
-     * @var \PDO
-     */
-    protected $schema;
-    
-    /**
-     * Returns a new SQLite driver
-     * @param string $dbname The database name
-     * @param string $host The hostname
-     * @param string $user The database user
-     * @param string $pass The user password
-     * @param \Arch\Logger The application logger
-     */
-    public function __construct(
-        $dbname,
-        $host,
-        $user,
-        $pass,
-        \Arch\Logger $logger
-    ) {
-        $this->schema = $this->createPDO(
-            $host,
-            $dbname,
-            $user,
-            $pass
-        );
-        $this->schema->setAttribute(
-            \PDO::ATTR_ERRMODE, 
-            \PDO::ERRMODE_EXCEPTION
-        );
-        $this->connect($host, $dbname, $user, $pass);
-        $this->db_pdo->setAttribute(
-            \PDO::ATTR_ERRMODE, 
-            \PDO::ERRMODE_EXCEPTION
-        );
-        $this->logger = $logger;
-    }
-    
     /**
      * Returns a Data Source Name
      * @param string $host The hostname
@@ -63,7 +23,7 @@ class Driver extends \Arch\DB\Driver
      * Returns a new table
      * 
      * @param string $tablename The table name
-     * @return \Arch\Table
+     * @return \Arch\DB\SQLite\Table
      */
     public function createTable($tablename)
     {
@@ -82,7 +42,7 @@ class Driver extends \Arch\DB\Driver
                 . 'FROM '.$this->dbname.'.sqlite_master '
                 . 'WHERE type = ? '
                 . 'AND name != ?';
-        $stm = $this->schema->prepare($sql);
+        $stm = $this->db_pdo->prepare($sql);
         $this->logger->log('DB schema query: '.$stm->queryString);
         $stm->execute($data);
         return $stm->fetchAll(\PDO::FETCH_ASSOC);
@@ -98,7 +58,7 @@ class Driver extends \Arch\DB\Driver
     {
         $result = array();
         $sql = "PRAGMA foreign_key_list(`$table_name`)";
-        $stm = $this->schema->prepare($sql);
+        $stm = $this->db_pdo->prepare($sql);
         $this->logger->log('DB schema query: '.$stm->queryString);
         if ($stm->execute() && $rows = $stm->fetchAll(\PDO::FETCH_ASSOC)) {
             foreach ($rows as $row) {
