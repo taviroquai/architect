@@ -210,8 +210,7 @@ class App
      * Runs the application through various stages.
      * 
      * It can only be called once.
-     * 
-     * @return boolean
+     * @throws \Exception
      */
     public function run()
     {
@@ -252,7 +251,6 @@ class App
         
         // trigger core event
         $this->getEvents()->triggerEvent('arch.before.end');
-        return true;
     }
     
     /**
@@ -420,7 +418,7 @@ class App
         }
     }
     
-    public function cleanEnd()
+    private function cleanEnd()
     {
         $this->getEvents()->triggerEvent('arch.session.save');
         $this->logger->log('Session closed');
