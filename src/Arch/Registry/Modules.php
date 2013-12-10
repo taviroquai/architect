@@ -7,7 +7,7 @@ namespace Arch\Registry;
  *
  * @author mafonso
  */
-class Modules extends \Arch\Registry {
+class Modules extends \Arch\IRegistry {
     
     /**
      * Returns a new Modules registry

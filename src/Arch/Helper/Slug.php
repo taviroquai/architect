@@ -7,7 +7,7 @@ namespace Arch\Helper;
  *
  * @author mafonso
  */
-class Slug extends \Arch\Helper
+class Slug extends \Arch\IHelper
 {
     protected $text;
     

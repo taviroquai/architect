@@ -7,7 +7,7 @@ namespace Arch\Helper;
  *
  * @author mafonso
  */
-class CreateURL extends \Arch\Helper
+class CreateURL extends \Arch\IHelper
 {
     protected $action;
     protected $params;

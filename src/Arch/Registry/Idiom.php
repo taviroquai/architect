@@ -1,11 +1,11 @@
 <?php
 
-namespace Arch;
+namespace Arch\Registry;
 
 /**
  * Idiom class
  */
-class Idiom
+class Idiom extends \Arch\IRegistry
 {	
     
     /**

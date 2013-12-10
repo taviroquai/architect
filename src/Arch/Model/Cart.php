@@ -7,14 +7,41 @@ namespace Arch\Model;
  */
 class Cart
 {
-
+    /**
+     * Holds the list of currency options
+     * @var array
+     */
     public $currency_options;
+    
+    /**
+     * Holds the list of shipping options
+     * @var array
+     */
     public $shipping_options;
+    
+    /**
+     * Holds the list of payment options
+     * @var array
+     */
     public $payment_options;
+    
+    /**
+     * Holds the list of predefined product quantity options
+     * @var array
+     */
     public $quantity_options;
+    
+    /**
+     * Holds the application session
+     * @var \Arch\Registry\Session
+     */
     protected $session;
     
-    public function __construct(\Arch\Registry\Session $session)
+    /**
+     * Returns a new shopping cart model
+     * @param \Arch\Registry\Session $session
+     */
+    public function __construct(\Arch\Registry\ISession $session)
     {
         $this->session = $session;
         $this->currency_options = array('EUR');

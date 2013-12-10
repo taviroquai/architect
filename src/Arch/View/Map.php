@@ -5,37 +5,68 @@ namespace Arch\View;
 /**
  * Map class
  */
-class Map extends \Arch\View
+class Map extends \Arch\Registry\View
 {
     /**
-     * Holds a map model
-     * @var \Arch\Model\Map
+     * Holds the list of markers
+     * @var array
      */
-    public $model;
+    protected $markers = array();
     
     /**
      * Returns a new Map view
-     * @param \Arch\Model\Map $model The map model
      */
-    public function __construct(\Arch\Model\Map $model = null)
+    public function __construct()
     {
-        
         $tmpl = implode(DIRECTORY_SEPARATOR,
                 array(ARCH_PATH,'theme','map.php'));
 	parent::__construct($tmpl);
         
-        if ($model === null) {
-            $model = new \Arch\Model\Map();
-        }
-        $this->model = $model;
-        
-        $this->data['lon'] = 0;
-        $this->data['lat'] = 0;
-        $this->data['zoom'] = 1;
+        $this->storage['lon'] = 0;
+        $this->storage['lat'] = 0;
+        $this->storage['zoom'] = 1;
     }
     
+    /**
+     * Returns the map markers
+     * @return array
+     */
+    public function getMarkers()
+    {
+        return $this->markers;
+    }
+
+    /**
+     * Adds a marker
+     * @param stdClass $marker The marker; use createMarker() to create a marker
+     * @return \Arch\View\Map
+     */
+    public function addMarker($marker)
+    {
+        $this->markers[] = $marker;
+        return $this;
+    }
+    
+    /**
+     * Returns a new marker
+     * @return stdClass
+     */
+    public function createMarker($lon = 0, $lat = 0, $popup = '', $open = false)
+    {
+        return (object) array(
+            'lon' => $lon,
+            'lat' => $lat,
+            'popup' => $popup,
+            'open' => $open
+        );
+    }
+    
+    /**
+     * Returns an HTML map
+     * @return string
+     */
     public function __toString() {
-        $this->set('markers', $this->model->getMarkers());
+        $this->set('markers', $this->getMarkers());
         return parent::__toString();
     }
     

@@ -7,7 +7,7 @@ namespace Arch\Helper;
  *
  * @author mafonso
  */
-class CreateImage extends \Arch\Helper
+class CreateImage extends \Arch\IHelper
 {
     protected $filename;
     

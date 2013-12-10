@@ -5,7 +5,7 @@ namespace Arch\View;
 /**
  * Comment form class
  */
-class CommentForm extends \Arch\View
+class CommentForm extends \Arch\Registry\View
 {
     /**
      * Returns a new comment form view

@@ -5,7 +5,7 @@ namespace Arch\View;
 /**
  * LineChart class
  */
-class LineChart extends \Arch\View
+class LineChart extends \Arch\Registry\View
 {
     /**
      * Returns a new line chart view
@@ -17,9 +17,9 @@ class LineChart extends \Arch\View
                 array(ARCH_PATH,'theme','linechart.php'));
 	parent::__construct($tmpl);
         
-        $this->data['data'] = array(array('x' => 1, 'y' => 1));
-        $this->data['ykeys'] = array('y');
-        $this->data['labels'] = array('label');
+        $this->storage['data'] = array(array('x' => 1, 'y' => 1));
+        $this->storage['ykeys'] = array('y');
+        $this->storage['labels'] = array('label');
     }
     
 }

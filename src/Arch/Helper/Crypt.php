@@ -7,7 +7,7 @@ namespace Arch\Helper;
  *
  * @author mafonso
  */
-class Crypt extends \Arch\Helper
+class Crypt extends \Arch\IHelper
 {
     protected $string;
     protected $salt;

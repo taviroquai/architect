@@ -125,10 +125,11 @@ function session($key, $value = null)
  * Use it as <b>r('/', function() { o('Home!'); });</b>
  * 
  * @param string $uri The uri query passed in the browser
- * @param function $action The callback to be run
+ * @param callable $action The callback to be run
  */
-function r($uri, $action)
+function r($uri, callable $action)
 {
+    $uri = (string) $uri;
     app()->getRouter()->addRoute($uri, $action);
 }
 
@@ -190,6 +191,17 @@ function f($index)
 function i($param = null)
 {
     return app()->getInput()->get($param);
+}
+
+/**
+ * Alias to create layout - a view with layout slots
+ * @param string $tmpl The template file
+ * @param array $data The associative data array
+ * @return \Arch\View
+ */
+function l($tmpl, $data = array())
+{
+    return view()->createLayout($tmpl, $data);
 }
 
 /**

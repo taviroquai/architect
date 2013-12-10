@@ -7,7 +7,7 @@ namespace Arch\Helper;
  *
  * @author mafonso
  */
-class Query extends \Arch\Helper
+class Query extends \Arch\IHelper
 {
     protected $tablename;
     

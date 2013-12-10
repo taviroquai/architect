@@ -5,7 +5,7 @@ namespace Arch\View;
 /**
  * View Menu
  */
-class Menu extends \Arch\View
+class Menu extends \Arch\Registry\View
 {
 
     /**
@@ -18,7 +18,7 @@ class Menu extends \Arch\View
         parent::__construct($tmpl);
         
         // init items
-        $this->data['items'] = array();
+        $this->storage['items'] = array();
     }
     
     /**
@@ -29,7 +29,7 @@ class Menu extends \Arch\View
      */
     public function addItem($text, $url, $class = '')
     {
-        $this->data['items'][] = (object) array(
+        $this->storage['items'][] = (object) array(
             'text' => $text, 
             'url' => $url, 
             'cssClass' => $class

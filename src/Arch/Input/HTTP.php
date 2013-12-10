@@ -7,7 +7,7 @@ namespace Arch\Input;
  *
  * @author mafonso
  */
-class HTTP extends \Arch\Input {
+class HTTP extends \Arch\IInput {
     
     /**
      * Holds the HTTP request method
@@ -65,13 +65,12 @@ class HTTP extends \Arch\Input {
     
     /**
      * Tries to find user action through all input
-     * @param string $base_url The application base url
-     * @param string $index_file The application index filename
+     * @param \Arch\Registry\Config $config The application configuration
      */
-    public function parseAction($base_url = '/', $index_file = 'index.php')
+    public function parseAction(\Arch\Registry\Config $config)
     {
         $uri = str_replace(
-            array($base_url.'/',$index_file), 
+            array($config->get('BASE_URL').'/',$config->get('INDEX_FILE')), 
             '', 
             $this->uri
         );

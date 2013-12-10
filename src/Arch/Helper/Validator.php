@@ -1,13 +1,14 @@
 <?php
-namespace Arch;
+namespace Arch\Helper;
 
 /**
  * Description of Validator
  *
  * @author mafonso
  */
-class Validator {
-    
+class Validator extends \Arch\IHelper
+implements \Arch\IMessenger
+{    
     /**
      * Holds the available rule names
      * @var array
@@ -21,24 +22,42 @@ class Validator {
     protected $messages;
     
     /**
-     * Holds the application input
-     * @var \Arch\Input
+     * Holds the rules to be validated
+     * @var array
      */
-    protected $input;
+    protected $rules;
     
     /**
      * Returns a new Input Validator
-     * @param \Arch\Input $input
+     * @param \Arch\App $app
      */
-    public function __construct(\Arch\Input $input) {
-        $this->input = $input;
+    public function __construct(\Arch\App $app) {
+        parent::__construct($app);
         $this->messages = array();
-        $this->types = glob(__DIR__.'/Rule/*.php');
+        $this->types = glob(__DIR__.'/../Rule/*.php');
         array_walk($this->types, function(&$item) {
             $item = str_replace('.php', '', basename($item));
         });
     }
     
+    /**
+     * Sets the rules to be validated
+     * @param type $rules
+     */
+    public function setRules($rules)
+    {
+        $this->rules = $rules;
+    }
+
+    /**
+     * Validates the rules
+     * @return boolean
+     */
+    public function execute()
+    {
+        return $this->validate($this->rules);
+    }
+
     /**
      * Runs all the validation rules
      * @param array $rules The list of rules to be validated
@@ -47,15 +66,16 @@ class Validator {
     public function validate($rules)
     {
         $result = true;
-        $this->messages = array();
+        $this->clearMessages();
         foreach ($rules as &$rule) {
             $rule->execute();
             $result = $rule->getResult() && $result;
             if (!$rule->getResult()) {
-                $message = new \Arch\Message(
-                    $rule->getErrorMessage(), 'alert alert-error'
+                $message = $this->createMessage(
+                    $rule->getErrorMessage(),
+                    'alert alert-error'
                 );
-                $this->messages[] = $message;
+                $this->addMessage($message);
             }
         }
         return $result;
@@ -76,7 +96,7 @@ class Validator {
                 .implode(',', $this->types)
             );
         }
-        $input = $this->input->get();
+        $input = $this->app->getInput()->get();
         switch ($type) {
             case 'After':
                 $rule = new \Arch\Rule\After($name, $input);
@@ -104,14 +124,14 @@ class Validator {
                 break;
             case 'IsEmail':
                 $rule = new \Arch\Rule\IsEmail($name, $input);
-                $this->input->sanitize($name, FILTER_SANITIZE_EMAIL);
+                $this->app->getInput()->sanitize($name, FILTER_SANITIZE_EMAIL);
                 break;
             case 'IsImage':
                 $rule = new \Arch\Rule\IsImage($name, $input);
                 break;
             case 'IsInteger':
                 $rule = new \Arch\Rule\IsInteger($name, $input);
-                $this->input->sanitize($name, FILTER_SANITIZE_NUMBER_INT);
+                $this->app->getInput()->sanitize($name, FILTER_SANITIZE_NUMBER_INT);
                 break;
             case 'IsMime':
                 $rule = new \Arch\Rule\IsMime($name, $input);
@@ -121,7 +141,7 @@ class Validator {
                 break;
             case 'IsUrl':
                 $rule = new \Arch\Rule\IsUrl($name, $input);
-                $this->input->sanitize($name, FILTER_SANITIZE_URL);
+                $this->app->getInput()->sanitize($name, FILTER_SANITIZE_URL);
                 break;
             case 'Matches':
                 $rule = new \Arch\Rule\Matches($name, $input);
@@ -135,11 +155,29 @@ class Validator {
             default:
                 $rule = new \Arch\Rule\Required($name, $input);
         }
-        $rule->addParam($this->input->get($name));
+        $rule->addParam($this->app->getInput()->get($name));
         $rule->setErrorMessage($error_msg);
         return $rule;
     }
     
+    /**
+     * Creates a new Message
+     * @param string $text The message text
+     * @param string $cssClass The css class
+     * @return \Arch\Message
+     */
+    public function createMessage($text, $cssClass) {
+        return new \Arch\Message($text, $cssClass);
+    }
+
+    /**
+     * Adds a message
+     * @param \Arch\Message $message The message to be added
+     */
+    public function addMessage(\Arch\Message $message) {
+        $this->messages[] = $message;
+    }
+
     /**
      * Returns the error messages
      * @return array
@@ -147,5 +185,13 @@ class Validator {
     public function getMessages()
     {
         return $this->messages;
+    }
+    
+    /**
+     * Clears the validation messages
+     */
+    public function clearMessages() {
+        unset($this->messages);
+        $this->messages = array();
     }
 }

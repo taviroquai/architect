@@ -5,7 +5,7 @@ namespace Arch\View;
 /**
  * View Pagination
  */
-class Pagination extends \Arch\View
+class Pagination extends \Arch\Registry\View
 {
     
     /**
@@ -46,10 +46,9 @@ class Pagination extends \Arch\View
 	
     /**
      * Returns a new pagination view
-     * @param string $id The pagination id; this will be used in URI requests
-     * @param integer $tmpl The template file
+     * @param \Arch\IInput The application input
      */
-    public function __construct(\Arch\Input $input)
+    public function __construct(\Arch\IInput $input)
     {
         $tmpl = implode(DIRECTORY_SEPARATOR,
                     array(ARCH_PATH,'theme','pagination.php'));
@@ -145,7 +144,9 @@ class Pagination extends \Arch\View
         }
         
         // hide if there is only 1 page
-        if ($this->total == 1) $this->hide ();
+        if ($this->total == 1) {
+            $this->hide ();
+        }
         
         $this->set('total', $this->total);
         $this->set('current', $this->current);

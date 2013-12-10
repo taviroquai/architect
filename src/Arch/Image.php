@@ -53,7 +53,8 @@ class Image {
         }
 
         // Load image
-        $myImage = $imgcreatefrom($this->filename) or die("Error: Cannot find image!"); 
+        $myImage = $imgcreatefrom($this->filename) 
+                or die("Error: Cannot find image!"); 
 
         // Find purpotion
         if ($width > $height) {
@@ -96,6 +97,6 @@ class Image {
         if (is_dir($filename)) {
             $filename = rtrim($filename, '/').'/'.basename ($this->filename);
         }
-        return @imagejpeg($thumb, $filename, 90);
+        return imagejpeg($thumb, $filename, 90);
     }    
 }

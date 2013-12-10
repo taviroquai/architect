@@ -5,7 +5,7 @@ namespace Arch\View;
 /**
  * View FileUpload
  */
-class FileUpload extends \Arch\View
+class FileUpload extends \Arch\Registry\View
 {
     /**
      * Returns a new file upload view

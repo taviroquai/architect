@@ -5,7 +5,7 @@ namespace Arch;
 /**
  * Messenger 
  */
-interface Messenger
+interface IMessenger
 {
     
     public function createMessage($text, $cssClass);

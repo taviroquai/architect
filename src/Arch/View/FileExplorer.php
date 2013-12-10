@@ -5,7 +5,7 @@ namespace Arch\View;
 /**
  * FileExplorer class
  */
-class FileExplorer extends \Arch\View
+class FileExplorer extends \Arch\Registry\View
 {
     /**
      * Holds the callback to translate server file path to client url
@@ -30,9 +30,9 @@ class FileExplorer extends \Arch\View
         parent::__construct($tmpl);
         
         // init items
-        $this->data['base'] = is_file($path) ? dirname($path) : $path;
-        $this->data['param'] = 'd';
-        $this->data['url'] = '/';
+        $this->storage['base'] = is_file($path) ? dirname($path) : $path;
+        $this->storage['param'] = 'd';
+        $this->storage['url'] = '/';
         
         // init function to translate path to url
         $this->path_to_url = function ($path) {
@@ -80,8 +80,8 @@ class FileExplorer extends \Arch\View
     public function getPath()
     {
         $path = $this->input_param ? 
-            $this->data['base'].$this->input_param : 
-            $this->data['base'];
+            $this->storage['base'].$this->input_param : 
+            $this->storage['base'];
         return rtrim($path, '/');
     }
     
@@ -113,7 +113,7 @@ class FileExplorer extends \Arch\View
         if (!file_exists($path))  return '';
         $this->set('path', $path);
         
-        $parent = str_replace($this->data['base'], '', dirname($path));
+        $parent = str_replace($this->storage['base'], '', dirname($path));
         $this->set('parent', $parent == '' ? '/' : $parent);
         $backlink = $this->get('url') . '&'
             . $this->get('param') . '=' . $this->get('parent');

@@ -5,8 +5,9 @@ namespace Arch\Registry;
 /**
  * Session class
  */
-abstract class Session extends \Arch\Registry 
-implements \Arch\Messenger
+abstract class ISession
+extends \Arch\IRegistry 
+implements \Arch\IMessenger
 {
     /**
      * Holds the session identifier

@@ -5,7 +5,7 @@ namespace Arch;
 /**
  * Output class
  */
-abstract class Output
+abstract class IOutput
 {
     /**
      * Holds the output buffer

@@ -178,16 +178,13 @@ class App
         // set session handler
         $this->session = new \Arch\Registry\Session\Native();
 
-        // set default output
-        $this->theme = new \Arch\View\Theme();
+        // set default theme
+        $this->theme = new \Arch\Theme\Directory();
         
         // set input
         $input_factory = new \Arch\IFactory\InputFactory();
         $this->input = $input_factory->createFromGlobals();
-        $this->input->parseAction(
-            $this->config->get('BASE_URL'),
-            $this->config->get('INDEX_FILE')
-        );
+        $this->input->parseAction($this->config);
         $this->logger->log('Input finish loading: '.
                 $this->input->getUserAgent());
 
@@ -220,7 +217,7 @@ class App
     {
         // prevent infinit calls
         if ($this->stage === 'run') {
-            return false;
+            throw new Exception('The application is already running');
         }
         
         // update stage
@@ -287,7 +284,7 @@ class App
 
     /**
      * Returns the default database handler
-     * @return \Arch\DB\Driver
+     * @return \Arch\DB\IDriver
      */
     public function getDatabase()
     {
@@ -296,7 +293,7 @@ class App
     
     /**
      * Returns the session handler
-     * @return \Arch\Registry\Session
+     * @return \Arch\Registry\ISession
      */
     public function getSession()
     {
@@ -305,7 +302,7 @@ class App
     
     /**
      * Returns the user input handler
-     * @return \Arch\Input
+     * @return \Arch\IInput
      */
     public function getInput()
     {
@@ -314,7 +311,7 @@ class App
 
     /**
      * Returns the default theme handler
-     * @return \Arch\View\Theme
+     * @return \Arch\ITheme
      */
     public function getTheme()
     {
@@ -332,7 +329,7 @@ class App
 
     /**
      * Returns the default output handler
-     * @return \Arch\Output
+     * @return \Arch\IOutput
      */
     public function getOutput()
     {
@@ -359,7 +356,7 @@ class App
 
     /**
      * Overrides the current session handler
-     * @param \Arch\Regsitry\Session $session
+     * @param \Arch\Registry\ISession $session
      */
     public function setSession(\Arch\ISession $session)
     {
@@ -370,14 +367,14 @@ class App
      * Sets the default output handler
      * @param \Arch\IOutput $output
      */
-    public function setOutput(\Arch\Output $output)
+    public function setOutput(\Arch\IOutput $output)
     {
         $this->output = $output;
     }
     
     /**
      * Sets the default database driver
-     * @param \Arch\IDatabase $db
+     * @param \Arch\DB\IDriver $db
      */
     public function setDatabase(\Arch\DB\IDriver $db)
     {
@@ -435,7 +432,7 @@ class App
     private function dispatch()
     {
         $action = $this->input->getAction();
-        $callback = $this->router->getRouteCallback($action, $this->input);
+        $callback = $this->router->getRouteCallback($this->input);
         
         // trigger core event
         $this->getEvents()->triggerEvent('arch.action.before.call', $action);

@@ -5,7 +5,7 @@ namespace Arch;
 /**
  * Input class
  */
-abstract class Input
+abstract class IInput
 {
     /**
      * The parsed global input API
@@ -44,13 +44,9 @@ abstract class Input
     
     /**
      * Tries to find user action through all input
-     * @param string $base_url The application base url
-     * @param string $index_file The application index filename
+     * @param \Arch\Registry\Config $config The application configuration
      */
-    public abstract function parseAction(
-        $base_url = '/',
-        $index_file = 'index.php'
-    );
+    public abstract function parseAction(\Arch\Registry\Config $config);
     
     /**
      * Tells whether or not is a CLI input
@@ -131,6 +127,30 @@ abstract class Input
     }
     
     /**
+     * Returns true or false if pattern matches action
+     * Matches are populated in $this->params
+     * 
+     * @param string $pattern
+     * @param string $action
+     * @return boolean
+     */
+    public function parseActionParams($pattern)
+    {
+        $pattern = str_replace(
+            array(':any', ':num'), 
+            array('[^/]+', '[0-9]+'), 
+            $pattern
+        );
+        $match = preg_match('#^'.$pattern.'$#', $this->getAction(), $params);
+        if (!$match) {
+            return false;
+        }
+        array_shift($params);
+        $this->setActionParams($params);
+        return $params;
+    }
+    
+    /**
      * Check whether it is a core action (arch)
      * @return boolean
      */
@@ -145,15 +165,6 @@ abstract class Input
         }
         return true;
     }
-    
-    /**
-     * Returns a new input validator
-     * @return \Arch\Validator
-     */
-    public function createValidator()
-    {
-        return new \Arch\Validator($this);
-    }
 
     /**
      * Does a primary sanitization
@@ -163,19 +174,33 @@ abstract class Input
     {
         if (isset($this->params[$key])) {
             if (is_array($this->params[$key])) {
-                foreach ($this->params[$key] as $k => &$v) {
-                    $this->params[$key][$k] = filter_var($v, $filter);
-                    if ($filter == FILTER_SANITIZE_NUMBER_INT) {
-                        $v = (int) $v;
-                    }
+                foreach ($this->params[$key] as $k => $v) {
+                    $this->params[$key][$k] = $this->sanitizeVar($v, $filter);
                 }
                 unset($v);
             } else {
-                $this->params[$key] = filter_var($this->params[$key], $filter);
-                if ($filter == FILTER_SANITIZE_NUMBER_INT) {
-                    $this->params[$key] = (int) $this->params[$key];
-                }
+                $this->params[$key] = $this->sanitizeVar(
+                    $this->params[$key],
+                    $filter
+                );
             }
         }
+    }
+    
+    /**
+     * Sanitizes a variable
+     * @param mixed $var The variable to sanitize
+     * @param int $filter The filter to use in sanitization
+     */
+    protected function sanitizeVar($var, $filter = FILTER_SANITIZE_STRING)
+    {
+        if ($filter == FILTER_SANITIZE_NUMBER_INT) {
+            $var = (int) $var;
+        } elseif ($filter == FILTER_SANITIZE_NUMBER_FLOAT) {
+            $var = (float) $var;
+        } else {
+            $var = filter_var($var, $filter);
+        }
+        return $var;
     }
 }

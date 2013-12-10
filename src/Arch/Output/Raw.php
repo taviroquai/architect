@@ -5,7 +5,7 @@ namespace Arch\Output;
 /**
  * Raw output class
  */
-class Raw extends \Arch\Output
+class Raw extends \Arch\IOutput
 {
     /**
      * Send the output

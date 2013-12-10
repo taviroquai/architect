@@ -72,7 +72,7 @@ class AutoTable extends \Arch\View\AutoPanel
         if (!isset($config['class'])) {
             $config['class'] = 'btn';
         }
-        $v = new \Arch\View($tmpl, $config);
+        $v = new \Arch\Registry\View($tmpl, $config);
         $v->set('record', $record);
         return $v;
     }
@@ -96,7 +96,7 @@ class AutoTable extends \Arch\View\AutoPanel
             $config['value'] = isset($record[$config['property']]) ?
                 $record[$config['property']] : '';
         }
-        $v = new \Arch\View($tmpl, $config);
+        $v = new \Arch\Registry\View($tmpl, $config);
         $v->set('record', $record);
         return $v;
     }

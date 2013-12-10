@@ -5,7 +5,7 @@ namespace Arch\View;
 /**
  * View datepicker
  */
-class DatePicker extends \Arch\View
+class DatePicker extends \Arch\Registry\View
 {
     /**
      * Returns a new date picker view

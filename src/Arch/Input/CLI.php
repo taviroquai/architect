@@ -7,7 +7,7 @@ namespace Arch\Input;
  *
  * @author mafonso
  */
-class CLI extends \Arch\Input
+class CLI extends \Arch\IInput
 {
     /**
      * Returns a new CLI Input
@@ -20,10 +20,9 @@ class CLI extends \Arch\Input
     
     /**
      * Tries to find user action through all input
-     * @param string $base_url The application base url
-     * @param string $index_file The application index filename
+     * @param \Arch\Registry\Config $config The application configuration
      */
-    public function parseAction($base_url = '/', $index_file = 'index.php')
+    public function parseAction(\Arch\Registry\Config $config)
     {
         if (!empty($this->params[1])) {
             $this->action = $this->params[1];

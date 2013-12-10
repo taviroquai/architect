@@ -5,7 +5,7 @@ namespace Arch\View;
 /**
  * TreeView class
  */
-class TreeView extends \Arch\View
+class TreeView extends \Arch\Registry\View
 {
 
     /**

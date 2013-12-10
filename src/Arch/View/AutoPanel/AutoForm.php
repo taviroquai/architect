@@ -89,7 +89,7 @@ class AutoForm extends \Arch\View\AutoPanel
         if (empty($config['tmpl'])) {
             $tmpl = __DIR__.'/../../../../theme/form/breakline.php';
         }
-        return new \Arch\View($tmpl, $config);
+        return new \Arch\Registry\View($tmpl, $config);
     }
     
     protected function createLabel($config)
@@ -98,7 +98,7 @@ class AutoForm extends \Arch\View\AutoPanel
             $tmpl = __DIR__.'/../../../../theme/form/label.php';
         }
         $config['label'] = empty($config['label']) ? '' : $config['label'];
-        return new \Arch\View($tmpl, $config);
+        return new \Arch\Registry\View($tmpl, $config);
     }
     
     protected function createInputHidden($config)
@@ -117,7 +117,7 @@ class AutoForm extends \Arch\View\AutoPanel
                     $config['value'] = $this->record[$config['property']];
                 }
             }
-            $view = new \Arch\View($tmpl, $config);
+            $view = new \Arch\Registry\View($tmpl, $config);
         }
         return $view;
     }
@@ -132,7 +132,7 @@ class AutoForm extends \Arch\View\AutoPanel
             if (empty($config['name'])) {
                 $config['name'] = $config['property'];
             }
-            $view = new \Arch\View($tmpl, $config);
+            $view = new \Arch\Registry\View($tmpl, $config);
         }
         return $view;
     }
@@ -149,7 +149,7 @@ class AutoForm extends \Arch\View\AutoPanel
         ) {
             $config['action'] .= $this->record[$config['property']];
         }
-        $v = new \Arch\View($tmpl, $config);
+        $v = new \Arch\Registry\View($tmpl, $config);
         return $v;
     }
     
@@ -160,7 +160,7 @@ class AutoForm extends \Arch\View\AutoPanel
         }
         $config['label'] = empty($config['label']) ? '' : $config['label'];
         $config['class'] = empty($config['class']) ? '' : $config['class'];
-        $v = new \Arch\View($tmpl, $config);
+        $v = new \Arch\Registry\View($tmpl, $config);
         return $v;
     }
     
@@ -181,7 +181,7 @@ class AutoForm extends \Arch\View\AutoPanel
                 $config['value'] = $this->record[$config['property']];
             }
         }
-        return new \Arch\View($tmpl, $config);
+        return new \Arch\Registry\View($tmpl, $config);
     }
     
     protected function createTextArea($config)
@@ -201,7 +201,7 @@ class AutoForm extends \Arch\View\AutoPanel
                 $config['value'] = $this->record[$config['property']];
             }
         }
-        return new \Arch\View($tmpl, $config);
+        return new \Arch\Registry\View($tmpl, $config);
     }
     
     protected function createSelect($config)
@@ -233,7 +233,7 @@ class AutoForm extends \Arch\View\AutoPanel
                 }
             }
         }
-        return new \Arch\View($tmpl, $config);
+        return new \Arch\Registry\View($tmpl, $config);
     }
     
     protected function createCheckList($config)
@@ -271,7 +271,7 @@ class AutoForm extends \Arch\View\AutoPanel
         }
         $config['class'] = empty($config['class']) ? 
                 'checkbox' : $config['class'];
-        return new \Arch\View($tmpl, $config);
+        return new \Arch\Registry\View($tmpl, $config);
     }
     
     protected function createRadioList($config)

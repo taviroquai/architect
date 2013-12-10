@@ -7,7 +7,7 @@ namespace Arch\Helper;
  *
  * @author mafonso
  */
-class CreateIdiom extends \Arch\Helper
+class CreateIdiom extends \Arch\IHelper
 {
     protected $code;
     protected $name;
@@ -50,7 +50,7 @@ class CreateIdiom extends \Arch\Helper
         if (!$this->app->getSession()->get('idiom')) {
             $this->app->getSession()->set('idiom', $this->code);
         }
-        $idiom = new \Arch\Idiom($this->code);
+        $idiom = new \Arch\Registry\Idiom($this->code);
         $filename = $idiom->resolveFilename(
             $this->name,
             $this->module,

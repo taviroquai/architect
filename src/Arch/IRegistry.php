@@ -3,11 +3,11 @@
 namespace Arch;
 
 /**
- * Description of Registry
+ * Description of IRegistry
  *
  * @author mafonso
  */
-abstract class Registry {
+abstract class IRegistry {
 
     /**
      * @var array
@@ -19,11 +19,12 @@ abstract class Registry {
      *
      * @param string $key
      * @param mixed  $value
-     * @return void
+     * @return \Arch\IRegistry
      */
     public function set($key, $value)
     {
         $this->storage[(string)$key] = $value;
+        return $this;
     }
 
     /**
@@ -35,7 +36,7 @@ abstract class Registry {
     public function get($key)
     {
         $result = null;
-        if (self::exists($key)) {
+        if ($this->exists($key)) {
             $result = $this->storage[(string)$key];
         }
         return $result;
@@ -54,11 +55,13 @@ abstract class Registry {
     /**
      * Removes a value from storage
      * @param string $key
+     * @return \Arch\IRegistry
      */
     public function delete($key)
     {
-        if (self::exists($key)) {
+        if ($this->exists($key)) {
             unset($this->storage[(string)$key]);
         }
+        return $this;
     }
 }

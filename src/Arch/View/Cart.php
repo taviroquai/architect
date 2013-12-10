@@ -5,9 +5,8 @@ namespace Arch\View;
 /**
  * View Cart
  */
-class Cart extends \Arch\View
+class Cart extends \Arch\Registry\View
 {
-    
     /**
      * the cart model
      * @var Model_Cart

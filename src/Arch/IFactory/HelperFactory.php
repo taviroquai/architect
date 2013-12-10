@@ -41,6 +41,15 @@ class HelperFactory extends \Arch\IFactory
     }
     
     /**
+     * Returns a new input validator
+     * @return \Arch\Validator
+     */
+    public function createValidator()
+    {
+        return new \Arch\Helper\Validator($this->app);
+    }
+    
+    /**
      * Returns a new Idiom object.
      * 
      * Helps to get translations from idiom files (.xml)

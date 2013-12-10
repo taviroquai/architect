@@ -7,7 +7,7 @@ namespace Arch\View;
  *
  * @author mafonso
  */
-class AntiSpam extends \Arch\View
+class AntiSpam extends \Arch\Registry\View
 {
     /**
      * Holds the application session
@@ -22,8 +22,8 @@ class AntiSpam extends \Arch\View
     protected $input;
     
     public function __construct(
-        \Arch\Registry\Session $session,
-        \Arch\Input $input
+        \Arch\Registry\ISession $session,
+        \Arch\IInput $input
     ) {
         parent::__construct();
         $tmpl = implode(DIRECTORY_SEPARATOR,

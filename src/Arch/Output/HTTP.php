@@ -5,7 +5,7 @@ namespace Arch\Output;
 /**
  * HTTP output class
  */
-class HTTP extends \Arch\Output
+class HTTP extends \Arch\IOutput
 {
     /**
      * Holds the HTTP headers

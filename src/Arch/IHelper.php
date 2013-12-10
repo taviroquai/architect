@@ -3,11 +3,11 @@
 namespace Arch;
 
 /**
- * Description of Helper
+ * Description of IHelper
  *
  * @author mafonso
  */
-abstract class Helper {
+abstract class IHelper {
     
     /**
      * Holds the Architect application

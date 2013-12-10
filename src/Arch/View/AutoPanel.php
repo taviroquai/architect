@@ -6,7 +6,7 @@ namespace Arch\View;
  *
  * @author mafonso
  */
-class AutoPanel extends \Arch\View
+class AutoPanel extends \Arch\Theme\Layout
 {
     /**
      * The configuration

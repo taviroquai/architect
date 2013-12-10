@@ -5,12 +5,12 @@ namespace Arch\View;
 /**
  * Breadcrumbs class
  */
-class Breadcrumbs extends \Arch\View
+class Breadcrumbs extends \Arch\Registry\View
 {
     /**
      * Returns a new breadcrumbs view
      */
-	public function __construct()
+    public function __construct()
     {
 
         $tmpl = implode(DIRECTORY_SEPARATOR, 
@@ -19,7 +19,7 @@ class Breadcrumbs extends \Arch\View
         
         $this->set('items', array());
         $this->set('home', 'Home');
-	}
+    }
     
     /**
      * Parse items from input action
@@ -31,7 +31,7 @@ class Breadcrumbs extends \Arch\View
         $action = '';
         $i = 0;
         foreach ($items as $item) {
-            $text = $i == 0 ? $this->data['home'] : $item;
+            $text = $i == 0 ? $this->get('home') : $item;
             $action = 
                 ($i == 0) ? '/' : 
                     ($i == 1) ? '/'.$item : 
@@ -55,7 +55,7 @@ class Breadcrumbs extends \Arch\View
      */
     public function addItem($text, $url = '#', $active = 0)
     {
-        $this->data['items'][] = (object) array(
+        $this->storage['items'][] = (object) array(
             'text' => $text, 
             'url' => $url, 
             'active' => $active

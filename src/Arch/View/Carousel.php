@@ -5,7 +5,7 @@ namespace Arch\View;
 /**
  * Carousel view class
  */
-class Carousel extends \Arch\View
+class Carousel extends \Arch\Registry\View
 {
     /**
      * Returns a new Carousel view
@@ -27,7 +27,7 @@ class Carousel extends \Arch\View
      */
     public function addItem($html, $active = 0)
     {
-        $this->data['items'][] = (object) array( 
+        $this->storage['items'][] = (object) array( 
             'html' => $html, 
             'active' => $active
             );

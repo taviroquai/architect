@@ -7,7 +7,7 @@ namespace Arch\Helper;
  *
  * @author mafonso
  */
-class Download extends \Arch\Helper
+class Download extends \Arch\IHelper
 {
     protected $filename;
     protected $attachment;

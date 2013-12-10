@@ -51,7 +51,21 @@ class GenericViewFactory extends \Arch\IFactory
      */
     public function createView($tmpl, $data = array())
     {
-        return new \Arch\View($tmpl, $data);
+        return new \Arch\Registry\View($tmpl, $data);
+    }
+    
+    /**
+     * Returns a new layout - a view with layout slots
+     * 
+     * The layout adds methods to allow slot manipulation on the template.
+     * 
+     * @param string $tmpl The template path
+     * @param array $data The associative array with data
+     * @return \Arch\Theme\Layout
+     */
+    public function createLayout($tmpl, $data = array())
+    {
+        return new \Arch\Theme\Layout($tmpl, $data);
     }
     
     /**
@@ -243,14 +257,13 @@ class GenericViewFactory extends \Arch\IFactory
      * You should use your own template. Copy the default template from
      * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory
      * 
-     * @param string $tmpl The template for the map
      * @return \Arch\View\Map
      */
-    public function createMap(\Arch\Model\Map $model)
+    public function createMap()
     {
-        $view = new \Arch\View\Map($model);
+        $view = new \Arch\View\Map();
         $this->app->getTheme()->addContent(
-            $this->app->url('/arch/asset/css/leaflet.css'),
+            $this->app->getHelperFactory()->url('/arch/asset/css/leaflet.css'),
             'css'
         );
         $this->app->getTheme()->addContent(
@@ -258,15 +271,15 @@ class GenericViewFactory extends \Arch\IFactory
                 'js'
         );
         $this->app->getTheme()->addContent(
-            $this->app->url('/arch/asset/js/leaflet.js'),
+            $this->app->getHelperFactory()->url('/arch/asset/js/leaflet.js'),
             'js'
         );
         $this->app->getTheme()->addContent(
-            $this->app->url('/arch/asset/js/leaflet.Google.js'),
+            $this->app->getHelperFactory()->url('/arch/asset/js/leaflet.Google.js'),
             'js'
         );
         $this->app->getTheme()->addContent(
-            $this->app->url('/arch/asset/js/map.js'),
+            $this->app->getHelperFactory()->url('/arch/asset/js/map.js'),
             'js'
         );
         return $view;

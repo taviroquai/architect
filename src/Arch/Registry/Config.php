@@ -5,7 +5,7 @@ namespace Arch\Registry;
 /**
  * Config class
  */
-class Config extends \Arch\Registry
+class Config extends \Arch\IRegistry
 {
     /**
      * Holds the required configuration keys

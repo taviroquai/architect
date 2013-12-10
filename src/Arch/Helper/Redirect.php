@@ -7,7 +7,7 @@ namespace Arch\Helper;
  *
  * @author mafonso
  */
-class Redirect extends \Arch\Helper
+class Redirect extends \Arch\IHelper
 {
     protected $url;
     

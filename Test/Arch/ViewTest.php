@@ -24,7 +24,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateView()
     {
-        $view = new \Arch\View();
+        $view = new \Arch\Registry\View();
         $this->assertInstanceOf('\Arch\View', $view);
     }
     
@@ -33,7 +33,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
      */
     public function testRenderContent()
     {
-        $view = new \Arch\View();
+        $view = new \Arch\Registry\View();
         $result = (string) $view;
         $this->assertInternalType('string', $result);
         $expected = '';
@@ -47,7 +47,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     {
         $expected = '<div></div>';
         $template = RESOURCE_PATH.'/template/div.php';
-        $view = new \Arch\View($template);
+        $view = new \Arch\Registry\View($template);
         $this->assertEquals($expected, (string) $view);
         $view->setTemplate($template);
         $this->assertEquals($expected, (string) $view);
@@ -60,7 +60,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     {
         
         $template = RESOURCE_PATH.'/template/div.php';
-        $view = new \Arch\View($template);
+        $view = new \Arch\Registry\View($template);
         
         $expected = '';
         $view->hide();
@@ -77,7 +77,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     public function testSetGetData()
     {
         $template = RESOURCE_PATH.'/template/div.php';
-        $view = new \Arch\View($template);
+        $view = new \Arch\Registry\View($template);
         
         $expected = null;
         $view->set('key', $expected);
@@ -91,7 +91,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     public function testTemplateData($value, $expected)
     {
         $template = RESOURCE_PATH.'/template/div.php';
-        $view = new \Arch\View($template);
+        $view = new \Arch\Registry\View($template);
         $view->set('key', $value);
         $this->assertEquals($expected, (string) $view);
         $this->assertEquals($value, $view->get('key'));
@@ -103,7 +103,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     public function testSlots()
     {
         $template = RESOURCE_PATH.'/template/div.php';
-        $view = new \Arch\View($template);
+        $view = new \Arch\Registry\View($template);
         
         $expected = array('content');
         $this->assertEquals($expected, $view->getSlots());
@@ -133,7 +133,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     {
         $expected = '<p>value</p>';
         
-        $view = new \Arch\View();
+        $view = new \Arch\Registry\View();
         $view->addContent('value');
         ob_start();
         $view->slot('content', function($item) {

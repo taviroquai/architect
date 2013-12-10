@@ -1,11 +1,11 @@
 <?php
 
-namespace Arch\View;
+namespace Arch\Theme;
 
 /**
  * Theme class
  */
-class Theme extends \Arch\View
+class Directory extends \Arch\ITheme
 {
     /**
      * Holds the theme directory path
@@ -71,7 +71,7 @@ class Theme extends \Arch\View
         // add flash messages slot
         $this->set(
             'messages',
-            new \Arch\View($this->theme_path.DIRECTORY_SEPARATOR.'messages.php')
+            new \Arch\Registry\View($this->theme_path.DIRECTORY_SEPARATOR.'messages.php')
         );
     }
 }

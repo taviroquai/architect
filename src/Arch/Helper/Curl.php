@@ -7,7 +7,7 @@ namespace Arch\Helper;
  *
  * @author mafonso
  */
-class Curl extends \Arch\Helper
+class Curl extends \Arch\IHelper
 {
     protected $url;
     protected $data;

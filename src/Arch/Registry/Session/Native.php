@@ -5,7 +5,7 @@ namespace Arch\Registry\Session;
 /**
  * Native session class
  */
-class Native extends \Arch\Registry\Session
+class Native extends \Arch\Registry\ISession
 {
     /**
      * Generates a session identifier

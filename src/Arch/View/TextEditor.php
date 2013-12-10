@@ -5,7 +5,7 @@ namespace Arch\View;
 /**
  * View Text Editor
  */
-class TextEditor extends \Arch\View
+class TextEditor extends \Arch\Registry\View
 {
 	
     /**

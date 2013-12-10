@@ -7,7 +7,7 @@ namespace Arch\Registry;
  *
  * @author mafonso
  */
-class Events extends \Arch\Registry {
+class Events extends \Arch\IRegistry {
     
     /**
      * Returns a new Events registry
