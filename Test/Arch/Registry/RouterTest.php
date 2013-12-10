@@ -44,19 +44,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Test parse params by pattern
-     */
-    public function testParseActionParams()
-    {
-        $pattern = '/(:any)/(:num)';
-        $action = '/test/1';
-        $expected = array('test', '1');
-        $router = new \Arch\Registry\Router();
-        $result = $router->getActionParams($pattern, $action);
-        $this->assertEquals($expected, $result);
-    }
-    
-    /**
      * Test add valid route
      */
     public function testAddValidRoute()
@@ -66,8 +53,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         };
         $router = new \Arch\Registry\Router();
         $router->addRoute('test', $expected);
-        $pattern = 'test';
-        $result = $router->getRouteCallback($pattern, new \Arch\Input);
+        $result = $router->getRouteCallback(new \Arch\Input\HTTP\GET());
         $this->assertEquals($expected, $result);
     }
     
@@ -80,8 +66,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $router->addRoute('test', function() {
             return true;
         });
-        $pattern = NULL;
-        $result = $router->getRouteCallback($pattern, new \Arch\Input);
+        $result = $router->getRouteCallback(new \Arch\Input\HTTP\GET());
         $this->assertInstanceOf('Closure', $result);
     }
 }

@@ -45,9 +45,28 @@ abstract class IOutput
     }
     
     /**
+     * Adds an HTTP header
+     * @param string $header
+     */
+    public abstract function addHeader($header);
+    
+    /**
+     * Sets HTTP headers to be used on HTTP type
+     * @param array $headers The list of headers to be sent
+     * @return \Arch\Output
+     */
+    public abstract function setHeaders($headers);
+
+    /**
+     * Returns the output headers
+     * @return array
+     */
+    public abstract function & getHeaders();
+    
+    /**
      * Send the output
      */
-    abstract public function send();
+    public abstract function send();
     
     /**
      * Outputs a static file

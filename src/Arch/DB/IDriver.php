@@ -88,6 +88,13 @@ abstract class IDriver
     {
         $this->logger = $logger;
     }
+    
+    public function log($msg, $label = 'access')
+    {
+        if ($this->getLogger()) {
+            $this->getLogger()->log($msg, $label);
+        }
+    }
 
     /**
      * Returns a Data Source Name

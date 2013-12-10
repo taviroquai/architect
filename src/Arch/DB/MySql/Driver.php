@@ -8,7 +8,6 @@ namespace Arch\DB\MySql;
  */
 class Driver extends \Arch\DB\IDriver
 {
-
     /**
      * Holds the database connection
      * @var \PDO
@@ -74,7 +73,7 @@ class Driver extends \Arch\DB\IDriver
                 . 'FROM COLUMNS '
                 . 'WHERE TABLE_SCHEMA = ?';
         $stm = $this->schema->prepare($sql);
-        $this->logger->log('DB schema query: '.$stm->queryString);
+        $this->log('DB schema query: '.$stm->queryString);
         $stm->execute($data);
         return $stm->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -93,7 +92,7 @@ class Driver extends \Arch\DB\IDriver
             'FROM KEY_COLUMN_USAGE ' .
             'WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ? AND REFERENCED_TABLE_NAME IS NOT NULL';
         $stm = $this->schema->prepare($sql);
-        $this->logger->log('DB schema query: '.$stm->queryString);
+        $this->log('DB schema query: '.$stm->queryString);
         if ($stm->execute($data) && $t = $stm->fetch(\PDO::FETCH_ASSOC)) {
             $result = $t;
         }
@@ -111,12 +110,12 @@ class Driver extends \Arch\DB\IDriver
         $sql = "DESCRIBE `$table_name`";
         try {
             $stm = $this->db_pdo->prepare($sql);
-            $this->logger->log('DB query: '.$stm->queryString);
+            $this->log('DB query: '.$stm->queryString);            
             if ($stm->execute()) {
                 $result = $stm->fetchAll(\PDO::FETCH_ASSOC);
             }
         } catch (\PDOException $e) {
-            $this->logger->log('DB query error: '.$e->getMessage(), 'error');
+            $this->log('DB query error: '.$e->getMessage(), 'error');
         }
         return $result;
     }

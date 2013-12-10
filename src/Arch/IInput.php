@@ -14,6 +14,12 @@ abstract class IInput
     protected $api;
     
     /**
+     * Holds the HTTP user agent (UA)
+     * @var string
+     */
+    protected $user_agent;
+    
+    /**
      * The list of input params
      * @var array
      */
@@ -60,6 +66,12 @@ abstract class IInput
      * @return boolean
      */
     public abstract function getFileByIndex($index);
+    
+    /**
+     * Returns the input agent
+     * @return string
+     */
+    public abstract function getUserAgent();
 
     /**
      * Gets user input action

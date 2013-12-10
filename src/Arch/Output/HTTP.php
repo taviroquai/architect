@@ -20,10 +20,22 @@ class HTTP extends \Arch\IOutput
      */
     public function setHeaders($headers)
     {
-        $this->headers = (array) $headers;
+        $headers = (array) $headers;
+        foreach ($headers as $item) {
+            $this->addHeader($item);
+        }
         return $this;
     }
     
+    /**
+     * Adds an HTTP header
+     * @param string $header
+     */
+    public function addHeader($header)
+    {
+        $this->headers[] = $header;
+    }
+
     /**
      * Returns the output headers
      * @return array
@@ -39,9 +51,9 @@ class HTTP extends \Arch\IOutput
     public function addCacheHeaders($seconds = 300)
     {
         $ts = gmdate("D, d M Y H:i:s", time()+$seconds)." GMT";
-        $this->headers[] = "Expires: $ts";
-        $this->headers[] = "Pragma: cache";
-        $this->headers[] = "Cache-Control: max-age=".$seconds;
+        $this->addHeader("Expires: $ts");
+        $this->addHeader("Pragma: cache");
+        $this->addHeader("Cache-Control: max-age=".$seconds);
     }
 
     /**

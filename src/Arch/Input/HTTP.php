@@ -22,12 +22,6 @@ class HTTP extends \Arch\IInput {
     protected $uri;
     
     /**
-     * Holds the HTTP user agent (UA)
-     * @var string
-     */
-    protected $user_agent;
-    
-    /**
      * Holds the HTTP query string
      * @var string
      */

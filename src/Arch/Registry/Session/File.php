@@ -3,16 +3,15 @@
 namespace Arch\Registry\Session;
 
 /**
- * Native session class
+ * File session class
  */
-class Native extends \Arch\Registry\ISession
+class File extends \Arch\Registry\ISession
 {
     /**
      * Generates a session identifier
      */
     public function generateId() {
-        session_regenerate_id();
-        $this->id = session_id();
+        $this->id = md5(time());
     }
 
     /**
@@ -21,9 +20,7 @@ class Native extends \Arch\Registry\ISession
      */
     public function load(&$session = array())
     {
-        ini_set('session.gc_probability', 0);
-        session_start();
-        parent::load($_SESSION);
+        parent::load($session);
     }
     
     /**
@@ -31,8 +28,7 @@ class Native extends \Arch\Registry\ISession
      */
     public function save(&$session = array())
     {
-        parent::save($_SESSION);
-        session_write_close();
+        parent::save($session);
     }
     
     /**
@@ -41,7 +37,6 @@ class Native extends \Arch\Registry\ISession
     public function reset()
     {
         parent::reset();
-        session_destroy();
         $this->load();
     }
 }

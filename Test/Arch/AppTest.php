@@ -43,7 +43,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testRunApplicationNoModules($app)
     {   
-        $app->config->set('MODULE_PATH', '');
+        $app->getConfig()->set('MODULE_PATH', '');
         $app->run();
     }
 }

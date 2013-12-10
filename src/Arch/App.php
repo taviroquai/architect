@@ -216,7 +216,7 @@ class App
     {
         // prevent infinit calls
         if ($this->stage === 'run') {
-            throw new Exception('The application is already running');
+            throw new \Exception('The application is already running');
         }
         
         // update stage

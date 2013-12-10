@@ -31,7 +31,7 @@ class Redirect extends \Arch\IHelper
             $output->setHeaders(array('Location: '.$this->url));
             $output->send();
             $this->app->getLogger()->log('Redirecting to '.$this->url);
-            $this->getEvents()->triggerEvent('arch.session.save');
+            $this->app->getEvents()->triggerEvent('arch.session.save');
             $this->app->getLogger()->log('Session closed');
             $this->app->getLogger()->close();
             exit();

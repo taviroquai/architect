@@ -36,6 +36,7 @@ class CLI extends \Arch\IInput
     public function parseServer($server)
     {
         $this->params = $server['argv'];
+        $this->user_agent = $server['SHELL'];
     }
     
     /**
@@ -55,5 +56,14 @@ class CLI extends \Arch\IInput
     public function getFileByIndex($index)
     {
         return false;
+    }
+    
+    /**
+     * Returns the input agent
+     * @return string
+     */
+    public function getUserAgent()
+    {
+        return $this->user_agent;
     }
 }

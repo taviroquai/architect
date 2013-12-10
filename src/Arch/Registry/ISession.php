@@ -38,24 +38,60 @@ implements \Arch\IMessenger
 
     /**
      * Returns the session id
+     * @return string
      */
-    public abstract function getId();
+    public function getId() {
+        return $this->id;
+    }
 
     /**
-     * Loads all data into storages
+     * Loads data into storage
      * Initiates session messages storage
+     * @param array $session
      */
-    public abstract function load();
+    public function load(&$session = array())
+    {
+        foreach ($session as $prop => $value) {
+            if (strpos($prop, 'msgs') === 0) {
+                $messages = explode('|', $value);
+                foreach ($messages as $msg_serialized) {
+                    if ($msg = unserialize($msg_serialized)) {
+                        $this->addMessage($msg);
+                    }
+                }
+            } else {
+                $this->storage[$prop] = $value;
+            }
+        }
+    }
     
     /**
-     * Saves all session storage and closes session
+     * Saves all session storage and close session
      */
-    public abstract function save();
+    public function save(&$session = array())
+    {
+        foreach ($this->storage as $prop => $value) {
+            $session[$prop] = $value;
+        }
+        $msgs = $this->getMessages();
+        if (count($msgs)) {
+            $messages = '';
+            foreach ($msgs as $message) {
+                $messages[] = serialize($message);
+            }
+            $session['msgs'] = implode('|', $messages);
+        }
+    }
     
     /**
      * Resets storage session
      */
-    public abstract function reset();
+    public function reset()
+    {
+        foreach ($this->storage as $prop => $value) {
+            unset($this->storage[$prop]);
+        }
+    }
     
     /**
      * Creates a new message

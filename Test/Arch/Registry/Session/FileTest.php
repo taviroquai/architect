@@ -4,27 +4,28 @@
 if (!isset($_SESSION)) $_SESSION = array();
 
 /**
- * Description of SessionTest
+ * Description of FileTest
  *
  * @author mafonso
  */
-class SessionTest extends \PHPUnit_Framework_TestCase
+class FileTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Test create session
      */
     public function testCreateSession()
     {
-        $session = new \Arch\Registry\Session();
-        $this->assertNotEmpty($session->name);
+        $session = new \Arch\Registry\Session\File();
+        $this->assertInstanceOf('\Arch\Registry\Session\File', $session);
     }
     
     /**
      * Test load data
+     * @runInSeparateProcess
      */
     public function testLoadData()
     {
-        $session = new \Arch\Registry\Session();
+        $session = new \Arch\Registry\Session\File();
         $session->load($_SESSION);
         $this->assertEmpty($session->get('param'));
         $expected = 'value';
@@ -40,7 +41,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     {
         $expected = 'value';
         $_SESSION = array();
-        $session = new \Arch\Registry\Session();
+        $session = new \Arch\Registry\Session\File();
         $session->set('param', $expected);
         $session->save($_SESSION);
         $this->assertEquals($expected, $_SESSION['param']);
@@ -53,7 +54,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     {
         $expected = 'value';
         $_SESSION['oldparam'] = 'oldvalue';
-        $session = new \Arch\Registry\Session();
+        $session = new \Arch\Registry\Session\File();
         $session->set('param', $expected);
         $session->save($_SESSION);
         $this->assertEquals($expected, $_SESSION['param']);
@@ -65,7 +66,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     public function testResetSession()
     {
         $expected = null;
-        $session = new \Arch\Registry\Session();
+        $session = new \Arch\Registry\Session\File();
         $session->set('param', 'value');
         $session->reset();
         $this->assertEquals($expected, $session->get('param'));
@@ -77,7 +78,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     public function testFailGetParam()
     {
         $expected = null;
-        $session = new \Arch\Registry\Session();
+        $session = new \Arch\Registry\Session\File();
         $this->assertEquals($expected, $session->get('param'));
     }
     
@@ -87,7 +88,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     public function testSetObjectParam()
     {
         $expected = new stdClass;
-        $session = new \Arch\Registry\Session();
+        $session = new \Arch\Registry\Session\File();
         $session->set('param', $expected);
         $this->assertEquals($expected, $session->get('param'));
     }
@@ -98,7 +99,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     public function testUnsetParam()
     {
         $expected = null;
-        $session = new \Arch\Registry\Session();
+        $session = new \Arch\Registry\Session\File();
         $session->set('param', new stdClass);
         $session->delete('param');
         $this->assertEquals($expected, $session->get('param'));
@@ -110,7 +111,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     public function testExistsParam()
     {
         $expected = true;
-        $session = new \Arch\Registry\Session();
+        $session = new \Arch\Registry\Session\File();
         $session->set('param', new stdClass);
         $result = $session->exists('param');
         $this->assertEquals($expected, $result);
@@ -121,7 +122,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetMessages()
     {
-        $session = new \Arch\Registry\Session();
+        $session = new \Arch\Registry\Session\File();
         $expected = array();
         $this->assertEquals($expected, $session->getMessages());
         
@@ -136,7 +137,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
      */
     public function testClearMessages()
     {
-        $session = new \Arch\Registry\Session();
+        $session = new \Arch\Registry\Session\File();
         $expected = array();
         $session->addMessage(new \Arch\Message('test'));
         $session->clearMessages();
@@ -151,7 +152,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $message = new \Arch\Message('test');
         $expected = array($message);
         
-        $session = new \Arch\Registry\Session();
+        $session = new \Arch\Registry\Session\File();
         $session->loadMessages($expected);
         $this->assertEquals($expected, $session->getMessages());
     }

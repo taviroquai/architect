@@ -64,7 +64,7 @@ abstract class ITable
         $this->driver = $driver;
         $this->node = $this->createSelect();
     }
-    
+
     /**
      * Select alias
      * Select fields and executes a select operation
@@ -405,7 +405,7 @@ abstract class ITable
                     $params = array_merge ($params, $this->node->where);
                 }
             }
-            $this->driver->getLogger()->log('DB query params count: '.count($params));
+            $this->driver->log('DB query params count: '.count($params));
             
             // build PDO params
             if (is_array($params) && !empty($params)) {
@@ -418,18 +418,18 @@ abstract class ITable
             
             // fail if there is no statement
             if (empty($this->stm)) {
-                $this->driver->getLogger()->log('Invalid database statement');
+                $this->driver->log('Invalid database statement');
             } else {
                 // Log the error information and show an error page to the user
-                $this->driver->getLogger()->log('DB query failed: '.
+                $this->driver->log('DB query failed: '.
                         $this->stm->queryString, 'error');
-                $this->driver->getLogger()->log('Details: '.$e->getMessage(), 'error');
+                $this->driver->log('Details: '.$e->getMessage(), 'error');
             }
             return false;
         }
         
         // log the valid query
-        $this->driver->getLogger()->log('DB query is valid: '.$this->stm->queryString);
+        $this->driver->log('DB query is valid: '.$this->stm->queryString);
         
         // return PDOStatement for further operations
         return $this->stm;
@@ -462,9 +462,9 @@ abstract class ITable
             
         } catch (\PDOException $e) {
             $this->driver->getPDO()->rollBack();
-            $this->driver->getLogger()->log('PDO Exception: '.$e->getMessage(), 'error');
+            $this->driver->log('PDO Exception: '.$e->getMessage(), 'error');
         } catch (\Exception $e) {
-            $this->driver->getLogger()->log('Exception: '.$e->getMessage(), 'error');
+            $this->driver->log('Exception: '.$e->getMessage(), 'error');
         }
         return false;
     }
@@ -552,7 +552,9 @@ abstract class ITable
     
     protected function addBackTicks($items, $skip = false)
     {
-        if (!is_array($items)) return $skip ? $items : "`$items`";
+        if (!is_array($items)) {
+            return $skip ? $items : "`$items`";
+        }
         foreach ($items as &$field) {
             $field = "`$field`";
         }
