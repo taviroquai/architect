@@ -175,20 +175,6 @@ class GenericViewFactory extends \Arch\IFactory
     }
     
     /**
-     * Creates a new shopping cart view.
-     * 
-     * You should use your own template. Copy the default template from
-     * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory
-     * 
-     * @return \Arch\View\Cart
-     */
-    public function createCart()
-    {
-        $model = new \Arch\Model\Cart ($this->app->getSession());
-        return new \Arch\View\Cart($model);
-    }
-    
-    /**
      * Returns an anti-spam view.
      * 
      * You should use your own template. Copy the default template from
