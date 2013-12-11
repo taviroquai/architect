@@ -5,6 +5,16 @@
  * 
  * conf() - Returns a configuration item
  * 
+ * view() - Returns the generic view factory
+ * 
+ * help() - Returns the helper factory
+ * 
+ * theme() - Loads a theme or returns current theme
+ * 
+ * session() - Sets or gets a session item
+ * 
+ * redirect() - Sends location HTTP header and save session before exit
+ * 
  * r() - Adds a new route
  * 
  * v() - Creates a new view giving a PHP template and a $data as associative array
@@ -126,6 +136,16 @@ function session($key, $value = null)
 function redirect($url = '')
 {
     help()->createRedirect($url)->execute();
+}
+
+/**
+ * Calls input to sanitize an input param
+ * @param string $key The input key param
+ * @param int $filter The sanitize filter
+ */
+function filter($key, $filter = FILTER_SANITIZE_STRING)
+{
+    app()->getInput()->sanitize($key, $filter);
 }
 
 /**
