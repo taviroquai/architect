@@ -66,7 +66,7 @@ class Router extends \Arch\IRegistry
      * @param \Arch\App $app
      */
     public function addCoreRoutes(\Arch\App $app)
-    {   
+    {
         // Add route 404! Show something if everything else fails...
         $this->addRoute('/404', function() use ($app) {
             $app->getOutput()->setHeaders(
@@ -78,18 +78,19 @@ class Router extends \Arch\IRegistry
         });
         
         // Add get static core file route
+        $router = $this;
         $this->addRoute(
                 '/arch/asset/(:any)/(:any)', 
-                function($dir, $filename) use ($app) {
+                function($dir, $filename) use ($app, $router) {
             $filename = implode(
                 DIRECTORY_SEPARATOR,
                 array(ARCH_PATH,'theme',$dir,$filename)
             );
             if (!file_exists($filename)) {
-                $app->getHelperFactory()->redirect ('/404');
+                $callback = $router->get('/404');
+                return $callback();
             } else {
                 $app->getOutput()->import($filename);
-                // add cache headers
                 $app->getOutput()->addCacheHeaders();
             }
         });

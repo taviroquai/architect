@@ -14,11 +14,22 @@ abstract class ITheme extends \Arch\Registry\View
     protected $slot;
     
     /**
+     * Returns a new Theme
+     * @param string $template
+     * @param array $data
+     */
+    public function __construct($template = '', array $data = array()) {
+        parent::__construct($template, $data);
+        $this->slot = array();
+    }
+
+
+    /**
      * Calls a slot using a template callback
      * 
      * @param string $slotName The slot name
      * @param function $template The slot template
-     * @return \View
+     * @return \Arch\ITheme
      */
     function render($slotName, callable $template)
     {
@@ -34,7 +45,7 @@ abstract class ITheme extends \Arch\Registry\View
      * Sets up a new slot identified by name
      * 
      * @param string $name The name of the new slot
-     * @return \View
+     * @return \Arch\ITheme
      */
     public function addSlot($name)
     {
@@ -60,18 +71,21 @@ abstract class ITheme extends \Arch\Registry\View
      */
     public function getSlotItems($name = 'content')
     {
-        if (!isset($this->slot[$name])) {
-            $this->addSlot($name);
+        $result = array();
+        if (isset($this->slot[$name])) {
+            $result = $this->slot[$name];
         }
-        return $this->slot[$name];
+        return $result;
     }
 
     /**
      * Sets the slot as empty
      * @param string $name The name of the slot to be emptyed
+     * @return \Arch\ITheme
      */
     public function emptySlot($name = 'content') {
         $this->slot[$name] = array();
+        return $this;
     }
 
     /**
@@ -84,7 +98,7 @@ abstract class ITheme extends \Arch\Registry\View
      * @param mixed $content The template, view or content
      * @param string $slotName The name of the slot
      * @param boolean $unique Tells whether this content should be unique
-     * @return \View
+     * @return \Arch\ITheme
      */
     public function addContent($content, $slotName = 'content', $unique = false)
     {
@@ -96,9 +110,8 @@ abstract class ITheme extends \Arch\Registry\View
             $unique = true;
         }
         if ($unique) {
-            foreach ($this->slot[$slotName] as $titem) {
-                if (gettype($titem) == gettype($content) 
-                        && $titem == $content) {
+            foreach ($this->slot[$slotName] as $item) {
+                if (gettype($item) == gettype($content) && $item == $content) {
                     $skip = true;
                 }
             }

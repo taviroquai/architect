@@ -46,20 +46,26 @@ class Pagination extends \Arch\Registry\View
 	
     /**
      * Returns a new pagination view
-     * @param \Arch\IInput The application input
      */
-    public function __construct(\Arch\IInput $input)
+    public function __construct()
     {
         $tmpl = implode(DIRECTORY_SEPARATOR,
                     array(ARCH_PATH,'theme','pagination.php'));
         parent::__construct($tmpl);
         
-        // get user input
-        $this->input = $input;
         $this->current = 1;
     }
     
     /**
+     * Sets the user input
+     * @param \Arch\IInput $input
+     */
+    public function setInput(\Arch\IInput $input)
+    {
+        $this->input = $input;
+    }
+
+        /**
      * Parses input and sets the current page and url
      * @param \Arch\Input $input The application input
      */

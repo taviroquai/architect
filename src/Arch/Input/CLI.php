@@ -66,4 +66,18 @@ class CLI extends \Arch\IInput
     {
         return $this->user_agent;
     }
+    
+    /**
+     * Returns the input host
+     * @return string
+     */
+    public function getHttpHost()
+    {
+        return 'localhost';
+    }
+    
+    public function getRequestUri()
+    {
+        return '/';
+    }
 }

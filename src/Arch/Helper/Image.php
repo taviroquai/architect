@@ -3,11 +3,11 @@
 namespace Arch\Helper;
 
 /**
- * Description of CreateImage
+ * Description of Image
  *
  * @author mafonso
  */
-class CreateImage extends \Arch\IHelper
+class Image extends \Arch\IHelper
 {
     protected $filename;
     

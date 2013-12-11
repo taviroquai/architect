@@ -16,34 +16,16 @@ class HTTP extends \Arch\IInput {
     protected $method;
     
     /**
-     * Holds the request URI
-     * @var string
-     */
-    protected $uri;
-    
-    /**
      * Holds the HTTP query string
      * @var string
      */
     protected $query;
     
     /**
-     * Holds the request host
-     * @var string
-     */
-    protected $host;
-    
-    /**
      * Tells if if is a secure HTTP request
      * @var https
      */
     protected $https;
-    
-    /**
-     * The list of input params
-     * @var array
-     */
-    protected $params = array();
     
     /**
      * Returns a new HTTP input
@@ -99,33 +81,6 @@ class HTTP extends \Arch\IInput {
     public function genCacheKey()
     {
         return 'arch.input.'.md5($this->action.$this->query);
-    }
-    
-    /**
-     * Sets the input params
-     * @param array $params The input params
-     */
-    public function setParams($params)
-    {
-        $this->params = $params;
-    }
-    
-    /**
-     * Returns a param by index
-     * If index is not provided, returns all params
-     * 
-     * @param integer $index
-     * @return boolean
-     */
-    public function get($index = null)
-    {
-        if ($index === null) {
-            return $this->params;
-        }
-        if (!isset($this->params[$index])) {
-            return false;
-        }
-        return $this->params[$index];
     }
     
     /**

@@ -29,43 +29,19 @@ class GenericViewFactory extends \Arch\IFactory
      */
     protected function fabricate($type) {
         $type = (string) $type;
-        $available = glob(ARCH_PATH.'/src/Arch/View/*.php');
+        $pattern = implode(
+            DIRECTORY_SEPARATOR,
+            array(ARCH_PATH, 'src', 'Arch', 'View', '*.php')
+        );
+        $available = glob($pattern);
         array_walk($available, function(&$item) {
             $item = str_replace('.php', '', basename($item));
         });
         if (!in_array($type, $available)) {
-            throw new Exception('Invalid generic view type');
+            throw new \Exception('Invalid generic view type');
         }
-        $classname = '\Arch\View\\'.$type.'.php';
-        return new $classname;
-    }
-    
-    /**
-     * Returns a new view for the given template.
-     * 
-     * The view adds methods to allow data manipulation on the template.
-     * 
-     * @param string $tmpl The template path
-     * @param array $data The associative array with data
-     * @return \Arch\View
-     */
-    public function createView($tmpl, $data = array())
-    {
-        return new \Arch\Registry\View($tmpl, $data);
-    }
-    
-    /**
-     * Returns a new layout - a view with layout slots
-     * 
-     * The layout adds methods to allow slot manipulation on the template.
-     * 
-     * @param string $tmpl The template path
-     * @param array $data The associative array with data
-     * @return \Arch\Theme\Layout
-     */
-    public function createLayout($tmpl, $data = array())
-    {
-        return new \Arch\Theme\Layout($tmpl, $data);
+        $method_name = 'create'.$type;
+        return $this->{$method_name}();
     }
     
     /**
@@ -82,12 +58,12 @@ class GenericViewFactory extends \Arch\IFactory
         // add view resources
         $this->app->getTheme()->addContent(
             $this->app->getHelperFactory()
-                ->url('/arch/asset/css/bootstrap-datetimepicker.min.css'),
+                ->createURL('/arch/asset/css/bootstrap-datetimepicker.min.css'),
             'css'
         );
         $this->app->getTheme()->addContent(
             $this->app->getHelperFactory()
-                ->url('/arch/asset/js/bootstrap-datetimepicker.min.js'),
+                ->createURL('/arch/asset/js/bootstrap-datetimepicker.min.js'),
             'js'
         );
         return $view;
@@ -107,17 +83,17 @@ class GenericViewFactory extends \Arch\IFactory
         $view->set(
             'default_img',
             $this->app->getHelperFactory()
-                ->url('/arch/asset/img/placehold-thumb.gif')
+                ->createURL('/arch/asset/img/placehold-thumb.gif')
         );
         // add view resources
         $this->app->getTheme()->addContent(
             $this->app->getHelperFactory()
-                ->url('/arch/asset/css/bootstrap-fileupload.min.css'),
+                ->createURL('/arch/asset/css/bootstrap-fileupload.min.css'),
             'css'
         );
         $this->app->getTheme()->addContent(
             $this->app->getHelperFactory()
-                ->url('/arch/asset/js/bootstrap-fileupload.min.js'),
+                ->createURL('/arch/asset/js/bootstrap-fileupload.min.js'),
             'js'
         );
         return $view;
@@ -133,7 +109,8 @@ class GenericViewFactory extends \Arch\IFactory
      */
     public function createPagination()
     {
-        $view = new \Arch\View\Pagination($this->app->getInput());
+        $view = new \Arch\View\Pagination();
+        $view->setInput($this->app->getInput());
         $view->id = 'p1';
         $view->parseCurrent();
         return $view;
@@ -153,22 +130,22 @@ class GenericViewFactory extends \Arch\IFactory
         // add view resources
         $this->app->getTheme()->addContent(
             $this->app->getHelperFactory()
-                ->url('/arch/asset/css/font-awesome.min.css'),
+                ->createURL('/arch/asset/css/font-awesome.min.css'),
             'css'
         );
         $this->app->getTheme()->addContent(
             $this->app->getHelperFactory()
-                ->url('/arch/asset/css/wysiwyg.css'),
+                ->createURL('/arch/asset/css/wysiwyg.css'),
             'css'
         );
         $this->app->getTheme()->addContent(
             $this->app->getHelperFactory()
-                ->url('/arch/asset/js/jquery.hotkeys.js'),
+                ->createURL('/arch/asset/js/jquery.hotkeys.js'),
             'js'
         );
         $this->app->getTheme()->addContent(
             $this->app->getHelperFactory()
-                ->url('/arch/asset/js/bootstrap-wysiwyg.js'),
+                ->createURL('/arch/asset/js/bootstrap-wysiwyg.js'),
             'js'
         );
         return $view;
@@ -184,10 +161,10 @@ class GenericViewFactory extends \Arch\IFactory
      */
     public function createAntiSpam()
     {
-        return new \Arch\View\AntiSpam(
-            $this->app->getSession(),
-            $this->app->getInput()
-        );
+        $view = new \Arch\View\AntiSpam();
+        $view->setSession($this->app->getSession());
+        $view->setInput($this->app->getInput());
+        return $view;
     }
     
     /**
@@ -217,7 +194,7 @@ class GenericViewFactory extends \Arch\IFactory
         $view = new \Arch\View\Carousel();
         $this->app->getTheme()->addContent(
             $this->app->getHelperFactory()
-                ->url('/arch/asset/js/bootstrap-carousel.js'),
+                ->createURL('/arch/asset/js/bootstrap-carousel.js')->execute(),
             'js'
         );
         return $view;
@@ -249,7 +226,8 @@ class GenericViewFactory extends \Arch\IFactory
     {
         $view = new \Arch\View\Map();
         $this->app->getTheme()->addContent(
-            $this->app->getHelperFactory()->url('/arch/asset/css/leaflet.css'),
+            $this->app->getHelperFactory()->createURL('/arch/asset/css/leaflet.css')
+                ->execute(),
             'css'
         );
         $this->app->getTheme()->addContent(
@@ -257,15 +235,18 @@ class GenericViewFactory extends \Arch\IFactory
                 'js'
         );
         $this->app->getTheme()->addContent(
-            $this->app->getHelperFactory()->url('/arch/asset/js/leaflet.js'),
+            $this->app->getHelperFactory()->createURL('/arch/asset/js/leaflet.js')
+                ->execute(),
             'js'
         );
         $this->app->getTheme()->addContent(
-            $this->app->getHelperFactory()->url('/arch/asset/js/leaflet.Google.js'),
+            $this->app->getHelperFactory()->createURL('/arch/asset/js/leaflet.Google.js')
+                ->execute(),
             'js'
         );
         $this->app->getTheme()->addContent(
-            $this->app->getHelperFactory()->url('/arch/asset/js/map.js'),
+            $this->app->getHelperFactory()->createURL('/arch/asset/js/map.js')
+                ->execute(),
             'js'
         );
         return $view;
@@ -284,15 +265,18 @@ class GenericViewFactory extends \Arch\IFactory
     {
         $view = new \Arch\View\LineChart();
         $this->app->getTheme()->addContent(
-            $this->app->getHelperFactory()->url('/arch/asset/css/morris.css'),
+            $this->app->getHelperFactory()->createURL('/arch/asset/css/morris.css')
+                ->execute(),
             'css'
         );
         $this->app->getTheme()->addContent(
-            $this->app->getHelperFactory()->url('/arch/asset/js/raphael-min.js'),
+            $this->app->getHelperFactory()->createURL('/arch/asset/js/raphael-min.js')
+                ->execute(),
             'js'
         );
         $this->app->getTheme()->addContent(
-            $this->app->getHelperFactory()->url('/arch/asset/js/morris.js'),
+            $this->app->getHelperFactory()->createURL('/arch/asset/js/morris.js')
+                ->execute(),
             'js'
         );
         return $view;
@@ -321,9 +305,9 @@ class GenericViewFactory extends \Arch\IFactory
      * @param string $path The base path to be explored
      * @return \Arch\View\FileExplorer
      */
-    public function createFileExplorer($path)
+    public function createFileExplorer()
     {
-        return new \Arch\View\FileExplorer($path);
+        return new \Arch\View\FileExplorer();
     }
     
     /**
@@ -332,14 +316,26 @@ class GenericViewFactory extends \Arch\IFactory
      * You should use your own template. Copy the default template from
      * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory
      * 
-     * @param string $path The base path to be explored
      * @return \Arch\View\ImageGallery
      */
-    public function createImageGallery($path)
+    public function createImageGallery()
     {
-        return new \Arch\View\ImageGallery($path);
+        return new \Arch\View\ImageGallery();
     }
     
+    /**
+     * Returns a new Menu view.
+     * 
+     * You should use your own template. Copy the default template from
+     * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory
+     * 
+     * @return \Arch\View\Menu
+     */
+    public function createMenu()
+    {
+        return new \Arch\View\Menu();
+    }
+
     /**
      * Returns a new poll view.
      * 
@@ -352,15 +348,18 @@ class GenericViewFactory extends \Arch\IFactory
     {
         $view = new \Arch\View\Poll();
         $this->app->getTheme()->addContent(
-            $this->app->getHelperFactory()->url('/arch/asset/css/morris.css'),
+            $this->app->getHelperFactory()->createURL('/arch/asset/css/morris.css')
+                ->execute(),
             'css'
         );
         $this->app->getTheme()->addContent(
-            $this->app->getHelperFactory()->url('/arch/asset/js/raphael-min.js'),
+            $this->app->getHelperFactory()->createURL('/arch/asset/js/raphael-min.js')
+                ->execute(),
             'js'
         );
         $this->app->getTheme()->addContent(
-            $this->app->getHelperFactory()->url('/arch/asset/js/morris.js'),
+            $this->app->getHelperFactory()->createURL('/arch/asset/js/morris.js')
+                ->execute(),
             'js'
         );
         return $view;
@@ -368,34 +367,25 @@ class GenericViewFactory extends \Arch\IFactory
     
     /**
      * Returns a new automatic table
-     * @param array $config The configuration
      * @return \Arch\View\AutoPanel\AutoTable
      */
-    public function createAutoTable($config)
+    public function createAutoTable()
     {
         if (!$this->app->getDatabase()) {
             $this->app->initDatabase();
         }
-        return new \Arch\View\AutoPanel\AutoTable(
-            $config,
-            $this->app->getDatabase(),
-            $this->createPagination()
-        );
+        return new \Arch\View\AutoTable();
     }
     
     /**
      * Returns a new automatic form
-     * @param array $config The configuration
      * @return \Arch\View\AutoPanel\AutoForm
      */
-    public function createAutoForm($config)
+    public function createAutoForm()
     {
         if (!$this->app->getDatabase()) {
             $this->app->initDatabase();
         }
-        return new \Arch\View\AutoPanel\AutoForm(
-            $config,
-            $this->app->getDatabase()
-        );
+        return new \Arch\View\AutoForm();
     }
 }

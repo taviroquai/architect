@@ -1,15 +1,13 @@
 <?php
-namespace Arch\View\AutoPanel;
+namespace Arch\View;
 
 /**
  * Description of Automatic Form
  *
  * @author mafonso
  */
-class AutoForm extends \Arch\View\AutoPanel
+class AutoForm extends \Arch\Theme\Layout\AutoPanel
 {
-    protected $pdo;
-    
     /**
      * The record (associative array)
      * @var array
@@ -18,30 +16,42 @@ class AutoForm extends \Arch\View\AutoPanel
     
     /**
      * Returns a new panel to be rendered
-     * @param array $config The panel configuration
-     * @param \Arch\Driver\MySql $driver The database driver
      */
-    public function __construct($config, $driver)
+    public function __construct()
     {
-        
         $tmpl = implode(
             DIRECTORY_SEPARATOR,
             array(ARCH_PATH, 'theme', 'form', 'form.php')
         );
-        parent::__construct($tmpl, $config, $driver);
-        
-        if (!empty($this->config['record_id'])) {
-            $id = $this->config['record_id'];
-            $table = $driver->createTable($this->config['table']);
-            $this->record = $table->select($this->config['select'])
-                ->joinAuto($driver)
-                ->where($this->config['table'].'.id = ?', array($id))
-                ->fetch(\PDO::FETCH_ASSOC);
-        }
+        parent::__construct($tmpl);
+    }
+    
+    /**
+     * The form configuration - associative array
+     * @param array $config
+     */
+    public function setConfig($config) {
+        parent::setConfig($config);
         $this->config['action'] = empty($this->config['action']) ? '' 
                 : $this->config['action'];
     }
     
+    /**
+     * The form database driver
+     * @param \Arch\DB\IDriver $database
+     */
+    public function setDatabaseDriver(\Arch\DB\IDriver $database) {
+        parent::setDatabaseDriver($database);
+        if (!empty($this->config['record_id'])) {
+            $id = $this->config['record_id'];
+            $table = $database->createTable($this->config['table']);
+            $this->record = $table->select($this->config['select'])
+                ->joinAuto($database)
+                ->where($this->config['table'].'.id = ?', array($id))
+                ->fetch(\PDO::FETCH_ASSOC);
+        }
+    }
+
     public function __toString()
     {
         foreach ($this->config['items'] as $item) {
@@ -87,7 +97,7 @@ class AutoForm extends \Arch\View\AutoPanel
     protected function createBreakLine($config)
     {
         if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/form/breakline.php';
+            $tmpl = ARCH_PATH.'/theme/form/breakline.php';
         }
         return new \Arch\Registry\View($tmpl, $config);
     }
@@ -95,7 +105,7 @@ class AutoForm extends \Arch\View\AutoPanel
     protected function createLabel($config)
     {
         if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/form/label.php';
+            $tmpl = ARCH_PATH.'/theme/form/label.php';
         }
         $config['label'] = empty($config['label']) ? '' : $config['label'];
         return new \Arch\Registry\View($tmpl, $config);
@@ -106,7 +116,7 @@ class AutoForm extends \Arch\View\AutoPanel
         $view = '';
         if (!empty($config['property'])) {
             if (empty($config['tmpl'])) {
-                $tmpl = __DIR__.'/../../../../theme/form/input/hidden.php';
+                $tmpl = ARCH_PATH.'/theme/form/input/hidden.php';
             }
             if (empty($config['name'])) {
                 $config['name'] = $config['property'];
@@ -127,7 +137,7 @@ class AutoForm extends \Arch\View\AutoPanel
         $view = '';
         if (!empty($config['property'])) {
             if (empty($config['tmpl'])) {
-                $tmpl = __DIR__.'/../../../../theme/form/input/password.php';
+                $tmpl = ARCH_PATH.'/theme/form/input/password.php';
             }
             if (empty($config['name'])) {
                 $config['name'] = $config['property'];
@@ -140,7 +150,7 @@ class AutoForm extends \Arch\View\AutoPanel
     protected function createButton($config)
     {
         if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/form/button.php';
+            $tmpl = ARCH_PATH.'/theme/form/button.php';
         }
         if (
             !empty($config['action'])
@@ -156,7 +166,7 @@ class AutoForm extends \Arch\View\AutoPanel
     protected function createButtonSubmit($config)
     {
         if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/form/submit.php';
+            $tmpl = ARCH_PATH.'/theme/form/submit.php';
         }
         $config['label'] = empty($config['label']) ? '' : $config['label'];
         $config['class'] = empty($config['class']) ? '' : $config['class'];
@@ -167,7 +177,7 @@ class AutoForm extends \Arch\View\AutoPanel
     protected function createInputText($config)
     {
         if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/form/input/text.php';
+            $tmpl = ARCH_PATH.'/theme/form/input/text.php';
         }
         if (empty($config['name'])) {
             $config['name'] = $config['property'];
@@ -187,7 +197,7 @@ class AutoForm extends \Arch\View\AutoPanel
     protected function createTextArea($config)
     {
         if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/form/input/textarea.php';
+            $tmpl = ARCH_PATH.'/theme/form/input/textarea.php';
         }
         if (empty($config['name'])) {
             $config['name'] = $config['property'];
@@ -207,7 +217,7 @@ class AutoForm extends \Arch\View\AutoPanel
     protected function createSelect($config)
     {
         if (empty($config['tmpl'])) {
-            $tmpl = __DIR__.'/../../../../theme/form/select.php';
+            $tmpl = ARCH_PATH.'/theme/form/select.php';
         }
         if (empty($config['name'])) {
             $config['name'] = $config['property'];
@@ -238,7 +248,7 @@ class AutoForm extends \Arch\View\AutoPanel
     
     protected function createCheckList($config)
     {
-        $tmpl = __DIR__.'/../../../../theme/form/checklist.php';
+        $tmpl = ARCH_PATH.'/theme/form/checklist.php';
         if (!empty($config['tmpl'])) {
             $tmpl = $config['tmpl'];
         }
@@ -278,7 +288,7 @@ class AutoForm extends \Arch\View\AutoPanel
     {
         if (empty($config['tmpl'])) {
             $config['tmpl'] = 
-                __DIR__.'/../../../../theme/form/radiolist.php';
+                ARCH_PATH.'/theme/form/radiolist.php';
         }
         $config['class'] = empty($config['class']) ? 
                 'radio' : $config['class'];

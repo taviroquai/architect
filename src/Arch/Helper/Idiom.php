@@ -3,11 +3,11 @@
 namespace Arch\Helper;
 
 /**
- * Description of CreateIdiom
+ * Description of Idiom
  *
  * @author mafonso
  */
-class CreateIdiom extends \Arch\IHelper
+class Idiom extends \Arch\IHelper
 {
     protected $code;
     protected $name;

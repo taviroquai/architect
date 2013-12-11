@@ -21,24 +21,35 @@ class AntiSpam extends \Arch\Registry\View
      */
     protected $input;
     
-    public function __construct(
-        \Arch\Registry\ISession $session,
-        \Arch\IInput $input
-    ) {
+    /**
+     * Returns a new AntiSpam view
+     */
+    public function __construct() {
         parent::__construct();
         $tmpl = implode(DIRECTORY_SEPARATOR,
                 array(ARCH_PATH,'theme','antispam.php'));
         $this->template = $tmpl;
-        
+    }
+    
+    public function setSession(\Arch\Registry\ISession $session)
+    {
         $this->session = $session;
-        $this->input = $input;
         
         if (!$this->session->get('_captcha')) {
             $this->session->set('_captcha', " ");
         }
         $this->set('code', $this->session->get('_captcha'));
     }
-    
+
+    /**
+     * Sets the user input
+     * @param \Arch\IInput $input
+     */
+    public function setInput(\Arch\IInput $input)
+    {
+        $this->input = $input;
+    }
+
     public function validate()
     {
         $captcha = $this->session->get('_captcha');

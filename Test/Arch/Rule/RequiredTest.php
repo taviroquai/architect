@@ -54,5 +54,11 @@ class RequiredTest extends \PHPUnit_Framework_TestCase
         $rule->addParam('test');
         $result = $rule->getParams('test');
         $this->assertEquals($expected, $result);
+        
+        $result = $rule->execute();
+        $this->assertInstanceOf('\Arch\Rule\Required', $result);
+        
+        $result = $rule->isAssoc(array());
+        $this->assertFalse($result);
     }
 }

@@ -15,8 +15,50 @@ class FileTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateSession()
     {
-        $session = new \Arch\Registry\Session\File();
+        $session = new \Arch\Registry\Session\File(RESOURCE_PATH.'session');
         $this->assertInstanceOf('\Arch\Registry\Session\File', $session);
+        
+        $expected = RESOURCE_PATH.'session';
+        $session->setPath($expected);
+        $result = $session->getPath();
+        $this->assertEquals($expected, $result);
+        
+        $session->generateId(md5('create'));
+        $this->assertNotEmpty($session->id);
+    }
+    
+    /**
+     * Test create session
+     * @expectedException \Exception
+     */
+    public function testFailLoad()
+    {
+        $session = new \Arch\Registry\Session\File(RESOURCE_PATH.'forbidden');
+        $session->generateId(md5('failload'));
+        $session->load();
+    }
+    
+    /**
+     * Test create session
+     */
+    public function testSaveMessages()
+    {
+        $session = new \Arch\Registry\Session\File(RESOURCE_PATH.'session');
+        $session->generateId(md5('save'));
+        $session->createMessage('message');
+        
+        $expected = array(
+            new \Arch\Message('message')
+        );
+        $result = $session->getMessages();
+        $this->assertEquals($expected, $result);
+        
+        $session->save();
+        $session->clearMessages();
+        
+        $session->load();
+        $result = $session->getMessages();
+        $this->assertEquals($expected, $result);
     }
     
     /**
@@ -25,39 +67,29 @@ class FileTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadData()
     {
-        $session = new \Arch\Registry\Session\File();
-        $session->load($_SESSION);
+        $session = new \Arch\Registry\Session\File(RESOURCE_PATH.'session');
+        $session->generateId(md5('load'));
+        if (file_exists($session->getFilename())) unlink($session->getFilename());
+        $session->load();
         $this->assertEmpty($session->get('param'));
         $expected = 'value';
-        $_SESSION['param'] = $expected;
-        $session->load($_SESSION);
+        $session->set('param', $expected);
+        $session->save();
+        $session->load();
         $this->assertEquals($expected, $session->get('param'));
     }
     
     /**
      * Test save data
      */
-    public function testSaveData()
+    public function testDataOverride()
     {
         $expected = 'value';
-        $_SESSION = array();
-        $session = new \Arch\Registry\Session\File();
+        $session = new \Arch\Registry\Session\File(RESOURCE_PATH.'session');
+        $session->generateId(md5('override'));
+        $session->set('param', 'oldvalue');
         $session->set('param', $expected);
-        $session->save($_SESSION);
-        $this->assertEquals($expected, $_SESSION['param']);
-    }
-    
-    /**
-     * Test save data
-     */
-    public function testSaveDataOverride()
-    {
-        $expected = 'value';
-        $_SESSION['oldparam'] = 'oldvalue';
-        $session = new \Arch\Registry\Session\File();
-        $session->set('param', $expected);
-        $session->save($_SESSION);
-        $this->assertEquals($expected, $_SESSION['param']);
+        $this->assertEquals($expected, $session->get('param'));
     }
     
     /**
@@ -66,7 +98,8 @@ class FileTest extends \PHPUnit_Framework_TestCase
     public function testResetSession()
     {
         $expected = null;
-        $session = new \Arch\Registry\Session\File();
+        $session = new \Arch\Registry\Session\File(RESOURCE_PATH.'session');
+        $session->generateId(md5('reset'));
         $session->set('param', 'value');
         $session->reset();
         $this->assertEquals($expected, $session->get('param'));
@@ -78,7 +111,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
     public function testFailGetParam()
     {
         $expected = null;
-        $session = new \Arch\Registry\Session\File();
+        $session = new \Arch\Registry\Session\File(RESOURCE_PATH.'session');
         $this->assertEquals($expected, $session->get('param'));
     }
     
@@ -88,7 +121,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
     public function testSetObjectParam()
     {
         $expected = new stdClass;
-        $session = new \Arch\Registry\Session\File();
+        $session = new \Arch\Registry\Session\File(RESOURCE_PATH.'session');
         $session->set('param', $expected);
         $this->assertEquals($expected, $session->get('param'));
     }
@@ -99,7 +132,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
     public function testUnsetParam()
     {
         $expected = null;
-        $session = new \Arch\Registry\Session\File();
+        $session = new \Arch\Registry\Session\File(RESOURCE_PATH.'session');
         $session->set('param', new stdClass);
         $session->delete('param');
         $this->assertEquals($expected, $session->get('param'));
@@ -111,7 +144,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
     public function testExistsParam()
     {
         $expected = true;
-        $session = new \Arch\Registry\Session\File();
+        $session = new \Arch\Registry\Session\File(RESOURCE_PATH.'session');
         $session->set('param', new stdClass);
         $result = $session->exists('param');
         $this->assertEquals($expected, $result);
@@ -122,7 +155,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetMessages()
     {
-        $session = new \Arch\Registry\Session\File();
+        $session = new \Arch\Registry\Session\File(RESOURCE_PATH.'session');
         $expected = array();
         $this->assertEquals($expected, $session->getMessages());
         
@@ -137,7 +170,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
      */
     public function testClearMessages()
     {
-        $session = new \Arch\Registry\Session\File();
+        $session = new \Arch\Registry\Session\File(RESOURCE_PATH.'session');
         $expected = array();
         $session->addMessage(new \Arch\Message('test'));
         $session->clearMessages();
@@ -152,7 +185,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $message = new \Arch\Message('test');
         $expected = array($message);
         
-        $session = new \Arch\Registry\Session\File();
+        $session = new \Arch\Registry\Session\File(RESOURCE_PATH.'session');
         $session->loadMessages($expected);
         $this->assertEquals($expected, $session->getMessages());
     }

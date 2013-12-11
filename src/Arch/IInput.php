@@ -20,6 +20,24 @@ abstract class IInput
     protected $user_agent;
     
     /**
+     * Holds the request host
+     * @var string
+     */
+    protected $host;
+    
+    /**
+     * Holds the request URI
+     * @var string
+     */
+    protected $uri;
+    
+    /**
+     * The list of input params
+     * @var array
+     */
+    protected $params = array();
+    
+    /**
      * The list of input params
      * @var array
      */
@@ -72,6 +90,43 @@ abstract class IInput
      * @return string
      */
     public abstract function getUserAgent();
+    
+    /**
+     * Returns the input host
+     */
+    public abstract function getHttpHost();
+    
+    /**
+     * Returns the request uri if exists
+     */
+    public abstract function getRequestUri();
+    
+    /**
+     * Sets the input params
+     * @param array $params The input params
+     */
+    public function setParams($params)
+    {
+        $this->params = $params;
+    }
+    
+    /**
+     * Returns a param by index
+     * If index is not provided, returns all params
+     * 
+     * @param integer $index
+     * @return boolean
+     */
+    public function get($index = null)
+    {
+        $result = false;
+        if ($index === null) {
+            $result = $this->params;
+        } elseif (isset($this->params[$index])) {
+            $result = $this->params[$index];
+        }
+        return $result;
+    }
 
     /**
      * Gets user input action
@@ -109,6 +164,15 @@ abstract class IInput
     public function getAPI()
     {
         return $this->api;
+    }
+    
+    /**
+     * Sets the user input action
+     * @param string $action
+     */
+    public function setAction($action)
+    {
+        $this->action = (string) $action;
     }
 
     /**
@@ -172,10 +236,11 @@ abstract class IInput
         if (empty($params[1])) {
             return false;
         }
+        $result = true;
         if ($params[1] !== 'arch') {
-            return false;
+            $result = false;
         }
-        return true;
+        return $result;
     }
 
     /**

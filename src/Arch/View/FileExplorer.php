@@ -8,6 +8,12 @@ namespace Arch\View;
 class FileExplorer extends \Arch\Registry\View
 {
     /**
+     * The local file path to be explored
+     * @var string
+     */
+    protected $path;
+    
+    /**
      * Holds the callback to translate server file path to client url
      * @var function
      */
@@ -21,18 +27,12 @@ class FileExplorer extends \Arch\Registry\View
 
     /**
      * Returns a new file explorer
-     * @param string $path The local path
      */
-    public function __construct($path)
+    public function __construct()
     {
         $tmpl = implode(DIRECTORY_SEPARATOR,
                 array(ARCH_PATH,'theme','filelist.php'));
         parent::__construct($tmpl);
-        
-        // init items
-        $this->storage['base'] = is_file($path) ? dirname($path) : $path;
-        $this->storage['param'] = 'd';
-        $this->storage['url'] = '/';
         
         // init function to translate path to url
         $this->path_to_url = function ($path) {
@@ -40,6 +40,15 @@ class FileExplorer extends \Arch\Registry\View
         };
     }
     
+    public function setPath($path)
+    {
+        $this->path = $path;
+        // init items
+        $this->storage['base'] = is_file($path) ? dirname($path) : $path;
+        $this->storage['param'] = 'd';
+        $this->storage['url'] = '/';
+    }
+
     /**
      * Allows to redefine file path to url translation
      * @param function $fn
@@ -71,7 +80,6 @@ class FileExplorer extends \Arch\Registry\View
     {
         $this->input_param = $value;
     }
-
 
     /**
      * Resolves current path based on $_GET

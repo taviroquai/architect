@@ -75,8 +75,11 @@ class AutoPanelTest extends \PHPUnit_Framework_TestCase
      */
     public function testFailCreate($tmpl, $config, $driver)
     {
-        $result = new \Arch\View\AutoPanel($tmpl, $config, $driver);
-        $this->assertInstanceOf('\Arch\View\AutoPanel', $result);
+        $result = new \Arch\Theme\Layout\AutoPanel();
+        $result->setTemplate($tmpl);
+        $result->setConfig($config);
+        $result->setDatabaseDriver($driver);
+        $this->assertInstanceOf('\Arch\Theme\Layout\AutoPanel', $result);
     }
     
     /**
@@ -85,7 +88,10 @@ class AutoPanelTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreate($tmpl, $config, $driver)
     {
-        $result = new \Arch\View\AutoPanel($tmpl, $config, $driver);
-        $this->assertInstanceOf('\Arch\View\AutoPanel', $result);
+        $result = new \Arch\Theme\Layout\AutoPanel();
+        $result->setTemplate($tmpl);
+        $result->setConfig($config);
+        $result->setDatabaseDriver($driver);
+        $this->assertInstanceOf('\Arch\Theme\Layout\AutoPanel', $result);
     }
 }

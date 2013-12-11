@@ -1,12 +1,12 @@
 <?php
-namespace Arch\View\AutoPanel;
+namespace Arch\View;
 
 /**
  * Description of Automatic Table
  *
  * @author mafonso
  */
-class AutoTable extends \Arch\View\AutoPanel
+class AutoTable extends \Arch\Theme\Layout\AutoPanel
 {
     /**
      * Holds the table pagination
@@ -22,33 +22,54 @@ class AutoTable extends \Arch\View\AutoPanel
 
         /**
      * Returns a new panel to be rendered
-     * @param array $config The panel configuration
-     * @param \Arch\Driver $driver The database driver
      */
-    public function __construct($config, $driver, $pagination)
+    public function __construct()
     {
         $tmpl = implode(
             DIRECTORY_SEPARATOR, 
             array(ARCH_PATH, 'theme', 'table', 'table.php')
         );
-        parent::__construct($tmpl, $config, $driver);
-        
+        parent::__construct($tmpl);
+    }
+    
+    /**
+     * The table configuration - associative array
+     * @param array $config
+     */
+    public function setConfig($config) {
+        parent::setConfig($config);
         if (!isset($this->config['columns'])) {
             throw new \Exception('DBPanel configuration: attribute columns is required');
         }
         $this->set('columns', $config['columns']);
-        if (empty($config['pagination'])) {
-            $config['pagination'] = 10;
+        if (empty($this->config['pagination'])) {
+            $this->config['pagination'] = 10;
         }
-        $this->table = $driver->createTable($this->config['table']);
+    }
+    
+    /**
+     * Sets the database driver
+     * @param \Arch\DB\IDriver $database
+     */
+    public function setDatabaseDriver(\Arch\DB\IDriver $database) {
+        parent::setDatabaseDriver($database);
+        $this->table = $database->createTable($this->config['table']);
+    }
+    
+    /**
+     * Sets the table pagination
+     * @param \Arch\View\Pagination $pagination
+     */
+    public function setPagination(\Arch\View\Pagination $pagination)
+    {
+        $this->pagination = $pagination;
         $all = $this->table->select($this->config['select'])
                 ->joinAuto()
                 ->fetchAll(\PDO::FETCH_ASSOC);
-        $this->pagination = $pagination;
-        $this->pagination->setLimit($config['pagination']);
+        $this->pagination->setLimit($this->config['pagination']);
         $this->pagination->setTotalItems(count($all));
     }
-    
+
     /**
      * Returns a new action button
      * @param array $config The button configuration

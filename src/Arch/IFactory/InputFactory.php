@@ -26,9 +26,9 @@ class InputFactory extends \Arch\IFactory
             case self::TYPE_POST:
                 return new \Arch\Input\HTTP\POST();
             case self::TYPE_GET:
-            default:
                 return new \Arch\Input\HTTP\GET();
         }
+        throw new \Exception('Invalid input type');
     }
     
     /**

@@ -31,6 +31,7 @@ class Native extends \Arch\Registry\ISession
      */
     public function save(&$session = array())
     {
+        $_SESSION = array();
         parent::save($_SESSION);
         session_write_close();
     }

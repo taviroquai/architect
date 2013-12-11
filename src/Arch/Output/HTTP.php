@@ -33,14 +33,14 @@ class HTTP extends \Arch\IOutput
      */
     public function addHeader($header)
     {
-        $this->headers[] = $header;
+        $this->headers[] = (string) $header;
     }
 
     /**
      * Returns the output headers
      * @return array
      */
-    public function & getHeaders()
+    public function getHeaders()
     {
         return $this->headers;
     }

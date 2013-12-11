@@ -23,9 +23,11 @@ class Redirect extends \Arch\IHelper
     public function execute() {
         $helper = $this->app->getHelperFactory();
         $input = $this->app->getInput();
-        if ($helper->url($input->getAction()) !== $this->url) {
+        $url = $helper->createURL($input->getAction())->execute();
+        if ($url !== $this->url) {
             if (empty($this->url)) {
-                $this->url = $this->app->getHelperFactory()->url('/');
+                $this->url = $this->app->getHelperFactory()
+                        ->createURL('/')->execute();
             }
             $output = new \Arch\Output\HTTP();
             $output->setHeaders(array('Location: '.$this->url));

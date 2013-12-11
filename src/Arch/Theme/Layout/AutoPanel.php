@@ -1,5 +1,5 @@
 <?php
-namespace Arch\View;
+namespace Arch\Theme\Layout;
 
 /**
  * Description of Automatic Panel
@@ -21,22 +21,26 @@ class AutoPanel extends \Arch\Theme\Layout
     protected $driver;
     
     /**
-     * Returns a new panel to be rendered
-     * @param array $config The panel configuration
-     * @param MySql $db The database driver
+     * The panel configuration - associative array
+     * @param array $config
      */
-    public function __construct($tmpl, $config, $driver)
+    public function setConfig($config)
     {
-        parent::__construct($tmpl, $config);
-        
         $this->config = $config;
-        $this->driver = $driver;
-        
         if (empty($this->config['table'])) {
             throw new \Exception('AutoPanel configuration: table is required');
         }
         if (empty($this->config['select'])) {
             throw new \Exception('AutoPanel configuration: select is required');
         }
+    }
+    
+    /**
+     * Sets the required database driver
+     * @param \Arch\DB\IDriver $database
+     */
+    public function setDatabaseDriver(\Arch\DB\IDriver $database)
+    {
+        $this->driver = $database;
     }
 }

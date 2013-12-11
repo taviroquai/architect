@@ -37,14 +37,6 @@ implements \Arch\IMessenger
     public abstract function generateId();
 
     /**
-     * Returns the session id
-     * @return string
-     */
-    public function getId() {
-        return $this->id;
-    }
-
-    /**
      * Loads data into storage
      * Initiates session messages storage
      * @param array $session

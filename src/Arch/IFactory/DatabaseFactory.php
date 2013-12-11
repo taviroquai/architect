@@ -37,9 +37,9 @@ class DatabaseFactory extends \Arch\IFactory
             case self::TYPE_PGSQL:
                 return new \Arch\DB\PostgreSQL\Driver();
             case self::TYPE_MYSQL:
-            default:
-                return new \Arch\DB\MySql\Driver();
+                return new \Arch\DB\MySql\Driver();    
         }
+        throw new \Exception('Invalid database type');
     }
     
     /**

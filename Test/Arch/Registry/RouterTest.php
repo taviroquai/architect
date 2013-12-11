@@ -52,8 +52,13 @@ class RouterTest extends \PHPUnit_Framework_TestCase
             return true;
         };
         $router = new \Arch\Registry\Router();
-        $router->addRoute('test', $expected);
-        $result = $router->getRouteCallback(new \Arch\Input\HTTP\GET());
+        $router->addRoute('/test', $expected);
+        $result = $router->get('/test');
+        $this->assertEquals($expected, $result);
+        
+        $input = new \Arch\Input\HTTP\GET();
+        $input->setAction('/test');
+        $result = $router->getRouteCallback($input);
         $this->assertEquals($expected, $result);
     }
     
@@ -68,5 +73,19 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         });
         $result = $router->getRouteCallback(new \Arch\Input\HTTP\GET());
         $this->assertInstanceOf('Closure', $result);
+    }
+    
+    /**
+     * Test add default routes
+     */
+    public function testDefaultRoutes()
+    {
+        $router = new \Arch\Registry\Router();
+        $app = new \Arch\App(RESOURCE_PATH.'/configValid.xml');
+        $router->addCoreRoutes($app);
+        $callback = $router->get('/arch/asset/(:any)/(:any)');
+        $this->assertInternalType('callable', $callback);
+        $callback('css', 'dummy.css');
+        $callback('css', 'dummy');
     }
 }

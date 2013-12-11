@@ -61,7 +61,12 @@ abstract class IOutput
      * Returns the output headers
      * @return array
      */
-    public abstract function & getHeaders();
+    public abstract function getHeaders();
+    
+    /**
+     * Adds cache headers
+     */
+    public abstract function addCacheHeaders($seconds = 300);
     
     /**
      * Send the output
@@ -74,7 +79,7 @@ abstract class IOutput
      */
     public function import($filename) {
         
-        if (!file_exists($filename)) {
+        if (!file_exists($filename) || !is_readable($filename)) {
             return false;
         }
         

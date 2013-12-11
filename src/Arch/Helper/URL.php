@@ -3,11 +3,11 @@
 namespace Arch\Helper;
 
 /**
- * Description of CreateURL
+ * Description of URL
  *
  * @author mafonso
  */
-class CreateURL extends \Arch\IHelper
+class URL extends \Arch\IHelper
 {
     protected $action;
     protected $params;

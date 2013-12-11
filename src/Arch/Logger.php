@@ -47,7 +47,9 @@ class Logger
      */
     public function log($msg, $label = 'access', $nlb = false)
     {
-        if (!is_resource($this->handler)) return false;
+        if (!$this->isOpen()) {
+            return false;
+        }
         
         $secs = round(microtime(true)-floor(microtime(true)), 3);
         $time = date('Y-m-d H:i:s').' '.sprintf('%0.3f', $secs).'ms';
@@ -55,9 +57,7 @@ class Logger
         if ($nlb) {
             $msg = PHP_EOL.$msg;
         }
-        if (is_resource($this->handler)) {
-            fwrite($this->handler, $msg);
-        }
+        fwrite($this->getHandler(), $msg);
         return true;
     }
     
@@ -67,7 +67,7 @@ class Logger
      */
     public function isOpen()
     {
-        return is_resource($this->handler);
+        return is_resource($this->getHandler());
     }
     
     /**
@@ -76,10 +76,11 @@ class Logger
      */
     public function close()
     {
-        if (is_resource($this->handler)) {
-            return fclose ($this->handler);
+        $result = false;
+        if ($this->isOpen()) {
+            $result = fclose ($this->getHandler());
         }
-        return true;
+        return $result;
     }
     
     /**

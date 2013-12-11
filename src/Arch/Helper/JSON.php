@@ -3,11 +3,11 @@
 namespace Arch\Helper;
 
 /**
- * Description of SendJSON
+ * Description of JSON
  *
  * @author mafonso
  */
-class SendJSON extends \Arch\IHelper
+class JSON extends \Arch\IHelper
 {
     /**
      * Sets the output data

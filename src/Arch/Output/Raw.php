@@ -24,7 +24,12 @@ class Raw extends \Arch\IOutput
      * Returns the output headers
      * @return array
      */
-    public function & getHeaders() {}
+    public function getHeaders() {}
+    
+    /**
+     * Adds cache headers
+     */
+    public function addCacheHeaders($seconds = 300) {}
             
     /**
      * Send the output

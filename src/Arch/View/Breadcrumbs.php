@@ -39,7 +39,7 @@ class Breadcrumbs extends \Arch\Registry\View
             $active = $i == count($items)-1 ? 1 : 0;
             $this->addItem(
                 $text,
-                $app->getHelperFactory()->url($action),
+                $app->getHelperFactory()->createURL($action)->execute(),
                 $active
             );
             $i++;

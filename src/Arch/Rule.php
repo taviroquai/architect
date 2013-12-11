@@ -138,7 +138,7 @@ abstract class Rule
      * @param array $v
      * @return bool
      */
-    protected function isAssoc($v)
+    public function isAssoc($v)
     {
         return (bool) (array_values($v) !== $v);
     }

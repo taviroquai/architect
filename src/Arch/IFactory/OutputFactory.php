@@ -53,9 +53,9 @@ class OutputFactory extends \Arch\IFactory
             case self::TYPE_JSON:
                 return new \Arch\Output\HTTP\Response\JSON();
             case self::TYPE_RESPONSE:
-            default:
                 return new \Arch\Output\HTTP\Response();
         }
+        throw new \Exception('Invalid output type');
     }
     
     /**

@@ -120,6 +120,15 @@ function session($key, $value = null)
 }
 
 /**
+ * Executes a redirect
+ * @param string $url
+ */
+function redirect($url = '')
+{
+    help()->createRedirect($url)->execute();
+}
+
+/**
  * Add route alias.
  * 
  * Use it as <b>r('/', function() { o('Home!'); });</b>
@@ -201,7 +210,7 @@ function i($param = null)
  */
 function l($tmpl, $data = array())
 {
-    return view()->createLayout($tmpl, $data);
+    return new \Arch\Theme\Layout($tmpl, $data);
 }
 
 /**
@@ -211,7 +220,7 @@ function l($tmpl, $data = array())
  * @param boolean $cache Tells application to send cache headers
  */
 function j($data, $cache = false) {
-    help()->sendJSON($data, $cache);
+    help()->createJSON($data, $cache)->execute();
 }
 
 /**
@@ -238,7 +247,7 @@ function m($text, $cssClass = 'alert alert-success')
  */
 function q($tableName, \PDO $db = null)
 {
-    return help()->createQuery($tableName, $db);
+    return help()->createQuery($tableName, $db)->execute();
 }
 
 /**
@@ -269,7 +278,7 @@ function o($content = null)
  */
 function s($string, $algo = 'sha256', $salt = '!Zz$9y#8x%7!')
 {
-    return help()->encrypt($string, $algo, $salt);
+    return help()->createCrypt($string, $algo, $salt)->execute();
 }
 
 /**
@@ -293,7 +302,7 @@ function tr($eventName, $target = null)
  */
 function u($path, $params = array())
 {
-    return help()->url($path, $params);
+    return help()->createURL($path, $params)->execute();
 }
 
 /**
@@ -304,5 +313,5 @@ function u($path, $params = array())
  */
 function v($tmpl, $data = array())
 {
-    return view()->createView($tmpl, $data);
+    return new \Arch\Registry\View($tmpl, $data);
 }
