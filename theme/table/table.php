@@ -16,3 +16,8 @@
         <?php } ?>
     </tbody>
 </table>
+<?php if (method_exists($this, 'render')) { ?>
+<?php $this->render('content', function($item) { ?>
+<div><?=$item?></div>
+<?php }) ?>
+<?php } ?>

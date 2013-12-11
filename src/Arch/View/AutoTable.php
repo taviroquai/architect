@@ -12,7 +12,7 @@ class AutoTable extends \Arch\Theme\Layout\AutoPanel
      * Holds the table pagination
      * @var \Arch\View\Pagination
      */
-    public $pagination;
+    protected $pagination;
     
     /**
      * Holds the database table
@@ -42,9 +42,6 @@ class AutoTable extends \Arch\Theme\Layout\AutoPanel
             throw new \Exception('DBPanel configuration: attribute columns is required');
         }
         $this->set('columns', $config['columns']);
-        if (empty($this->config['pagination'])) {
-            $this->config['pagination'] = 10;
-        }
     }
     
     /**
@@ -66,8 +63,16 @@ class AutoTable extends \Arch\Theme\Layout\AutoPanel
         $all = $this->table->select($this->config['select'])
                 ->joinAuto()
                 ->fetchAll(\PDO::FETCH_ASSOC);
-        $this->pagination->setLimit($this->config['pagination']);
         $this->pagination->setTotalItems(count($all));
+    }
+    
+    /**
+     * Returns the table pagination
+     * @return \Arch\View\Pagination
+     */
+    public function getPagination()
+    {
+        return $this->pagination;
     }
 
     /**
