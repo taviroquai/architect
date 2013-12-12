@@ -15,6 +15,8 @@
  * 
  * redirect() - Sends location HTTP header and save session before exit
  * 
+ * filter() - calls Input to **sanitize** an input param
+ * 
  * r() - Adds a new route
  * 
  * v() - Creates a new view giving a PHP template and a $data as associative array

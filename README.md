@@ -87,47 +87,46 @@ Remember to use IDE type hinting to know how the alias works.
 
 app() - **A**pplication. The main gate to access features  
 conf() - **C**onfiguration item. Returns a configuration item  
+view() - Returns the generic **view** factory  
+help() - Returns the **help**er factory  
+theme() - Loads a **theme** or returns current theme  
+session() - Sets or gets a **session** item  
+redirect() - Sends **location HTTP header** and save session before exit  
+filter() - calls Input to **sanitize** an input param  
 r() - **R**oute. Adds a new route  
 c() - **C**ontent. Adds content to the default theme  
 u() - **U**RL. Returns an internal URL. Use this to generate internal URLs  
 m() - **M**essage. Adds a message to be shown to the user  
-g() - **G**ET. Returns GET parameters  
+i() - **G**ET. Returns all **i**nput parameters or just one from GET/POST  
 j() - **J**SON. Sets JSON output  
 o() - **O**utput. Sets the application Output, ie. a View or plain text  
-p() - **P**OST. Returns POST parameters  
 f() - **F**ILES. Returns a FILES entry by index  
 q() - **Q**uery table. Returns a Table instance to start querying  
 s() - **S**ecure. Returns a secured (encrypted) string  
 e() - **E**vent. Adds a new event  
 tr() - **TR**igger. Triggers the event  
-rule() - **RULE**. Creates a new input validation rule  
+v() - **V**iew. Creates a new view  
+l() - Layout. Creates a new layout - a view with layout slots operations   
 
 ### APP
     app() // returns the application instance
 
 ### ROUTER
-    app()->addRoute('/my/path', function() { ... }); // PHP5 anonymous function
-    r('/my/path/(:any)', function ($param) { ... });
+    r('/my/path/(:any)', function ($param) { ... }); // Adds a route callback
 
 ### THEME
-    app()->addContent('Any string or View instance', 'optional slot name');
-    c('Hello World!');
+    c('Hello World!'); // Adds content to default theme
 
 ### URL
-    app()->url('/demo', array('param1' => 'World'); // creates an URL
-    u('/demo');
+    u('/demo', array('param1' => 'World')); // creates an URL
  
 ### INPUT (GET / POST / RAW / FILES / CLI ARGS)
-    app()->input->post('optional post param');
-    p('username'); // returns $_POST['username']
-    g('param'); // returns $_GET['param']
+    i('username'); // returns $_POST['username'] or $_GET['username']
     f(0); // returns $_FILES['file'] or $_FILES['file'][0] for multiple
 
 ### EVENTS
-    app()->register('event.name', function() { ... }); // Register listener
-    app()->trigger('event.name', $optional);           // call listener
-    e('my.event.name', function($target) { ... });
-    tr('my.event-name', $target);
+    e('my.event.name', function($target) { ... }); // Register an event
+    tr('my.event-name', $target); // Triggers an event
 
 ### CORE EVENTS
 
@@ -136,57 +135,51 @@ changing the core system. These are:
 
     'arch.module.after.load'
     'arch.session.load'
-    'arch.theme.after.load'
-    'arch.db.after.init'
+    'arch.theme.before.render'
+    'arch.database.load'
     'arch.action.before.call'
-    'arch.http.before.headers'
     'arch.output.before.send'
     'arch.session.save'
     'arch.before.end'
 
 ### IDIOM
-    $i = app()->createIdiom();  // tries to find a default idiom by session or input
+    $i = help()->createIdiom();  // tries to find a default idiom by session or input
     $i->loadTranslation('filename', 'optional module name'); // loads a translation file
     $i->translate('key', array('key' => 'World')); // returns translated key in filename
     $i->t('TITLE'); // A smaller alias to use in templates
 
 ### SCREEN MESSAGES
-    app()->addMessage('An error has occurred', 'alert alert-error');
-    m('An error has occured');
+    m('An error has occured', 'css class');
 
 ### CAPTCHA
-    app()->createCaptcha(); // returns an HTML form element with a captcha code
-    app()->getCaptcha(); // validates input captcha code
+    $v = view()->createAntiSpam(); // returns an HTML antispam element
+    $v->validate(); // validates antispam code (saved in session)
  
 ### ENCRYPTION
-    app()->encrypt('my password', 'sha256'); // returns an hash of a string
-    s('secure this string');
+    s('secure this string'); // returns an encrypted string (crypt)
 
 ### REDIRECT
-    app()->redirect('http://www.google.com'); // redirects to an url
+    redirect('http://www.google.com'); // redirects to an url
 
 ### VALIDATION
-    $rules[] = rule('email', 'isEmail', 'Invalid email message);
-    $result = app()->input->validate($rules);
-    app()->session->loadMessages(app()->input->getMessages());
+    $v = help()->createValidator();
+    $rules[] = $v->createRule('email', 'isEmail', 'Invalid email message);
+    $result = $v->validate($rules);
+    app()->getSession()->loadMessages($v->getMessages());
 
 ### HTTP
-    app()->httpGet('http://google.com'); // gets the url content
-    app()->httpPost('http://google.com', array('param1' => 'value'));
+    $curl = help()->createCurl('http://google.com'); // gets a Curl helper
+    $result = $curl->execute(); // Gets the URL response
 
-### UPLOAD
-    app()->upload($index, '/var/www/architect/theme/data'); // uploads a file
+### FILE UPLOAD
+    $v = view()->createFileUpload(); // Creates an upload field
+    $v->upload(f($index), '/var/www/architect/theme/data'); // uploads a file
 
 ### DOWNLOAD
-    app()->download('/var/www/architect/theme/data/image.jpg'); // force file 
-    download by sending attachment HTTP headers
-    app()->download('/var/www/architect/theme/data/image.jpg', false); // do
-    not send attachment headers
+    $helper = help()->createDownload('/var/www/architect/theme/data/image.jpg');
+    $helper->execute(); // forces a file download
 
 ### DATABASE
-    app()->db // Gets a PDO instance
-    app()->createQuery('tablename')->select()->run(); // runs and returns a PDOStatement
-    app()->createQuery('user')->insert(array('username' => 'admin')->run();
     q('user')->s()->w('id = ?', array(1))->run(); // select user where id = 1
     q('user')->i(array('username' => 'admin'))->run(); // insert into user
     q('user')->u(array('username' => 'guest'))->w('id = ?', array(1))->run(); // update
@@ -194,35 +187,26 @@ changing the core system. These are:
     q('user')->s('group.*')->j('usergroup', 'usergroup.id_group = group.id')->run(); // join
 
 ### DATEPICKER
-    app()->createDatepicker(); // returns a HTML date picker view
- 
-### FILE UPLOAD
-    app()->createFileupload()); // returns HTML file upload view
+    view()->createDatepicker(); // returns a HTML date picker view
  
 ### PAGINATION
-    app()->createPagination(); // returns HTML pagination view
+    view()->createPagination(); // returns HTML pagination view
 
 ### TEXT EDITOR
-    app()->createTexteditor(); // returns HTML text editor view
-
-### SHOPPING CART (only use session)
-    $item = (object) array('name' => 'Product1', 'price' => 30);
-    $cart = app()->createCart(); // loads or creates a cart from session
-    $cart->model->insertItem($item, 1, 2, 0.2);
+    view()->createTexteditor(); // returns HTML text editor view
 
 ### LINE CHART
-    app()->createLineChart();
+    view()->createLineChart();
 
 ### TREE VIEW
-    app()->createTreeView();
+    view()->createTreeView();
 
 ### FILE EXPLORER
-    app()->createFileExplorer();
-    $tmpl = BASE_PATH.'/theme/default/filegallery.php';
-    app()->createFileExplorer($tmpl);
+    $explorer = view()->createFileExplorer();
+    $explorer->setPath($path);
 
 ### MAP
-    app()->createMap();
+    view()->createMap();
 
 ### AUTO TABLE
     $config = array(
@@ -234,7 +218,10 @@ changing the core system. These are:
                 'action' => u('/demo/crud/'), 'property' => 'id')
         )
     );
-    app()->createAutoTable($config); // returns an html table view from config
+    $v = view()->createAutoTable(); // returns an html table view
+    $v->setConfig($config);
+    $v->setDatabaseDriver($db);
+    $v->setPagination($pagination);
 
 ### AUTO FORM
     $config = array(
@@ -250,7 +237,12 @@ changing the core system. These are:
                 'class' => 'btn btn-success inline')
         )
     );
-    app()->createAutoForm($config); // returns an html form view from config
+    $v = view()->createAutoForm(); // returns an html form view
+    $v->setConfig($config);
+    $v->setDatabaseDriver($db);
 
 ROAD MAP (TODO)
 ===============
+
+January 2014 - Version 1.0.0-beta
+February 2014 - Version 1.0.0
