@@ -31,7 +31,7 @@ abstract class ITheme extends \Arch\Registry\View
      * @param function $template The slot template
      * @return \Arch\ITheme
      */
-    function render($slotName, callable $template)
+    function render($slotName, \Closure $template)
     {
         if (!empty($this->slot[$slotName])) {
             foreach ($this->slot[$slotName] as $item) {

@@ -25,7 +25,7 @@ class Events extends \Arch\IRegistry {
      * @throws Exception
      * @return \Arch\Event The newly created event
      */
-    public function addEvent($name, callable $callback, $target = null)
+    public function addEvent($name, \Closure $callback, $target = null)
     {
         $evt = new \Arch\Event($name, $callback, $target);
         $this->storage[$name][] = $evt;

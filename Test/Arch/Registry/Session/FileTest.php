@@ -2,6 +2,7 @@
 
 // simulate session variable
 if (!isset($_SESSION)) $_SESSION = array();
+if (!is_dir(RESOURCE_PATH.'session')) mkdir (RESOURCE_PATH.'session');
 
 /**
  * Description of FileTest
