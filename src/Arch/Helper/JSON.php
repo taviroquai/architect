@@ -23,6 +23,15 @@ class JSON extends \Arch\IHelper
     {
         $this->data = $data;
     }
+    
+    public function send()
+    {
+        $this->execute();
+        $this->app->getEvents()->triggerEvent('arch.session.save');
+        $this->app->getLogger()->log('Session closed');
+        $this->app->getLogger()->close();
+        exit();
+    }
 
     public function execute() {
         

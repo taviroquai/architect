@@ -143,26 +143,6 @@ class HelperFactory extends \Arch\IFactory
         $helper->setHTTPS($https);
         return $helper;
     }
-    
-    /**
-     * Returns an hash of a string.
-     * 
-     * Instead of using diferent encryptions spread in the application,
-     * use this centralized method.
-     * 
-     * Use it as <b>app()->encrypt('password')</b> or just <b>s('password')</b>
-     * 
-     * @param string $string The string to be secured
-     * @param string $salt A salt
-     * @return \Arch\Helper\Crypt
-     */
-    public function createCrypt($string, $salt = 'sha256')
-    {
-        $helper = new \Arch\Helper\Crypt($this->app);
-        $helper->setString($string);
-        $helper->setSalt($salt);
-        return $helper;
-    }
 
     /**
      * Returns the URL content using cURL.

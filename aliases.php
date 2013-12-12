@@ -237,10 +237,9 @@ function l($tmpl, $data = array())
  * Send JSON alias.
  * 
  * @param array $data The associative array containing data
- * @param boolean $cache Tells application to send cache headers
  */
-function j($data, $cache = false) {
-    help()->createJSON($data, $cache)->execute();
+function j($data) {
+    help()->createJSON($data)->send();
 }
 
 /**
@@ -296,9 +295,9 @@ function o($content = null)
  * @param string $salt An optional salt
  * @return string The result encrypted string
  */
-function s($string, $algo = 'sha256', $salt = '!Zz$9y#8x%7!')
+function s($string, $salt = '!Zz$9y#8x%7!')
 {
-    return help()->createCrypt($string, $algo, $salt)->execute();
+    return crypt($string, $salt);
 }
 
 /**

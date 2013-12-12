@@ -23,11 +23,10 @@ class Breadcrumbs extends \Arch\Registry\View
     
     /**
      * Parse items from input action
-     * @param string $action The input action (\Arch\Input::getAction())
      */
-    public function parseAction($action, \Arch\App $app)
+    public function parseAction(\Arch\App $app)
     {
-        $items = explode('/', $action);
+        $items = explode('/', $app->getInput()->getAction());
         $action = '';
         $i = 0;
         foreach ($items as $item) {

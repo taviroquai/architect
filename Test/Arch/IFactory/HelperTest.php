@@ -21,7 +21,6 @@ class HelperTest extends \PHPUnit_Framework_TestCase
     public function providerTestCreate()
     {
         return array(
-            array('Crypt'),
             array('Curl'),
             array('Download'),
             array('Idiom'),
@@ -51,7 +50,6 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $app = new \Arch\App(RESOURCE_PATH.'configValid.xml');
         $factory = new \Arch\IFactory\HelperFactory($app);
         
-        $factory->createCrypt('test');
         $factory->createCurl('http://localhost');
         $factory->createDownload(RESOURCE_PATH.'dummy');
         $factory->createIdiom();

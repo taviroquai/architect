@@ -11,9 +11,17 @@ class Curl extends \Arch\IHelper
 {
     protected $url;
     protected $data;
+    protected $timeout;
+    protected $handler;
     
     public function __construct(\Arch\App &$app) {
         parent::__construct($app);
+        $this->handler = curl_init();
+        curl_setopt($this->handler, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($this->handler, CURLOPT_VERBOSE, true);
+        $logger = $this->app->getLogger()->getHandler();
+        curl_setopt($this->handler, CURLOPT_STDERR, $logger);
+        $this->setTimeout(5);
     }
     
     public function setUrl($url)
@@ -25,22 +33,24 @@ class Curl extends \Arch\IHelper
     {
         $this->data = $data;
     }
+    
+    public function setTimeout($timeout)
+    {
+        $this->timeout = $timeout;
+    }
+    
+    public function closeConnection()
+    {
+        curl_close($this->handler);
+    }
 
     public function execute() {
-        $ch = curl_init();
-        $timeout = 5;
-        curl_setopt($ch, CURLOPT_URL, $this->url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        curl_setopt($this->handler, CURLOPT_URL, $this->url);
+        curl_setopt($this->handler, CURLOPT_CONNECTTIMEOUT, $this->timeout);
         if (!empty($this->data)) {
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($this->data));
+            curl_setopt($this->handler, CURLOPT_POST, 1);
+            curl_setopt($this->handler, CURLOPT_POSTFIELDS, http_build_query($this->data));
         }
-        curl_setopt($ch, CURLOPT_VERBOSE, true);
-        curl_setopt($ch, CURLOPT_STDERR, $this->app->getLogger()->getHandler());
-
-        $data = curl_exec($ch);
-        curl_close($ch);
-        return $data;
+        return curl_exec($this->handler);
     }
 }
