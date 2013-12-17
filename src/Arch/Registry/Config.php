@@ -61,15 +61,6 @@ class Config extends \Arch\IRegistry
             $this->set((string) $item['name'], (string) $item);
         }
         
-        return $this;
-    }
-    
-    /**
-     * Apply configuration
-     * @return \Arch\Config
-     */
-    public function apply()
-    {
         // extra configuration
         foreach ($this->storage as $key => $value) {
             switch ($key) {

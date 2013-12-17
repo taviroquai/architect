@@ -5,11 +5,11 @@ namespace Arch\Rule;
 /**
  * IsAlphaNumeric except class
  */
-class IsAlphaExcept extends \Arch\Rule
+class IsAlphaExcept extends \Arch\IRule
 {    
     /**
      * Execute isAlphaExcept
-     * @return \Arch\Rule\IsAlphaExcept
+     * @return \Arch\IRule\IsAlphaExcept
      */
     public function execute()
     {

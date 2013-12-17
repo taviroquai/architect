@@ -5,7 +5,7 @@ namespace Arch\Rule;
 /**
  * IsTime rule class
  */
-class IsTime extends \Arch\Rule
+class IsTime extends \Arch\IRule
 {    
     /**
      * Execute isTime

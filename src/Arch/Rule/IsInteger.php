@@ -5,7 +5,7 @@ namespace Arch\Rule;
 /**
  * IsInteger rule class
  */
-class IsInteger extends \Arch\Rule
+class IsInteger extends \Arch\IRule
 {    
     /**
      * Execute isInteger

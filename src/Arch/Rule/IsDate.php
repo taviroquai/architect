@@ -5,11 +5,11 @@ namespace Arch\Rule;
 /**
  * IsDate class
  */
-class IsDate extends \Arch\Rule
+class IsDate extends \Arch\IRule
 {    
     /**
      * Execute isDate
-     * @return \Arch\Rule\IsDate
+     * @return \Arch\IRule\IsDate
      */
     public function execute()
     {

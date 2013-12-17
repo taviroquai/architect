@@ -46,4 +46,49 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $app->getConfig()->set('MODULE_PATH', '');
         $app->run();
     }
+    
+    /**
+     * Test get logger
+     * @dataProvider providerApp
+     * @param \Arch\App $app
+     */
+    public function testGetLogger($app)
+    {
+        $result = $app->getLogger();
+        $this->assertInstanceOf('\Arch\ILogger', $result);
+    }
+    
+    /**
+     * Test get views factory
+     * @dataProvider providerApp
+     * @param \Arch\App $app
+     */
+    public function testGetViewsFactory($app)
+    {
+        $result = $app->getViewFactory();
+        $this->assertInstanceOf('\Arch\IFactory\GenericViewFactory', $result);
+    }
+    
+    /**
+     * Test set/get database
+     * @dataProvider providerApp
+     * @param \Arch\App $app
+     */
+    public function testSetGetDatabase($app)
+    {
+        $app->setDatabase(new \Arch\DB\MySql\Driver());
+        $result = $app->getDatabase();
+        $this->assertInstanceOf('\Arch\DB\IDriver', $result);
+    }
+    
+    /**
+     * Test flush messages
+     * @dataProvider providerApp
+     * @param \Arch\App $app
+     */
+    public function testFlushMessages($app)
+    {
+        $result = $app->flushMessages();
+        $this->assertInternalType('array', $result);
+    }
 }

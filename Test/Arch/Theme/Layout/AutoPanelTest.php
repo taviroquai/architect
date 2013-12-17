@@ -23,7 +23,7 @@ class AutoPanelTest extends \PHPUnit_Framework_TestCase
                 DB_HOST,
                 DB_USER,
                 DB_PASS,
-                new \Arch\Logger(RESOURCE_PATH.'dummy'))
+                new \Arch\Logger\File(RESOURCE_PATH.'dummy'))
             )
         );
     }
@@ -43,7 +43,7 @@ class AutoPanelTest extends \PHPUnit_Framework_TestCase
                 DB_HOST,
                 DB_USER,
                 DB_PASS,
-                new \Arch\Logger(RESOURCE_PATH.'dummy'))
+                new \Arch\Logger\File(RESOURCE_PATH.'dummy'))
             ),
             array(
                 '',
@@ -53,7 +53,7 @@ class AutoPanelTest extends \PHPUnit_Framework_TestCase
                 DB_HOST,
                 DB_USER,
                 DB_PASS,
-                new \Arch\Logger(RESOURCE_PATH.'dummy'))
+                new \Arch\Logger\File(RESOURCE_PATH.'dummy'))
             ),
             array(
                 '',
@@ -63,7 +63,7 @@ class AutoPanelTest extends \PHPUnit_Framework_TestCase
                 DB_HOST,
                 DB_USER,
                 DB_PASS,
-                new \Arch\Logger(RESOURCE_PATH.'dummy'))
+                new \Arch\Logger\File(RESOURCE_PATH.'dummy'))
             )
         );
     }

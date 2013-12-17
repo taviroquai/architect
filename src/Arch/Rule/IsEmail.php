@@ -5,7 +5,7 @@ namespace Arch\Rule;
 /**
  * IsEmail rule class
  */
-class IsEmail extends \Arch\Rule
+class IsEmail extends \Arch\IRule
 {
     /**
      * Execute isEmail

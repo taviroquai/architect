@@ -22,7 +22,7 @@ class Query extends \Arch\IHelper
 
     public function execute() {
         if (!$this->app->getDatabase()) {
-            $this->app->initDatabase();
+            throw new \Exception('The application database was not set');
         }
         return $this->app->getDatabase()->createTable($this->tablename);
     }

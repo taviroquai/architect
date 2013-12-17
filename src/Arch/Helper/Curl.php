@@ -18,9 +18,6 @@ class Curl extends \Arch\IHelper
         parent::__construct($app);
         $this->handler = curl_init();
         curl_setopt($this->handler, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($this->handler, CURLOPT_VERBOSE, true);
-        $logger = $this->app->getLogger()->getHandler();
-        curl_setopt($this->handler, CURLOPT_STDERR, $logger);
         $this->setTimeout(5);
     }
     

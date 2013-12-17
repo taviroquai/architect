@@ -5,7 +5,7 @@ namespace Arch\Rule;
 /**
  * Required rule class
  */
-class Required extends \Arch\Rule
+class Required extends \Arch\IRule
 {    
     /**
      * Execute required

@@ -20,17 +20,21 @@ class Modules extends \Arch\IRegistry {
     /**
      * Loads modules on the target path
      * @param string $path The file system path
+     * @return boolean
      */
     public function load($path)
     {
-        $modules = glob($path.
-                DIRECTORY_SEPARATOR.'enable'.
-                DIRECTORY_SEPARATOR.'*', GLOB_ONLYDIR);
+        $path = $path.DIRECTORY_SEPARATOR.'enable';
+        if (!is_dir($path)) {
+            return false;
+        }
+        $modules = glob($path.DIRECTORY_SEPARATOR.'*', GLOB_ONLYDIR);
 
         foreach($modules as $name) {
             $module = new \Arch\Module($name);
             $this->set(dirname($name), $module);
             $module->loadConfig();
         }
+        return true;
     }
 }

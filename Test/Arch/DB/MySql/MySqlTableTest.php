@@ -20,7 +20,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
                 DB_HOST,
                 DB_USER,
                 DB_PASS,
-                new \Arch\Logger(RESOURCE_PATH.'dummy')
+                new \Arch\Logger\File(RESOURCE_PATH.'dummy')
             )
         );
     }
@@ -38,7 +38,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
                 DB_HOST,
                 DB_USER,
                 DB_PASS,
-                new \Arch\Logger(RESOURCE_PATH.'dummy'),
+                new \Arch\Logger\File(RESOURCE_PATH.'dummy'),
                 null
             ),
             array(
@@ -47,7 +47,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
                 DB_HOST,
                 DB_USER,
                 DB_PASS,
-                new \Arch\Logger(RESOURCE_PATH.'dummy'),
+                new \Arch\Logger\File(RESOURCE_PATH.'dummy'),
                 array()
             ),
             array(
@@ -56,7 +56,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
                 DB_HOST,
                 DB_USER,
                 DB_PASS,
-                new \Arch\Logger(RESOURCE_PATH.'dummy'),
+                new \Arch\Logger\File(RESOURCE_PATH.'dummy'),
                 new stdClass()
             ),
             array(
@@ -65,7 +65,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
                 DB_HOST,
                 DB_USER,
                 DB_PASS,
-                new \Arch\Logger(RESOURCE_PATH.'dummy'),
+                new \Arch\Logger\File(RESOURCE_PATH.'dummy'),
                 function() { }
             )
         );

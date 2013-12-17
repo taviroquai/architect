@@ -5,11 +5,11 @@ namespace Arch\Rule;
 /**
  * Between rule class
  */
-class Between extends \Arch\Rule
+class Between extends \Arch\IRule
 {        
     /**
      * Execute between
-     * @return \Arch\Rule\Between
+     * @return \Arch\IRule\Between
      */
     public function execute()
     {

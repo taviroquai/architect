@@ -5,11 +5,11 @@ namespace Arch\Rule;
 /**
  * Before rule class
  */
-class Before extends \Arch\Rule
+class Before extends \Arch\IRule
 {    
     /**
      * Execute before
-     * @return \Arch\Rule\Before
+     * @return \Arch\IRule\Before
      */
     public function execute()
     {

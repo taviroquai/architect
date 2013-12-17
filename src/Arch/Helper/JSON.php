@@ -29,16 +29,17 @@ class JSON extends \Arch\IHelper
         $this->execute();
         $this->app->getEvents()->triggerEvent('arch.session.save');
         $this->app->getLogger()->log('Session closed');
+        $this->app->getLogger()->dumpMessages();
         $this->app->getLogger()->close();
-        exit();
     }
 
     public function execute() {
-        
         $factory = new \Arch\IFactory\OutputFactory();
-        $this->app->output = $factory->create(
+        $output = $factory->create(
             \Arch\IFactory\OutputFactory::TYPE_JSON
         );
-        $this->output->setBuffer(json_encode($this->data));
+        $output->setBuffer(json_encode($this->data));
+        $this->app->setOutput($output);
+        return $this->app->getOutput();
     }
 }

@@ -26,27 +26,34 @@ class Download extends \Arch\IHelper
         $this->attachment = $boolean;
     }
 
+    /**
+     * Tells whether or not the file will be downloaded
+     * @return boolean
+     */
     public function execute() {
+        $result = true;
         $output_factory = new \Arch\IFactory\OutputFactory();
+        $output = $output_factory->create(
+            \Arch\IFactory\OutputFactory::TYPE_RESPONSE
+        );
         if ($this->attachment) {
-            $this->app->setOutput($output_factory->create(
+            $output = $output_factory->create(
                 \Arch\IFactory\OutputFactory::TYPE_ATTACHMENT
-            ));
-        } else {
-            $this->app->setOutput($output_factory->create(
-                \Arch\IFactory\OutputFactory::TYPE_RESPONSE
-            ));
+            );
         }
-        if (!$this->app->getOutput()->import($this->filename)) {
-            $this->app->getLogger->log(
+        $this->app->setOutput($output);
+        if (!is_readable($this->filename)) {
+            $this->app->getLogger()->log(
                 'Download failed. File not found: '.$this->filename, 'error'
             );
-            $this->app->createMessage(
+            $this->app->getSession()->createMessage(
                 'File to download was not found',
                 'alert alert-error'
             );
-            return false;
+            $result = false;
+        } else {
+            $this->app->getOutput()->import($this->filename);
         }
-        return true;
+        return $result;
     }
 }

@@ -5,7 +5,7 @@ namespace Arch\Rule;
 /**
  * IsImage rule class
  */
-class IsImage extends \Arch\Rule
+class IsImage extends \Arch\IRule
 {
     /**
      * Execute isImage

@@ -5,11 +5,11 @@ namespace Arch\Rule;
 /**
  * Equals rule class
  */
-class Equals extends \Arch\Rule
+class Equals extends \Arch\IRule
 {
     /**
      * Execute equals
-     * @return \Arch\Rule\Equals
+     * @return \Arch\IRule\Equals
      */
     public function execute()
     {

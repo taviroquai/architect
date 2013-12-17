@@ -161,7 +161,7 @@ function filter($key, $filter = FILTER_SANITIZE_STRING)
 function r($uri, callable $action)
 {
     $uri = (string) $uri;
-    app()->getRouter()->addRoute($uri, $action);
+    app()->getInput()->getRouter()->addRoute($uri, $action);
 }
 
 /**

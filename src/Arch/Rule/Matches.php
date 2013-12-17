@@ -5,7 +5,7 @@ namespace Arch\Rule;
 /**
  * Matches class
  */
-class Matches extends \Arch\Rule
+class Matches extends \Arch\IRule
 {    
     /**
      * Execute matches

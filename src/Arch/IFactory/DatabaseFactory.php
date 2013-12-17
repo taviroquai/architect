@@ -45,9 +45,9 @@ class DatabaseFactory extends \Arch\IFactory
     /**
      * Create database from config
      */
-    public function createFromConfig(
+    public static function createFromConfig(
         \Arch\Registry\Config $config,
-        \Arch\Logger $logger
+        \Arch\ILogger $logger
     ) {
         $factory = new \Arch\IFactory\DatabaseFactory();
         $type = $config->get('DB_DRIVER');
@@ -58,17 +58,17 @@ class DatabaseFactory extends \Arch\IFactory
         
         switch ($type) {
             case 'sqlite':
-                $db = $factory->fabricate(self::TYPE_SQLITE);
+                $db = $factory->create(self::TYPE_SQLITE);
                 $db->setLogger($logger);
                 $db->connect($host, $database, $user, $pass);
                 return $db;
             case 'pgsql':
-                $db = $factory->fabricate(self::TYPE_PGSQL);
+                $db = $factory->create(self::TYPE_PGSQL);
                 $db->setLogger($logger);
                 $db->connect($host, $database, $user, $pass);
                 return $db;
             case 'mysql':
-                $db = $factory->fabricate(self::TYPE_MYSQL);
+                $db = $factory->create(self::TYPE_MYSQL);
                 $db->setLogger($logger);
                 $db->connect($host, $database, $user, $pass);
                 return $db;

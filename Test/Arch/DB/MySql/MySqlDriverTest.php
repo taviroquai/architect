@@ -20,7 +20,7 @@ class MySqlDriverTest extends \PHPUnit_Framework_TestCase
                 DB_HOST,
                 DB_USER,
                 DB_PASS,
-                new \Arch\Logger(RESOURCE_PATH.'dummy')
+                new \Arch\Logger\File()
             )
         );
     }

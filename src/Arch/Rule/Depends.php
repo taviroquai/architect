@@ -5,11 +5,11 @@ namespace Arch\Rule;
 /**
  * Depends rule class
  */
-class Depends extends \Arch\Rule
+class Depends extends \Arch\IRule
 {    
     /**
      * Execute depends
-     * @return \Arch\Rule\Depends
+     * @return \Arch\IRule\Depends
      */
     public function execute()
     {

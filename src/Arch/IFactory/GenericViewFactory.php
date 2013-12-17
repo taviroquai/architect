@@ -371,9 +371,6 @@ class GenericViewFactory extends \Arch\IFactory
      */
     public function createAutoTable()
     {
-        if (!$this->app->getDatabase()) {
-            $this->app->initDatabase();
-        }
         return new \Arch\View\AutoTable();
     }
     
@@ -383,9 +380,6 @@ class GenericViewFactory extends \Arch\IFactory
      */
     public function createAutoForm()
     {
-        if (!$this->app->getDatabase()) {
-            $this->app->initDatabase();
-        }
         return new \Arch\View\AutoForm();
     }
 }

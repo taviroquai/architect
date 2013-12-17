@@ -3,9 +3,9 @@
 namespace Arch;
 
 /**
- * Rule class
+ * IRule class
  */
-abstract class Rule
+abstract class IRule
 {
     /**
      * Holds the rule input name
@@ -51,7 +51,7 @@ abstract class Rule
     /**
      * Sets the error message on fail
      * @param string $msg The message
-     * @return \Arch\Rule
+     * @return \Arch\IRule
      */
     public function setErrorMessage($msg)
     {
@@ -66,7 +66,7 @@ abstract class Rule
      * Sets the validation actions params
      * Please look at the validation manual
      * @param mixed $params The action params
-     * @return \Arch\Rule
+     * @return \Arch\IRule
      */
     public function setParams($params)
     {
@@ -77,7 +77,7 @@ abstract class Rule
     /**
      * Sets the validation result
      * @param bool $result The validation result
-     * @return \Arch\Rule
+     * @return \Arch\IRule
      */
     public function setResult($result)
     {
@@ -89,7 +89,7 @@ abstract class Rule
      * Adds a validation action param
      * Please see the validation manual
      * @param mixed $param The action param
-     * @return \Arch\Rule
+     * @return \Arch\IRule
      */
     public function addParam($param)
     {

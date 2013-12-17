@@ -51,7 +51,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     {
         $config = new \Arch\Registry\Config();
         $config->load(RESOURCE_PATH.'configValid.xml');
-        $config->apply();
         $this->assertTrue((bool) $config->get('BASE_URL'));
         $this->assertTrue((bool) $config->get('INDEX_FILE'));
         $this->assertTrue((bool) $config->get('LOG_FILE'));

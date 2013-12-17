@@ -11,7 +11,7 @@ abstract class IDriver
 {
     /**
      * Holds the application logger
-     * @var \Arch\Logger
+     * @var \Arch\ILogger
      */
     protected $logger;
     
@@ -64,7 +64,7 @@ abstract class IDriver
     
     /**
      * Returns the query logger
-     * @return \Arch\Logger
+     * @return \Arch\ILogger
      */
     public function getLogger()
     {
@@ -84,7 +84,7 @@ abstract class IDriver
      * Sets the query logger
      * @param \Arch\Logger $logger
      */
-    public function setLogger(\Arch\Logger $logger)
+    public function setLogger(\Arch\ILogger $logger)
     {
         $this->logger = $logger;
     }

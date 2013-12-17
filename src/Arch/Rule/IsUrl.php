@@ -5,7 +5,7 @@ namespace Arch\Rule;
 /**
  * IsUrl rule class
  */
-class IsUrl extends \Arch\Rule
+class IsUrl extends \Arch\IRule
 {
     /**
      * Execute isURL

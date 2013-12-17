@@ -61,15 +61,15 @@ class OutputFactory extends \Arch\IFactory
     /**
      * Create output from API
      */
-    public function createFromGlobals()
+    public static function createFromGlobals()
     {
         $factory = new \Arch\IFactory\OutputFactory();
         $api = php_sapi_name();
         switch ($api) {
             case 'cli':
-                return $factory->fabricate(self::TYPE_RAW);
+                return $factory->create(self::TYPE_RAW);
             default:
-                return $factory->fabricate(self::TYPE_RESPONSE);
+                return $factory->create(self::TYPE_RESPONSE);
         }
     }
 }

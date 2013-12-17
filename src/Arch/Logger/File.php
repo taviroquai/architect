@@ -1,13 +1,13 @@
 <?php
 
-namespace Arch;
+namespace Arch\Logger;
 
 /**
- * Description of Logger
+ * Description of File logger
  *
  * @author mafonso
  */
-class Logger
+class File extends \Arch\ILogger
 {
     
     /**
@@ -23,44 +23,45 @@ class Logger
     protected $handler;
     
     /**
-     * Returns a new Logger
-     * @param string $filename The file which contains the logs
+     * Sets the filename
+     * @param string $filename
      */
-    public function __construct($filename = '')
+    public function setFilename($filename)
     {
         if  (!is_string($filename)) {
             throw new \Exception('Invalid filename');
         }
         $this->filename = $filename;
-        
-        if (is_file($filename) && is_writable($this->filename)) {
-            $this->handler = @fopen($filename, 'a');
-        }
+        $this->open();
     }
-    
+
     /**
      * Logs a message
      * @param string $msg The message to be logged
      * @param string $label The message label ('access', 'error')
      * @param boolean $nlb Tells to add a line break at the end of the message
-     * @return boolean
      */
     public function log($msg, $label = 'access', $nlb = false)
     {
-        if (!$this->isOpen()) {
-            return false;
-        }
-        
         $secs = round(microtime(true)-floor(microtime(true)), 3);
         $time = date('Y-m-d H:i:s').' '.sprintf('%0.3f', $secs).'ms';
         $msg = strtoupper($label).' '.$time.' '.$msg.PHP_EOL;
         if ($nlb) {
             $msg = PHP_EOL.$msg;
         }
-        fwrite($this->getHandler(), $msg);
-        return true;
+        return parent::log($msg);
     }
     
+    /**
+     * Opens the file handler
+     */
+    public function open()
+    {
+        if (!$this->isOpen()) {
+            $this->handler = @fopen($this->filename, 'a');
+        }
+    }
+
     /**
      * Returns true if file is open, or false if not open
      * @return boolean
@@ -91,6 +92,16 @@ class Logger
     {
         return $this->handler;
     }
+    
+    /**
+     * Dumps the log messages
+     */
+    public function dumpMessages() {
+        $this->open();
+        if ($this->isOpen()) {
+            foreach ($this->messages as $msg) {
+                fwrite($this->getHandler(), $msg);
+            }
+        }
+    }
 }
-
-?>

@@ -5,11 +5,11 @@ namespace Arch\Rule;
 /**
  * After rule class
  */
-class After extends \Arch\Rule
+class After extends \Arch\IRule
 {
     /**
      * Execute after
-     * @return \Arch\Rule\After
+     * @return \Arch\IRule\After
      */
     public function execute()
     {

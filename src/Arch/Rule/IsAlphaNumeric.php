@@ -5,11 +5,11 @@ namespace Arch\Rule;
 /**
  * IsAlphaNumeric class
  */
-class IsAlphaNumeric extends \Arch\Rule
+class IsAlphaNumeric extends \Arch\IRule
 {    
     /**
      * Execute isAlphaNumeric
-     * @return \Arch\Rule\IsAlphaNumeric
+     * @return \Arch\IRule\IsAlphaNumeric
      */
     public function execute()
     {

@@ -35,6 +35,7 @@ class Redirect extends \Arch\IHelper
             $this->app->getLogger()->log('Redirecting to '.$this->url);
             $this->app->getEvents()->triggerEvent('arch.session.save');
             $this->app->getLogger()->log('Session closed');
+            $this->app->getLogger()->dumpMessages();
             $this->app->getLogger()->close();
             exit();
         }

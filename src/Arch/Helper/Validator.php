@@ -86,7 +86,7 @@ implements \Arch\IMessenger
      * @param string $name The input param
      * @param string $type The type of rule
      * @param string $error_msg The message if invalid input
-     * @return \Arch\Rule
+     * @return \Arch\IRule
      */
     public function createRule($name, $type, $error_msg)
     {

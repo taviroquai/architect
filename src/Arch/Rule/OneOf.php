@@ -5,7 +5,7 @@ namespace Arch\Rule;
 /**
  * OneOf rule class
  */
-class OneOf extends \Arch\Rule
+class OneOf extends \Arch\IRule
 {
     /**
      * Execute oneOf

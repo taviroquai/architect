@@ -5,7 +5,7 @@ namespace Arch\Rule;
 /**
  * IsMime rule class
  */
-class IsMime extends \Arch\Rule
+class IsMime extends \Arch\IRule
 {
     /**
      * Execute isMime

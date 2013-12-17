@@ -5,7 +5,7 @@ namespace Arch\Rule;
 /**
  * Unique rule class
  */
-class Unique extends \Arch\Rule
+class Unique extends \Arch\IRule
 {    
     /**
      * Execute unique

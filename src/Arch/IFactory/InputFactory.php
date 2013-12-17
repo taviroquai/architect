@@ -34,32 +34,32 @@ class InputFactory extends \Arch\IFactory
     /**
      * Parse global server input
      */
-    public function createFromGlobals()
+    public static function createFromGlobals()
     {
         $factory = new \Arch\IFactory\InputFactory();
         $api = php_sapi_name();
         $raw = file_get_contents('php://input');
         if (!isset($_SERVER['REQUEST_METHOD'])) {
-            $input = $factory->fabricate(self::TYPE_CLI);
+            $input = $factory->create(self::TYPE_CLI);
             $input->setActionParams($_SERVER['argv']);
             $input->setRaw($raw);
             return $input;
         } else {
             switch ($_SERVER['REQUEST_METHOD']) {
                 case 'GET':
-                    $input = $factory->fabricate(self::TYPE_GET);
+                    $input = $factory->create(self::TYPE_GET);
                     $input->parseServer($_SERVER);
                     $input->setParams($_GET);
                     return $input;
                 case 'POST':
-                    $input = $factory->fabricate(self::TYPE_POST);
+                    $input = $factory->create(self::TYPE_POST);
                     $input->parseServer($_SERVER);
                     $input->setParams(array_merge($_GET, $_POST));
                     $input->setFiles($_FILES);
                     $input->setRaw($raw);
                     return $input;
                 default:
-                    $input = $factory->fabricate(self::TYPE_HTTP);
+                    $input = $factory->create(self::TYPE_HTTP);
                     $input->parseServer($_SERVER);
                     $input->setParams($_REQUEST);
                     $input->setRaw($raw);

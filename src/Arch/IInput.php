@@ -14,6 +14,12 @@ abstract class IInput
     protected $api;
     
     /**
+     * Holds the user action router
+     * @var \Arch\Registry\Router
+     */
+    protected $router;
+    
+    /**
      * Holds the HTTP user agent (UA)
      * @var string
      */
@@ -64,6 +70,7 @@ abstract class IInput
         $this->action = $action;
         $this->api = $api;
         $this->raw = file_get_contents("php://input");
+        $this->router = new \Arch\Registry\Router();
     }
     
     /**
@@ -100,6 +107,15 @@ abstract class IInput
      * Returns the request uri if exists
      */
     public abstract function getRequestUri();
+    
+    /**
+     * Returns the router registry
+     * @return \Arch\Registry\Router
+     */
+    public function getRouter()
+    {
+        return $this->router;
+    }
     
     /**
      * Sets the input params

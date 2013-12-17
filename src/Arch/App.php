@@ -55,19 +55,6 @@ class App
     private  $output;
     
     /**
-     * Holds the URI Router.
-     * 
-     * To add a route use <b>app()->addRoute('/demo', function() { ... })</b> or
-     * <b>r('/demo', function() { ... })</b>.
-     * 
-     * The function callback will be called when the user requests
-     * <b>index.php/demo</b>
-     * 
-     * @var \Arch\Registry\Router The URI router
-     */
-    private  $router;
-    
-    /**
      * Holds the default theme.
      * 
      * This will hold the theme (Theme) that will be used when outputing HTML.
@@ -156,54 +143,43 @@ class App
 
     /**
      * Returns a new application
-     * @param string $filename Full configuration file path
      */
-    public function __construct($filename = 'config.xml')
+    public function __construct()
     {   
         // update stage
         $this->stage = 'init';
         
         // load configuration and apply
         $this->config = new \Arch\Registry\Config();
-        $this->config->load($filename);
-        $this->config->apply();
-        
-        // ready to start logging now
-        $this->logger = new \Arch\Logger($this->config->get('LOG_FILE'));
-        $this->logger->log('Loaded configuration from '.$filename, 'access', true);
         
         // set events registry
         $this->events = new \Arch\Registry\Events();
         
-        // set session handler
-        $this->session = new \Arch\Registry\Session\Native();
-
-        // set default theme
-        $this->theme = new \Arch\Theme\Directory();
-        
-        // set input
-        $input_factory = new \Arch\IFactory\InputFactory();
-        $this->input = $input_factory->createFromGlobals();
-        $this->input->parseAction($this->config);
-        $this->logger->log('Input finish loading: '.
-                $this->input->getUserAgent());
-
-        // set default Output
-        $output_factory = new \Arch\IFactory\OutputFactory();
-        $this->output = $output_factory->createFromGlobals();
-        
-        // set default routes
-        $this->router = new \Arch\Registry\Router();
-        $this->router->addCoreRoutes($this);
-        
         // set modules registry
         $this->modules = new \Arch\Registry\Modules();
+        
+        // set default theme
+        $this->theme = new \Arch\Theme\Directory();
         
         // create the generic views factory
         $this->viewsFactory = new \Arch\IFactory\GenericViewFactory($this);
         
         // create the helper factory
         $this->helperFactory = new \Arch\IFactory\HelperFactory($this);
+        
+        // set default logger handler
+        $this->setLogger(new \Arch\Logger\File());
+        
+        // set default session handler
+        $this->setSession(new \Arch\Registry\Session\Native());
+        
+        // set default input
+        $input = \Arch\IFactory\InputFactory::createFromGlobals();
+        $this->setInput($input);
+        
+        // set default Output
+        $output = \Arch\IFactory\OutputFactory::createFromGlobals();
+        $this->setOutput($output);
     }
     
     /**
@@ -221,11 +197,28 @@ class App
         
         // update stage
         $this->stage = 'run';
+        $this->logger->log('Starting application', 'access', true);
+        
+        // get user action
+        $this->input->parseAction($this->config);
+        $this->logger->log('Input finish loading: '.
+                $this->input->getUserAgent());
+        
+        // add core routes
+        $this->input->getRouter()->addCoreRoutes($this);
         
         // bypass user modules if it is a core action (arch)
         // main purpose is to improve performance
         if (!$this->input->isArchAction()) {
-            $this->loadModules();
+            $this->logger->log('Loading modules...', 'access');
+            if (!is_dir($this->config->get('MODULE_PATH'))) {
+                $this->logger->log('Module path not found!', 'error');
+            }
+            $this->modules->load($this->config->get('MODULE_PATH'));
+            $this->getEvents()->triggerEvent(
+                'arch.module.after.load',
+                $this->modules
+            );
         }
         
         // trigger core event
@@ -241,13 +234,30 @@ class App
         $this->logger->log('Default theme loaded');
 
         // execute action
-        $this->dispatch();
+        $action = $this->input->getAction();
+        $this->logger->log('Dispatching user action: '.$action);
+        $callback = $this->input->getRouter()->getRouteCallback($this->input);
+        $this->getEvents()->triggerEvent('arch.action.before.call', $action);
+        call_user_func_array($callback, $this->input->getActionParam());
 
         // send output
-        $this->sendOutput();
+        $this->logger->log('Sending output...');
+        if ($this->getOutput()->getBuffer() == '' && $this->getTheme()) {
+            $this->output->setBuffer($this->theme);
+        }
+        $this->getEvents()->triggerEvent(
+            'arch.output.before.send',
+            $this->output
+        );
+        $this->output->send();
 
         // close resources
-        $this->cleanEnd();
+        $this->getEvents()->triggerEvent('arch.session.save');
+        $this->logger->log('Session closed');
+        
+        // close log handler
+        $this->logger->dumpMessages();
+        $this->logger->close();
         
         // trigger core event
         $this->getEvents()->triggerEvent('arch.before.end');
@@ -315,15 +325,6 @@ class App
     {
         return $this->theme;
     }
-    
-    /**
-     * Returns the router registry
-     * @return \Arch\Registry\Router
-     */
-    public function getRouter()
-    {
-        return $this->router;
-    }
 
     /**
      * Returns the default output handler
@@ -351,12 +352,30 @@ class App
     {
         return $this->helperFactory;
     }
+    
+    /**
+     * Sets the application logger
+     * @param \Arch\ILogger $logger
+     */
+    public function setLogger(\Arch\ILogger $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * Sets the application input
+     * @param \Arch\IInput $input
+     */
+    public function setInput(\Arch\IInput $input)
+    {
+        $this->input = $input;
+    }
 
     /**
      * Overrides the current session handler
      * @param \Arch\Registry\ISession $session
      */
-    public function setSession(\Arch\ISession $session)
+    public function setSession(\Arch\Registry\ISession $session)
     {
         $this->session = $session;
     }
@@ -389,93 +408,5 @@ class App
         $messages = $this->session->getMessages();
         $this->session->clearMessages();
         return $messages;
-    }
-    
-    /**
-     * Initiates default database driver from user configuration
-     * @throws \Exception
-     */
-    public function initDatabase()
-    {
-        try {
-            $factory = new \Arch\IFactory\DatabaseFactory();
-            $this->setDatabase($factory->createFromConfig(
-                $this->config, $this->logger
-            ));
-            
-            // trigger core event
-            $this->getEvents()->triggerEvent('arch.db.after.load', $this->db);
-        
-            $this->logger->log('Database initialized');
-            
-        } catch (\PDOException $e)  {
-            $this->getSession()->createMessage (
-                'A fatal database error has occured. Try later.', 
-                'alert alert-error'
-            );
-            $this->logger->log('Database could not be initialized', 'error');
-            throw new \Exception('Could not initialize DB: '.$e->getMessage());
-        }
-    }
-    
-    private function cleanEnd()
-    {
-        $this->getEvents()->triggerEvent('arch.session.save');
-        $this->logger->log('Session closed');
-        
-        // close log handler
-        $this->logger->close();
-    }
-    
-    private function dispatch()
-    {
-        $action = $this->input->getAction();
-        $callback = $this->router->getRouteCallback($this->input);
-        
-        // trigger core event
-        $this->getEvents()->triggerEvent('arch.action.before.call', $action);
-        
-        $this->logger->log('User action: '.$action);
-        return call_user_func_array($callback, $this->input->getActionParam());
-    }
-    
-    private function loadModules()
-    {
-        $module_path = $this->config->get('MODULE_PATH');
-        if (!is_dir($module_path)) {
-            $this->logger->log('Module path not found!', 'error');
-            return false;
-        }
-        
-        $this->modules->load($module_path);
-        
-        // trigger core event
-        $this->getEvents()->triggerEvent(
-            'arch.module.after.load',
-            $this->modules
-        );
-    }
-    
-    private function sendOutput()
-    {
-        if (is_object($this->output->getBuffer()) === FALSE) {
-            if ($this->output->getBuffer() == '') {
-                // trigger core event
-                $this->getEvents()->triggerEvent(
-                    'arch.theme.before.render',
-                    $this->theme
-                );
-                $this->output->setBuffer($this->theme);
-            }
-        }
-        
-        // send output
-        $this->logger->log('Sending output...');
-        //trigger core event
-        $this->getEvents()->triggerEvent(
-            'arch.output.before.send',
-            $this->output
-        );
-        $this->output->send();
     }
 }
