@@ -24,11 +24,11 @@ class CurlTest extends \PHPUnit_Framework_TestCase
     {
         $app = new \Arch\App();
         $helper = new \Arch\Helper\Curl($app);
-        $helper->setUrl('http://localhost');
+        $helper->setUrl('http://fail');
         $helper->setTimeout(5);
         $helper->setData(array('param' => 'value'));
         $result = $helper->execute();
         $helper->closeConnection();
-        $this->assertInternalType('string', $result);
+        $this->assertFalse($result);
     }
 }
