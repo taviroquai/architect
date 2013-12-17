@@ -12,7 +12,8 @@ class IdiomTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreate()
     {
-        $helper = new \Arch\Helper\Idiom($app = new \Arch\App());
+        $app = new \Arch\App();
+        $helper = new \Arch\Helper\Idiom($app);
         $this->assertInstanceOf('\Arch\Helper\Idiom', $helper);
     }
     
@@ -21,7 +22,8 @@ class IdiomTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
-        $helper = new \Arch\Helper\Idiom($app = new \Arch\App());
+        $app = new \Arch\App();
+        $helper = new \Arch\Helper\Idiom($app);
         
         $helper->setModule('test');
         $helper->setName('default.xml');

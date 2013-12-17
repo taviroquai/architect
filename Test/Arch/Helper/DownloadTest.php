@@ -12,7 +12,8 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreate()
     {
-        $helper = new \Arch\Helper\Download($app = new \Arch\App());
+        $app = new \Arch\App();
+        $helper = new \Arch\Helper\Download($app);
         $this->assertInstanceOf('\Arch\Helper\Download', $helper);
     }
     
@@ -21,7 +22,8 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
-        $helper = new \Arch\Helper\Download($app = new \Arch\App());
+        $app = new \Arch\App();
+        $helper = new \Arch\Helper\Download($app);
         
         $helper->setFilename(RESOURCE_PATH.'fail');
         $result = $helper->execute();

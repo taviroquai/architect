@@ -12,7 +12,8 @@ class SlugTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreate()
     {
-        $helper = new \Arch\Helper\Slug($app = new \Arch\App());
+        $app = new \Arch\App();
+        $helper = new \Arch\Helper\Slug($app);
         $this->assertInstanceOf('\Arch\Helper\Slug', $helper);
     }
     
@@ -21,7 +22,8 @@ class SlugTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
-        $helper = new \Arch\Helper\Slug($app = new \Arch\App());
+        $app = new \Arch\App();
+        $helper = new \Arch\Helper\Slug($app);
         $helper->setText('á!"#$%&/()=?ç');
         $result = $helper->execute();
         $this->assertInternalType('string', $result);

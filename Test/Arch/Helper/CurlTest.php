@@ -12,7 +12,8 @@ class CurlTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreate()
     {
-        $helper = new \Arch\Helper\Curl($app = new \Arch\App());
+        $app = new \Arch\App();
+        $helper = new \Arch\Helper\Curl($app);
         $this->assertInstanceOf('\Arch\Helper\Curl', $helper);
     }
     
@@ -21,7 +22,8 @@ class CurlTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
-        $helper = new \Arch\Helper\Curl($app = new \Arch\App());
+        $app = new \Arch\App();
+        $helper = new \Arch\Helper\Curl($app);
         $helper->setUrl('http://localhost');
         $helper->setTimeout(5);
         $helper->setData(array('param' => 'value'));

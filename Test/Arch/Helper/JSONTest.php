@@ -12,7 +12,8 @@ class HelperJSONTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreate()
     {
-        $helper = new \Arch\Helper\JSON($app = new \Arch\App());
+        $app = new \Arch\App();
+        $helper = new \Arch\Helper\JSON($app);
         $this->assertInstanceOf('\Arch\Helper\JSON', $helper);
     }
     
@@ -21,7 +22,8 @@ class HelperJSONTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
-        $helper = new \Arch\Helper\JSON($app = new \Arch\App());
+        $app = new \Arch\App();
+        $helper = new \Arch\Helper\JSON($app);
         $helper->setData(array());
         $helper->send();
     }
