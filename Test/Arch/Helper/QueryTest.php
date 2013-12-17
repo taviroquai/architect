@@ -12,7 +12,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreate()
     {
-        $helper = new \Arch\Helper\Query(new \Arch\App());
+        $helper = new \Arch\Helper\Query($app = new \Arch\App());
         $this->assertInstanceOf('\Arch\Helper\Query', $helper);
     }
     
@@ -22,7 +22,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
      */
     public function testFailExecute()
     {
-        $helper = new \Arch\Helper\Query(new \Arch\App());
+        $helper = new \Arch\Helper\Query($app = new \Arch\App());
         $helper->setTablename('test_table1');
         $helper->execute();
     }

@@ -12,7 +12,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreate()
     {
-        $helper = new \Arch\Helper\Validator(new \Arch\App());
+        $helper = new \Arch\Helper\Validator($app = new \Arch\App());
         $this->assertInstanceOf('\Arch\Helper\Validator', $helper);
     }
     
@@ -22,7 +22,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testFailRule()
     {
-        $helper = new \Arch\Helper\Validator(new \Arch\App());
+        $helper = new \Arch\Helper\Validator($app = new \Arch\App());
         $helper->createRule('test', 'fail', 'test is required');
     }
     
@@ -31,7 +31,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
-        $helper = new \Arch\Helper\Validator(new \Arch\App());
+        $helper = new \Arch\Helper\Validator($app = new \Arch\App());
         $helper->clearMessages();
         $rule = $helper->createRule('test', 'Required', 'test is required');
         $this->assertInstanceOf('\Arch\Rule\Required', $rule);
@@ -72,7 +72,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testAllRules($rule_name, $params)
     {
-        $helper = new \Arch\Helper\Validator(new \Arch\App());
+        $helper = new \Arch\Helper\Validator($app = new \Arch\App());
         $rule = $helper->createRule('test', $rule_name, 'error message');
         $this->assertInstanceOf('\Arch\IRule', $rule);
         

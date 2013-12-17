@@ -12,7 +12,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreate()
     {
-        $helper = new \Arch\Helper\Image(new \Arch\App());
+        $helper = new \Arch\Helper\Image($app = new \Arch\App());
         $this->assertInstanceOf('\Arch\Helper\Image', $helper);
     }
     
@@ -21,7 +21,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
-        $helper = new \Arch\Helper\Image(new \Arch\App());
+        $helper = new \Arch\Helper\Image($app = new \Arch\App());
         $helper->setFilename(RESOURCE_PATH.'img/landscape.jpg');
         $result = $helper->execute();
         $this->assertInstanceOf('\Arch\Image', $result);
