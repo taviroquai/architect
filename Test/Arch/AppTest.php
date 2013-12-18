@@ -48,6 +48,19 @@ class AppTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Test run application output theme
+     * @dataProvider providerApp
+     * @param \Arch\App $app The application instance
+     */
+    public function testRunApplicationOutputTheme($app)
+    {   
+        $app->getInput()->getRouter()->addRoute('/', function() {});
+        $app->getInput()->setAction('/');
+        $app->getTheme()->load(RESOURCE_PATH.'theme');
+        $app->run();
+    }
+    
+    /**
      * Test get logger
      * @dataProvider providerApp
      * @param \Arch\App $app

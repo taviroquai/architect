@@ -42,6 +42,9 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
      */
     public function setDatabaseDriver(\Arch\DB\IDriver $database) {
         parent::setDatabaseDriver($database);
+        if (empty($this->config)) {
+            throw new \Exception('Missing configuration');
+        }
         if (!empty($this->config['record_id'])) {
             $id = $this->config['record_id'];
             $table = $database->createTable($this->config['table']);

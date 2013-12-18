@@ -31,14 +31,15 @@ class POST extends \Arch\Input\HTTP
      * file(0) will return the first file uploaded result
      * 
      * @param int $index
-     * @return boolean
+     * @return array
      */
     public function getFileByIndex($index)
     {
-        if (empty($this->files[$index])) {
-            return false;
+        $result = false;
+        if (!empty($this->files[$index])) {
+            $result = $this->files[$index];
         }
-        return $this->files[$index];
+        return $result;
     }
     
     /**

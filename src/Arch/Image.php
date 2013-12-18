@@ -57,13 +57,11 @@ class Image {
                 or die("Error: Cannot find image!"); 
 
         // Find purpotion
+        $biggestSide = $height;
+        $cropPercent = $height > 560 ? 0.5 : $width / $height;
         if ($width > $height) {
             $biggestSide = $width;
             $cropPercent = $width > 560 ? 0.5 : $height / $width;
-        }
-        else {
-            $biggestSide = $height; 
-            $cropPercent = $height > 560 ? 0.5 : $width / $height;
         }
         $cropWidth   = $biggestSide*$cropPercent; 
         $cropHeight  = $biggestSide*$cropPercent; 
@@ -97,6 +95,19 @@ class Image {
         if (is_dir($filename)) {
             $filename = rtrim($filename, '/').'/'.basename ($this->filename);
         }
-        return imagejpeg($thumb, $filename, 90);
+        $parts = explode('.', $filename);
+        switch (end($parts)) {
+            case 'gif':
+                $result = imagegif($thumb, $filename, 90);
+                break;
+            case 'png':
+                $result = imagepng($thumb, $filename, 9);
+                break;
+            case 'jpeg':
+            case 'jpg':
+            default:
+                $result = imagejpeg($thumb, $filename, 90);
+        }
+        return $result;
     }    
 }

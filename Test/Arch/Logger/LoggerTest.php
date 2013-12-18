@@ -16,6 +16,9 @@ class LoggerFileTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\Arch\Logger\File', $logger);
     }
     
+    /**
+     * Tests log
+     */
     public function testLog()
     {
         $logger = new \Arch\Logger\File();
@@ -42,5 +45,6 @@ class LoggerFileTest extends \PHPUnit_Framework_TestCase
         $logger->setFilename(RESOURCE_PATH.'/dummy');
         $logger->log('test');
         $logger->dumpMessages();
+        $logger->close();
     }
 }

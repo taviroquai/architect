@@ -15,7 +15,7 @@ class FileExplorer extends \Arch\Registry\View
     
     /**
      * Holds the callback to translate server file path to client url
-     * @var function
+     * @var string
      */
     protected $path_to_url;
     
@@ -35,9 +35,7 @@ class FileExplorer extends \Arch\Registry\View
         parent::__construct($tmpl);
         
         // init function to translate path to url
-        $this->path_to_url = function ($path) {
-            return $path;
-        };
+        $this->path_to_url = '';
     }
     
     public function setPath($path)
@@ -51,25 +49,22 @@ class FileExplorer extends \Arch\Registry\View
 
     /**
      * Allows to redefine file path to url translation
-     * @param function $fn
+     * @param string $url
      * @return \Arch\View\FileExplorer
      */
-    public function setPathToUrl($fn)
+    public function setPathToUrl($url)
     {
-        if (is_callable($fn)) {
-            $this->path_to_url = $fn;
-        }
+        $this->path_to_url = $url;
         return $this;
     }
     
     /**
      * Translates file path to url
-     * @param string $path The file path
      * @return string
      */
-    public function translatePath($path) {
-        $fn = $this->path_to_url;
-        return $fn($path);
+    public function translatePath()
+    {
+        return $this->path_to_url;
     }
     
     /**

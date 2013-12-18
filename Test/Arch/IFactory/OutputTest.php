@@ -28,5 +28,6 @@ class OutputTest extends \PHPUnit_Framework_TestCase
         $factory->create(\Arch\IFactory\OutputFactory::TYPE_RESPONSE);
         $factory->create(\Arch\IFactory\OutputFactory::TYPE_ATTACHMENT);
         $factory->create(\Arch\IFactory\OutputFactory::TYPE_JSON);
+        $output = \Arch\IFactory\OutputFactory::createFromGlobals();
     }
 }

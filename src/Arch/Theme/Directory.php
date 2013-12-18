@@ -65,7 +65,7 @@ class Directory extends \Arch\ITheme
         // add theme configuration
         $filename = $this->theme_path.DIRECTORY_SEPARATOR.'config.php';
         if (file_exists($filename)) {
-            require $filename;
+            include $filename;
         }
         
         // add flash messages slot

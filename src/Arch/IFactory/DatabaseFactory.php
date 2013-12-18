@@ -41,37 +41,4 @@ class DatabaseFactory extends \Arch\IFactory
         }
         throw new \Exception('Invalid database type');
     }
-    
-    /**
-     * Create database from config
-     */
-    public static function createFromConfig(
-        \Arch\Registry\Config $config,
-        \Arch\ILogger $logger
-    ) {
-        $factory = new \Arch\IFactory\DatabaseFactory();
-        $type = $config->get('DB_DRIVER');
-        $database = $config->get('DB_DATABASE');
-        $host = $config->get('DB_HOST');
-        $user = $config->get('DB_USER');
-        $pass = $config->get('DB_PASS');
-        
-        switch ($type) {
-            case 'sqlite':
-                $db = $factory->create(self::TYPE_SQLITE);
-                $db->setLogger($logger);
-                $db->connect($host, $database, $user, $pass);
-                return $db;
-            case 'pgsql':
-                $db = $factory->create(self::TYPE_PGSQL);
-                $db->setLogger($logger);
-                $db->connect($host, $database, $user, $pass);
-                return $db;
-            case 'mysql':
-                $db = $factory->create(self::TYPE_MYSQL);
-                $db->setLogger($logger);
-                $db->connect($host, $database, $user, $pass);
-                return $db;
-        }
-    }
 }

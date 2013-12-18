@@ -66,6 +66,7 @@ class Idiom extends \Arch\IRegistry
      */
     public function loadTranslation($filename)
     {
+        $result = false;
         if (file_exists($filename)) {
             $xml = @simplexml_load_file($filename);
             if ($xml) {
@@ -73,11 +74,11 @@ class Idiom extends \Arch\IRegistry
                     $key = (string) $item['key'];
                     $this->storage[$key] = (string) $item;
                 }
-                return true;
+                $result = true;
             }
         }
-        return false;
-	}
+        return $result;
+    }
 
     /**
      * Converts a string key to the idiom string
@@ -85,15 +86,16 @@ class Idiom extends \Arch\IRegistry
      * @param array $data
      * @return string
      */
-	public function translate($key, $data = array())
+    public function translate($key, $data = array())
     {
-		if (empty($this->storage[$key])) {
-            return $key;
+        $result = $key;
+        if (!empty($this->storage[$key])) {
+            $result = $this->storage[$key];
+            if (!empty($data)) {
+                $result = @vsprintf($this->storage[$key], $data);
+            }
         }
-		if (!empty($data)) {
-            return @vsprintf($this->storage[$key], $data);
-        }
-		return (string) $this->storage[$key];
+	return (string) $result;
     }
     
     /**
@@ -105,7 +107,7 @@ class Idiom extends \Arch\IRegistry
     public function resolveFilename(
             $name,
             $module = 'app',
-            $idiom_path = '/idiom',
+            $idiom_path = './idiom',
             $module_path = '/module'
     )
     {
@@ -115,7 +117,7 @@ class Idiom extends \Arch\IRegistry
         } else {
             $filename = $module_path.DIRECTORY_SEPARATOR.'enable'.
                     DIRECTORY_SEPARATOR.$module.
-                    DIRECTORY_SEPARATOR.'idiom'.
+                    DIRECTORY_SEPARATOR.$idiom_path.
                     DIRECTORY_SEPARATOR.$this->code.
                     DIRECTORY_SEPARATOR.$name;
         }

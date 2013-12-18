@@ -50,6 +50,9 @@ class AutoTable extends \Arch\Theme\Layout\AutoPanel
      */
     public function setDatabaseDriver(\Arch\DB\IDriver $database) {
         parent::setDatabaseDriver($database);
+        if (empty($this->config)) {
+            throw new \Exception('Missing configuration');
+        }
         $this->table = $database->createTable($this->config['table']);
     }
     
@@ -59,6 +62,12 @@ class AutoTable extends \Arch\Theme\Layout\AutoPanel
      */
     public function setPagination(\Arch\View\Pagination $pagination)
     {
+        if (empty($this->config)) {
+            throw new \Exception('Missing configuration');
+        }
+        if (empty($this->table)) {
+            throw new \Exception('Missing database driver');
+        }
         $this->pagination = $pagination;
         $all = $this->table->select($this->config['select'])
                 ->joinAuto()

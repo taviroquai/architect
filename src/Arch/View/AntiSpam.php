@@ -50,8 +50,19 @@ class AntiSpam extends \Arch\Registry\View
         $this->input = $input;
     }
 
+    /**
+     * Validates anti spam code
+     * @return boolean
+     * @throws \Exception
+     */
     public function validate()
     {
+        if (empty($this->session)) {
+            throw new \Exception('Session not set in anti spam view');
+        }
+        if (empty($this->input)) {
+            throw new \Exception('Input not set in anti spam view');
+        }
         $captcha = $this->session->get('_captcha');
         $this->session->delete('_captcha');
         $user_input = $this->input->get('_captcha');

@@ -1,4 +1,4 @@
 <items>
-	<item key="TESTKEY">TESTVALUE</item>
+    <item key="TESTKEY">TESTVALUE</item>
     <item key="TESTKEYDATA">TEST %s VALUE</item>
 </items>

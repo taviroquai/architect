@@ -37,6 +37,10 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $session = new \Arch\Registry\Session\File(RESOURCE_PATH.'forbidden');
         $session->generateId(md5('failload'));
         $session->load();
+        
+        if (file_exists($session->getFilename())) {
+            unlink($session->getFilename());
+        }
     }
     
     /**
@@ -47,6 +51,10 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $session = new \Arch\Registry\Session\File(RESOURCE_PATH.'session');
         $session->generateId(md5('save'));
         $session->createMessage('message');
+        
+        if (file_exists($session->getFilename())) {
+            unlink($session->getFilename());
+        }
         
         $expected = array(
             new \Arch\Message('message')
@@ -60,17 +68,22 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $session->load();
         $result = $session->getMessages();
         $this->assertEquals($expected, $result);
+        
+        if (file_exists($session->getFilename())) {
+            unlink($session->getFilename());
+        }
     }
     
     /**
      * Test load data
-     * @runInSeparateProcess
      */
     public function testLoadData()
     {
         $session = new \Arch\Registry\Session\File(RESOURCE_PATH.'session');
         $session->generateId(md5('load'));
-        if (file_exists($session->getFilename())) unlink($session->getFilename());
+        if (file_exists($session->getFilename())) {
+            unlink($session->getFilename());
+        }
         $session->load();
         $this->assertEmpty($session->get('param'));
         $expected = 'value';
@@ -78,6 +91,10 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $session->save();
         $session->load();
         $this->assertEquals($expected, $session->get('param'));
+        
+        if (file_exists($session->getFilename())) {
+            unlink($session->getFilename());
+        }
     }
     
     /**
@@ -104,6 +121,10 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $session->set('param', 'value');
         $session->reset();
         $this->assertEquals($expected, $session->get('param'));
+        
+        if (file_exists($session->getFilename())) {
+            unlink($session->getFilename());
+        }
     }
     
     /**
@@ -190,5 +211,4 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $session->loadMessages($expected);
         $this->assertEquals($expected, $session->getMessages());
     }
-
 }

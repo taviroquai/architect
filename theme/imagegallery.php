@@ -3,9 +3,9 @@
         <?php if (!is_dir($item) && getimagesize($item)) { ?>
         <div class="item pull-left thumbnail">
             <div class="thumb">
-                <a href="<?=$this->translatePath($item).'/'.basename($item)?>" 
+                <a href="<?=$this->translatePath().basename($item)?>" 
                    class="file" rel="lightbox-<?=$_id?>">
-                    <img src="<?=$this->translatePath($item).'/thumb/'.basename($item);?>" />
+                    <img src="<?=$this->translatePath().'thumb/'.basename($item);?>" />
                 </a>
             </div>
         </div>

@@ -52,7 +52,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
             array('After',          array(1, 2)),
             array('Before',         array(1, 2)),
             array('Between',        array(1, 2, 3)),
-            array('Depends',        array(1, array())),
+            array('Depends',        array(1, array(1))),
             array('Equals',         array(1, 1)),
             array('IsAlphaExcept',  array(1)),
             array('IsAlphaNumeric', array(1)),
@@ -60,12 +60,16 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
             array('IsDate',         array(1)),
             array('IsImage',        array(RESOURCE_PATH.'img/portrait.jpg')),
             array('IsInteger',      array(1)),
-            array('IsMime',         array(RESOURCE_PATH.'img/portrait.jpg', array())),
+            array('IsMime',         array(RESOURCE_PATH.'img/portrait.jpg', '')),
             array('IsTime',         array(1)),
             array('IsUrl',          array(1)),
             array('Matches',        array(1, '//')),
-            array('OneOf',          array(1, array())),
-            array('Unique',         array(1, array()))
+            array('OneOf',          array(1, array(1))),
+            array('OneOf',          array(1, array('param' => 1))),
+            array('OneOf',          array(1, function() { return array(); })),
+            array('Unique',         array(1, array(1))),
+            array('Unique',         array(1, array('param' => 1))),
+            array('Unique',         array(1, function() { return array(); })),
         );
     }
 

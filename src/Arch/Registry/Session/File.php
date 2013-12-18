@@ -82,6 +82,9 @@ class File extends \Arch\Registry\ISession
     public function reset()
     {
         parent::reset();
+        if (file_exists($this->getFilename())) {
+            unlink($this->getFilename());
+        }
         $this->generateId();
         $this->load();
     }

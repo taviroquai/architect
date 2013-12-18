@@ -26,5 +26,6 @@ class InputTest extends \PHPUnit_Framework_TestCase
         $factory->create(\Arch\IFactory\InputFactory::TYPE_CLI);
         $factory->create(\Arch\IFactory\InputFactory::TYPE_GET);
         $factory->create(\Arch\IFactory\InputFactory::TYPE_POST);
+        $input = \Arch\IFactory\InputFactory::createFromGlobals();
     }
 }

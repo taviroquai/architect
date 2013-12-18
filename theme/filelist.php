@@ -18,8 +18,8 @@
             <?=basename($item)?>
         </a>
         <?php } else { ?>
-        <a href="#" class="file" data-path="<?=$this->translatePath($item)?>">
-            <?php if (getimagesize($item)) { ?>
+        <a href="<?=$this->translatePath().basename($item)?>" class="file">
+            <?php if (@getimagesize($item)) { ?>
             <i class="icon icon-picture"></i>
             <?php } else { ?>
             <i class="icon icon-file"></i>

@@ -41,27 +41,23 @@ class FileUpload extends \Arch\Registry\View
      */
     public function upload($file, $targetDir, $newName = '', $is_upload = true)
     {
-        if (!$is_upload) {
-            return false;
+        $result = false;
+        if (
+            $is_upload
+            && empty($file['error'])
+            && !empty($file['name'])
+            && !empty($file['tmp_name'])
+            && is_dir($targetDir)
+            && is_writable($targetDir)
+        ) {
+            $name = $file['name'];
+            $destination = !empty($newName) ? $targetDir.'/'.$newName
+                    : $targetDir.'/'.$name;
+            if (@rename($file['tmp_name'], $destination)) {
+                chmod($destination, 0644);
+                $result = $destination;
+            }
         }
-        if (!empty($file['error'])) {
-            return false;
-        }
-        if (empty($file['name']) || empty($file['tmp_name'])) {
-            return false;
-        }
-        if (!is_dir($targetDir) || !is_writable($targetDir)) {
-            return false;
-        }
-        $name = $file['name'];
-        if (!empty($newName)) {
-            $name = $newName;
-        }
-        $destination = $targetDir.'/'.$name;
-        if (!@rename($file['tmp_name'], $destination)) {
-            return false;
-        }
-        chmod($destination, 0644);
-        return $destination;
+        return $result;
     }
 }
