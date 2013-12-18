@@ -135,7 +135,6 @@ changing the core system. These are:
 
     'arch.module.after.load'
     'arch.session.load'
-    'arch.theme.before.render'
     'arch.database.load'
     'arch.action.before.call'
     'arch.output.before.send'
