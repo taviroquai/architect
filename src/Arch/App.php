@@ -23,32 +23,12 @@ class App
     /**
      * Holds user input.
      * 
-     * To return a param use <b>app()->input->get('param')</b> or 
-     * <b>g('param')</b>.
-     * 
-     * To return all params use <b>app()->input->get()</b> or <b>g()</b>.
-     * 
-     * To return a FILES entry use <b>app()->input->getFileByIndex($index)</b> or 
-     * <b>f($index)</b>.
-     * 
-     * To return raw input use <b>app()->input->getRaw()</b>
-     * 
      * @var \Arch\Input The application input object
      */
     private  $input;
     
     /**
      * Holds application output.
-     * 
-     * To add HTML use <b>app()->addContent('&lt;p&gt;Hello World&lt;/p&gt;')</b>.
-     * 
-     * To add a View use <b>app()->setContent(new View('tmpl.php')</b>.
-     * 
-     * To output a string use <b>app()->sendOutput('Hello World!')</b> or 
-     * <b>o('Hello World!')</b>.
-     * 
-     * To output a View use <b>app()->sendOutput(new View('tmpl.php'))</b> or
-     * using alias <b>o(v('template.php'))</b>.
      * 
      * @var \Arch\Output The application output
      */
@@ -57,12 +37,6 @@ class App
     /**
      * Holds the default theme.
      * 
-     * This will hold the theme (Theme) that will be used when outputing HTML.
-     * 
-     * You can change the theme with <b>app()->loadTheme($path)</b>.
-     * 
-     * This will load the theme configuration into the application
-     * 
      * @var \Arch\Theme The theme object
      */
     private  $theme;
@@ -70,36 +44,12 @@ class App
     /**
      * Holds user session.
      * 
-     * Session variables can be set using <b>app()->session->param = 'value'</b>
-     * 
-     * To use the native PHP session, you have to manually call 
-     * <b>session_start()</b> on the 'arch.session.before.load' event. Like this
-     * 
-     * <b>e('arch.session.before.load', function() { session_start(); });</b>
-     * 
-     * You can override the Session object by your own.
-     * 
      * @var \Arch\Registry\Session
      */
     private  $session;
     
     /**
-     * Holds PDO database instance.
-     * 
-     * This is lazy loading; it will be loaded if the user starts a query
-     * using <b>q('tablename')</b> or <b>app()->query('tablename')</b>.
-     * 
-     * When this is requested, the application will look for the <b>default
-     * database constants</b> defined in configuration.
-     * 
-     * Database constants are:
-     * <ul>
-     * <li>DB_DRIVER - defines DSN driver string</li>
-     * <li>DB_DATABASE - defined the default database</li>
-     * <li>DB_HOST - defined the default database host</li>
-     * <li>DB_USER - defined PDO user</li>
-     * <li>DB_PASS - defined user password</li>
-     * </ul>
+     * Holds the default database driver
      * 
      * @var \DBDriver The default database driver
      */
@@ -125,13 +75,13 @@ class App
     
     /**
      * Holds the generic views factory
-     * @var \Arch\IFactory\GenericViewsFactory
+     * @var \Arch\Factory\GenericViews
      */
     private  $viewsFactory;
     
     /**
      * Holds the helper factory
-     * @var \Arch\IFactory\HelperFactory
+     * @var \Arch\Factory\Helper
      */
     private  $helperFactory;
     
@@ -162,10 +112,10 @@ class App
         $this->theme = new \Arch\Theme\Directory();
         
         // create the generic views factory
-        $this->viewsFactory = new \Arch\IFactory\GenericViewFactory($this);
+        $this->viewsFactory = new \Arch\Factory\GenericView($this);
         
         // create the helper factory
-        $this->helperFactory = new \Arch\IFactory\HelperFactory($this);
+        $this->helperFactory = new \Arch\Factory\Helper($this);
         
         // set default logger handler
         $this->setLogger(new \Arch\Logger\File());
@@ -174,11 +124,11 @@ class App
         $this->setSession(new \Arch\Registry\Session\Native());
         
         // set default input
-        $input = \Arch\IFactory\InputFactory::createFromGlobals();
+        $input = \Arch\Factory\Input::createFromGlobals();
         $this->setInput($input);
         
         // set default Output
-        $output = \Arch\IFactory\OutputFactory::createFromGlobals();
+        $output = \Arch\Factory\Output::createFromGlobals();
         $this->setOutput($output);
     }
     
@@ -337,7 +287,7 @@ class App
     
     /**
      * Returns the views factory
-     * @return \Arch\IFactory\GenericViewsFactory
+     * @return \Arch\Factory\GenericView
      */
     public function getViewFactory()
     {
@@ -346,7 +296,7 @@ class App
     
     /**
      * Returns the helper factory
-     * @return \Arch\IFactory\HelperFactory
+     * @return \Arch\Factory\Helper
      */
     public function getHelperFactory()
     {

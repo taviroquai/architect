@@ -1,13 +1,15 @@
 <?php
 
-namespace Arch\IFactory;
+namespace Arch\Factory;
 
 /**
- * Description of GenericViewFactory
+ * GenericView factory
+ * 
+ * Use this to create a new generic view
  *
  * @author mafonso
  */
-class GenericViewFactory extends \Arch\IFactory
+class GenericView extends \Arch\IFactory
 {
     /**
      * Holds the application

@@ -32,13 +32,13 @@ class Download extends \Arch\IHelper
      */
     public function execute() {
         $result = true;
-        $output_factory = new \Arch\IFactory\OutputFactory();
+        $output_factory = new \Arch\Factory\Output();
         $output = $output_factory->create(
-            \Arch\IFactory\OutputFactory::TYPE_RESPONSE
+            \Arch::TYPE_OUTPUT_RESPONSE
         );
         if ($this->attachment) {
             $output = $output_factory->create(
-                \Arch\IFactory\OutputFactory::TYPE_ATTACHMENT
+                \Arch::TYPE_OUTPUT_ATTACHMENT
             );
         }
         $this->app->setOutput($output);

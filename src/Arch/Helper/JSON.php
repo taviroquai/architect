@@ -34,10 +34,8 @@ class JSON extends \Arch\IHelper
     }
 
     public function execute() {
-        $factory = new \Arch\IFactory\OutputFactory();
-        $output = $factory->create(
-            \Arch\IFactory\OutputFactory::TYPE_JSON
-        );
+        $factory = new \Arch\Factory\Output();
+        $output = $factory->create(\Arch::TYPE_OUTPUT_JSON);
         $output->setBuffer(json_encode($this->data));
         $this->app->setOutput($output);
         return $this->app->getOutput();

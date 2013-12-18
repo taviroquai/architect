@@ -1,13 +1,15 @@
 <?php
 
-namespace Arch\IFactory;
+namespace Arch\Factory;
 
 /**
- * Description of HelperFactory
+ * Helper factory
+ * 
+ * Use this to create a new helper
  *
  * @author mafonso
  */
-class HelperFactory extends \Arch\IFactory
+class Helper extends \Arch\IFactory
 {
     /**
      * Holds the application
@@ -25,7 +27,7 @@ class HelperFactory extends \Arch\IFactory
 
     /**
      * Returns a generic view
-     * @return \Arch\IView
+     * @return \Arch\IHelper
      */
     protected function fabricate($type) {
         $type = (string) $type;

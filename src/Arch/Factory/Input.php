@@ -1,31 +1,29 @@
 <?php
 
-namespace Arch\IFactory;
+namespace Arch\Factory;
 
 /**
- * Description of Input
+ * Description of Input factory
+ * 
+ * Use this to create a new input
  *
  * @author mafonso
  */
-class InputFactory extends \Arch\IFactory
+class Input extends \Arch\IFactory
 {
-    const TYPE_CLI = 0;
-    const TYPE_GET = 1;
-    const TYPE_POST = 2;
-
     /**
      * Returns a new CLI input
      * @param int $type One of InputFactory constants
-     * @return \Arch\Input\CLI
+     * @return \Arch\IInput
      */
     protected function fabricate($type) {
         $type = (int) $type;
         switch ($type) {
-            case self::TYPE_CLI:
+            case \Arch::TYPE_INPUT_CLI:
                 return new \Arch\Input\CLI();
-            case self::TYPE_POST:
+            case \Arch::TYPE_INPUT_POST:
                 return new \Arch\Input\HTTP\POST();
-            case self::TYPE_GET:
+            case \Arch::TYPE_INPUT_GET:
                 return new \Arch\Input\HTTP\GET();
         }
         throw new \Exception('Invalid input type');
@@ -33,33 +31,34 @@ class InputFactory extends \Arch\IFactory
     
     /**
      * Parse global server input
+     * @return \Arch\IInput
      */
     public static function createFromGlobals()
     {
-        $factory = new \Arch\IFactory\InputFactory();
+        $factory = new \Arch\Factory\Input();
         $api = php_sapi_name();
         $raw = file_get_contents('php://input');
         if (!isset($_SERVER['REQUEST_METHOD'])) {
-            $input = $factory->create(self::TYPE_CLI);
+            $input = $factory->create(\Arch::TYPE_INPUT_CLI);
             $input->setActionParams($_SERVER['argv']);
             $input->setRaw($raw);
             return $input;
         } else {
             switch ($_SERVER['REQUEST_METHOD']) {
                 case 'GET':
-                    $input = $factory->create(self::TYPE_GET);
+                    $input = $factory->create(\Arch::TYPE_INPUT_GET);
                     $input->parseServer($_SERVER);
                     $input->setParams($_GET);
                     return $input;
                 case 'POST':
-                    $input = $factory->create(self::TYPE_POST);
+                    $input = $factory->create(\Arch::TYPE_INPUT_POST);
                     $input->parseServer($_SERVER);
                     $input->setParams(array_merge($_GET, $_POST));
                     $input->setFiles($_FILES);
                     $input->setRaw($raw);
                     return $input;
                 default:
-                    $input = $factory->create(self::TYPE_HTTP);
+                    $input = $factory->create(\Arch::TYPE_INPUT_HTTP);
                     $input->parseServer($_SERVER);
                     $input->setParams($_REQUEST);
                     $input->setRaw($raw);

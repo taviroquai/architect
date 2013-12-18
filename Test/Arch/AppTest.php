@@ -76,10 +76,10 @@ class AppTest extends \PHPUnit_Framework_TestCase
      * @dataProvider providerApp
      * @param \Arch\App $app
      */
-    public function testGetViewsFactory($app)
+    public function testGetGenericViewFactory($app)
     {
         $result = $app->getViewFactory();
-        $this->assertInstanceOf('\Arch\IFactory\GenericViewFactory', $result);
+        $this->assertInstanceOf('\Arch\Factory\GenericView', $result);
     }
     
     /**

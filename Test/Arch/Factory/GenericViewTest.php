@@ -14,7 +14,7 @@ class GenericViewTest extends \PHPUnit_Framework_TestCase
     public function testFailCreate()
     {
         $app = new \Arch\App(RESOURCE_PATH.'configValid.xml');
-        $factory = new \Arch\IFactory\GenericViewFactory($app);
+        $factory = new \Arch\Factory\GenericView($app);
         $factory->create(99);
     }
     
@@ -48,7 +48,7 @@ class GenericViewTest extends \PHPUnit_Framework_TestCase
     public function testCreate($name)
     {
         $app = new \Arch\App(RESOURCE_PATH.'configValid.xml');
-        $factory = new \Arch\IFactory\GenericViewFactory($app);
+        $factory = new \Arch\Factory\GenericView($app);
         $factory->create($name);
     }
 }

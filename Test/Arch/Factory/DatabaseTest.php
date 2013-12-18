@@ -13,7 +13,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
      */   
     public function testFailCreate()
     {
-        $factory = new \Arch\IFactory\DatabaseFactory();
+        $factory = new \Arch\Factory\Database();
         $factory->create(99);
     }
     
@@ -22,9 +22,9 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
      */   
     public function testCreate()
     {
-        $factory = new \Arch\IFactory\DatabaseFactory();
-        $factory->create(\Arch\IFactory\DatabaseFactory::TYPE_MYSQL);
-        $factory->create(\Arch\IFactory\DatabaseFactory::TYPE_SQLITE);
-        $factory->create(\Arch\IFactory\DatabaseFactory::TYPE_PGSQL);
+        $factory = new \Arch\Factory\Database();
+        $factory->create(\Arch::TYPE_DATABASE_MYSQL);
+        $factory->create(\Arch::TYPE_DATABASE_SQLITE);
+        $factory->create(\Arch::TYPE_DATABASE_PGSQL);
     }
 }

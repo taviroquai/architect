@@ -1,7 +1,9 @@
 <?php
 
 /**
- * App alias. The other aliases are:
+ * App alias. Sets or gets the global $arch application
+ * 
+ * The other aliases are:
  * 
  * conf() - Returns a configuration item
  * 
@@ -15,11 +17,11 @@
  * 
  * redirect() - Sends location HTTP header and save session before exit
  * 
- * filter() - calls Input to **sanitize** an input param
+ * filter() - calls IInput to **sanitize** an input param
  * 
  * r() - Adds a new route
  * 
- * v() - Creates a new view giving a PHP template and a $data as associative array
+ * v() - Creates a new view giving a PHP template and $data as associative array
  * 
  * c() - Adds content to the default theme
  * 
@@ -29,19 +31,19 @@
  * 
  * j() - Sets JSON output from associative array
  * 
- * o() - Output. Sets the application Output, ie. a View or plain text
+ * o() - Sets the application Output, ie. a View or a string
  * 
- * m() - Adds a message to be shown on output theme
+ * m() - Adds a message to be shown on the output theme
  * 
  * f() - Returns a $_FILES entry by index
  * 
- * q() - Query table. Returns a Table instance to start querying
+ * q() - Returns a database ITable instance to start querying
  * 
- * s() - Returns a secured (encrypted) string - use for passwords
+ * s() - Returns an encrypted string - use for passwords
  * 
  * e() - Adds a new event
  * 
- * tr() - Triggers the event
+ * tr() - Triggers an event
  * 
  * @return \Arch\App The application main gate
  */
@@ -72,8 +74,8 @@ function conf($key)
 
 
 /**
- * Returns the views factory
- * @return \Arch\IFactory\GenericViewFactory The view factory
+ * Returns the generic view factory
+ * @return \Arch\Factory\GenericView The generic view factory
  */
 function view()
 {
@@ -82,7 +84,7 @@ function view()
 
 /**
  * Returns the helper factory
- * @return \Arch\IFactory\HelperFactory The helper factory
+ * @return \Arch\Factory\Helper The helper factory
  */
 function help()
 {
