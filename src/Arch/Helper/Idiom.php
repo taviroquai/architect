@@ -32,7 +32,7 @@ class Idiom extends \Arch\IHelper
         $this->module = $module;
     }
 
-    public function execute() {
+    public function run() {
         
         // resolve idiom code
         if (empty($this->code) && $this->app->getInput()->get('idiom')) {

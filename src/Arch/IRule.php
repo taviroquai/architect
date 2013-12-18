@@ -46,7 +46,7 @@ abstract class IRule
     /**
      * Executes the rule
      */
-    public abstract function execute();
+    public abstract function run();
     
     /**
      * Sets the error message on fail

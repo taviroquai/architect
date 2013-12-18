@@ -32,7 +32,7 @@ class URL extends \Arch\IHelper
         $this->https = $boolean;
     }
 
-    public function execute() {
+    public function run() {
         return (string) $this;
     }
     

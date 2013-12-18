@@ -11,7 +11,7 @@ class Equals extends \Arch\IRule
      * Execute equals
      * @return \Arch\IRule\Equals
      */
-    public function execute()
+    public function run()
     {
         $this->result = (bool) ($this->params[0] === $this->params[1]);
         return $this;

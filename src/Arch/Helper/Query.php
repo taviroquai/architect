@@ -20,7 +20,7 @@ class Query extends \Arch\IHelper
         $this->tablename = $tablename;
     }
 
-    public function execute() {
+    public function run() {
         if (!$this->app->getDatabase()) {
             throw new \Exception('The application database was not set');
         }

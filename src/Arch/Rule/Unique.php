@@ -11,7 +11,7 @@ class Unique extends \Arch\IRule
      * Execute unique
      * @return \Arch\Rule\Unique
      */
-    public function execute()
+    public function run()
     {
         $list = $this->params[1];
         if (is_callable($list)) {

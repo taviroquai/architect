@@ -11,7 +11,7 @@ class Between extends \Arch\IRule
      * Execute between
      * @return \Arch\IRule\Between
      */
-    public function execute()
+    public function run()
     {
         $t1 = strtotime($this->params[0]);
         $t2 = strtotime($this->params[1]);

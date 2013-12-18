@@ -11,7 +11,7 @@ class Before extends \Arch\IRule
      * Execute before
      * @return \Arch\IRule\Before
      */
-    public function execute()
+    public function run()
     {
         $t1 = strtotime($this->params[0]);
         $t2 = strtotime($this->params[1]);

@@ -20,12 +20,12 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Test execute
      */
-    public function testExecute()
+    public function testrun()
     {
         $app = new \Arch\App();
         $helper = new \Arch\Helper\Image($app);
         $helper->setFilename(RESOURCE_PATH.'img/landscape.jpg');
-        $result = $helper->execute();
+        $result = $helper->run();
         $this->assertInstanceOf('\Arch\Image', $result);
     }
 }

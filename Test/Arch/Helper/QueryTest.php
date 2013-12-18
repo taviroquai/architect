@@ -21,24 +21,24 @@ class QueryTest extends \PHPUnit_Framework_TestCase
      * Test fail execute
      * @expectedException \Exception
      */
-    public function testFailExecute()
+    public function testFailrun()
     {
         $app = new \Arch\App();
         $helper = new \Arch\Helper\Query($app);
         $helper->setTablename('test_table1');
-        $helper->execute();
+        $helper->run();
     }
     
     /**
      * Test fail execute
      */
-    public function testExecute()
+    public function testrun()
     {
         $app = new \Arch\App();
         $app->setDatabase(new \Arch\DB\MySql\Driver());
         $helper = new \Arch\Helper\Query($app);
         $helper->setTablename('test_table1');
-        $result = $helper->execute();
+        $result = $helper->run();
         $this->assertInstanceOf('\Arch\DB\ITable', $result);
     }
 }

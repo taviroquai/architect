@@ -11,7 +11,7 @@ class IsDate extends \Arch\IRule
      * Execute isDate
      * @return \Arch\IRule\IsDate
      */
-    public function execute()
+    public function run()
     {
         $format = isset($this->params[1]) ? $this->params[1] : 'Y-m-d';
         $date = \DateTime::createFromFormat($format, $this->params[0]);

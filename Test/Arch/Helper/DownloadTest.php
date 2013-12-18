@@ -20,18 +20,18 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
     /**
      * Test execute
      */
-    public function testExecute()
+    public function testrun()
     {
         $app = new \Arch\App();
         $helper = new \Arch\Helper\Download($app);
         
         $helper->setFilename(RESOURCE_PATH.'fail');
-        $result = $helper->execute();
+        $result = $helper->run();
         $this->assertFalse($result);
         
         $helper->setFilename(RESOURCE_PATH.'dummy');
         $helper->asAttachment(true);
-        $result = $helper->execute();
+        $result = $helper->run();
         $this->assertTrue($result);
     }
 }

@@ -41,7 +41,7 @@ class Curl extends \Arch\IHelper
         curl_close($this->handler);
     }
 
-    public function execute() {
+    public function run() {
         curl_setopt($this->handler, CURLOPT_URL, $this->url);
         curl_setopt($this->handler, CURLOPT_CONNECTTIMEOUT, $this->timeout);
         if (!empty($this->data)) {

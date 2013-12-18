@@ -11,7 +11,7 @@ class IsAlphaExcept extends \Arch\IRule
      * Execute isAlphaExcept
      * @return \Arch\IRule\IsAlphaExcept
      */
-    public function execute()
+    public function run()
     {
         $except = isset($this->params[1]) ? $this->params[1] : '\-_';
         $pattern = "/[a-zA-Z0-1$except]/";

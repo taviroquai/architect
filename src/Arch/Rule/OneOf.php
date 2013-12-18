@@ -11,7 +11,7 @@ class OneOf extends \Arch\IRule
      * Execute oneOf
      * @return \Arch\Rule\OneOf
      */
-    public function execute()
+    public function run()
     {
         $list = $this->params[1];
         if (is_callable($list)) {

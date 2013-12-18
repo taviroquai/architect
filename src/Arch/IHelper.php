@@ -26,5 +26,5 @@ abstract class IHelper {
     /**
      * Executes the helper
      */
-    public abstract function execute();
+    public abstract function run();
 }

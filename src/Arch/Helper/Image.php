@@ -20,7 +20,7 @@ class Image extends \Arch\IHelper
         $this->filename = $filename;
     }
 
-    public function execute() {
+    public function run() {
         return new \Arch\Image($this->filename);
     }
 }

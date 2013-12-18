@@ -139,7 +139,7 @@ function session($key, $value = null)
  */
 function redirect($url = '')
 {
-    help()->createRedirect($url)->execute();
+    help()->createRedirect($url)->run();
 }
 
 /**
@@ -270,7 +270,7 @@ function m($text, $cssClass = 'alert alert-success')
  */
 function q($tableName, \PDO $db = null)
 {
-    return help()->createQuery($tableName, $db)->execute();
+    return help()->createQuery($tableName, $db)->run();
 }
 
 /**
@@ -325,7 +325,7 @@ function tr($eventName, $target = null)
  */
 function u($path, $params = array())
 {
-    return help()->createURL($path, $params)->execute();
+    return help()->createURL($path, $params)->run();
 }
 
 /**

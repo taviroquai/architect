@@ -20,14 +20,14 @@ class CurlTest extends \PHPUnit_Framework_TestCase
     /**
      * Test execute
      */
-    public function testExecute()
+    public function testrun()
     {
         $app = new \Arch\App();
         $helper = new \Arch\Helper\Curl($app);
         $helper->setUrl('http://fail');
         $helper->setTimeout(5);
         $helper->setData(array('param' => 'value'));
-        $result = $helper->execute();
+        $result = $helper->run();
         $helper->closeConnection();
         $this->assertFalse($result);
     }

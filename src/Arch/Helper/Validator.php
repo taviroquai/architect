@@ -53,7 +53,7 @@ implements \Arch\IMessenger
      * Validates the rules
      * @return boolean
      */
-    public function execute()
+    public function run()
     {
         return $this->validate($this->rules);
     }
@@ -68,7 +68,7 @@ implements \Arch\IMessenger
         $result = true;
         $this->clearMessages();
         foreach ($rules as &$rule) {
-            $rule->execute();
+            $rule->run();
             $result = $rule->getResult() && $result;
             if (!$rule->getResult()) {
                 $message = $this->createMessage(

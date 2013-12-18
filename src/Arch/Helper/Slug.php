@@ -20,7 +20,7 @@ class Slug extends \Arch\IHelper
         $this->text = $text;
     }
 
-    public function execute() {
+    public function run() {
         $slug = preg_replace('~[^\\pL\d]+~u', '-', $this->text);
         $slug = trim($slug, '-');
         $slug = iconv('utf-8', 'us-ascii//TRANSLIT', $slug);

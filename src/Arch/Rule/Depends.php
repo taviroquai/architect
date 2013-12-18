@@ -11,7 +11,7 @@ class Depends extends \Arch\IRule
      * Execute depends
      * @return \Arch\IRule\Depends
      */
-    public function execute()
+    public function run()
     {
         $r = true;
         foreach ($this->params[1] as $item) {

@@ -11,7 +11,7 @@ class IsMime extends \Arch\IRule
      * Execute isMime
      * @return \Arch\Rule\IsMime
      */
-    public function execute()
+    public function run()
     {
         $v = $this->params[0];
         $list = $this->params[1];

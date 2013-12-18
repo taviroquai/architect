@@ -199,7 +199,7 @@ class GenericView extends \Arch\IFactory
         $view = new \Arch\View\Carousel();
         $this->app->getTheme()->addContent(
             $this->app->getHelperFactory()
-                ->createURL('/arch/asset/js/bootstrap-carousel.js')->execute(),
+                ->createURL('/arch/asset/js/bootstrap-carousel.js')->run(),
             'js'
         );
         return $view;
@@ -232,7 +232,7 @@ class GenericView extends \Arch\IFactory
         $view = new \Arch\View\Map();
         $this->app->getTheme()->addContent(
             $this->app->getHelperFactory()->createURL('/arch/asset/css/leaflet.css')
-                ->execute(),
+                ->run(),
             'css'
         );
         $this->app->getTheme()->addContent(
@@ -241,17 +241,17 @@ class GenericView extends \Arch\IFactory
         );
         $this->app->getTheme()->addContent(
             $this->app->getHelperFactory()->createURL('/arch/asset/js/leaflet.js')
-                ->execute(),
+                ->run(),
             'js'
         );
         $this->app->getTheme()->addContent(
             $this->app->getHelperFactory()->createURL('/arch/asset/js/leaflet.Google.js')
-                ->execute(),
+                ->run(),
             'js'
         );
         $this->app->getTheme()->addContent(
             $this->app->getHelperFactory()->createURL('/arch/asset/js/map.js')
-                ->execute(),
+                ->run(),
             'js'
         );
         return $view;
@@ -271,17 +271,17 @@ class GenericView extends \Arch\IFactory
         $view = new \Arch\View\LineChart();
         $this->app->getTheme()->addContent(
             $this->app->getHelperFactory()->createURL('/arch/asset/css/morris.css')
-                ->execute(),
+                ->run(),
             'css'
         );
         $this->app->getTheme()->addContent(
             $this->app->getHelperFactory()->createURL('/arch/asset/js/raphael-min.js')
-                ->execute(),
+                ->run(),
             'js'
         );
         $this->app->getTheme()->addContent(
             $this->app->getHelperFactory()->createURL('/arch/asset/js/morris.js')
-                ->execute(),
+                ->run(),
             'js'
         );
         return $view;
@@ -354,17 +354,17 @@ class GenericView extends \Arch\IFactory
         $view = new \Arch\View\Poll();
         $this->app->getTheme()->addContent(
             $this->app->getHelperFactory()->createURL('/arch/asset/css/morris.css')
-                ->execute(),
+                ->run(),
             'css'
         );
         $this->app->getTheme()->addContent(
             $this->app->getHelperFactory()->createURL('/arch/asset/js/raphael-min.js')
-                ->execute(),
+                ->run(),
             'js'
         );
         $this->app->getTheme()->addContent(
             $this->app->getHelperFactory()->createURL('/arch/asset/js/morris.js')
-                ->execute(),
+                ->run(),
             'js'
         );
         return $view;

@@ -20,36 +20,36 @@ class IdiomTest extends \PHPUnit_Framework_TestCase
     /**
      * Test execute
      */
-    public function testExecute()
+    public function testrun()
     {
         $app = new \Arch\App();
         $helper = new \Arch\Helper\Idiom($app);
         
         $helper->setModule('test');
         $helper->setName('default.xml');
-        $result = $helper->execute();
+        $result = $helper->run();
         $this->assertInstanceOf('\Arch\Registry\Idiom', $result);
         
         $helper->setCode('en');
-        $result = $helper->execute();
+        $result = $helper->run();
         $this->assertInstanceOf('\Arch\Registry\Idiom', $result);
         
         $app = new \Arch\App();
         $app->getConfig()->set('DEFAULT_IDIOM', 'en');
         $helper = new \Arch\Helper\Idiom($app);
-        $result = $helper->execute();
+        $result = $helper->run();
         $this->assertInstanceOf('\Arch\Registry\Idiom', $result);
         
         $app = new \Arch\App();
         $app->getSession()->set('idiom', 'en');
         $helper = new \Arch\Helper\Idiom($app);
-        $result = $helper->execute();
+        $result = $helper->run();
         $this->assertInstanceOf('\Arch\Registry\Idiom', $result);
         
         $app = new \Arch\App();
         $app->getInput()->setParams(array('idiom' => 'en'));
         $helper = new \Arch\Helper\Idiom($app);
-        $result = $helper->execute();
+        $result = $helper->run();
         $this->assertInstanceOf('\Arch\Registry\Idiom', $result);
     }
 }

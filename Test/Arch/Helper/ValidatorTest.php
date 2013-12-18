@@ -31,7 +31,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
     /**
      * Test execute
      */
-    public function testExecute()
+    public function testrun()
     {
         $app = new \Arch\App();
         $helper = new \Arch\Helper\Validator($app);
@@ -39,7 +39,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
         $rule = $helper->createRule('test', 'Required', 'test is required');
         $this->assertInstanceOf('\Arch\Rule\Required', $rule);
         $helper->setRules(array($rule));
-        $result = $helper->execute();
+        $result = $helper->run();
         $this->assertInternalType('boolean', $result);
         $messages = $helper->getMessages();
         $this->assertInternalType('array', $messages);
@@ -86,7 +86,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
         
         $rule->setParams($params);
         $helper->setRules(array($rule));
-        $result = $helper->execute();
+        $result = $helper->run();
         $this->assertInternalType('boolean', $result);
     }
 }

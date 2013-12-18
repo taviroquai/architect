@@ -11,7 +11,7 @@ class Required extends \Arch\IRule
      * Execute required
      * @return \Arch\Rule\Required
      */
-    public function execute()
+    public function run()
     {
         $this->result = !empty($this->params[0]);
         return $this;

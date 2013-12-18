@@ -11,7 +11,7 @@ class IsImage extends \Arch\IRule
      * Execute isImage
      * @return \Arch\Rule\IsImage
      */
-    public function execute()
+    public function run()
     {
         $this->result = (bool) getimagesize($this->params[0]);
         return $this;

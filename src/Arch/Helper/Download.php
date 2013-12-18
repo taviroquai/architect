@@ -30,7 +30,7 @@ class Download extends \Arch\IHelper
      * Tells whether or not the file will be downloaded
      * @return boolean
      */
-    public function execute() {
+    public function run() {
         $result = true;
         $output_factory = new \Arch\Factory\Output();
         $output = $output_factory->create(
