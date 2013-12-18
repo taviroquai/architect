@@ -26,7 +26,9 @@ class Input extends \Arch\IFactory
             case \Arch::TYPE_INPUT_GET:
                 return new \Arch\Input\HTTP\GET();
         }
-        throw new \Exception('Invalid input type');
+        throw new \Exception(
+            'Invalid input type. Use one of \Arch::TYPE_INPUT'
+        );
     }
     
     /**

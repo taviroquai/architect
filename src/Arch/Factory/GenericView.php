@@ -40,7 +40,10 @@ class GenericView extends \Arch\IFactory
             $item = str_replace('.php', '', basename($item));
         });
         if (!in_array($type, $available)) {
-            throw new \Exception('Invalid generic view type');
+            throw new \Exception(
+                'Invalid generic view type. '
+                .'Use one of the following strings: '.implode(', ', $available)
+            );
         }
         $method_name = 'create'.$type;
         return $this->{$method_name}();

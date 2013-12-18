@@ -30,7 +30,9 @@ class Output extends \Arch\IFactory
             case \Arch::TYPE_OUTPUT_RESPONSE:
                 return new \Arch\Output\HTTP\Response();
         }
-        throw new \Exception('Invalid output type');
+        throw new \Exception(
+            'Invalid output type. Use one of \Arch::TYPE_OUTPUT'
+        );
     }
     
     /**

@@ -40,7 +40,10 @@ class Helper extends \Arch\IFactory
             $item = str_replace('.php', '', basename($item));
         });
         if (!in_array($type, $available)) {
-            throw new \Exception('Invalid generic view type');
+            throw new \Exception(
+                'Invalid helper type. '
+                .'Use one of the following strings: '.implode(', ', $available)
+            );
         }
         $classname = '\Arch\Helper\\'.$type;
         return new $classname($this->app);
