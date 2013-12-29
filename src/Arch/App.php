@@ -172,16 +172,16 @@ class App
         }
         
         // trigger core event
+        $this->logger->log('Triggering load database...');
         $this->getEvents()->triggerEvent('arch.database.load');
-        $this->logger->log('Default database loaded');
 
         // trigger core event
+        $this->logger->log('Triggering load session...');
         $this->getEvents()->triggerEvent('arch.session.load');
-        $this->logger->log('Default session loaded');
         
         // trigger core event
+        $this->logger->log('Triggering load theme...');
         $this->getEvents()->triggerEvent('arch.theme.load');
-        $this->logger->log('Default theme loaded');
 
         // execute action
         $action = $this->input->getAction();
