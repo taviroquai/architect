@@ -15,6 +15,12 @@ class Driver extends \Arch\DB\IDriver
     protected $schema;
     
     /**
+     * Holds fetched schema information
+     * @var array
+     */
+    protected $cache = array();
+    
+    /**
      * Connect to MySql database
      * @param string $host
      * @param string $database
@@ -33,6 +39,7 @@ class Driver extends \Arch\DB\IDriver
             \PDO::ERRMODE_EXCEPTION
         );
         parent::connect($host, $database, $user, $pass);
+        $this->cache = array();
     }
 
         /**
@@ -68,14 +75,17 @@ class Driver extends \Arch\DB\IDriver
      */
     public function getTables()
     {
-        $data = array($this->dbname);
-        $sql = 'SELECT DISTINCT TABLE_NAME as name '
-                . 'FROM COLUMNS '
-                . 'WHERE TABLE_SCHEMA = ?';
-        $stm = $this->schema->prepare($sql);
-        $this->log('DB schema query: '.$stm->queryString);
-        $stm->execute($data);
-        return $stm->fetchAll(\PDO::FETCH_ASSOC);
+        if (!isset($this->cache['tables'])) {
+            $data = array($this->dbname);
+            $sql = 'SELECT DISTINCT TABLE_NAME as name '
+                    . 'FROM COLUMNS '
+                    . 'WHERE TABLE_SCHEMA = ?';
+            $stm = $this->schema->prepare($sql);
+            $this->log('DB schema query: '.$stm->queryString);
+            $stm->execute($data);
+            $this->cache['tables'] = $stm->fetchAll(\PDO::FETCH_ASSOC);
+        }
+        return $this->cache['tables'];
     }
     
     /**
@@ -86,17 +96,19 @@ class Driver extends \Arch\DB\IDriver
      */
     public function getForeignKeys($table_name, $column_name)
     {
-        $result = array();
-        $data = array($this->dbname, $table_name, $column_name);
-        $sql = 'SELECT TABLE_NAME, COLUMN_NAME, CONSTRAINT_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME ' .
-            'FROM KEY_COLUMN_USAGE ' .
-            'WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ? AND REFERENCED_TABLE_NAME IS NOT NULL';
-        $stm = $this->schema->prepare($sql);
-        $this->log('DB schema query: '.$stm->queryString);
-        if ($stm->execute($data) && $t = $stm->fetch(\PDO::FETCH_ASSOC)) {
-            $result = $t;
+        if (!isset($this->cache['fk'][$table_name][$column_name])) {
+            $this->cache['fk'][$table_name][$column_name] = array();
+            $data = array($this->dbname, $table_name, $column_name);
+            $sql = 'SELECT TABLE_NAME, COLUMN_NAME, CONSTRAINT_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME ' .
+                'FROM KEY_COLUMN_USAGE ' .
+                'WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ? AND REFERENCED_TABLE_NAME IS NOT NULL';
+            $stm = $this->schema->prepare($sql);
+            $this->log('DB schema query: '.$stm->queryString);
+            if ($stm->execute($data) && $t = $stm->fetch(\PDO::FETCH_ASSOC)) {
+                $this->cache['fk'][$table_name][$column_name] = $t;
+            }
         }
-        return $result;
+        return $this->cache['fk'][$table_name][$column_name];
     }
 
     /**
@@ -106,18 +118,21 @@ class Driver extends \Arch\DB\IDriver
      */
     public function getTableInfo($table_name)
     {
-        $result = array();
-        $sql = "DESCRIBE `$table_name`";
-        try {
-            $stm = $this->db_pdo->prepare($sql);
-            $this->log('DB query: '.$stm->queryString);            
-            if ($stm->execute()) {
-                $result = $stm->fetchAll(\PDO::FETCH_ASSOC);
+        if (!isset($this->cache['info'][$table_name])) {
+            $this->cache['info'][$table_name] = array();
+            $sql = "DESCRIBE `$table_name`";
+            try {
+                $stm = $this->db_pdo->prepare($sql);
+                $this->log('DB query: '.$stm->queryString);            
+                if ($stm->execute()) {
+                    $this->cache['info'][$table_name] = 
+                            $stm->fetchAll(\PDO::FETCH_ASSOC);
+                }
+            } catch (\PDOException $e) {
+                $this->log('DB query error: '.$e->getMessage(), 'error');
             }
-        } catch (\PDOException $e) {
-            $this->log('DB query error: '.$e->getMessage(), 'error');
         }
-        return $result;
+        return $this->cache['info'][$table_name];
     }
     
     /**
@@ -128,17 +143,20 @@ class Driver extends \Arch\DB\IDriver
      */
     public function getRelationColumn($first_table, $second_table)
     {
-        $result = '';
-        $table = $this->getTableInfo($first_table);
-        foreach ($table as $item) {
-            $relitem = $this->getForeignKeys($first_table, $item['Field']);
-            if (isset($relitem['REFERENCED_TABLE_NAME'])
-                && $relitem['REFERENCED_TABLE_NAME'] == $second_table) {
-                $result = $item['Field'];
-                break;
+        if (!isset($this->cache['relation'][$first_table][$second_table])) {
+            $this->cache['relation'][$first_table][$second_table] = '';
+            $table = $this->getTableInfo($first_table);
+            foreach ($table as $item) {
+                $relitem = $this->getForeignKeys($first_table, $item['Field']);
+                if (isset($relitem['REFERENCED_TABLE_NAME'])
+                    && $relitem['REFERENCED_TABLE_NAME'] == $second_table) {
+                    $this->cache['relation'][$first_table][$second_table] = 
+                            $item['Field'];
+                    break;
+                }
             }
         }
-        return $result;
+        return $this->cache['relation'][$first_table][$second_table];
     }
     
 }
