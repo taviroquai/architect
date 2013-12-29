@@ -215,7 +215,7 @@ class App
     
     /**
      * Returns the application logger
-     * @return \Arch\Logger
+     * @return \Arch\ILogger
      */
     public function getLogger()
     {
