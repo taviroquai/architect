@@ -262,6 +262,7 @@ abstract class ITable
      */
     public function select($fields = '*')
     {
+        $this->node = $this->createSelect();
         $this->node->from = $this->name;
         if (is_array($fields)) $this->node->fields = $fields;
         else $this->node->fields = $fields;

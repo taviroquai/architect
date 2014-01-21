@@ -24,7 +24,6 @@ class Modules extends \Arch\IRegistry {
      */
     public function load($path)
     {
-        $path = $path.DIRECTORY_SEPARATOR.'enable';
         if (!is_dir($path)) {
             return false;
         }

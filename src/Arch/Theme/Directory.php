@@ -24,15 +24,20 @@ class Directory extends \Arch\ITheme
             throw new \Exception('Theme directory not found: '.$path);
         }
         
+        $template = $path.DIRECTORY_SEPARATOR.'template.php';
+        if (!is_file($template)) {
+            throw new \Exception('Theme template not found: '.$template);
+        }
+        
         // clean current data
         parent::__construct();
         $this->theme_path = $path;
         
+        // set required template
+        $this->setTemplate($template);
+        
         // add default theme slots
         $this->slot = array();
-        $this->addSlot('content');
-        $this->addSlot('css');
-        $this->addSlot('js');
         
         // load slots configuration
         $filename = $this->theme_path.DIRECTORY_SEPARATOR.'slots.xml';
@@ -40,6 +45,7 @@ class Directory extends \Arch\ITheme
             $xml = @simplexml_load_file($filename);
             foreach ($xml->slot as $slot) {
                 $slotName = (string) $slot['name'];
+                $this->addSlot($slotName);
                 foreach ($slot->module as $item) {
                     $classname = (string) $item->classname;
                     if (!class_exists($classname)) {
@@ -51,27 +57,5 @@ class Directory extends \Arch\ITheme
                 }
             }
         }
-        
-        // clean up
-        unset($filename);
-        unset($xml);
-        unset($slot);
-        unset($slotName);
-        unset($item);
-        unset($classname);
-        unset($c);
-        unset($module);
-        
-        // add theme configuration
-        $filename = $this->theme_path.DIRECTORY_SEPARATOR.'config.php';
-        if (file_exists($filename)) {
-            include $filename;
-        }
-        
-        // add flash messages slot
-        $this->set(
-            'messages',
-            new \Arch\Registry\View($this->theme_path.DIRECTORY_SEPARATOR.'messages.php')
-        );
     }
 }

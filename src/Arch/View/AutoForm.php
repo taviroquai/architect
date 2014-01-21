@@ -200,7 +200,7 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
     protected function createTextArea($config)
     {
         if (empty($config['tmpl'])) {
-            $tmpl = ARCH_PATH.'/theme/form/input/textarea.php';
+            $tmpl = ARCH_PATH.'/theme/form/textarea.php';
         }
         if (empty($config['name'])) {
             $config['name'] = $config['property'];

@@ -115,7 +115,7 @@ class Idiom extends \Arch\IRegistry
             $filename = $idiom_path.DIRECTORY_SEPARATOR.$this->code.
                     DIRECTORY_SEPARATOR.$name;
         } else {
-            $filename = $module_path.DIRECTORY_SEPARATOR.'enable'.
+            $filename = $module_path.
                     DIRECTORY_SEPARATOR.$module.
                     DIRECTORY_SEPARATOR.$idiom_path.
                     DIRECTORY_SEPARATOR.$this->code.
