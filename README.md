@@ -7,6 +7,7 @@ development.
 
 [![Latest Stable Version](https://poser.pugx.org/taviroquai/architectphp/version.png)](https://packagist.org/packages/taviroquai/architectphp)
 [![Build Status](https://travis-ci.org/taviroquai/architect.png?branch=master)](https://travis-ci.org/taviroquai/architect)
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/taviroquai/architect/badges/quality-score.png?s=ebf9d0eb511b3ee1c9ced56015385dea6b0b8a25)](https://scrutinizer-ci.com/g/taviroquai/architect/)
 [![Total Downloads](https://poser.pugx.org/taviroquai/architectphp/downloads.png)](https://packagist.org/packages/taviroquai/architectphp)
 
 Online Demo
