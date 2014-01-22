@@ -12,7 +12,7 @@ development.
 Online Demo
 -----------
 
-An online demo can be found in <http://marcoafonso.pt/tests/architect/index.php/>
+An online demo can be found in <http://marcoafonso.pt/tests/architect/>
 
 Install
 -------
