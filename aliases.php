@@ -160,7 +160,7 @@ function filter($key, $filter = FILTER_SANITIZE_STRING)
  * @param string $uri The uri query passed in the browser
  * @param callable $action The callback to be run
  */
-function r($uri, callable $action)
+function r($uri, $action)
 {
     $uri = (string) $uri;
     app()->getInput()->getRouter()->addRoute($uri, $action);
