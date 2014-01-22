@@ -40,7 +40,7 @@ class URL extends \Arch\IHelper
         $base_url = $this->app->getConfig()->get('BASE_URL');
         $index_file = $this->app->getConfig()->get('INDEX_FILE');
         $host = $this->app->getInput()->getHttpHost() ?
-                'localhost' : $this->app->getInput()->getHttpHost();
+                $this->app->getInput()->getHttpHost() : 'localhost';
         $protocol = $this->https ? 'https://' : 'http://';
         $base = $index_file == '' ? rtrim($base_url, '/') : $base_url.'/';
         $base = $protocol . $host . $base;
