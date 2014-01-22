@@ -54,7 +54,7 @@ This is an on-going work and there is not yet a stable version
 Theme Configuration without programming skills
 ----------------------------------------------
 
-/theme/default/theme.xml
+/theme/default/slots.xml
 
     <config>
         <slot name="topbar">
@@ -85,8 +85,8 @@ styling there are also core function aliases that may speed up development.
 The first letter gives an idea of what it does.
 Remember to use IDE type hinting to know how the alias works.
 
-app() - **A**pplication. The main gate to access features  
-conf() - **C**onfiguration item. Returns a configuration item  
+app() - **App**lication. The main gate to access features  
+conf() - **Conf**iguration item. Returns a configuration item  
 view() - Returns the generic **view** factory  
 help() - Returns the **help**er factory  
 theme() - Loads a **theme** or returns current theme  
@@ -97,7 +97,7 @@ r() - **R**oute. Adds a new route
 c() - **C**ontent. Adds content to the default theme  
 u() - **U**RL. Returns an internal URL. Use this to generate internal URLs  
 m() - **M**essage. Adds a message to be shown to the user  
-i() - **G**ET. Returns all **i**nput parameters or just one from GET/POST  
+i() - Returns all **i**nput parameters or just one from GET/POST  
 j() - **J**SON. Sets JSON output  
 o() - **O**utput. Sets the application Output, ie. a View or plain text  
 f() - **F**ILES. Returns a FILES entry by index  
@@ -105,7 +105,7 @@ q() - **Q**uery table. Returns a Table instance to start querying
 s() - **S**ecure. Returns a secured (encrypted) string  
 e() - **E**vent. Adds a new event  
 tr() - **TR**igger. Triggers the event  
-v() - **V**iew. Creates a new view  
+v() - **V**iew. Creates a new view. You can pass a template file path  
 l() - Layout. Creates a new layout - a view with layout slots operations   
 
 ### APP
@@ -121,12 +121,12 @@ l() - Layout. Creates a new layout - a view with layout slots operations
     u('/demo', array('param1' => 'World')); // creates an URL
  
 ### INPUT (GET / POST / RAW / FILES / CLI ARGS)
-    i('username'); // returns $_POST['username'] or $_GET['username']
+    i('username'); // returns $_GET['username'] or $_POST['username']
     f(0); // returns $_FILES['file'] or $_FILES['file'][0] for multiple
 
 ### EVENTS
     e('my.event.name', function($target) { ... }); // Register an event
-    tr('my.event-name', $target); // Triggers an event
+    tr('my.event.name', $target); // Triggers an event and passes a variable
 
 ### CORE EVENTS
 
@@ -134,8 +134,9 @@ There are core events that allows to change application workflow without
 changing the core system. These are:
 
     'arch.module.after.load'
-    'arch.session.load'
     'arch.database.load'
+    'arch.session.load'
+    'arch.theme.load'
     'arch.action.before.call'
     'arch.output.before.send'
     'arch.session.save'
@@ -145,10 +146,11 @@ changing the core system. These are:
     $i = help()->createIdiom();  // tries to find a default idiom by session or input
     $i->loadTranslation('filename', 'optional module name'); // loads a translation file
     $i->translate('key', array('key' => 'World')); // returns translated key in filename
-    $i->t('TITLE'); // A smaller alias to use in templates
+    $i->t('TITLE'); // An alias to use in templates
 
 ### SCREEN MESSAGES
-    m('An error has occured', 'css class');
+    m('An error has occured', 'css class'); // Adds a flash message
+    app()->flushMessages(); // Returns array. Remember to call flush in template
 
 ### CAPTCHA
     $v = view()->createAntiSpam(); // returns an HTML antispam element
@@ -243,5 +245,5 @@ changing the core system. These are:
 ROAD MAP (TODO)
 ===============
 
-January 2014 - Version 1.0.0-beta
+January 2014 - Version 1.0.0-beta  
 February 2014 - Version 1.0.0
