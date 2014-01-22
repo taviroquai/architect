@@ -183,7 +183,9 @@ class GenericView extends \Arch\IFactory
      */
     public function createBreadcrumbs()
     {
-        return new \Arch\View\Breadcrumbs();
+        $view = new \Arch\View\Breadcrumbs();
+        $view->parseAction($this->app);
+        return $view;
     }
     
     /**
