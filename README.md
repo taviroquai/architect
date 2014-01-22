@@ -164,13 +164,14 @@ changing the core system. These are:
 
 ### VALIDATION
     $v = help()->createValidator();
-    $rules[] = $v->createRule('email', 'isEmail', 'Invalid email message);
-    $result = $v->validate($rules);
+    $rules[] = $v->createRule('email', 'IsEmail', 'Invalid email message);
+    $result = $v->validate($rules); // more rules at /src/Arch/Rule/
     app()->getSession()->loadMessages($v->getMessages());
 
 ### HTTP
     $curl = help()->createCurl('http://google.com'); // gets a Curl helper
-    $result = $curl->execute(); // Gets the URL response
+    $result = $curl->run(); // Gets the URL response
+    $curl->closeConnection(); // Closes the cURL handler
 
 ### FILE UPLOAD
     $v = view()->createFileUpload(); // Creates an upload field
@@ -187,29 +188,55 @@ changing the core system. These are:
     q('user')->d('id = ?', array(1))->run(); // delete from user where id = 1
     q('user')->s('group.*')->j('usergroup', 'usergroup.id_group = group.id')->run(); // join
 
-### DATEPICKER
-    view()->createDatepicker(); // returns a HTML date picker view
+### BREADCRUMBS VIEW
+    view()->createBreadcrumbs(); // returns a breadcrumbs view
+
+### DATEPICKER VIEW
+    view()->createDatepicker(); // returns a date picker view
  
-### PAGINATION
-    view()->createPagination(); // returns HTML pagination view
+### PAGINATION VIEW
+    view()->createPagination(); // returns a pagination view
 
-### TEXT EDITOR
-    view()->createTexteditor(); // returns HTML text editor view
+### TEXT EDITOR VIEW
+    view()->createTexteditor(); // returns a text editor view
 
-### LINE CHART
-    view()->createLineChart();
+### POLL VIEW
+    view()->createPoll(); // returns a poll view
+
+### LINE CHART VIEW
+    $data = array(
+        array("x" => "2011 W27", "y" => 100),
+        array("x" => "2011 W28", "y" => 500)
+    );
+    $chart = view()->createLineChart() // returns a new line chart view
+        ->set('data', $data)
+        ->set('labels', array('Sells'));
 
 ### TREE VIEW
     view()->createTreeView();
 
-### FILE EXPLORER
+### FILE EXPLORER VIEW
     $explorer = view()->createFileExplorer();
     $explorer->setPath($path);
 
-### MAP
+### IMAGE GALLERY VIEW
+    $gallery = view()->createImageGallery()
+        ->setPath($path)
+        ->setPathToUrl(conf('BASE_URL').$path); // relative url
+
+### MAP VIEW
     view()->createMap();
 
-### AUTO TABLE
+### CAROUSEL VIEW
+    view()->createCarousel(); // returns a carousel view
+
+### COMMENT FORM VIEW
+    view()->createCommentForm(); // returns a comment form view
+
+### FILE UPLOAD VIEW
+    view()->createFileUpload(); // returns a file upload view
+
+### AUTO TABLE VIEW
     $config = array(
         'table'     => 'demo_user',
         'select'    => 'demo_user.*',
@@ -224,7 +251,7 @@ changing the core system. These are:
     $v->setDatabaseDriver($db);
     $v->setPagination($pagination);
 
-### AUTO FORM
+### AUTO FORM VIEW
     $config = array(
         'table'     => 'demo_user',
         'select'    => 'demo_user.*',
