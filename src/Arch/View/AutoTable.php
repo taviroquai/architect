@@ -138,6 +138,10 @@ class AutoTable extends \Arch\Theme\Layout\AutoPanel
         return $v;
     }
     
+    /**
+     * Returns a string representing the table
+     * @return string
+     */
     public function __toString()
     {
         $records = $this->table->select($this->config['select'])

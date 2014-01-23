@@ -42,54 +42,8 @@ class Image {
      */
     public function saveThumb($filename, $thumbSize = 60) {
 
-        // Get image information
-        list($width, $height, $type) = getimagesize($this->filename);
-        
-        // Choose image type
-        switch ($type) {
-            case 1: $imgcreatefrom = "ImageCreateFromGIF"; break;
-            case 3: $imgcreatefrom = "ImageCreateFromPNG"; break;
-            default: $imgcreatefrom = "ImageCreateFromJPEG";
-        }
-
-        // Load image
-        $myImage = $imgcreatefrom($this->filename) 
-                or die("Error: Cannot find image!"); 
-
-        // Find purpotion
-        $biggestSide = $height;
-        $cropPercent = $height > 560 ? 0.5 : $width / $height;
-        if ($width > $height) {
-            $biggestSide = $width;
-            $cropPercent = $width > 560 ? 0.5 : $height / $width;
-        }
-        $cropWidth   = $biggestSide*$cropPercent; 
-        $cropHeight  = $biggestSide*$cropPercent; 
-
-        // Getting the top left coordinate
-        $x = ($width-$cropWidth)/2;
-        $y = ($height-$cropHeight)/2;
-        
-        // Create new image
-        $thumb = imagecreatetruecolor($thumbSize, $thumbSize);
-        
-        // replace alpha with color
-        $white = imagecolorallocate($thumb,  255, 255, 255);
-        imagefilledrectangle($thumb, 0, 0, $thumbSize, $thumbSize, $white);
-
-        // Copy into new image
-        imagecopyresampled(
-            $thumb, 
-            $myImage, 
-            0, 
-            0, 
-            $x, 
-            $y, 
-            $thumbSize, 
-            $thumbSize, 
-            $cropWidth, 
-            $cropHeight
-        ); 
+        // get thumb
+        $thumb = $this->createThumb($thumbSize);
 
         // generate thumb name and save image
         if (is_dir($filename)) {
@@ -109,5 +63,63 @@ class Image {
                 $result = imagejpeg($thumb, $filename, 90);
         }
         return $result;
-    }    
+    }
+    
+    /**
+     * Creates an image resource
+     * @param int $thumbSize
+     * @return resource
+     */
+    public function createThumb($size = 60)
+    {   
+        // Get image information
+        list($width, $height, $type) = getimagesize($this->filename);
+        
+        // Choose image type
+        switch ($type) {
+            case 1: $imgcreatefrom = "ImageCreateFromGIF"; break;
+            case 3: $imgcreatefrom = "ImageCreateFromPNG"; break;
+            default: $imgcreatefrom = "ImageCreateFromJPEG";
+        }
+
+        // Load image
+        $original = $imgcreatefrom($this->filename); 
+        
+        // Find purpotion
+        $biggestSide = $height;
+        $cropPercent = $height > 560 ? 0.5 : $width / $height;
+        if ($width > $height) {
+            $biggestSide = $width;
+            $cropPercent = $width > 560 ? 0.5 : $height / $width;
+        }
+        $cropWidth   = $biggestSide*$cropPercent; 
+        $cropHeight  = $biggestSide*$cropPercent; 
+
+        // Getting the top left coordinate
+        $x = ($width-$cropWidth)/2;
+        $y = ($height-$cropHeight)/2;
+        
+        // Create new image
+        $thumb = imagecreatetruecolor($size, $size);
+        
+        // replace alpha with color
+        $white = imagecolorallocate($thumb,  255, 255, 255);
+        imagefilledrectangle($thumb, 0, 0, $size, $size, $white);
+
+        // Copy into new image
+        imagecopyresampled(
+            $thumb, 
+            $original, 
+            0, 
+            0, 
+            $x, 
+            $y, 
+            $size, 
+            $size, 
+            $cropWidth, 
+            $cropHeight
+        );
+        
+        return $thumb;
+    }
 }

@@ -55,6 +55,10 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
         }
     }
 
+    /**
+     * Returns a string representation of the form
+     * @return string
+     */
     public function __toString()
     {
         foreach ($this->config['items'] as $item) {
@@ -97,34 +101,51 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
         return parent::__toString();
     }
     
+    /**
+     * Creates a new breakline view
+     * @param array $config A list of key/value pairs configuration params
+     * @return \Arch\Registry\View
+     */
     protected function createBreakLine($config)
     {
-        if (empty($config['tmpl'])) {
-            $tmpl = ARCH_PATH.'/theme/form/breakline.php';
-        }
+        $tmpl = $this->getOptionalTemplate(
+            $config,
+            ARCH_PATH.'/theme/form/breakline.php'
+        );
         return new \Arch\Registry\View($tmpl, $config);
     }
     
+    /**
+     * Creates a new label view
+     * @param array $config A list of key/value pairs configuration params
+     * @return \Arch\Registry\View
+     */
     protected function createLabel($config)
     {
-        if (empty($config['tmpl'])) {
-            $tmpl = ARCH_PATH.'/theme/form/label.php';
-        }
+        $tmpl = $this->getOptionalTemplate(
+            $config,
+            ARCH_PATH.'/theme/form/label.php'
+        );
         $config['label'] = empty($config['label']) ? '' : $config['label'];
         return new \Arch\Registry\View($tmpl, $config);
     }
     
+    /**
+     * Creates a new hidden input view
+     * @param array $config A list of key/value pairs configuration params
+     * @return \Arch\Registry\View
+     */
     protected function createInputHidden($config)
     {
         $view = '';
         if (!empty($config['property'])) {
-            $tmpl = ARCH_PATH.'/theme/form/input/hidden.php';
-            if (!empty($config['tmpl']) && file_exists($config['tmpl'])) {
-                $tmpl = $config['tmpl'];
-            }
-            if (empty($config['name'])) {
-                $config['name'] = $config['property'];
-            }
+            $tmpl = $this->getOptionalTemplate(
+                $config,
+                ARCH_PATH.'/theme/form/input/hidden.php'
+            );
+            
+            $config['name'] = $this->getDefaultName($config);
+            
             if (!isset($config['value'])) {
                 $config['value'] = '';
                 if (isset($this->record[$config['property']])) {
@@ -136,28 +157,38 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
         return $view;
     }
     
+    /**
+     * Creates a new password input view
+     * @param array $config A list of key/value pairs configuration params
+     * @return \Arch\Registry\View
+     */
     protected function createInputPassword($config)
     {
         $view = '';
         if (!empty($config['property'])) {
-            $tmpl = ARCH_PATH.'/theme/form/input/password.php';
-            if (!empty($config['tmpl']) && file_exists($config['tmpl'])) {
-                $tmpl = $config['tmpl'];
-            }
-            if (empty($config['name'])) {
-                $config['name'] = $config['property'];
-            }
+            $tmpl = $this->getOptionalTemplate(
+                $config,
+                ARCH_PATH.'/theme/form/input/password.php'
+            );
+            
+            $config['name'] = $this->getDefaultName($config);
+            
             $view = new \Arch\Registry\View($tmpl, $config);
         }
         return $view;
     }
     
+    /**
+     * Creates a new button view
+     * @param array $config A list of key/value pairs configuration params
+     * @return \Arch\Registry\View
+     */
     protected function createButton($config)
     {
-        $tmpl = ARCH_PATH.'/theme/form/button.php';
-        if (!empty($config['tmpl']) && file_exists($config['tmpl'])) {
-            $tmpl = $config['tmpl'];
-        }
+        $tmpl = $this->getOptionalTemplate(
+            $config,
+            ARCH_PATH.'/theme/form/button.php'
+        );
         if (
             !empty($config['action'])
             && !empty($config['property'])
@@ -169,27 +200,37 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
         return $v;
     }
     
+    /**
+     * Creates a new submit button view
+     * @param array $config A list of key/value pairs configuration params
+     * @return \Arch\Registry\View
+     */
     protected function createButtonSubmit($config)
     {
-        $tmpl = ARCH_PATH.'/theme/form/submit.php';
-        if (!empty($config['tmpl']) && file_exists($config['tmpl'])) {
-            $tmpl = $config['tmpl'];
-        }
+        $tmpl = $this->getOptionalTemplate(
+            $config,
+            ARCH_PATH.'/theme/form/submit.php'
+        );
         $config['label'] = empty($config['label']) ? '' : $config['label'];
         $config['class'] = empty($config['class']) ? '' : $config['class'];
         $v = new \Arch\Registry\View($tmpl, $config);
         return $v;
     }
     
+    /**
+     * Creates a new text input view
+     * @param array $config A list of key/value pairs configuration params
+     * @return \Arch\Registry\View
+     */
     protected function createInputText($config)
     {
-        $tmpl = ARCH_PATH.'/theme/form/input/text.php';
-        if (!empty($config['tmpl']) && file_exists($config['tmpl'])) {
-            $tmpl = $config['tmpl'];
-        }
-        if (empty($config['name'])) {
-            $config['name'] = $config['property'];
-        }
+        $tmpl = $this->getOptionalTemplate(
+            $config,
+            ARCH_PATH.'/theme/form/input/text.php'
+        );
+        
+        $config['name'] = $this->getDefaultName($config);
+        
         if (!isset($config['value'])) {
             $config['value'] = '';
             if (
@@ -202,15 +243,20 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
         return new \Arch\Registry\View($tmpl, $config);
     }
     
+    /**
+     * Creates a new textarea view
+     * @param array $config A list of key/value pairs configuration params
+     * @return \Arch\Registry\View
+     */
     protected function createTextArea($config)
     {
-        $tmpl = ARCH_PATH.'/theme/form/textarea.php';
-        if (!empty($config['tmpl']) && file_exists($config['tmpl'])) {
-            $tmpl = $config['tmpl'];
-        }
-        if (empty($config['name'])) {
-            $config['name'] = $config['property'];
-        }
+        $tmpl = $this->getOptionalTemplate(
+            $config,
+            ARCH_PATH.'/theme/form/textarea.php'
+        );
+        
+        $config['name'] = $this->getDefaultName($config);
+        
         if (!isset($config['value'])) {
             $config['value'] = '';
             if (
@@ -223,25 +269,20 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
         return new \Arch\Registry\View($tmpl, $config);
     }
     
+    /**
+     * Creates a new select box view
+     * @param array $config A list of key/value pairs configuration params
+     * @return \Arch\Registry\View
+     */
     protected function createSelect($config)
     {
-        $tmpl = ARCH_PATH.'/theme/form/select.php';
-        if (!empty($config['tmpl']) && file_exists($config['tmpl'])) {
-            $tmpl = $config['tmpl'];
-        }
-        if (empty($config['name'])) {
-            $config['name'] = $config['property'];
-        }
+        $tmpl = $this->getOptionalTemplate(
+            $config,
+            ARCH_PATH.'/theme/form/select.php'
+        );
         
-        if (!isset($config['items'])) {
-            $config['items'] = array();
-            if (!empty($config['items_table'])) {
-                $table = $this->driver->createTable(
-                    (string) $config['items_table']
-                );
-                $config['items'] = $table->select()->fetchAll(\PDO::FETCH_ASSOC);
-            }
-        }
+        $config['name'] = $this->getDefaultName($config);
+        $config['items'] = $this->getListItems($config);
         
         if (!isset($config['selected'])) {
             $config['selected'] = array();
@@ -258,25 +299,20 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
         return new \Arch\Registry\View($tmpl, $config);
     }
     
+    /**
+     * Creates a new check list view
+     * @param array $config A list of key/value pairs configuration params
+     * @return \Arch\Registry\View
+     */
     protected function createCheckList($config)
     {
-        $tmpl = ARCH_PATH.'/theme/form/checklist.php';
-        if (!empty($config['tmpl']) && file_exists($config['tmpl'])) {
-            $tmpl = $config['tmpl'];
-        }
-        if (empty($config['name'])) {
-            $config['name'] = $config['property'];
-        }
+        $tmpl = $this->getOptionalTemplate(
+            $config,
+            ARCH_PATH.'/theme/form/checklist.php'
+        );
         
-        if (!isset($config['items'])) {
-            $config['items'] = array();
-            if (!empty($config['items_table'])) {
-                $table = $this->driver->createTable(
-                    (string) $config['items_table']
-                );
-                $config['items'] = $table->select()->fetchAll(\PDO::FETCH_ASSOC);
-            }
-        }
+        $config['name'] = $this->getDefaultName($config);
+        $config['items'] = $this->getListItems($config);
         
         if (!isset($config['selected'])) {
             $config['selected'] = array();
@@ -298,6 +334,11 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
         return new \Arch\Registry\View($tmpl, $config);
     }
     
+    /**
+     * Creates a new radio list view
+     * @param array $config A list of key/value pairs configuration params
+     * @return \Arch\Registry\View
+     */
     protected function createRadioList($config)
     {
         if (empty($config['tmpl'])) {
@@ -308,6 +349,14 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
         return $this->createCheckList($config);
     }
     
+    /**
+     * Returns a list of items that are the intersection set of two tables
+     * @param string $table1
+     * @param string $table2
+     * @param string $table3
+     * @param int $id
+     * @return array
+     */
     protected function getNMSelectedItems($table1, $table2, $table3, $id)
     {
         $data = array();
@@ -325,6 +374,54 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
             }
         }
         return $data;
+    }
+    
+    /**
+     * Returns the template
+     * @param array $config A list of key/value pairs configuration params
+     * @param string $default The default template
+     * @return string
+     */
+    protected function getOptionalTemplate($config, $default)
+    {
+        $tmpl = $default;
+        if (!empty($config['tmpl']) && file_exists($config['tmpl'])) {
+            $tmpl = $config['tmpl'];
+        }
+        return (string) $tmpl;
+    }
+    
+    /**
+     * Returns the default form field name
+     * @param type $config A list of key/value pairs configuration params
+     * @return string
+     */
+    protected function getDefaultName($config)
+    {
+        if (empty($config['name']) && isset($config['property'])) {
+            $config['name'] = $config['property'];
+        }
+        return $config['name'];
+    }
+    
+    /**
+     * Returns the list of items to be selectable
+     * @param array $config A list of key/value pairs configuration params
+     * @param array $default The default list of items
+     * @return array
+     */
+    protected function getListItems($config, $default = array())
+    {
+        if (!isset($config['items'])) {
+            $config['items'] = $default;
+            if (!empty($config['items_table'])) {
+                $table = $this->driver->createTable(
+                    (string) $config['items_table']
+                );
+                $config['items'] = $table->select()->fetchAll(\PDO::FETCH_ASSOC);
+            }
+        }
+        return $config['items'];
     }
     
 }
