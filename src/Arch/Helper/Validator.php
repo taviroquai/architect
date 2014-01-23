@@ -96,64 +96,63 @@ implements \Arch\IMessenger
                 .implode(',', $this->types)
             );
         }
-        $input = $this->app->getInput()->get();
         switch ($type) {
             case 'After':
-                $rule = new \Arch\Rule\After($name, $input);
+                $rule = new \Arch\Rule\After($name);
                 break;
             case 'Before':
-                $rule = new \Arch\Rule\Before($name, $input);
+                $rule = new \Arch\Rule\Before($name);
                 break;
             case 'Between':
-                $rule = new \Arch\Rule\Between($name, $input);
+                $rule = new \Arch\Rule\Between($name);
                 break;
             case 'Depends':
-                $rule = new \Arch\Rule\Depends($name, $input);
+                $rule = new \Arch\Rule\Depends($name);
                 break;
             case 'Equals':
-                $rule = new \Arch\Rule\Equals($name, $input);
+                $rule = new \Arch\Rule\Equals($name);
                 break;
             case 'IsAlphaExcept':
-                $rule = new \Arch\Rule\IsAlphaExcept($name, $input);
+                $rule = new \Arch\Rule\IsAlphaExcept($name);
                 break;
             case 'IsAlphaNumeric':
-                $rule = new \Arch\Rule\IsAlphaNumeric($name, $input);
+                $rule = new \Arch\Rule\IsAlphaNumeric($name);
                 break;
             case 'IsDate':
-                $rule = new \Arch\Rule\IsDate($name, $input);
+                $rule = new \Arch\Rule\IsDate($name);
                 break;
             case 'IsEmail':
-                $rule = new \Arch\Rule\IsEmail($name, $input);
+                $rule = new \Arch\Rule\IsEmail($name);
                 $this->app->getInput()->sanitize($name, FILTER_SANITIZE_EMAIL);
                 break;
             case 'IsImage':
-                $rule = new \Arch\Rule\IsImage($name, $input);
+                $rule = new \Arch\Rule\IsImage($name);
                 break;
             case 'IsInteger':
-                $rule = new \Arch\Rule\IsInteger($name, $input);
+                $rule = new \Arch\Rule\IsInteger($name);
                 $this->app->getInput()->sanitize($name, FILTER_SANITIZE_NUMBER_INT);
                 break;
             case 'IsMime':
-                $rule = new \Arch\Rule\IsMime($name, $input);
+                $rule = new \Arch\Rule\IsMime($name);
                 break;
             case 'IsTime':
-                $rule = new \Arch\Rule\IsTime($name, $input);
+                $rule = new \Arch\Rule\IsTime($name);
                 break;
             case 'IsUrl':
-                $rule = new \Arch\Rule\IsUrl($name, $input);
+                $rule = new \Arch\Rule\IsUrl($name);
                 $this->app->getInput()->sanitize($name, FILTER_SANITIZE_URL);
                 break;
             case 'Matches':
-                $rule = new \Arch\Rule\Matches($name, $input);
+                $rule = new \Arch\Rule\Matches($name);
                 break;
             case 'OneOf':
-                $rule = new \Arch\Rule\OneOf($name, $input);
+                $rule = new \Arch\Rule\OneOf($name);
                 break;
             case 'Unique':
-                $rule = new \Arch\Rule\Unique($name, $input);
+                $rule = new \Arch\Rule\Unique($name);
                 break;
             default:
-                $rule = new \Arch\Rule\Required($name, $input);
+                $rule = new \Arch\Rule\Required($name);
         }
         $rule->addParam($this->app->getInput()->get($name));
         $rule->setErrorMessage($error_msg);

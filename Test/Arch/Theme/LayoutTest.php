@@ -31,7 +31,7 @@ class LayoutTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($layout->id);
         
         $layout->addContent('test');
-        $result = $layout->render('content', function($item) {});
+        $result = $layout->render('content', function() {});
         $this->assertInstanceOf('\Arch\Theme\Layout', $result);
     }
     

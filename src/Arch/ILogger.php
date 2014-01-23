@@ -19,12 +19,11 @@ abstract class ILogger
      * Logs a message
      * @param string $msg The message to be logged
      * @param string $label The message label ('access', 'error')
-     * @param boolean $nlb Tells to add a line break at the end of the message
      * @return \Arch\ILogger
      */
-    public function log($msg)
+    public function log($msg, $label = 'access')
     {
-        $this->messages[] = $msg;
+        $this->messages[] = implode(' ', array($label,$msg));
         return $this;
     }
     

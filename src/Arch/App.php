@@ -44,7 +44,7 @@ class App
     /**
      * Holds user session.
      * 
-     * @var \Arch\Registry\Session
+     * @var \Arch\Registry\ISession
      */
     private  $session;
     

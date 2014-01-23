@@ -98,7 +98,7 @@ class Image {
         $parts = explode('.', $filename);
         switch (end($parts)) {
             case 'gif':
-                $result = imagegif($thumb, $filename, 90);
+                $result = imagegif($thumb, $filename);
                 break;
             case 'png':
                 $result = imagepng($thumb, $filename, 9);

@@ -248,7 +248,7 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
             if ($this->record && !empty($config['items_table'])) {
                 $fk = $this->driver->getRelationColumn(
                     (string) $this->config['table'],
-                    $config['items_table']
+                    (string) $config['items_table']
                 );
                 if (isset($this->record[$fk])) {
                     $config['selected'][] = $this->record[$fk];

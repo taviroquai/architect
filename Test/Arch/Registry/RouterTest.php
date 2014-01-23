@@ -81,7 +81,8 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testDefaultRoutes()
     {
         $router = new \Arch\Registry\Router();
-        $app = new \Arch\App(RESOURCE_PATH.'/configValid.xml');
+        $app = new \Arch\App();
+        $app->getConfig()->load(RESOURCE_PATH.'/configValid.xml');
         $router->addCoreRoutes($app);
         $callback = $router->get('/arch/asset/(:any)/(:any)');
         $this->assertInternalType('callable', $callback);

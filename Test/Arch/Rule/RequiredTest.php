@@ -52,7 +52,7 @@ class RequiredTest extends \PHPUnit_Framework_TestCase
         
         $expected = array('test');
         $rule->addParam('test');
-        $result = $rule->getParams('test');
+        $result = $rule->getParams();
         $this->assertEquals($expected, $result);
         
         $result = $rule->run();

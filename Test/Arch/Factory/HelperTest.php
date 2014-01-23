@@ -13,7 +13,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
      */   
     public function testFailCreate()
     {
-        $app = new \Arch\App(RESOURCE_PATH.'configValid.xml');
+        $app = new \Arch\App();
         $factory = new \Arch\Factory\Helper($app);
         $factory->create(99);
     }
@@ -34,20 +34,25 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-        /**
+    /**
      * Test create
      * @dataProvider providerTestCreate
      */
     public function testCreate($name)
     {
-        $app = new \Arch\App(RESOURCE_PATH.'configValid.xml');
+        $app = new \Arch\App();
+        $app->getConfig()->load(RESOURCE_PATH.'configValid.xml');
         $factory = new \Arch\Factory\Helper($app);
         $factory->create($name);
     }
     
+    /**
+     * Test helper factory methods
+     */
     public function testFactoryMethod()
     {
-        $app = new \Arch\App(RESOURCE_PATH.'configValid.xml');
+        $app = new \Arch\App();
+        $app->getConfig()->load(RESOURCE_PATH.'configValid.xml');
         $factory = new \Arch\Factory\Helper($app);
         
         $factory->createCurl('http://localhost');

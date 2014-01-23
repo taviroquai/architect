@@ -20,7 +20,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
                 DB_HOST,
                 DB_USER,
                 DB_PASS,
-                new \Arch\Logger\File(RESOURCE_PATH.'dummy')
+                new \Arch\Logger\File()
             )
         );
     }
@@ -38,7 +38,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
                 DB_HOST,
                 DB_USER,
                 DB_PASS,
-                new \Arch\Logger\File(RESOURCE_PATH.'dummy'),
+                new \Arch\Logger\File(),
                 null
             ),
             array(
@@ -47,7 +47,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
                 DB_HOST,
                 DB_USER,
                 DB_PASS,
-                new \Arch\Logger\File(RESOURCE_PATH.'dummy'),
+                new \Arch\Logger\File(),
                 array()
             ),
             array(
@@ -56,7 +56,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
                 DB_HOST,
                 DB_USER,
                 DB_PASS,
-                new \Arch\Logger\File(RESOURCE_PATH.'dummy'),
+                new \Arch\Logger\File(),
                 new stdClass()
             ),
             array(
@@ -65,7 +65,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
                 DB_HOST,
                 DB_USER,
                 DB_PASS,
-                new \Arch\Logger\File(RESOURCE_PATH.'dummy'),
+                new \Arch\Logger\File(),
                 function() { }
             )
         );
@@ -79,7 +79,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testInvalidTable($driver, $database, $host, $user, $pass, $logger)
     {
@@ -92,12 +92,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \Exception
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testEmptyTable($driver, $database, $host, $user, $pass, $logger)
     {
@@ -110,12 +110,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test create table
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testCreateTable($driver, $database, $host, $user, $pass, $logger)
     {
@@ -128,12 +128,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test fail install
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testFailInstall($driver, $database, $host, $user, $pass, $logger)
     {
@@ -149,12 +149,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test install
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testInstall($driver, $database, $host, $user, $pass, $logger)
     {
@@ -168,12 +168,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test fail execute statement
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testFailStatement($driver, $database, $host, $user, $pass, $logger)
     {
@@ -187,12 +187,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test fail select
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testFailRun($driver, $database, $host, $user, $pass, $logger)
     {
@@ -206,12 +206,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test select
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testSelect($driver, $database, $host, $user, $pass, $logger)
     {
@@ -225,12 +225,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test fail select
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testFailSelect($driver, $database, $host, $user, $pass, $logger)
     {
@@ -244,12 +244,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test select with where
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testSelectWhere($driver, $database, $host, $user, $pass, $logger)
     {
@@ -263,12 +263,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test fail where
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testFailSelectWhere($driver, $database, $host, $user, $pass, $logger)
     {
@@ -282,12 +282,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test select, where and wrong number of params
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testFailSelectWhereParams($driver, $database, $host, $user, $pass, $logger)
     {
@@ -301,12 +301,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test select, where and params
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testSelectWhereParams($driver, $database, $host, $user, $pass, $logger)
     {
@@ -320,12 +320,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test select and join
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testSelectJoin($driver, $database, $host, $user, $pass, $logger)
     {
@@ -342,12 +342,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test select and join
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testSelectJoinAuto($driver, $database, $host, $user, $pass, $logger)
     {
@@ -361,12 +361,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test fail select and group
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testFailSelectGroup($driver, $database, $host, $user, $pass, $logger)
     {
@@ -380,12 +380,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test select and group
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testSelectGroup($driver, $database, $host, $user, $pass, $logger)
     {
@@ -399,12 +399,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test fail select and limit
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testFailSelectLimit($driver, $database, $host, $user, $pass, $logger)
     {
@@ -418,12 +418,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test select and limit
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testSelectLimit($driver, $database, $host, $user, $pass, $logger)
     {
@@ -437,12 +437,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test fail insert
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testFailInsert($driver, $database, $host, $user, $pass, $logger)
     {
@@ -456,12 +456,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test insert
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testInsert($driver, $database, $host, $user, $pass, $logger)
     {
@@ -483,12 +483,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test fail update
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testFailUpdate($driver, $database, $host, $user, $pass, $logger)
     {
@@ -502,12 +502,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test update
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testUpdate($driver, $database, $host, $user, $pass, $logger)
     {
@@ -523,12 +523,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test select fetch first
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testSelectFetch($driver, $database, $host, $user, $pass, $logger)
     {
@@ -542,12 +542,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test select fetch all
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testSelectFetchAll($driver, $database, $host, $user, $pass, $logger)
     {
@@ -561,12 +561,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test select fetch object
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testSelectFetchObject($driver, $database, $host, $user, $pass, $logger)
     {
@@ -580,12 +580,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test select fetch column
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testSelectFetchColumn($driver, $database, $host, $user, $pass, $logger)
     {
@@ -599,12 +599,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test delete
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testDelete($driver, $database, $host, $user, $pass, $logger)
     {
@@ -620,12 +620,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test invalid statement on select fetch
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testFailStatementSelectFetch($driver, $database, $host, $user, $pass, $logger)
     {
@@ -641,12 +641,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test invalid statement on select fetch all
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testFailStatementSelectFetchAll($driver, $database, $host, $user, $pass, $logger)
     {
@@ -662,12 +662,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test invalid statement on select fetch object
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testFailStatementSelectFetchObject($driver, $database, $host, $user, $pass, $logger)
     {
@@ -683,12 +683,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test invalid statement on select fetch column
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testFailStatementSelectFetchColumn($driver, $database, $host, $user, $pass, $logger)
     {
@@ -704,12 +704,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test invalid statement on insert
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testFailStatementInsert($driver, $database, $host, $user, $pass, $logger)
     {
@@ -725,12 +725,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test invalid statement on update
      * @dataProvider providerConnection
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function testFailStatementUpdate($driver, $database, $host, $user, $pass, $logger)
     {
@@ -746,12 +746,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test insert with invalid values
      * @dataProvider providerConnectionInsertInvalidValue
-     * @param \Arch\DB\Driver $driver
+     * @param \Arch\DB\IDriver $driver
      * @param string $database
      * @param string $host
      * @param string $user
      * @param string $pass
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      * @param mixed $value The value to be tested
      */
     public function testInsertInvalidValue($driver, $database, $host, $user, $pass, $logger, $value)

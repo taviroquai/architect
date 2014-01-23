@@ -87,7 +87,7 @@ abstract class IInput
     
     /**
      * Returns an uploaded file or false if does not exists
-     * @param $index The uploaded file index
+     * @param int $index The uploaded file index
      * @return boolean
      */
     public abstract function getFileByIndex($index);

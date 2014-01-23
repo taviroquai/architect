@@ -12,15 +12,14 @@ class AppTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateApplication()
     {
-        $config = RESOURCE_PATH.'/configValid.xml';
-        $app = new \Arch\App($config);
+        $app = new \Arch\App();
         $this->assertInstanceOf('\Arch\App', $app);
     }
     
     public function providerApp()
     {
         return array(
-            array(new Arch\App(RESOURCE_PATH.'/configValid.xml'))
+            array(new \Arch\App())
         );
     }
 
@@ -42,7 +41,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
      * @param \Arch\App $app The application instance
      */
     public function testRunApplicationNoModules($app)
-    {   
+    {
         $app->getConfig()->set('MODULE_PATH', '');
         $app->run();
     }

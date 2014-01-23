@@ -265,12 +265,11 @@ function m($text, $cssClass = 'alert alert-success')
  * <b>q('tablename')->select()->fetchAll()</b>
  * 
  * @param string $tableName The name of the relational database table
- * @param \PDO $db A PDO instance if not using application default
  * @return \Arch\Table The table to start querying
  */
-function q($tableName, \PDO $db = null)
+function q($tableName)
 {
-    return help()->createQuery($tableName, $db)->run();
+    return help()->createQuery($tableName)->run();
 }
 
 /**

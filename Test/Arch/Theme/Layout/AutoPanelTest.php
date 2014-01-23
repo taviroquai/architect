@@ -18,12 +18,7 @@ class AutoPanelTest extends \PHPUnit_Framework_TestCase
             array(
                 '',
                 array('table' => 'test_table1', 'select' => '*'),
-                new \Arch\DB\MySql\Driver(
-                DB_DATABASE,
-                DB_HOST,
-                DB_USER,
-                DB_PASS,
-                new \Arch\Logger\File(RESOURCE_PATH.'dummy'))
+                new \Arch\DB\MySql\Driver()
             )
         );
     }
@@ -38,32 +33,17 @@ class AutoPanelTest extends \PHPUnit_Framework_TestCase
             array(
                 '',
                 array(),
-                new \Arch\DB\MySql\Driver(
-                DB_DATABASE,
-                DB_HOST,
-                DB_USER,
-                DB_PASS,
-                new \Arch\Logger\File(RESOURCE_PATH.'dummy'))
+                new \Arch\DB\MySql\Driver()
             ),
             array(
                 '',
                 array('table' => 'test_table1'),
-                new \Arch\DB\MySql\Driver(
-                DB_DATABASE,
-                DB_HOST,
-                DB_USER,
-                DB_PASS,
-                new \Arch\Logger\File(RESOURCE_PATH.'dummy'))
+                new \Arch\DB\MySql\Driver()
             ),
             array(
                 '',
                 array('select' => ''),
-                new \Arch\DB\MySql\Driver(
-                DB_DATABASE,
-                DB_HOST,
-                DB_USER,
-                DB_PASS,
-                new \Arch\Logger\File(RESOURCE_PATH.'dummy'))
+                new \Arch\DB\MySql\Driver()
             )
         );
     }
