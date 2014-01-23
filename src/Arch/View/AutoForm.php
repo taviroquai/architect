@@ -393,13 +393,14 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
     
     /**
      * Returns the default form field name
-     * @param type $config A list of key/value pairs configuration params
+     * @param array $config A list of key/value pairs configuration params
      * @return string
      */
     protected function getDefaultName($config)
     {
-        if (empty($config['name']) && isset($config['property'])) {
-            $config['name'] = $config['property'];
+        if (empty($config['name'])) {
+            $config['name'] = isset($config['property']) ? 
+                    $config['property'] : '';
         }
         return $config['name'];
     }
