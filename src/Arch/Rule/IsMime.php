@@ -21,8 +21,8 @@ class IsMime extends \Arch\IRule
         $finfo = new \finfo(FILEINFO_MIME);
         $type = strpos($finfo->file($v), ';') ? 
                 explode(';', $finfo->file($v)) :
-                $finfo->file($v);
-        $type = reset($type);
+                array($finfo->file($v));
+        $type = (string) reset($type);
         $this->result = in_array($type, $list);
         return $this;
     }

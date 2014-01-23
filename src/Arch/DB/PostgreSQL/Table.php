@@ -26,7 +26,7 @@ class Table extends \Arch\DB\ITable
                 breaK;
             case 'INSERT':
                 if (count($this->node->values) == 0) {
-                    throw new \PDOException('Invalid insert values');
+                    throw new \Exception('Invalid insert values');
                 }
                 $sql .= $this->node->_type.
                     ' INTO '.
@@ -40,7 +40,7 @@ class Table extends \Arch\DB\ITable
                 break;
             case 'UPDATE':
                 if (count($this->node->set) == 0) {
-                    throw new \PDOException('Invalid update values');
+                    throw new \Exception('Invalid update values');
                 }
                 $set = $this->node->set;
                 foreach ($set as $k => &$v) $v = $this->addBackTicks($k).' = ?';

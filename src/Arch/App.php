@@ -23,7 +23,7 @@ class App
     /**
      * Holds user input.
      * 
-     * @var \Arch\Input The application input object
+     * @var \Arch\IInput The application input object
      */
     private  $input;
     

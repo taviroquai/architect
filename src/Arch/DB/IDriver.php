@@ -33,22 +33,28 @@ abstract class IDriver
      * @param string $database The database name
      * @param string $user The username
      * @param string $pass The user password
+     * @param array  $options The PDO options
      * @return \PDO
      */
-    public function createPDO($host, $database, $user, $pass = '')
-    {
+    public function createPDO(
+        $host,
+        $database,
+        $user,
+        $pass = '',
+        $options = array()
+    ) {
         $dsn = $this->getDSN($host, $database, $user, $pass);
-        $pdo = new \PDO($dsn, $user, $pass);
+        $pdo = new \PDO($dsn, $user, $pass, $options);
         
         return $pdo;
     }
     
     /**
      * Connects to the default database
-     * @param type $host The database host
-     * @param type $database The database name
-     * @param type $user The connection user
-     * @param type $pass The user password
+     * @param string $host The database host
+     * @param string $database The database name
+     * @param string $user The connection user
+     * @param string $pass The user password
      */
     public function connect($host, $database, $user, $pass)
     {

@@ -427,6 +427,10 @@ abstract class ITable
                 $this->driver->log('Details: '.$e->getMessage(), 'error');
             }
             return false;
+            
+        } catch (\Exception $e) {
+            $this->driver->log('Exception: '.$e->getMessage(), 'error');
+            return false;
         }
         
         // log the valid query
@@ -486,16 +490,18 @@ abstract class ITable
             if (is_null($v)) {
                 $type = \PDO::PARAM_INT;
             } elseif (is_numeric($v)) {
-                if (is_integer($v)) $type = \PDO::PARAM_INT;
+                if (is_integer($v)) {
+                    $type = \PDO::PARAM_INT;
+                }
             } elseif (is_bool($v)) {
                 $type = \PDO::PARAM_BOOL;
             } elseif (is_array( $v ) ) {
-                throw new \PDOException("DB bind param $i failed");
+                throw new \Exception("DB bind param $i failed");
             } elseif (is_object( $v ) ) {
                 if (get_class($v) == 'Closure') {
                     $v = $v();
                 } elseif (!method_exists( $v, '__toString' )) {
-                    throw new \PDOException("DB bind param $i failed");
+                    throw new \Exception("DB bind param $i failed");
                 }
             }
             

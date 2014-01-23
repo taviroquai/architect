@@ -80,7 +80,6 @@ class Driver extends \Arch\DB\IDriver
     {
         $result = array();
         $sql = "PRAGMA table_info(`$table_name`)";
-        $data = array($table_name);
         try {
             $stm = $this->db_pdo->prepare($sql);
             $this->logger->log('DB query: '.$stm->queryString);

@@ -38,7 +38,6 @@ class Input extends \Arch\IFactory
     public static function createFromGlobals()
     {
         $factory = new \Arch\Factory\Input();
-        $api = php_sapi_name();
         $raw = file_get_contents('php://input');
         if (!isset($_SERVER['REQUEST_METHOD'])) {
             $input = $factory->create(\Arch::TYPE_INPUT_CLI);

@@ -92,11 +92,12 @@ class AutoTable extends \Arch\Theme\Layout\AutoPanel
      */
     protected function createActionButton($config, $record)
     {
-        if (empty($config['tmpl'])) {
-            $tmpl = implode(
-                DIRECTORY_SEPARATOR,
-                array(ARCH_PATH, 'theme', 'table', 'rowaction.php')
-            );
+        $tmpl = implode(
+            DIRECTORY_SEPARATOR,
+            array(ARCH_PATH, 'theme', 'table', 'rowaction.php')
+        );
+        if (!empty($config['tmpl']) && file_exists($config['tmpl'])) {
+            $tmpl = $config['tmpl'];
         }
         if (!isset($config['action'])) {
             $config['action'] = '';
@@ -114,17 +115,18 @@ class AutoTable extends \Arch\Theme\Layout\AutoPanel
     
     /**
      * Returns a new table cell with record property value
-     * @param string $config The configuration
+     * @param array $config The configuration
      * @param array $record The record
      * @return \Arch\View
      */
     protected function createCellValue($config, $record)
     {
-        if (empty($config['tmpl'])) {
-            $tmpl = implode(
-                DIRECTORY_SEPARATOR,
-                array(ARCH_PATH, 'theme', 'table', 'cell.php')
-            );
+        $tmpl = implode(
+            DIRECTORY_SEPARATOR,
+            array(ARCH_PATH, 'theme', 'table', 'cell.php')
+        );
+        if (!empty($config['tmpl']) && file_exists($config['tmpl'])) {
+            $tmpl = $config['tmpl'];
         }
         $config['value'] = 'undefined';
         if (!empty($config['property'])) {

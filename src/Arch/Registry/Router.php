@@ -22,7 +22,7 @@ class Router extends \Arch\IRegistry
      * TODO: pass url params to the action callback
      * 
      * @param string $key The route key
-     * @param function $action A callable variable
+     * @param mixed $action A callable variable
      * @return \Arch\Router
      */
     public function addRoute($key, $action)
@@ -40,7 +40,7 @@ class Router extends \Arch\IRegistry
     /**
      * Returns the route action
      * 
-     * @param \Arch\Input $input The application input
+     * @param \Arch\IInput $input The application input
      * @return boolean|function
      */
     public function getRouteCallback(\Arch\IInput &$input)

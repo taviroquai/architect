@@ -40,7 +40,7 @@ class Pagination extends \Arch\Registry\View
     
     /**
      * Holds the user input
-     * @var \Arch\Input
+     * @var \Arch\IInput
      */
     protected $input;
 	
@@ -67,7 +67,7 @@ class Pagination extends \Arch\Registry\View
 
         /**
      * Parses input and sets the current page and url
-     * @param \Arch\Input $input The application input
+     * @param \Arch\IInput $input The application input
      */
     public function parseCurrent()
     {

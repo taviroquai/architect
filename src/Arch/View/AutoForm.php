@@ -118,8 +118,9 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
     {
         $view = '';
         if (!empty($config['property'])) {
-            if (empty($config['tmpl'])) {
-                $tmpl = ARCH_PATH.'/theme/form/input/hidden.php';
+            $tmpl = ARCH_PATH.'/theme/form/input/hidden.php';
+            if (!empty($config['tmpl']) && file_exists($config['tmpl'])) {
+                $tmpl = $config['tmpl'];
             }
             if (empty($config['name'])) {
                 $config['name'] = $config['property'];
@@ -139,8 +140,9 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
     {
         $view = '';
         if (!empty($config['property'])) {
-            if (empty($config['tmpl'])) {
-                $tmpl = ARCH_PATH.'/theme/form/input/password.php';
+            $tmpl = ARCH_PATH.'/theme/form/input/password.php';
+            if (!empty($config['tmpl']) && file_exists($config['tmpl'])) {
+                $tmpl = $config['tmpl'];
             }
             if (empty($config['name'])) {
                 $config['name'] = $config['property'];
@@ -152,8 +154,9 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
     
     protected function createButton($config)
     {
-        if (empty($config['tmpl'])) {
-            $tmpl = ARCH_PATH.'/theme/form/button.php';
+        $tmpl = ARCH_PATH.'/theme/form/button.php';
+        if (!empty($config['tmpl']) && file_exists($config['tmpl'])) {
+            $tmpl = $config['tmpl'];
         }
         if (
             !empty($config['action'])
@@ -168,8 +171,9 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
     
     protected function createButtonSubmit($config)
     {
-        if (empty($config['tmpl'])) {
-            $tmpl = ARCH_PATH.'/theme/form/submit.php';
+        $tmpl = ARCH_PATH.'/theme/form/submit.php';
+        if (!empty($config['tmpl']) && file_exists($config['tmpl'])) {
+            $tmpl = $config['tmpl'];
         }
         $config['label'] = empty($config['label']) ? '' : $config['label'];
         $config['class'] = empty($config['class']) ? '' : $config['class'];
@@ -179,8 +183,9 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
     
     protected function createInputText($config)
     {
-        if (empty($config['tmpl'])) {
-            $tmpl = ARCH_PATH.'/theme/form/input/text.php';
+        $tmpl = ARCH_PATH.'/theme/form/input/text.php';
+        if (!empty($config['tmpl']) && file_exists($config['tmpl'])) {
+            $tmpl = $config['tmpl'];
         }
         if (empty($config['name'])) {
             $config['name'] = $config['property'];
@@ -199,8 +204,9 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
     
     protected function createTextArea($config)
     {
-        if (empty($config['tmpl'])) {
-            $tmpl = ARCH_PATH.'/theme/form/textarea.php';
+        $tmpl = ARCH_PATH.'/theme/form/textarea.php';
+        if (!empty($config['tmpl']) && file_exists($config['tmpl'])) {
+            $tmpl = $config['tmpl'];
         }
         if (empty($config['name'])) {
             $config['name'] = $config['property'];
@@ -219,8 +225,9 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
     
     protected function createSelect($config)
     {
-        if (empty($config['tmpl'])) {
-            $tmpl = ARCH_PATH.'/theme/form/select.php';
+        $tmpl = ARCH_PATH.'/theme/form/select.php';
+        if (!empty($config['tmpl']) && file_exists($config['tmpl'])) {
+            $tmpl = $config['tmpl'];
         }
         if (empty($config['name'])) {
             $config['name'] = $config['property'];
@@ -229,7 +236,9 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
         if (!isset($config['items'])) {
             $config['items'] = array();
             if (!empty($config['items_table'])) {
-                $table = $this->driver->createTable($config['items_table']);
+                $table = $this->driver->createTable(
+                    (string) $config['items_table']
+                );
                 $config['items'] = $table->select()->fetchAll(\PDO::FETCH_ASSOC);
             }
         }
@@ -238,7 +247,7 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
             $config['selected'] = array();
             if ($this->record && !empty($config['items_table'])) {
                 $fk = $this->driver->getRelationColumn(
-                    $this->config['table'],
+                    (string) $this->config['table'],
                     $config['items_table']
                 );
                 if (isset($this->record[$fk])) {
@@ -252,7 +261,7 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
     protected function createCheckList($config)
     {
         $tmpl = ARCH_PATH.'/theme/form/checklist.php';
-        if (!empty($config['tmpl'])) {
+        if (!empty($config['tmpl']) && file_exists($config['tmpl'])) {
             $tmpl = $config['tmpl'];
         }
         if (empty($config['name'])) {
@@ -262,7 +271,9 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
         if (!isset($config['items'])) {
             $config['items'] = array();
             if (!empty($config['items_table'])) {
-                $table = $this->driver->createTable($config['items_table']);
+                $table = $this->driver->createTable(
+                    (string) $config['items_table']
+                );
                 $config['items'] = $table->select()->fetchAll(\PDO::FETCH_ASSOC);
             }
         }
@@ -276,7 +287,7 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
             ) {
                 $config['selected'] = $this->getNMSelectedItems(
                     $config['selected_items_table'],
-                    $config['items_table'],
+                    (string) $config['items_table'],
                     $this->config['table'],
                     $this->record['id']
                 );
@@ -290,8 +301,7 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
     protected function createRadioList($config)
     {
         if (empty($config['tmpl'])) {
-            $config['tmpl'] = 
-                ARCH_PATH.'/theme/form/radiolist.php';
+            $config['tmpl'] = ARCH_PATH.'/theme/form/radiolist.php';
         }
         $config['class'] = empty($config['class']) ? 
                 'radio' : $config['class'];

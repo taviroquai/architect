@@ -17,7 +17,7 @@ class AntiSpam extends \Arch\Registry\View
     
     /**
      * Holds the user input
-     * @var \Arch\Input
+     * @var \Arch\IInput
      */
     protected $input;
     

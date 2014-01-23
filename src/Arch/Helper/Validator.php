@@ -42,7 +42,7 @@ implements \Arch\IMessenger
     
     /**
      * Sets the rules to be validated
-     * @param type $rules
+     * @param array $rules
      */
     public function setRules($rules)
     {

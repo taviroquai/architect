@@ -22,7 +22,7 @@ class LoggerFileTest extends \PHPUnit_Framework_TestCase
     public function testLog()
     {
         $logger = new \Arch\Logger\File();
-        $result = $logger->log('test');
+        $logger->log('test');
         $this->assertInstanceOf('\Arch\ILogger', $logger);
     }
     

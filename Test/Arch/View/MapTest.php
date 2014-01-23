@@ -24,7 +24,8 @@ class MapTest extends \PHPUnit_Framework_TestCase
         $view = new \Arch\View\Map();
         $marker = $view->createMarker();
         $view->addMarker($marker);
-        $markers = $view->getMarkers();
         $this->assertInternalType('string', (string) $view);
+        $markers = $view->getMarkers();
+        $this->assertInternalType('array', $markers);
     }
 }
