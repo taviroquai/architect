@@ -322,10 +322,10 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
                 && $this->record
             ) {
                 $config['selected'] = $this->getNMSelectedItems(
-                    $config['selected_items_table'],
+                    (string) $config['selected_items_table'],
                     (string) $config['items_table'],
-                    $this->config['table'],
-                    $this->record['id']
+                    (string) $this->config['table'],
+                    (int) $this->record['id']
                 );
             }
         }
