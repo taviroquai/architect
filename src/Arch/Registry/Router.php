@@ -41,7 +41,7 @@ class Router extends \Arch\IRegistry
      * Returns the route action
      * 
      * @param \Arch\IInput $input The application input
-     * @return boolean|function
+     * @return mixed
      */
     public function getRouteCallback(\Arch\IInput &$input)
     {

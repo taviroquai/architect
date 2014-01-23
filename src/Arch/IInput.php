@@ -205,7 +205,7 @@ abstract class IInput
      * If index is not provided, returns all params
      * 
      * @param integer $index
-     * @return boolean
+     * @return boolean|array|string
      */
     public function getActionParam($index = null)
     {

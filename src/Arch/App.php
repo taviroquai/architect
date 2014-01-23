@@ -188,7 +188,7 @@ class App
         $this->logger->log('Dispatching user action: '.$action);
         $callback = $this->input->getRouter()->getRouteCallback($this->input);
         $this->getEvents()->triggerEvent('arch.action.before.call', $action);
-        call_user_func_array($callback, $this->input->getActionParam());
+        call_user_func_array($callback, (array) $this->input->getActionParam());
 
         // send output
         $this->logger->log('Sending output...');
