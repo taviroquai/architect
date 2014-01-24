@@ -35,18 +35,20 @@ class Idiom extends \Arch\IHelper
     public function run() {
         
         // resolve idiom code
-        if (empty($this->code) && $this->app->getInput()->get('idiom')) {
-            $this->code = $this->app->getInput()->get('idiom');
-        }
-        if (empty($this->code) && $this->app->getSession()->get('idiom')) {
-            $this->code = $this->app->getSession()->get('idiom');
-        }
-        if (empty($this->code) && $this->app->getConfig()->get('DEFAULT_IDIOM')) {
-            $this->code = $this->app->getConfig()->get('DEFAULT_IDIOM');
-        }
-        if (empty($this->code)) {
-            $this->code = 'en';
-        }
+        $input_code     = $this->app->getInput()->get('idiom');
+        $session_code   = $this->app->getSession()->get('idiom');
+        $current_code   = $this->code;
+        $config_code    = $this->app->getConfig()->get('DEFAULT_IDIOM');
+        $default_code   = 'en';
+        $list = array(
+            $input_code,
+            $session_code,
+            $current_code,
+            $config_code,
+            $default_code
+        );
+        $this->code = current(array_filter($list));
+        
         if (!$this->app->getSession()->get('idiom')) {
             $this->app->getSession()->set('idiom', $this->code);
         }
