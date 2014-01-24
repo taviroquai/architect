@@ -15,6 +15,24 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
     protected $record;
     
     /**
+     * Maps configuration type to create method
+     * @var array
+     */
+    protected $mapTypeToFn = array(
+        'breakline' => 'createBreakLine',
+        'label'     => 'createLabel',
+        'text'      => 'createInputText',
+        'hidden'    => 'createInputHidden',
+        'password'  => 'createInputPassword',
+        'button'    => 'createButton',
+        'submit'    => 'createButtonSubmit',
+        'select'    => 'createSelect',
+        'textarea'  => 'createTextArea',
+        'checklist' => 'createCheckList',
+        'radiolist' => 'createRadioList'
+    );
+    
+    /**
      * Returns a new panel to be rendered
      */
     public function __construct()
@@ -62,39 +80,9 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
     public function __toString()
     {
         foreach ($this->config['items'] as $item) {
-            switch ($item['type']) {
-                case 'label':
-                    $this->addContent($this->createLabel($item));
-                    break;
-                case 'hidden':
-                    $this->addContent($this->createInputHidden($item));
-                    break;
-                case 'password': 
-                    $this->addContent($this->createInputPassword($item));
-                    break;
-                case 'button':
-                    $this->addContent($this->createButton($item));
-                    break;
-                case 'submit': 
-                    $this->addContent($this->createButtonSubmit($item));
-                    break;
-                case 'select': 
-                    $this->addContent($this->createSelect($item));
-                    break;
-                case 'textarea':
-                    $this->addContent($this->createTextArea($item));
-                    break;
-                case 'checklist': 
-                    $this->addContent($this->createCheckList($item));
-                    break;
-                case 'radiolist': 
-                    $this->addContent($this->createRadioList($item));
-                    break;
-                case 'breakline': 
-                    $this->addContent($this->createBreakLine($item));
-                    break;
-                default:
-                    $this->addContent($this->createInputText($item));
+            if (isset($this->mapTypeToFn[$item['type']])) {
+                $fn = $this->mapTypeToFn[$item['type']];
+                $this->addContent($this->$fn($item));
             }
         }
         $this->set('action', $this->config['action']);
