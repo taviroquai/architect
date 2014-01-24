@@ -178,7 +178,8 @@ class Helper extends \Arch\IFactory
      * 
      * Use it as <b>app()->download('/path/to/attachment.pdf')</b>
      * 
-     * @param string $filename The file to be donwloaded
+     * @param string $filename The file to be downloaded
+     * @param boolean $attachment Whether is should send attachment headers
      * @return \Arch\Helper\Download
      */
     public function createDownload($filename, $attachment = true)

@@ -40,7 +40,7 @@ class Download extends \Arch\IHelper
     
     /**
      * Sets whether it should send attachment headers or not
-     * @param string $boolean
+     * @param boolean $boolean
      */
     public function asAttachment($boolean)
     {

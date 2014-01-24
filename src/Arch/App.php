@@ -193,7 +193,7 @@ class App
         // send output
         $this->logger->log('Sending output...');
         if ($this->getOutput()->getBuffer() == '' && $this->getTheme()) {
-            $this->output->setBuffer($this->theme);
+            $this->output->setBuffer((string) $this->theme);
         }
         $this->getEvents()->triggerEvent(
             'arch.output.before.send',
