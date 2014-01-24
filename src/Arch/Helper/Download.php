@@ -9,18 +9,39 @@ namespace Arch\Helper;
  */
 class Download extends \Arch\IHelper
 {
+    /**
+     * The file to be downloaded
+     * @var string
+     */
     protected $filename;
+    
+    /**
+     * Sets whether it should sent attachment headers or not
+     * @var boolean
+     */
     protected $attachment;
     
+    /**
+     * Creates a new download helper
+     * @param \Arch\App $app
+     */
     public function __construct(\Arch\App &$app) {
         parent::__construct($app);
     }
     
+    /**
+     * Sets the filename to be downloaded
+     * @param string $filename The filename to be downloaded
+     */
     public function setFilename($filename)
     {
         $this->filename = $filename;
     }
     
+    /**
+     * Sets whether it should send attachment headers or not
+     * @param string $boolean
+     */
     public function asAttachment($boolean)
     {
         $this->attachment = $boolean;

@@ -30,7 +30,6 @@ class HTTP extends \Arch\IInput {
     /**
      * Returns a new HTTP input
      * @param string $method
-     * @param string $api
      */
     public function __construct($method)
     {
@@ -92,51 +91,91 @@ class HTTP extends \Arch\IInput {
         $this->api = $api;
     }
     
+    /**
+     * Sets the request uri
+     * @param string $uri The uri string
+     */
     public function setRequestUri($uri)
     {
         $this->uri = (string) $uri;
     }
     
+    /**
+     * Sets the HTTP query string
+     * @param string $query The query string
+     */
     public function setQueryString($query)
     {
         $this->query = (string) $query;
     }
     
+    /**
+     * Sets the user agent
+     * @param string $ua The user agent string
+     */
     public function setUserAgent($ua)
     {
         $this->user_agent = (string) $ua;
     }
     
+    /**
+     * Sets the HTTP hostname
+     * @param string $host The host name
+     */
     public function setHttpHost($host)
     {
         $this->host = $host;
     }
     
+    /**
+     * Sets whether the request is secure HTTPS or not
+     * @param boolean $boolean The true or false
+     */
     public function setSecure($boolean)
     {
         $this->https = (boolean) $boolean;
     }
 
+    /**
+     * Returns the HTTP method
+     * @return string
+     */
     public function getMethod()
     {
         return $this->method;
     }
     
+    /**
+     * Returns the URI request
+     * @return string
+     */
     public function getRequestUri()
     {
         return $this->uri;
     }
     
+    /**
+     * Returns the request user agent
+     * @return string
+     */
     public function getUserAgent()
     {
         return $this->user_agent;
     }
     
+    /**
+     * Returns the HTTP hostname
+     * @return string
+     */
     public function getHttpHost()
     {
         return $this->host;
     }
     
+    /**
+     * Returns whether the request is secure or not
+     * @return boolean
+     */
     public function isSecure()
     {
         return $this->https;

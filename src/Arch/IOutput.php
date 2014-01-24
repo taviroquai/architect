@@ -16,7 +16,7 @@ abstract class IOutput
     /**
      * Returns a new Output Object
      * 
-     * @param string $content The output content
+     * @param string $buffer The output content
      */
     public function __construct($buffer = '')
     {
@@ -26,7 +26,7 @@ abstract class IOutput
     /**
      * Sets the output buffer
      * 
-     * @param string $buffer The content to be sent
+     * @param string $content The content to be sent
      * @return \Arch\Output
      */
     public function setBuffer($content)

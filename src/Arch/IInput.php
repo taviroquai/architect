@@ -148,7 +148,7 @@ abstract class IInput
      * Gets user input action
      * If using command line, will return the first parameter
      * 
-     * @return type
+     * @return string
      */
     public function getAction()
     {
@@ -223,7 +223,6 @@ abstract class IInput
      * Matches are populated in $this->params
      * 
      * @param string $pattern
-     * @param string $action
      * @return boolean
      */
     public function parseActionParams($pattern)
@@ -261,7 +260,8 @@ abstract class IInput
 
     /**
      * Does a primary sanitization
-     * @param string
+     * @param mixed $key The input key
+     * @param int $filter Type of native PHP filter
      */
     public function sanitize($key, $filter = FILTER_SANITIZE_STRING)
     {
