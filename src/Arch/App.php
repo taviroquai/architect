@@ -147,7 +147,7 @@ class App
         
         // update stage
         $this->stage = 'run';
-        $this->logger->log('Starting application', 'access', true);
+        $this->logger->log('Starting application', 'access');
         
         // get user action
         $this->input->parseAction($this->config);

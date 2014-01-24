@@ -158,9 +158,9 @@ function filter($key, $filter = FILTER_SANITIZE_STRING)
  * Use it as <b>r('/', function() { o('Home!'); });</b>
  * 
  * @param string $uri The uri query passed in the browser
- * @param callable $action The callback to be run
+ * @param \Closure $action The callback to be run
  */
-function r($uri, $action)
+function r($uri, \Closure $action)
 {
     $uri = (string) $uri;
     app()->getInput()->getRouter()->addRoute($uri, $action);
