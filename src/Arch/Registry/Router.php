@@ -22,10 +22,10 @@ class Router extends \Arch\IRegistry
      * TODO: pass url params to the action callback
      * 
      * @param string $key The route key
-     * @param mixed $action A callable variable
+     * @param \Closure $action A callable variable
      * @return \Arch\Router
      */
-    public function addRoute($key, $action)
+    public function addRoute($key, \Closure $action)
     {
         if  (!is_string($key) || empty($key)) {
             throw new \Exception('Invalid route key');
@@ -41,14 +41,14 @@ class Router extends \Arch\IRegistry
      * Returns the route action
      * 
      * @param \Arch\IInput $input The application input
-     * @return mixed
+     * @return \Closure
      */
     public function getRouteCallback(\Arch\IInput &$input)
     {
         $result = false;
         foreach ($this->storage as $key => $cb) {
             $params = $input->parseActionParams($key);
-            if ( $params !== false && is_callable($cb)) {
+            if ( $params !== false ) {
                 $result = $cb;
                 break;
             }
