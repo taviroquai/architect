@@ -42,7 +42,10 @@ class Table extends \Arch\DB\ITable
                     throw new \Exception('Invalid update values');
                 }
                 $set = $this->node->set;
-                foreach ($set as $k => &$v) $v = $this->addBackTicks($k).' = ?';
+                foreach ($set as $k => &$v) {
+                    $v = $this->addBackTicks($k).' = ?';
+                }
+                unset($v);
                 $sql .= $this->node->_type.' '.
                     $this->addBackTicks($this->node->table).' SET '.
                     implode(',', $set);
