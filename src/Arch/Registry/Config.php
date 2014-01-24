@@ -39,7 +39,34 @@ class Config extends \Arch\IRegistry
      */
     public function load($filename)
     {    
+        $xml = $this->validate($filename);
+        
         // load configuration
+        foreach ($xml->item as $item) {
+            $this->set((string) $item['name'], (string) $item);
+        }
+        
+        // extra configuration
+        foreach ($this->storage as $key => $value) {
+            switch ($key) {
+                case 'DISPLAY_ERRORS':
+                    ini_set('display_errors', (int) $this->get($key)); break;
+                case 'ERROR_REPORTING':
+                    error_reporting((int) $this->get($key)); break;
+            }
+        }
+        
+        return $this;
+    }
+    
+    /**
+     * Validates user configuration
+     * @param string $filename The XML file with configuration
+     * @return \SimpleXMLElement The XML configuration
+     * @throws \Exception
+     */
+    protected function validate($filename)
+    {
         if (!file_exists($filename)) {
             throw new \Exception('File not found');
         }
@@ -57,20 +84,6 @@ class Config extends \Arch\IRegistry
             }
         }
         
-        foreach ($xml->item as $item) {
-            $this->set((string) $item['name'], (string) $item);
-        }
-        
-        // extra configuration
-        foreach ($this->storage as $key => $value) {
-            switch ($key) {
-                case 'DISPLAY_ERRORS':
-                    ini_set('display_errors', (int) $this->get($key)); break;
-                case 'ERROR_REPORTING':
-                    error_reporting((int) $this->get($key)); break;
-            }
-        }
-        
-        return $this;
+        return $xml;
     }
 }
