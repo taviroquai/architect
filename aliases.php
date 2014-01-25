@@ -295,10 +295,10 @@ function o($content = null)
  * 
  * @param string $string The string to be encrypted
  * @param string $algo The algorithmn to be used for encryption
- * @param string $salt An optional salt
+ * @param string $salt An optional salt, CRYPT_MD5 by default
  * @return string The result encrypted string
  */
-function s($string, $salt = '!Zz$9y#8x%7!')
+function s($string, $salt = '$1$!Z%9y#8x$')
 {
     return crypt($string, $salt);
 }
