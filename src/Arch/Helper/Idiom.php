@@ -37,11 +37,11 @@ class Idiom extends \Arch\IHelper
     
     /**
      * Sets the idiom code
-     * @param idiom $code
+     * @param string|null $code
      */
     public function setCode($code)
     {
-        $this->code = (string) $code;
+        $this->code = $code;
     }
     
     /**
@@ -69,20 +69,19 @@ class Idiom extends \Arch\IHelper
     public function run() {
         
         // resolve idiom code
+        $current_code   = $this->code;
         $input_code     = $this->app->getInput()->get('idiom');
         $session_code   = $this->app->getSession()->get('idiom');
-        $current_code   = $this->code;
         $config_code    = $this->app->getConfig()->get('DEFAULT_IDIOM');
         $default_code   = 'en';
         $list = array(
+            $current_code,
             $input_code,
             $session_code,
-            $current_code,
             $config_code,
             $default_code
         );
         $this->code = current(array_filter($list));
-        
         if (!$this->app->getSession()->get('idiom')) {
             $this->app->getSession()->set('idiom', $this->code);
         }
