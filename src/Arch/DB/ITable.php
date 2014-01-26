@@ -161,7 +161,7 @@ abstract class ITable
      * @param array $params The SQL params
      * @return \PDOStatement
      */
-    public function run($sql = '', $params = null)
+    public function run($sql = '', $params = array())
     {
         return $this->execute($sql, $params);
     }
@@ -370,11 +370,11 @@ abstract class ITable
     /**
      * Executes an SQL query
      * @param string $sql The SQl string. If empty, the SQL will be built
-     * @param array $params The array containing the PDO::PARAM
+     * @param array $params The array containing user params
      * @return PDOStatement
      * @throws PDOException
      */
-    public function execute($sql = '', $params = null)
+    public function execute($sql = '', $params = array())
     {
         try {
             if (empty($sql)) {
@@ -385,36 +385,35 @@ abstract class ITable
             // now we have SQL
             $this->sql = $sql;
             unset($sql);
-
-            // provoke failures
-            $this->driver->getPDO()->setAttribute(
-                \PDO::ATTR_ERRMODE, 
-                \PDO::ERRMODE_EXCEPTION
-            );
             
             // prepare statement
             $this->stm = $this->driver->getPDO()->prepare($this->sql);
             
             // Get PDO params
-            if ($params === null) {    
-                $params = array();
-                if (!empty($this->node->set)) {
-                    $params = array_merge ($params, array_values($this->node->set));
-                } elseif (!empty($this->node->values))
-                    $params = array_merge ($params, $this->node->values);
-                if (!empty($this->node->where)) {
-                    $params = array_merge ($params, $this->node->where);
-                }
+            if (!empty($this->node->set)) {
+                $params = array_merge ($params, array_values($this->node->set));
+            } elseif (!empty($this->node->values)) {
+                $params = array_merge ($params, $this->node->values);
+            }
+            if (!empty($this->node->where)) {
+                $params = array_merge ($params, $this->node->where);
             }
             $this->driver->log('DB query params count: '.count($params));
             
             // build PDO params
-            if (is_array($params) && !empty($params)) {
+            if (!empty($params)) {
                 $this->driver->dbBindParams($this->stm, $params);
             }
             
             // finally execute query
             $this->stm->execute();
+            
+            // log the valid query
+            $this->driver->log('DB query is valid: '.$this->stm->queryString);
+
+            // return PDOStatement for further operations
+            return $this->stm;
+            
         } catch (\PDOException $e) {
             
             // fail if there is no statement
@@ -426,18 +425,12 @@ abstract class ITable
                         $this->stm->queryString, 'error');
                 $this->driver->log('Details: '.$e->getMessage(), 'error');
             }
-            return false;
             
         } catch (\Exception $e) {
             $this->driver->log('Exception: '.$e->getMessage(), 'error');
-            return false;
         }
         
-        // log the valid query
-        $this->driver->log('DB query is valid: '.$this->stm->queryString);
-        
-        // return PDOStatement for further operations
-        return $this->stm;
+        return false;
     }
     
     protected function createSelect()

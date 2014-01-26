@@ -118,10 +118,6 @@ abstract class IDriver
             }
             $sql = file_get_contents($filename);
             
-            $this->getPDO()->setAttribute(
-                \PDO::ATTR_ERRMODE, 
-                \PDO::ERRMODE_EXCEPTION
-            );
             $this->getPDO()->beginTransaction();
             $this->getPDO()->exec($sql);
             $this->getPDO()->commit();
