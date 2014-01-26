@@ -448,33 +448,54 @@ abstract class ITable
     {
         $i = 1;
         foreach ($params as &$v) {
-            
-            // set default PARAM filter
-            $type = \PDO::PARAM_STR;
-            
-            // try to find a match
-            if (is_null($v)) {
-                $type = \PDO::PARAM_INT;
-            } elseif (is_numeric($v)) {
-                if (is_integer($v)) {
-                    $type = \PDO::PARAM_INT;
-                }
-            } elseif (is_bool($v)) {
-                $type = \PDO::PARAM_BOOL;
-            } elseif (is_array( $v ) ) {
-                throw new \Exception("DB bind param $i failed");
-            } elseif (is_object( $v ) ) {
-                if (get_class($v) == 'Closure') {
-                    $v = $v();
-                } elseif (!method_exists( $v, '__toString' )) {
-                    throw new \Exception("DB bind param $i failed");
-                }
-            }
-            
+            $this->validateBindParam($v);
             // bind param
-            $this->stm->bindParam($i, $v, $type);
+            $this->stm->bindParam($i, $v, $this->resolvePDOParamType($v));
             $i++;
         }
+    }
+    
+    /**
+     * Validates user param
+     * @param mixed $v
+     * @throws \Exception
+     */
+    protected function validateBindParam(&$v)
+    {
+        if (is_array( $v ) ) {
+            throw new \Exception("DB bind param $i failed");
+        } elseif (is_object( $v ) ) {
+            if (get_class($v) == 'Closure') {
+                $v = $v();
+            } elseif (!method_exists( $v, '__toString' )) {
+                throw new \Exception("DB bind param $i failed");
+            } else {
+                $v = (string) $v;
+            }
+        }
+    }
+
+    /**
+     * Resolves PDO param type from a variable
+     * @param mixed $v
+     * @return int
+     */
+    protected function resolvePDOParamType($v)
+    {
+        // set default PARAM filter
+        $type = \PDO::PARAM_STR;
+
+        // try to find a match
+        if (is_null($v)) {
+            $type = \PDO::PARAM_INT;
+        } elseif (is_numeric($v)) {
+            if (is_integer($v)) {
+                $type = \PDO::PARAM_INT;
+            }
+        } elseif (is_bool($v)) {
+            $type = \PDO::PARAM_BOOL;
+        }
+        return $type;
     }
     
     protected function createSelect()
