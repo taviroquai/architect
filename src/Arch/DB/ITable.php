@@ -53,7 +53,6 @@ abstract class ITable
      * 
      * @param string $name The tablename
      * @param \Arch\DB\IDriver $driver The PDO database handler to query
-     * @param \Arch\Logger $logger The logs handler
      */
     public function __construct($name, \Arch\DB\IDriver $driver)
     {
@@ -69,7 +68,7 @@ abstract class ITable
      * Select alias
      * Select fields and executes a select operation
      * @param string|array $fields The string or array of fields to be selected
-     * @return \PDOStatement The PDOStatement after execute
+     * @return \Arch\DB\ITable This object
      */
     public function s($fields = '*')
     {
@@ -80,7 +79,7 @@ abstract class ITable
      * Insert alias
      * Set insert values and executes an insert operation
      * @param array $values An associative array containing fields and values
-     * @return \PDOStatement The PDOStatement after execute
+     * @return \Arch\DB\ITable This object
      */
     public function i($values = array())
     {
@@ -91,7 +90,7 @@ abstract class ITable
      * Update alias
      * Set update values and executes an update operation
      * @param array $values An associative array containing fields and values
-     * @return \PDOStatement The PDOStatement after execute
+     * @return \Arch\DB\ITable This object
      */
     public function u($values = array())
     {
@@ -103,7 +102,7 @@ abstract class ITable
      * Executes a delete operation with where condition
      * @param string $condition The string of conditions with placeholders (?)
      * @param array $data The values to be used as params on placeholders
-     * @return \PDOStatement The PDOStatement after execute
+     * @return \Arch\DB\ITable This object
      */
     public function d($condition = '', $data = array())
     {
@@ -115,7 +114,7 @@ abstract class ITable
      * Set string condition and array params
      * @param string $condition The string of conditions with placeholders (?)
      * @param array $data The values to be used as params on placeholders
-     * @return \Table This object
+     * @return \Arch\DB\ITable This object
      */
     public function w($condition, $data = array())
     {
@@ -487,9 +486,9 @@ abstract class ITable
     
     /**
      * Creates a new join node
-     * @param type $tablename The foreign table name
-     * @param type $on The join condition
-     * @param type $type The join type
+     * @param string $tablename The foreign table name
+     * @param string $on The join condition
+     * @param string $type The join type
      * @return \stdClass
      */
     protected function createJoin($tablename, $on, $type = 'LEFT')

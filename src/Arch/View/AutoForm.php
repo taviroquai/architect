@@ -67,7 +67,7 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
             $id = $this->config['record_id'];
             $table = $database->createTable($this->config['table']);
             $this->record = $table->select($this->config['select'])
-                ->joinAuto($database)
+                ->joinAuto()
                 ->where($this->config['table'].'.id = ?', array($id))
                 ->fetch(\PDO::FETCH_ASSOC);
         }
