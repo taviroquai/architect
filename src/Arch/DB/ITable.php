@@ -568,6 +568,70 @@ abstract class ITable
         return (string) implode(',', $items);
     }
     
-    protected abstract function nodeToString();
+    protected function nodeToString()
+    {
+        $fn = 'node'.ucfirst($this->node->_type).'ToString';
+        $sql = $this->$fn();
+        
+        if (!empty($this->node->join)) {
+            foreach ($this->node->join as $item) {
+                $sql .= " {$item->type} JOIN ".$item->sql.' ON '.$item->on;
+            }
+        }
+        if (!empty($this->node->condition)) {
+            $sql .= ' WHERE '.$this->node->condition;
+        }
+        if (!empty($this->node->groupby)) {
+            $sql .= ' GROUP BY '.$this->node->groupby;
+        }
+        if (!empty($this->node->limit)) {
+            $sql .= ' LIMIT '.$this->node->limit.' OFFSET '.$this->node->offset;
+        }
+        return $sql;
+    }
+    
+    protected function nodeSelectToString()
+    {
+        return $this->node->_type.' '.
+            $this->addBackTicks($this->node->fields, true).
+            ' FROM '.
+            $this->addBackTicks($this->node->from);
+    }
+    
+    protected function nodeInsertToString()
+    {
+        if (count($this->node->values) == 0) {
+            throw new \Exception('Invalid insert values');
+        }
+        return $this->node->_type.
+            ' INTO '.
+            $this->addBackTicks($this->node->table).
+            ' ('.
+            $this->addBackTicks($this->node->fields).
+            ') VALUES ('.
+            implode(',', array_fill(0, count($this->node->values), '?')).
+            ')';
+    }
+    
+    protected function nodeUpdateToString()
+    {
+        if (count($this->node->set) == 0) {
+            throw new \Exception('Invalid update values');
+        }
+        $set = $this->node->set;
+        foreach ($set as $k => &$v) {
+            $v = $this->addBackTicks($k).' = ?';
+        }
+        unset($v);
+        return $this->node->_type.' '.
+            $this->addBackTicks($this->node->table).' SET '.
+            implode(',', $set);
+    }
+    
+    protected function nodeDeleteToString()
+    {
+        return $this->node->_type.' FROM '.
+            $this->addBackTicks($this->node->table);
+    }
 
 }
