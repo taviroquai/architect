@@ -31,6 +31,10 @@ class AntiSpam extends \Arch\Registry\View
         $this->template = $tmpl;
     }
     
+    /**
+     * Sets the session handler to store the secret code
+     * @param \Arch\Registry\ISession $session
+     */
     public function setSession(\Arch\Registry\ISession $session)
     {
         $this->session = $session;

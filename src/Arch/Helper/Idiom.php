@@ -9,29 +9,63 @@ namespace Arch\Helper;
  */
 class Idiom extends \Arch\IHelper
 {
+    /**
+     * Holds the idiom 2-digit code 
+     * @var string
+     */
     protected $code;
+    
+    /**
+     * Holds the name of the file that holds the translations
+     * @var string
+     */
     protected $name;
+    
+    /**
+     * Tells from which module the idiom file should be looked up
+     * @var string
+     */
     protected $module;
     
+    /**
+     * Returns a new idiiom helper
+     * @param \Arch\App $app
+     */
     public function __construct(\Arch\App &$app) {
         parent::__construct($app);
     }
     
+    /**
+     * Sets the idiom code
+     * @param idiom $code
+     */
     public function setCode($code)
     {
-        $this->code = $code;
+        $this->code = (string) $code;
     }
     
+    /**
+     * Sets the translation file name
+     * @param string $name
+     */
     public function setName($name)
     {
-        $this->name = $name;
+        $this->name = (string) $name;
     }
     
+    /**
+     * Sets the module that holds the trabslation file
+     * @param string $module
+     */
     public function setModule($module)
     {
-        $this->module = $module;
+        $this->module = (string) $module;
     }
 
+    /**
+     * Returns a new idiom used to translate strings
+     * @return \Arch\Registry\Idiom
+     */
     public function run() {
         
         // resolve idiom code

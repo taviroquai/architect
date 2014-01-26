@@ -9,26 +9,38 @@ namespace Arch\Helper;
  */
 class Redirect extends \Arch\IHelper
 {
+    /**
+     * Holds the URL to redirect to
+     * @var string
+     */
     protected $url;
     
+    /**
+     * Returns a new Redirect helper
+     * @param \Arch\App $app
+     */
     public function __construct(\Arch\App &$app) {
         parent::__construct($app);
+        $this->url = (string) $this->app->getHelperFactory()->createURL('/');
     }
     
+    /**
+     * Sets the URL to redirect to
+     * @param string $url
+     */
     public function setUrl($url)
     {
-        $this->url = $url;
+        $this->url = (string) $url;
     }
 
+    /**
+     * Creates and sends new HTTP output with location header
+     */
     public function run() {
         $helper = $this->app->getHelperFactory();
         $input = $this->app->getInput();
         $url = $helper->createURL($input->getAction())->run();
         if ($url !== $this->url) {
-            if (empty($this->url)) {
-                $this->url = $this->app->getHelperFactory()
-                        ->createURL('/')->run();
-            }
             $output = new \Arch\Output\HTTP();
             $output->setHeaders(array('Location: '.$this->url));
             $output->send();

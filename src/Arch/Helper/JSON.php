@@ -15,15 +15,26 @@ class JSON extends \Arch\IHelper
      */
     protected $data = array();
     
+    /**
+     * Returns a new JSON helper
+     * @param \Arch\App $app
+     */
     public function __construct(\Arch\App &$app) {
         parent::__construct($app);
     }
     
+    /**
+     * Sets the data to be encoded
+     * @param array $data
+     */
     public function setData($data)
     {
-        $this->data = $data;
+        $this->data = (array) $data;
     }
     
+    /**
+     * Sends the output and saves session
+     */
     public function send()
     {
         $this->run();
@@ -33,6 +44,10 @@ class JSON extends \Arch\IHelper
         $this->app->getLogger()->close();
     }
 
+    /**
+     * Returns the output object
+     * @return \Arch\IOutput
+     */
     public function run() {
         $factory = new \Arch\Factory\Output();
         $output = $factory->create(\Arch::TYPE_OUTPUT_JSON);
