@@ -124,47 +124,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $result = new \Arch\DB\MySql\Table('test_table1', $driver);
         $this->assertInstanceOf('\Arch\DB\MySql\Table', $result);
     }
-    
-    /**
-     * Test fail install
-     * @dataProvider providerConnection
-     * @param \Arch\DB\IDriver $driver
-     * @param string $database
-     * @param string $host
-     * @param string $user
-     * @param string $pass
-     * @param \Arch\ILogger $logger
-     */
-    public function testFailInstall($driver, $database, $host, $user, $pass, $logger)
-    {
-        $driver->connect($host, $database, $user, $pass);
-        $driver->setLogger($logger);
-        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
-        $result = $table->install(RESOURCE_PATH.'not_found');
-        $this->assertFalse($result);
-        $result = $table->install(RESOURCE_PATH.'db/fail.sql');
-        $this->assertFalse($result);
-    }
-    
-    /**
-     * Test install
-     * @dataProvider providerConnection
-     * @param \Arch\DB\IDriver $driver
-     * @param string $database
-     * @param string $host
-     * @param string $user
-     * @param string $pass
-     * @param \Arch\ILogger $logger
-     */
-    public function testInstall($driver, $database, $host, $user, $pass, $logger)
-    {
-        $driver->connect($host, $database, $user, $pass);
-        $driver->setLogger($logger);
-        $table = new \Arch\DB\MySql\Table('test_table1', $driver);
-        $result = $table->install(RESOURCE_PATH.'db/install.sql');
-        $this->assertTrue($result);
-    }
-    
+        
     /**
      * Test fail execute statement
      * @dataProvider providerConnection

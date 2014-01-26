@@ -101,6 +101,40 @@ abstract class IDriver
             $this->getLogger()->log($msg, $label);
         }
     }
+    
+    /**
+     * Runs an SQL file
+     * This should be used by modules to install their database structure
+     * 
+     * @param string $filename
+     * @throws Exception
+     */
+    public function install($filename)
+    {
+        try {
+            
+            if (!file_exists($filename)) {
+                throw new \Exception('SQL file not found: '.$filename);
+            }
+            $sql = file_get_contents($filename);
+            
+            $this->getPDO()->setAttribute(
+                \PDO::ATTR_ERRMODE, 
+                \PDO::ERRMODE_EXCEPTION
+            );
+            $this->getPDO()->beginTransaction();
+            $this->getPDO()->exec($sql);
+            $this->getPDO()->commit();
+            return true;
+            
+        } catch (\PDOException $e) {
+            $this->getPDO()->rollBack();
+            $this->getLogger()->log('PDO Exception: '.$e->getMessage(), 'error');
+        } catch (\Exception $e) {
+            $this->getLogger()->log('Exception: '.$e->getMessage(), 'error');
+        }
+        return false;
+    }
 
     /**
      * Returns a Data Source Name

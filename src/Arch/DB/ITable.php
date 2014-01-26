@@ -439,41 +439,7 @@ abstract class ITable
         // return PDOStatement for further operations
         return $this->stm;
     }
-    
-    /**
-     * Runs an SQL file
-     * This should be used by modules to install their database structure
-     * 
-     * @param string $filename
-     * @throws Exception
-     */
-    public function install($filename)
-    {
-        try {
-            
-            if (!file_exists($filename)) {
-                throw new \Exception('SQL file not found: '.$filename);
-            }
-            $sql = file_get_contents($filename);
-            
-            $this->driver->getPDO()->setAttribute(
-                \PDO::ATTR_ERRMODE, 
-                \PDO::ERRMODE_EXCEPTION
-            );
-            $this->driver->getPDO()->beginTransaction();
-            $this->driver->getPDO()->exec($sql);
-            $this->driver->getPDO()->commit();
-            return true;
-            
-        } catch (\PDOException $e) {
-            $this->driver->getPDO()->rollBack();
-            $this->driver->log('PDO Exception: '.$e->getMessage(), 'error');
-        } catch (\Exception $e) {
-            $this->driver->log('Exception: '.$e->getMessage(), 'error');
-        }
-        return false;
-    }
-    
+        
     /**
      * Bind PDO params filtered by type
      * @param array $params

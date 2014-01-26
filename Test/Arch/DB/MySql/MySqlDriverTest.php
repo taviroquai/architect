@@ -161,4 +161,41 @@ class MySqlDriverTest extends \PHPUnit_Framework_TestCase
         $result = $driver->getRelationColumn('test_nmrelation', 'test_table1');
         $this->assertInternalType('string', $result);
     }
+    
+    /**
+     * Test fail install
+     * @dataProvider providerDriver
+     * @param \Arch\DB\IDriver $driver
+     * @param string $database
+     * @param string $host
+     * @param string $user
+     * @param string $pass
+     */
+    public function testFailInstall($driver, $database, $host, $user, $pass)
+    {
+        $driver->connect($host, $database, $user, $pass);
+        $driver->setLogger(new \Arch\Logger\File());
+        $result = $driver->install(RESOURCE_PATH.'not_found');
+        $this->assertFalse($result);
+        $result = $driver->install(RESOURCE_PATH.'db/fail.sql');
+        $this->assertFalse($result);
+    }
+    
+    /**
+     * Test install
+     * @dataProvider providerDriver
+     * @param \Arch\DB\IDriver $driver
+     * @param string $database
+     * @param string $host
+     * @param string $user
+     * @param string $pass
+     */
+    public function testInstall($driver, $database, $host, $user, $pass)
+    {
+        $driver->connect($host, $database, $user, $pass);
+        $driver->setLogger(new \Arch\Logger\File());
+        $result = $driver->install(RESOURCE_PATH.'db/install.sql');
+        $this->assertTrue($result);
+    }
+
 }
