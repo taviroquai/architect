@@ -23,6 +23,7 @@ class Breadcrumbs extends \Arch\Registry\View
     
     /**
      * Parse items from input action
+     * @param \Arch\App $app The application instance
      */
     public function parseAction(\Arch\App $app)
     {
@@ -50,7 +51,7 @@ class Breadcrumbs extends \Arch\Registry\View
      * Add item
      * @param string $text
      * @param string $url
-     * @param string $active
+     * @param int $active
      */
     public function addItem($text, $url = '#', $active = 0)
     {

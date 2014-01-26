@@ -9,7 +9,7 @@ class IsAlphaNumeric extends \Arch\IRule
 {    
     /**
      * Execute isAlphaNumeric
-     * @return \Arch\IRule\IsAlphaNumeric
+     * @return \Arch\Rule\IsAlphaNumeric
      */
     public function run()
     {

@@ -23,7 +23,7 @@ class Router extends \Arch\IRegistry
      * 
      * @param string $key The route key
      * @param \Closure $action A callable variable
-     * @return \Arch\Router
+     * @return \Arch\Registry\Router
      */
     public function addRoute($key, \Closure $action)
     {

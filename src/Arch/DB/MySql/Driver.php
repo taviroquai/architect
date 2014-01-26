@@ -61,7 +61,7 @@ class Driver extends \Arch\DB\IDriver
      * Returns a new table
      * 
      * @param string $tablename The table name
-     * @return \Arch\Table
+     * @return \Arch\DB\MySql\Table
      */
     public function createTable($tablename)
     {

@@ -162,7 +162,7 @@ class GenericView extends \Arch\IFactory
      * You should use your own template. Copy the default template from
      * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory
      * 
-     * @return \Arch\View
+     * @return \Arch\View\AntiSpam
      */
     public function createAntiSpam()
     {
@@ -178,7 +178,6 @@ class GenericView extends \Arch\IFactory
      * You should use your own template. Copy the default template from
      * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory
      * 
-     * @param boolena $parseInput Tells to insert items from input
      * @return \Arch\View\Breadcrumbs
      */
     public function createBreadcrumbs()
@@ -213,7 +212,6 @@ class GenericView extends \Arch\IFactory
      * You should use your own template. Copy the default template from
      * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory
      * 
-     * @param string $tmpl The template file path
      * @return \Arch\View\CommentForm
      */
     public function createCommentForm()
@@ -265,7 +263,6 @@ class GenericView extends \Arch\IFactory
      * You should use your own template. Copy the default template from
      * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory
      * 
-     * @param string $tmpl The chart template file path
      * @return \Arch\View\LineChart
      */
     public function createLineChart()
@@ -295,7 +292,6 @@ class GenericView extends \Arch\IFactory
      * You should use your own template. Copy the default template from
      * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory
      * 
-     * @param string $tmpl The template for the tree
      * @return \Arch\View\TreeView
      */
     public function createTreeView()
@@ -309,7 +305,6 @@ class GenericView extends \Arch\IFactory
      * You should use your own template. Copy the default template from
      * <b>vendor/taviroquai/architectphp/theme/</b> to your module directory
      * 
-     * @param string $path The base path to be explored
      * @return \Arch\View\FileExplorer
      */
     public function createFileExplorer()
@@ -374,7 +369,7 @@ class GenericView extends \Arch\IFactory
     
     /**
      * Returns a new automatic table
-     * @return \Arch\View\AutoPanel\AutoTable
+     * @return \Arch\View\AutoTable
      */
     public function createAutoTable()
     {
@@ -383,7 +378,7 @@ class GenericView extends \Arch\IFactory
     
     /**
      * Returns a new automatic form
-     * @return \Arch\View\AutoPanel\AutoForm
+     * @return \Arch\View\AutoForm
      */
     public function createAutoForm()
     {

@@ -9,7 +9,7 @@ class Equals extends \Arch\IRule
 {
     /**
      * Execute equals
-     * @return \Arch\IRule\Equals
+     * @return \Arch\Rule\Equals
      */
     public function run()
     {

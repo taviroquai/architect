@@ -89,7 +89,7 @@ implements \Arch\IMessenger
      * Creates a new message
      * @param string $text The message body
      * @param string $cssClass The css class to be used in theme
-     * @return \Arch\App The application
+     * @return \Arch\Registry\ISession The application
      */
     public function createMessage($text, $cssClass = 'alert alert-success')
     {

@@ -67,7 +67,7 @@ class Image {
     
     /**
      * Creates an image resource
-     * @param int $thumbSize
+     * @param int $size
      * @return resource
      */
     public function createThumb($size = 60)

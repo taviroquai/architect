@@ -39,7 +39,7 @@ class Events extends \Arch\IRegistry {
      * 
      * @param string $eventName The event name
      * @param mixed $target An optional target variable
-     * @return \Arch\App The application
+     * @return \Arch\Registry\Events
      */
     public function triggerEvent($eventName, $target = null)
     {

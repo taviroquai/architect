@@ -27,7 +27,7 @@ abstract class IOutput
      * Sets the output buffer
      * 
      * @param string $content The content to be sent
-     * @return \Arch\Output
+     * @return \Arch\IOutput
      */
     public function setBuffer($content)
     {
@@ -52,7 +52,7 @@ abstract class IOutput
     
     /**
      * Sets HTTP headers to be used on HTTP type
-     * @param array $headers The list of headers to be sent
+     * @param string[] $headers The list of headers to be sent
      * @return \Arch\Output
      */
     public abstract function setHeaders($headers);

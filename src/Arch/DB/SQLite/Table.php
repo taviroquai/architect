@@ -11,7 +11,7 @@ class Table extends \Arch\DB\ITable
 {    
     /**
      * Joins the relations got from database driver (if any)
-     * @return \Arch\Table
+     * @return \Arch\DB\SQLite\Table
      */
     public function joinAuto()
     {

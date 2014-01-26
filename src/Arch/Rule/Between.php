@@ -9,7 +9,7 @@ class Between extends \Arch\IRule
 {        
     /**
      * Execute between
-     * @return \Arch\IRule\Between
+     * @return \Arch\Rule\Between
      */
     public function run()
     {

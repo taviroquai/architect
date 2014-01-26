@@ -9,7 +9,7 @@ class Before extends \Arch\IRule
 {    
     /**
      * Execute before
-     * @return \Arch\IRule\Before
+     * @return \Arch\Rule\Before
      */
     public function run()
     {

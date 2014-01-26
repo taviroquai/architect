@@ -21,9 +21,8 @@ class Carousel extends \Arch\Registry\View
     
     /**
      * Adds an item to the carousel (html)
-     * @param string $text The item text
-     * @param string $url The item url
-     * @param string $active Tells whether is the first slide or not
+     * @param string $html The item html
+     * @param int $active Tells whether is the first slide or not
      */
     public function addItem($html, $active = 0)
     {

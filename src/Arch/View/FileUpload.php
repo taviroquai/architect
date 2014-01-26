@@ -37,7 +37,7 @@ class FileUpload extends \Arch\Registry\View
      * @param string $targetDir Full target directory
      * @param string $newName New name to the uploaded file
      * @param boolean $is_upload Tells whether thi file was uploaded
-     * @return boolean|string
+     * @return string|false
      */
     public function upload($file, $targetDir, $newName = '', $is_upload = true)
     {

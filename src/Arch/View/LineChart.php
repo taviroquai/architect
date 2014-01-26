@@ -9,7 +9,6 @@ class LineChart extends \Arch\Registry\View
 {
     /**
      * Returns a new line chart view
-     * @param string $tmpl The template file
      */
     public function __construct()
     {

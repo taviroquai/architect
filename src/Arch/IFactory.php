@@ -25,6 +25,7 @@ abstract class IFactory
     
     /**
      * Returns a new factory object
+     * @param string|int A type of object
      */
     protected abstract function fabricate($type);
 }

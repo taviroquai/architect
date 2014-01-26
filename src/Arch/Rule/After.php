@@ -9,7 +9,7 @@ class After extends \Arch\IRule
 {
     /**
      * Execute after
-     * @return \Arch\IRule\After
+     * @return \Arch\Rule\After
      */
     public function run()
     {

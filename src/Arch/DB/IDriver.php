@@ -88,13 +88,18 @@ abstract class IDriver
     
     /**
      * Sets the query logger
-     * @param \Arch\Logger $logger
+     * @param \Arch\ILogger $logger
      */
     public function setLogger(\Arch\ILogger $logger)
     {
         $this->logger = $logger;
     }
     
+    /**
+     * Sends a message to the logger
+     * @param string $msg The message text
+     * @param string $label The message type
+     */
     public function log($msg, $label = 'access')
     {
         if ($this->getLogger()) {
@@ -195,6 +200,8 @@ abstract class IDriver
      * Returns a Data Source Name
      * @param string $host The hostname
      * @param string $database The database name
+     * @param string $user The user to authenticate
+     * @param string $pass The password used in authentication
      * @return string
      */
     public abstract function getDSN($host, $database, $user, $pass = '');
@@ -203,7 +210,7 @@ abstract class IDriver
      * Returns a new table
      * 
      * @param string $tablename The table name
-     * @return \Arch\DB\Table
+     * @return \Arch\DB\ITable
      */
     public abstract function createTable($tablename);
 

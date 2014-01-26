@@ -28,7 +28,7 @@ abstract class ITheme extends \Arch\Registry\View
      * Calls a slot using a template callback
      * 
      * @param string $slotName The slot name
-     * @param function $template The slot template
+     * @param \Closure $template The slot template
      * @return \Arch\ITheme
      */
     function render($slotName, \Closure $template)

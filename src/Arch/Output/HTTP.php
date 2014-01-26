@@ -15,8 +15,8 @@ class HTTP extends \Arch\IOutput
     
     /**
      * Sets HTTP headers to be used on HTTP type
-     * @param array $headers The list of headers to be sent
-     * @return \Arch\Output
+     * @param string[] $headers The list of headers to be sent
+     * @return \Arch\Output\HTTP
      */
     public function setHeaders($headers)
     {

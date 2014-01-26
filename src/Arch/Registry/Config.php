@@ -35,7 +35,7 @@ class Config extends \Arch\IRegistry
     /**
      * Loads configuration from a filename
      * @param string $filename The filename with xml configuration
-     * @return \Arch\Config
+     * @return \Arch\Registry\Config
      */
     public function load($filename)
     {    

@@ -34,7 +34,7 @@ class View extends \Arch\IRegistry
     /**
      * Returns a new view
      * 
-     * @param mixed $content The template, view or content
+     * @param mixed $template The template, view or content
      * @param array $data The user data
      */
     public function __construct($template = '', array $data = array())
@@ -59,7 +59,7 @@ class View extends \Arch\IRegistry
     /**
      * Sets the path template that will be used
      * @param string $template The template file
-     * @return \View
+     * @return \Arch\Registry\View
      */
     public function setTemplate($template)
     {
@@ -69,7 +69,7 @@ class View extends \Arch\IRegistry
     
     /**
      * Hides the view
-     * @return \View
+     * @return \Arch\Registry\View
      */
     public function hide()
     {
@@ -79,7 +79,7 @@ class View extends \Arch\IRegistry
     
     /**
      * Shows the view
-     * @return \View
+     * @return \Arch\Registry\View
      */
     public function show()
     {

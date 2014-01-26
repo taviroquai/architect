@@ -219,7 +219,7 @@ function f($index)
  * Returns a HTTP param (from $_GET or $_POST)
  * 
  * @param string $param The name of the $_GET param
- * @return boolean|mixed Returns all params or the param value or false
+ * @return string|false Returns all params or the param value or false
  */
 function i($param = null)
 {
@@ -230,7 +230,7 @@ function i($param = null)
  * Alias to create layout - a view with layout slots
  * @param string $tmpl The template file
  * @param array $data The associative data array
- * @return \Arch\View
+ * @return \Arch\Theme\Layout
  */
 function l($tmpl, $data = array())
 {
@@ -265,7 +265,7 @@ function m($text, $cssClass = 'alert alert-success')
  * <b>q('tablename')->select()->fetchAll()</b>
  * 
  * @param string $tableName The name of the relational database table
- * @return \Arch\Table The table to start querying
+ * @return \Arch\DB\ITable The table to start querying
  */
 function q($tableName)
 {
@@ -283,7 +283,7 @@ function q($tableName)
  * <b>o('Hello World!');</b>
  * 
  * @param mixed $content The content to be sent
- * @return \Arch\Output The output object
+ * @return \Arch\IOutput The output object
  */
 function o($content = null)
 {
@@ -308,7 +308,7 @@ function s($string, $salt = '$1$!Z%9y#8x$')
  * 
  * @param string $eventName The event name
  * @param mixed $target An optional object to be passed
- * @return \Arch\App The application singleton
+ * @return \Arch\Registry\Events The application singleton
  */
 function tr($eventName, $target = null)
 {
@@ -331,7 +331,7 @@ function u($path, $params = array())
  * Alias to create a view
  * @param string $tmpl The template file
  * @param array $data The associative data array
- * @return \Arch\View
+ * @return \Arch\Registry\View
  */
 function v($tmpl, $data = array())
 {

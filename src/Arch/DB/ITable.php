@@ -52,7 +52,7 @@ abstract class ITable
      * For more complex queries, use PDO directly
      * 
      * @param string $name The tablename
-     * @param \Arch\DB\Driver $driver The PDO database handler to query
+     * @param \Arch\DB\IDriver $driver The PDO database handler to query
      * @param \Arch\Logger $logger The logs handler
      */
     public function __construct($name, \Arch\DB\IDriver $driver)
@@ -127,7 +127,7 @@ abstract class ITable
      * @param string $tablename The tablename to join
      * @param string $on The join condition
      * @param string $type The join type (LEFT, INNER, RIGHT, empty)
-     * @return \Arch\Table Thisobject
+     * @return \Arch\DB\ITable This object
      */
     public function j($tablename, $on, $type = 'LEFT') {
         return $this->join($tablename, $on, $type);
@@ -138,7 +138,7 @@ abstract class ITable
      * Set limit and offset
      * @param integer $limit The limit, an integer
      * @param integer $offset The offset, an integer
-     * @return \Table
+     * @return \Arch\DB\ITable
      */
     public function l($limit = null, $offset = 0)
     {
@@ -148,7 +148,7 @@ abstract class ITable
     /**
      * Set group by fields
      * @param string $groupby The list of fields to group
-     * @return \Arch\Table This object
+     * @return \Arch\DB\ITable This object
      */
     public function g($groupby)
     {
@@ -258,7 +258,7 @@ abstract class ITable
     /**
      * Select fields and executes a select operation
      * @param string|array $fields The string or array of fields to be selected
-     * @return \Table This object
+     * @return \Arch\DB\ITable This object
      */
     public function select($fields = '*')
     {
@@ -285,7 +285,7 @@ abstract class ITable
     /**
      * Set update values (associative array) and executes an update operation
      * @param array $values An associative array containing fields and values
-     * @return \Table This object
+     * @return \Arch\DB\ITable This object
      */
     public function update($values = array())
     {
@@ -299,7 +299,7 @@ abstract class ITable
      * Executes a delete operation with where condition
      * @param string $condition The string of conditions with placeholders (?)
      * @param array $data The values to be used as params on placeholders
-     * @return \Table This object
+     * @return \Arch\DB\ITable This object
      */
     public function delete($condition = '', $data = array())
     {
@@ -312,7 +312,7 @@ abstract class ITable
      * Set string condition and array params
      * @param string $condition The string of conditions with placeholders (?)
      * @param array $data The values to be used as params on placeholders
-     * @return \Table This object
+     * @return \Arch\DB\ITable This object
      */
     public function where($condition = '', $data = array())
     {
@@ -328,7 +328,7 @@ abstract class ITable
      * @param string $tablename The tablename to join
      * @param string $on The join condition
      * @param string $type The join type (LEFT, INNER, RIGHT, empty)
-     * @return \Arch\Table Thisobject
+     * @return \Arch\DB\ITable This object
      */
     public function join($tablename, $on, $type = 'LEFT')
     {
@@ -339,7 +339,7 @@ abstract class ITable
     
     /**
      * Joins the relations got from database driver (if any)
-     * @return \Arch\Table
+     * @return \Arch\DB\ITable
      */
     public abstract function joinAuto();
     
@@ -347,7 +347,7 @@ abstract class ITable
      * Set limit and offset
      * @param integer $limit The limit, an integer
      * @param integer $offset The offset, an integer
-     * @return \Table This object
+     * @return \Arch\DB\ITable This object
      */
     public function limit($limit = null, $offset = 0)
     {
@@ -359,7 +359,7 @@ abstract class ITable
     /**
      * Set group by fields
      * @param string $groupby The list of fields to group
-     * @return \Arch\Table This object
+     * @return \Arch\DB\ITable This object
      */
     public function groupby($groupby)
     {
@@ -433,6 +433,10 @@ abstract class ITable
         return false;
     }
     
+    /**
+     * Creates a new select node
+     * @return \stdClass
+     */
     protected function createSelect()
     {
         $node = new \stdClass();
@@ -442,6 +446,10 @@ abstract class ITable
         return $node;
     }
     
+    /**
+     * Creates a new insert node
+     * @return \stdClass
+     */
     protected function createInsert()
     {
         $node = new \stdClass();
@@ -452,6 +460,10 @@ abstract class ITable
         return $node;
     }
     
+    /**
+     * Creates a new update node
+     * @return \stdClass
+     */
     protected function createUpdate()
     {
         $node = new \stdClass();
@@ -461,6 +473,10 @@ abstract class ITable
         return $node;
     }
     
+    /**
+     * Creates a new delete node
+     * @return \stdClass
+     */
     protected function createDelete()
     {
         $node = new \stdClass();
@@ -469,6 +485,13 @@ abstract class ITable
         return $node;
     }
     
+    /**
+     * Creates a new join node
+     * @param type $tablename The foreign table name
+     * @param type $on The join condition
+     * @param type $type The join type
+     * @return \stdClass
+     */
     protected function createJoin($tablename, $on, $type = 'LEFT')
     {
         $node = new \stdClass();

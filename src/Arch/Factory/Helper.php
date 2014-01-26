@@ -51,7 +51,7 @@ class Helper extends \Arch\IFactory
     
     /**
      * Returns a new input validator
-     * @return \Arch\Validator
+     * @return \Arch\Helper\Validator
      */
     public function createValidator()
     {
@@ -64,6 +64,8 @@ class Helper extends \Arch\IFactory
      * Helps to get translations from idiom files (.xml)
      * 
      * @param string $code The ISO code
+     * @param string $name The idiom file name
+     * @param string $module A module name to resolve idiom file path
      * @return \Arch\Helper\Idiom The idiom object
      */
     public function createIdiom(
@@ -103,7 +105,6 @@ class Helper extends \Arch\IFactory
      * <b>r(u('/demo'))</b>.
      * 
      * @param string $url The URL to redirect to
-     * @param boolean $now If true, just exit, do not proceed to the next stage
      * @return \Arch\Helper\Redirect
      */
     public function createRedirect($url = null)
@@ -118,7 +119,7 @@ class Helper extends \Arch\IFactory
      * 
      * You can also use it as <b>j(array('hello' => 'world'))</b>.
      * 
-     * @param array $data
+     * @param array $data The data to be encoded
      * @return \Arch\Helper\JSON
      */
     public function createJSON($data) {

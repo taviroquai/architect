@@ -9,7 +9,7 @@ class IsDate extends \Arch\IRule
 {    
     /**
      * Execute isDate
-     * @return \Arch\IRule\IsDate
+     * @return \Arch\Rule\IsDate
      */
     public function run()
     {

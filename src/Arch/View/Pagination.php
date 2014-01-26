@@ -67,7 +67,6 @@ class Pagination extends \Arch\Registry\View
 
         /**
      * Parses input and sets the current page and url
-     * @param \Arch\IInput $input The application input
      */
     public function parseCurrent()
     {

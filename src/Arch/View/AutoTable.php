@@ -117,7 +117,7 @@ class AutoTable extends \Arch\Theme\Layout\AutoPanel
      * Returns a new table cell with record property value
      * @param array $config The configuration
      * @param array $record The record
-     * @return \Arch\View
+     * @return \Arch\Registry\View
      */
     protected function createCellValue($config, $record)
     {

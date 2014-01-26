@@ -9,7 +9,7 @@ class Depends extends \Arch\IRule
 {    
     /**
      * Execute depends
-     * @return \Arch\IRule\Depends
+     * @return \Arch\Rule\Depends
      */
     public function run()
     {

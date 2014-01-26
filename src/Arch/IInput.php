@@ -260,7 +260,7 @@ abstract class IInput
 
     /**
      * Does a primary sanitization
-     * @param mixed $key The input key
+     * @param string|int $key The input key
      * @param int $filter Type of native PHP filter
      */
     public function sanitize($key, $filter = FILTER_SANITIZE_STRING)

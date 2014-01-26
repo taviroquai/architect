@@ -9,7 +9,7 @@ class IsAlphaExcept extends \Arch\IRule
 {    
     /**
      * Execute isAlphaExcept
-     * @return \Arch\IRule\IsAlphaExcept
+     * @return \Arch\Rule\IsAlphaExcept
      */
     public function run()
     {
