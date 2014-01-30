@@ -21,7 +21,7 @@ class Redirect extends \Arch\IHelper
      */
     public function __construct(\Arch\App &$app) {
         parent::__construct($app);
-        $this->url = (string) $this->app->getHelperFactory()->createURL('/');
+        $this->setUrl((string) $this->app->getHelperFactory()->createURL('/'));
     }
     
     /**
@@ -30,7 +30,9 @@ class Redirect extends \Arch\IHelper
      */
     public function setUrl($url)
     {
-        $this->url = (string) $url;
+        if (filter_var($url, FILTER_VALIDATE_URL)) {
+            $this->url = (string) $url;
+        }
     }
 
     /**
