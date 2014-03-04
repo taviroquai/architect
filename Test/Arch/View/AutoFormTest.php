@@ -17,17 +17,6 @@ class AutoFormTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Test fail set database
-     * @expectedException \Exception
-     */
-    public function testFailSetDatabase()
-    {
-        $database = new \Arch\DB\MySql\Driver();
-        $view = new \Arch\View\AutoForm();
-        $view->setDatabaseDriver($database);
-    }
-    
-    /**
      * Test to string
      */
     public function testToString()
@@ -69,8 +58,7 @@ class AutoFormTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $view->setConfig($config);
-        $view->setDatabaseDriver($db);
+        $view->configure($config, $db);
         $this->assertInternalType('string', (string) $view);
         
         $view = new \Arch\View\AutoForm();
@@ -86,8 +74,7 @@ class AutoFormTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $view->setConfig($config);
-        $view->setDatabaseDriver($db);
+        $view->configure($config, $db);
         $this->assertInternalType('string', (string) $view);
     }
 }

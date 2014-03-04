@@ -248,8 +248,7 @@ changing the core system. These are:
         )
     );
     $v = view()->createAutoTable(); // returns an html table view
-    $v->setConfig($config);
-    $v->setDatabaseDriver($db);
+    $v->configure($config, $db);
     $v->setPagination($pagination);
 
 ### AUTO FORM VIEW
@@ -267,8 +266,7 @@ changing the core system. These are:
         )
     );
     $v = view()->createAutoForm(); // returns an html form view
-    $v->setConfig($config);
-    $v->setDatabaseDriver($db);
+    $v->configure($config, $db);
 
 ROAD MAP (TODO)
 ===============

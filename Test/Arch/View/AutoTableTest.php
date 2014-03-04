@@ -27,44 +27,10 @@ class AutoTableTest extends \PHPUnit_Framework_TestCase
             'table' => 'test_table1',
             'select' => 'test_table1.*'
         );
-        $view->setConfig($config);
-    }
-    
-    /**
-     * Test fail set database
-     * @expectedException \Exception
-     */
-    public function testFailSetDatabase()
-    {
-        $database = new \Arch\DB\MySql\Driver();
-        $view = new \Arch\View\AutoTable();
-        $view->setDatabaseDriver($database);
-    }
-    
-    /**
-     * Test fail set pagination
-     * @expectedException \Exception
-     */
-    public function testFailSetPaginationNoConfig()
-    {
-        $view = new \Arch\View\AutoTable();
-        $view->setPagination(new \Arch\View\Pagination());
-    }
-    
-    /**
-     * Test fail set pagination
-     * @expectedException \Exception
-     */
-    public function testFailSetPaginationNoDatabase()
-    {
-        $view = new \Arch\View\AutoTable();
-        $config = array(
-            'table'     => 'test_table2',
-            'select'    => 'test_table2.*',
-            'columns'       => array()
-        );
-        $view->setConfig($config);
-        $view->setPagination(new \Arch\View\Pagination());
+        
+        $db = new \Arch\DB\MySql\Driver();
+        $db->connect(DB_HOST, DB_DATABASE, DB_USER, DB_PASS);
+        $view->configure($config, $db);
     }
     
     /**
@@ -88,10 +54,9 @@ class AutoTableTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $view->setConfig($config);
         $db = new \Arch\DB\MySql\Driver();
         $db->connect(DB_HOST, DB_DATABASE, DB_USER, DB_PASS);
-        $view->setDatabaseDriver($db);
+        $view->configure($config, $db);
         $pagination = new \Arch\View\Pagination();
         $pagination->setLimit(10);
         $view->setPagination($pagination);

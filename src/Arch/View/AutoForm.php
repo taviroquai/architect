@@ -48,7 +48,7 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
      * The form configuration - associative array
      * @param array $config
      */
-    public function setConfig($config) {
+    protected function setConfig($config) {
         parent::setConfig($config);
         $this->config['action'] = empty($this->config['action']) ? '' 
                 : $this->config['action'];
@@ -58,7 +58,7 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
      * The form database driver
      * @param \Arch\DB\IDriver $database
      */
-    public function setDatabaseDriver(\Arch\DB\IDriver $database) {
+    protected function setDatabaseDriver(\Arch\DB\IDriver $database) {
         parent::setDatabaseDriver($database);
         if (empty($this->config)) {
             throw new \Exception('Missing configuration');

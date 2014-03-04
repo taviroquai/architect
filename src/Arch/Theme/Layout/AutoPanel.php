@@ -6,7 +6,7 @@ namespace Arch\Theme\Layout;
  *
  * @author mafonso
  */
-class AutoPanel extends \Arch\Theme\Layout
+abstract class AutoPanel extends \Arch\Theme\Layout
 {
     /**
      * The configuration
@@ -21,10 +21,20 @@ class AutoPanel extends \Arch\Theme\Layout
     protected $driver;
     
     /**
+     * Configures the AutoPanel
+     * @param array $config
+     * @param \Arch\DB\IDriver $database
+     */
+    public function configure($config, \Arch\DB\IDriver $database) {
+        $this->setConfig($config);
+        $this->setDatabaseDriver($database);
+    }
+    
+    /**
      * The panel configuration - associative array
      * @param array $config
      */
-    public function setConfig($config)
+    protected function setConfig($config)
     {
         $this->config = $config;
         if (empty($this->config['table'])) {
@@ -39,7 +49,7 @@ class AutoPanel extends \Arch\Theme\Layout
      * Sets the required database driver
      * @param \Arch\DB\IDriver $database
      */
-    public function setDatabaseDriver(\Arch\DB\IDriver $database)
+    protected function setDatabaseDriver(\Arch\DB\IDriver $database)
     {
         $this->driver = $database;
     }

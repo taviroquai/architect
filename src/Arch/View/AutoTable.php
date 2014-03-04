@@ -20,7 +20,7 @@ class AutoTable extends \Arch\Theme\Layout\AutoPanel
      */
     protected $table;
 
-        /**
+    /**
      * Returns a new panel to be rendered
      */
     public function __construct()
@@ -36,7 +36,7 @@ class AutoTable extends \Arch\Theme\Layout\AutoPanel
      * The table configuration - associative array
      * @param array $config
      */
-    public function setConfig($config) {
+    protected function setConfig($config) {
         parent::setConfig($config);
         if (!isset($this->config['columns'])) {
             throw new \Exception('DBPanel configuration: attribute columns is required');
@@ -48,7 +48,7 @@ class AutoTable extends \Arch\Theme\Layout\AutoPanel
      * Sets the database driver
      * @param \Arch\DB\IDriver $database
      */
-    public function setDatabaseDriver(\Arch\DB\IDriver $database) {
+    protected function setDatabaseDriver(\Arch\DB\IDriver $database) {
         parent::setDatabaseDriver($database);
         if (empty($this->config)) {
             throw new \Exception('Missing configuration');
@@ -144,13 +144,15 @@ class AutoTable extends \Arch\Theme\Layout\AutoPanel
      */
     public function __toString()
     {
-        $records = $this->table->select($this->config['select'])
-            ->joinAuto()
-            ->limit(
+        $table = $this->table->select($this->config['select'])->joinAuto();
+        if ($this->getPagination()) {
+            $table->limit(
                 $this->pagination->getLimit(),
                 $this->pagination->getOffset()
-            )
-            ->fetchAll(\PDO::FETCH_ASSOC);
+            );
+            $this->addContent($this->pagination);
+        }
+        $records = $table->fetchAll(\PDO::FETCH_ASSOC);
         $rows = array();
         foreach ($records as $record) {
             $cols = array();
@@ -168,7 +170,6 @@ class AutoTable extends \Arch\Theme\Layout\AutoPanel
             $rows[] = $cols;
         }
         $this->set('rows', $rows);
-        $this->addContent($this->pagination);
         return parent::__toString();
     }
 }
