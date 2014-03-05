@@ -84,3 +84,22 @@ abstract class Arch
      */
     const TYPE_OUTPUT_JSON = 4;
 }
+
+/**
+ * App alias. Sets or gets the global $arch application
+ * 
+ * @return \Arch\App The application main gate
+ */
+function app(\Arch\App $app = null)
+{ 
+    if ($app) {
+        $GLOBALS['arch'] = $app;
+    }
+    if (
+        !isset($GLOBALS['arch'])
+        || get_class($GLOBALS['arch']) !== 'Arch\App'
+    ) {
+        throw new Exception('Please define $arch = new \Arch\App() first');
+    }
+    return $GLOBALS['arch'];
+}

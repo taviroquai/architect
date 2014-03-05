@@ -1,67 +1,6 @@
 <?php
 
 /**
- * App alias. Sets or gets the global $arch application
- * 
- * The other aliases are:
- * 
- * conf() - Returns a configuration item
- * 
- * view() - Returns the generic view factory
- * 
- * help() - Returns the helper factory
- * 
- * theme() - Loads a theme or returns current theme
- * 
- * session() - Sets or gets a session item
- * 
- * redirect() - Sends location HTTP header and save session before exit
- * 
- * filter() - calls IInput to **sanitize** an input param
- * 
- * r() - Adds a new route
- * 
- * v() - Creates a new view giving a PHP template and $data as associative array
- * 
- * c() - Adds content to the default theme
- * 
- * u() - Returns an internal URL - USE THIS!
- * 
- * i() - Returns all $_REQUEST parameters or one parameter value
- * 
- * j() - Sets JSON output from associative array
- * 
- * o() - Sets the application Output, ie. a View or a string
- * 
- * m() - Adds a message to be shown on the output theme
- * 
- * f() - Returns a $_FILES entry by index
- * 
- * q() - Returns a database ITable instance to start querying
- * 
- * s() - Returns an encrypted string - use for passwords
- * 
- * e() - Adds a new event
- * 
- * tr() - Triggers an event
- * 
- * @return \Arch\App The application main gate
- */
-function app(\Arch\App $app = null)
-{ 
-    if ($app) {
-        $GLOBALS['arch'] = $app;
-    }
-    if (
-        !isset($GLOBALS['arch'])
-        || get_class($GLOBALS['arch']) !== 'Arch\App'
-    ) {
-        throw new Exception('Please define $arch = new \Arch\App() first');
-    }
-    return $GLOBALS['arch'];
-}
-
-/**
  * Returns a configuration item by key
  * 
  * @param string $key
