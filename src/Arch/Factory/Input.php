@@ -41,7 +41,7 @@ class Input extends \Arch\IFactory
         $raw = file_get_contents('php://input');
         if (!isset($_SERVER['REQUEST_METHOD'])) {
             $input = $factory->create(\Arch::TYPE_INPUT_CLI);
-            $input->setActionParams($_SERVER['argv']);
+            $input->parseServer($_SERVER);
             $input->setRaw($raw);
             return $input;
         } else {
