@@ -14,13 +14,23 @@ class Menu extends \Arch\Registry\View
     public function __construct()
     {
         $tmpl = implode(DIRECTORY_SEPARATOR,
-                array(ARCH_PATH,'theme','main_menu.php'));
+                array(ARCH_PATH,'theme','menu.php'));
         parent::__construct($tmpl);
         
         // init items
         $this->storage['items'] = array();
+        $this->setCssClass('nav');
     }
     
+    /**
+     * Sets the HTML element css class
+     * @param string $value The css class name
+     */
+    public function setCssClass($value)
+    {
+        $this->set('cssClass', (string) $value);
+    }
+
     /**
      * Adds an item to menu
      * @param string $text The item text

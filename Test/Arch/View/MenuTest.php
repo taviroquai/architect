@@ -17,6 +17,17 @@ class MenuTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Test setting default css class
+     */
+    public function testSetCssClass()
+    {
+        $expected = 'test';
+        $view = new \Arch\View\Menu();
+        $view->setCssClass($expected);
+        $this->assertEquals($expected, $view->get('cssClass'));
+    }
+
+    /**
      * Test add item
      */
     public function testAddItem()
