@@ -5,7 +5,7 @@ namespace Arch\View;
 /**
  * Poll class
  */
-class Poll extends \Arch\Registry\View
+class Poll extends \Arch\View\LineChart
 {
     /**
      * Returns a new poll view
@@ -17,10 +17,9 @@ class Poll extends \Arch\Registry\View
 	parent::__construct($tmpl);
         
         // initialize data
-        $this->storage['data'] = array();
-        $this->storage['ykeys'] = 'y';
-        $this->storage['show_votes'] = false;
-        $this->storage['input_name'] = 'poll1';
+        $this->setGraphValues(array());
+        $this->setYKeys(array('y'));
+        $this->setLabels(array('label'));
     }
     
     /**
@@ -37,5 +36,4 @@ class Poll extends \Arch\Registry\View
         );
         return $this;
     }
-    
 }

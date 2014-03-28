@@ -142,4 +142,24 @@ abstract class IRule
     {
         return (bool) (array_values($v) !== $v);
     }
+    
+    /**
+     * Resolve dynamic value from param index
+     * @param type $index
+     * @return \Arch\IRule
+     */
+    public function resolveDynamicParam($index)
+    {
+        $list = $this->params[$index];
+        if (is_callable($list)) {
+            $array = $list();
+        }
+        else {
+            $array = $list;
+        }
+        if ($this->isAssoc($array)) {
+            $array = array_values($array);
+        }
+        return $array;
+    }
 }

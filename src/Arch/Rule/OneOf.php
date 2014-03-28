@@ -13,17 +13,8 @@ class OneOf extends \Arch\IRule
      */
     public function run()
     {
-        $list = $this->params[1];
-        if (is_callable($list)) {
-            $array = $list();
-        }
-        else {
-            $array = $list;
-        }
-        if ($this->isAssoc($array)) {
-            $array = array_values($array);
-        }
-        $this->result = in_array($this->params[0], $array);
+        $list = $this->resolveDynamicParam(1);
+        $this->result = in_array($this->params[0], $list);
         return $this;
     }
 }

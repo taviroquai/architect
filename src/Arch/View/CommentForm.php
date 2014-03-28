@@ -16,13 +16,35 @@ class CommentForm extends \Arch\Theme\Layout
                 array(ARCH_PATH,'theme','comment.php'));
         parent::__construct($tmpl);
         
-        $this->set('name', '');
-        $this->set('email', '');
-        $this->set('body', '');
+        $this->setName('');
+        $this->setEmail('');
+        $this->setBody('');
     }
     
-    public function setData($data)
+    /**
+     * Sets the user name
+     * @param string $name The comment user name
+     */
+    public function setName($name)
     {
-        $this->storage = $data;
+        parent::setName($name);
+    }
+    
+    /**
+     * Sets the user email used as identifier
+     * @param string $email The user email
+     */
+    public function setEmail($email)
+    {
+        $this->set('email', $email);
+    }
+    
+    /**
+     * Sets the comment body
+     * @param string $body The comment body
+     */
+    public function setBody($body)
+    {
+        $this->set('body', $body);
     }
 }

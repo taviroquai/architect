@@ -22,11 +22,22 @@ class Map extends \Arch\Registry\View
                 array(ARCH_PATH,'theme','map.php'));
 	parent::__construct($tmpl);
         
-        $this->storage['lon'] = 0;
-        $this->storage['lat'] = 0;
-        $this->storage['zoom'] = 1;
+        $this->setCenter();
     }
     
+    /**
+     * Sets the map center coordinates
+     * @param int $longitude The longitude coordinate
+     * @param int $latitude The latitude coordinate
+     * @param int $zoom The zoom level (or Z coordinate)
+     */
+    public function setCenter($longitude = 0, $latitude = 0, $zoom = 1)
+    {
+        $this->set('lon', $longitude);
+        $this->set('lat', $latitude);
+        $this->set('zoom', $zoom);
+    }
+
     /**
      * Returns the map markers
      * @return array

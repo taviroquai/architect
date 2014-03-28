@@ -49,7 +49,7 @@ class FileExplorer extends \Arch\Registry\View
 
     /**
      * Allows to redefine file path to url translation
-     * @param string $url
+     * @param string $url The translated url
      * @return \Arch\View\FileExplorer
      */
     public function setPathToUrl($url)

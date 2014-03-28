@@ -20,7 +20,7 @@ class Events extends \Arch\IRegistry {
     /**
      * Adds a new application event
      * @param string $name
-     * @param mixed $callback
+     * @param \Closure $callback
      * @param mixed $target
      * @throws Exception
      * @return \Arch\Event The newly created event

@@ -68,6 +68,15 @@ class View extends \Arch\IRegistry
     }
     
     /**
+     * Sets the view data
+     * @param array $data The comment form values
+     */
+    public function setData(array $data)
+    {
+        $this->storage = $data;
+    }
+    
+    /**
      * Hides the view
      * @return \Arch\Registry\View
      */
@@ -85,6 +94,24 @@ class View extends \Arch\IRegistry
     {
         $this->hidden = false;
         return $this;
+    }
+    
+    /**
+     * Sets the element name
+     * @param string $name The element name
+     */
+    public function setName($name)
+    {
+        $this->set('name', $name);
+    }
+    
+    /**
+     * Sets the element value
+     * @param string $value The element value
+     */
+    public function setValue($value)
+    {
+        $this->set('value', $value);
     }
     
     /**

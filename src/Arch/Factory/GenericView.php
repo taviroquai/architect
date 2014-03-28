@@ -30,21 +30,11 @@ class GenericView extends \Arch\IFactory
      * @return \Arch\IView
      */
     protected function fabricate($type) {
-        $type = (string) $type;
         $pattern = implode(
             DIRECTORY_SEPARATOR,
             array(ARCH_PATH, 'src', 'Arch', 'View', '*.php')
         );
-        $available = glob($pattern);
-        array_walk($available, function(&$item) {
-            $item = str_replace('.php', '', basename($item));
-        });
-        if (!in_array($type, $available)) {
-            throw new \Exception(
-                'Invalid generic view type. '
-                .'Use one of the following strings: '.implode(', ', $available)
-            );
-        }
+        $this->validateType($type, $pattern);
         $method_name = 'create'.$type;
         return $this->{$method_name}();
     }

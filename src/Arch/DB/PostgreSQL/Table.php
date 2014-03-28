@@ -24,17 +24,11 @@ class Table extends \Arch\DB\ITable
      */
     public function joinAuto()
     {
-        $info = $this->driver->getTableInfo($this->name);
-        foreach ($info as $c) {
-            $cn = $c['column_name'];
-            $fk = $this->driver->getForeignKeys($this->name, $cn);
-            if (!empty($fk) && isset($fk['foreign_table_name'])) {
-                $fkt = $fk['foreign_table_name'];
-                $fkc = $fk['foreign_column_name'];
-                $this->join($fkt, "`$this->name`.`$cn` = `$fkt`.`$fkc`");
-            }
-        }
-        return $this;
+        return $this->generateJoinAuto(
+            'column_name', 
+            'foreign_table_name', 
+            'foreign_column_name'
+        );
     }
     
     /**

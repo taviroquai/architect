@@ -30,21 +30,11 @@ class Helper extends \Arch\IFactory
      * @return \Arch\IHelper
      */
     protected function fabricate($type) {
-        $type = (string) $type;
         $pattern = implode(
             DIRECTORY_SEPARATOR,
             array(ARCH_PATH, 'src', 'Arch', 'Helper', '*.php')
         );
-        $available = glob($pattern);
-        array_walk($available, function(&$item) {
-            $item = str_replace('.php', '', basename($item));
-        });
-        if (!in_array($type, $available)) {
-            throw new \Exception(
-                'Invalid helper type. '
-                .'Use one of the following strings: '.implode(', ', $available)
-            );
-        }
+        $this->validateType($type, $pattern);
         $classname = '\Arch\Helper\\'.$type;
         return new $classname($this->app);
     }

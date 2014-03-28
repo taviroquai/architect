@@ -271,7 +271,7 @@ abstract class ITable
     /**
      * Set insert values and executes an insert operation
      * @param array $values An associative array containing fields and values
-     * @return \Table This object
+     * @return \Arch\DB\ITable This object
      */
     public function insert($values = array())
     {
@@ -341,6 +341,25 @@ abstract class ITable
      * @return \Arch\DB\ITable
      */
     public abstract function joinAuto();
+    
+    /**
+     * Joins the relations got from database driver (if any)
+     * @return \Arch\DB\ITable
+     */
+    protected function generateJoinAuto($column, $foreignTable, $foreignColumn)
+    {
+        $info = $this->driver->getTableInfo($this->name);
+        foreach ($info as $c) {
+            $cn = $c[$column];
+            $fk = $this->driver->getForeignKeys($this->name, $cn);
+            if (!empty($fk) && isset($fk[$foreignTable])) {
+                $fkt = $fk[$foreignTable];
+                $fkc = $fk[$foreignColumn];
+                $this->join($fkt, "`$this->name`.`$cn` = `$fkt`.`$fkc`");
+            }
+        }
+        return $this;
+    }
     
     /**
      * Set limit and offset

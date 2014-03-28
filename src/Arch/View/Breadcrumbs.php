@@ -18,7 +18,7 @@ class Breadcrumbs extends \Arch\Registry\View
 	parent::__construct($tmpl);
         
         $this->set('items', array());
-        $this->set('home', 'Home');
+        $this->setHome('Home');
     }
     
     /**
@@ -60,5 +60,14 @@ class Breadcrumbs extends \Arch\Registry\View
             'url' => $url, 
             'active' => $active
             );
+    }
+    
+    /**
+     * Sets the breadcrumbs default home name
+     * @param type $name The default home name
+     */
+    public function setHome($name)
+    {
+        $this->set('home', $name);
     }
 }

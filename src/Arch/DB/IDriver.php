@@ -26,6 +26,12 @@ abstract class IDriver
      * @var \PDO
      */
     protected $db_pdo;
+    
+    /**
+     * Holds fetched schema information
+     * @var array
+     */
+    protected $cache = array();
 
     /**
      * Returns a new \PDO object

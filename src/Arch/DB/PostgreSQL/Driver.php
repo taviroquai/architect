@@ -49,14 +49,17 @@ class Driver extends \Arch\DB\IDriver
      */
     public function getTables()
     {
-        $data = array('public');
-        $sql = 'SELECT DISTINCT TABLE_NAME as name '
-                . 'FROM information_schema.table '
-                . 'WHERE TABLE_SCHEMA = ?';
-        $stm = $this->db_pdo->prepare($sql);
-        $this->logger->log('DB schema query: '.$stm->queryString);
-        $stm->execute($data);
-        return $stm->fetchAll(\PDO::FETCH_ASSOC);
+        if (!isset($this->cache['tables'])) {
+            $data = array('public');
+            $sql = 'SELECT DISTINCT TABLE_NAME as name '
+                    . 'FROM information_schema.table '
+                    . 'WHERE TABLE_SCHEMA = ?';
+            $stm = $this->db_pdo->prepare($sql);
+            $this->logger->log('DB schema query: '.$stm->queryString);
+            $stm->execute($data);
+            $this->cache['tables'] = $stm->fetchAll(\PDO::FETCH_ASSOC);
+        }
+        return $this->cache['tables'];
     }
     
     /**
@@ -67,26 +70,28 @@ class Driver extends \Arch\DB\IDriver
      */
     public function getForeignKeys($table_name, $column_name)
     {
-        $result = array();
-        $data = array($table_name, $column_name);
-        $sql =  'SELECT '
-                . 'tc.constraint_name, tc.table_name, kcu.column_name, '
-                . 'ccu.table_name AS foreign_table_name, '
-                . 'ccu.column_name AS foreign_column_name '
-                . 'FROM '
-                    . 'information_schema.table_constraints AS tc '
-                . 'JOIN information_schema.key_column_usage AS kcu '
-                    . 'ON tc.constraint_name = kcu.constraint_name '
-                . 'JOIN information_schema.constraint_column_usage AS ccu '
-                    . 'ON ccu.constraint_name = tc.constraint_name '
-                . 'WHERE constraint_type = \'FOREIGN KEY\' '
-                . 'AND tc.table_name = ? AND kcu.column_name = ?';
-        $stm = $this->db_pdo->prepare($sql);
-        $this->logger->log('DB schema query: '.$stm->queryString);
-        if ($stm->execute($data) && $t = $stm->fetch(\PDO::FETCH_ASSOC)) {
-            $result = $t;
+        if (!isset($this->cache['fk'][$table_name][$column_name])) {
+            $this->cache['fk'][$table_name][$column_name] = array();
+            $data = array($table_name, $column_name);
+            $sql =  'SELECT '
+                    . 'tc.constraint_name, tc.table_name, kcu.column_name, '
+                    . 'ccu.table_name AS foreign_table_name, '
+                    . 'ccu.column_name AS foreign_column_name '
+                    . 'FROM '
+                        . 'information_schema.table_constraints AS tc '
+                    . 'JOIN information_schema.key_column_usage AS kcu '
+                        . 'ON tc.constraint_name = kcu.constraint_name '
+                    . 'JOIN information_schema.constraint_column_usage AS ccu '
+                        . 'ON ccu.constraint_name = tc.constraint_name '
+                    . 'WHERE constraint_type = \'FOREIGN KEY\' '
+                    . 'AND tc.table_name = ? AND kcu.column_name = ?';
+            $stm = $this->db_pdo->prepare($sql);
+            $this->logger->log('DB schema query: '.$stm->queryString);
+            if ($stm->execute($data) && $t = $stm->fetch(\PDO::FETCH_ASSOC)) {
+                $this->cache['fk'][$table_name][$column_name] = $t;
+            }
         }
-        return $result;
+        return $this->cache['fk'][$table_name][$column_name];
     }
 
     /**
@@ -96,22 +101,25 @@ class Driver extends \Arch\DB\IDriver
      */
     public function getTableInfo($table_name)
     {
-        $result = array();
-        $data = array($table_name);
-        $sql =  "SELECT * "
-                . "FROM information_schema.columns "
-                . "WHERE table_schema = 'public' "
-                . "AND table_name = ?";
-        try {
-            $stm = $this->db_pdo->prepare($sql);
-            $this->logger->log('DB query: '.$stm->queryString);
-            if ($stm->execute($data)) {
-                $result = $stm->fetchAll(\PDO::FETCH_ASSOC);
+        if (!isset($this->cache['info'][$table_name])) {
+            $this->cache['info'][$table_name] = array();
+            $data = array($table_name);
+            $sql =  "SELECT * "
+                    . "FROM information_schema.columns "
+                    . "WHERE table_schema = 'public' "
+                    . "AND table_name = ?";
+            try {
+                $stm = $this->db_pdo->prepare($sql);
+                $this->logger->log('DB query: '.$stm->queryString);
+                if ($stm->execute($data)) {
+                    $this->cache['info'][$table_name] = 
+                            $stm->fetchAll(\PDO::FETCH_ASSOC);
+                }
+            } catch (\PDOException $e) {
+                $this->logger->log('DB query error: '.$e->getMessage(), 'error');
             }
-        } catch (\PDOException $e) {
-            $this->logger->log('DB query error: '.$e->getMessage(), 'error');
         }
-        return $result;
+        return $this->cache['info'][$table_name];
     }
     
     /**
@@ -122,17 +130,20 @@ class Driver extends \Arch\DB\IDriver
      */
     public function getRelationColumn($first_table, $second_table)
     {
-        $result = '';
-        $table = $this->getTableInfo($first_table);
-        foreach ($table as $item) {
-            $relitem = $this->getForeignKeys($first_table, $item['column_name']);
-            if (isset($relitem['foreign_table_name'])
-                && $relitem['foreign_table_name'] == $second_table) {
-                $result = $item['column_name'];
-                break;
+        if (!isset($this->cache['relation'][$first_table][$second_table])) {
+            $this->cache['relation'][$first_table][$second_table] = '';
+            $table = $this->getTableInfo($first_table);
+            foreach ($table as $item) {
+                $relitem = $this->getForeignKeys($first_table, $item['column_name']);
+                if (isset($relitem['foreign_table_name'])
+                    && $relitem['foreign_table_name'] == $second_table) {
+                    $this->cache['relation'][$first_table][$second_table] = 
+                            $item['column_name'];
+                    break;
+                }
             }
         }
-        return $result;
+        return $this->cache['relation'][$first_table][$second_table];
     }
     
 }

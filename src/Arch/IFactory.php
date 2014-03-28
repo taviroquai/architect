@@ -24,8 +24,29 @@ abstract class IFactory
     }
     
     /**
+     * Validates type of object to fabricate
+     * @param string $type Type of object
+     * @throws \Exception
+     */
+    protected function validateType($type, $pattern)
+    {
+        $type = (string) $type;
+        $available = glob($pattern);
+        array_walk($available, function(&$item) {
+            $item = str_replace('.php', '', basename($item));
+        });
+        if (!in_array($type, $available)) {
+            throw new \Exception(
+                'Invalid generic view type. '
+                .'Use one of the following strings: '.implode(', ', $available)
+            );
+        }
+    }
+    
+    /**
      * Returns a new factory object
      * @param string|int A type of object
      */
     protected abstract function fabricate($type);
+    
 }

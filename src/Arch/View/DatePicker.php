@@ -16,7 +16,7 @@ class DatePicker extends \Arch\Registry\View
                 array(ARCH_PATH,'theme','datepicker.php'));
         parent::__construct($tmpl);
         
-        $this->set('name', 'date1');
-        $this->set('value', date('Y-m-d'));
+        $this->setName('date1');
+        $this->setValue(date('Y-m-d'));
     }
 }

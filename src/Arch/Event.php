@@ -16,7 +16,7 @@ class Event
     
     /**
      * The event callback
-     * @var mixed
+     * @var \Closure
      */
     protected $callback;
     
@@ -29,7 +29,7 @@ class Event
     /**
      * Returns a new event
      * @param string $name The event name
-     * @param mixed $callback The event callback
+     * @param \Closure $callback The event callback
      */
     public function __construct($name, $callback, $target = null)
     {

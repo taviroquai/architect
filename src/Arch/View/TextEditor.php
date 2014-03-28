@@ -17,7 +17,7 @@ class TextEditor extends \Arch\Registry\View
                 array(ARCH_PATH,'theme','wysiwyg.php'));
 	parent::__construct($tmpl);
         
-        $this->set('name', 'editor1');
-        $this->set('value', '');
-	}
+        $this->setName('editor1');
+        $this->setValue('');
+    }
 }

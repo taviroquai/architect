@@ -238,23 +238,13 @@ class AutoForm extends \Arch\Theme\Layout\AutoPanel
      */
     protected function createTextArea($config)
     {
+        $view = $this->createInputText($config);
         $tmpl = $this->getOptionalTemplate(
             $config,
             ARCH_PATH.'/theme/form/textarea.php'
         );
-        
-        $config['name'] = $this->getDefaultName($config);
-        
-        if (!isset($config['value'])) {
-            $config['value'] = '';
-            if (
-                isset($config['property']) 
-                && isset($this->record[$config['property']])
-            ) {
-                $config['value'] = $this->record[$config['property']];
-            }
-        }
-        return new \Arch\Registry\View($tmpl, $config);
+        $view->setTemplate($tmpl);
+        return $view;
     }
     
     /**

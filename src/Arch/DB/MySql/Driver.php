@@ -15,12 +15,6 @@ class Driver extends \Arch\DB\IDriver
     protected $schema;
     
     /**
-     * Holds fetched schema information
-     * @var array
-     */
-    protected $cache = array();
-    
-    /**
      * Connect to MySql database
      * @param string $host
      * @param string $database
