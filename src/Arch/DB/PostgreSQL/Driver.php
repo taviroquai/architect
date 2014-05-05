@@ -55,7 +55,7 @@ class Driver extends \Arch\DB\IDriver
                     . 'FROM information_schema.table '
                     . 'WHERE TABLE_SCHEMA = ?';
             $stm = $this->db_pdo->prepare($sql);
-            $this->logger->log('DB schema query: '.$stm->queryString);
+            $this->log('DB schema query: '.$stm->queryString);
             $stm->execute($data);
             $this->cache['tables'] = $stm->fetchAll(\PDO::FETCH_ASSOC);
         }
@@ -86,7 +86,7 @@ class Driver extends \Arch\DB\IDriver
                     . 'WHERE constraint_type = \'FOREIGN KEY\' '
                     . 'AND tc.table_name = ? AND kcu.column_name = ?';
             $stm = $this->db_pdo->prepare($sql);
-            $this->logger->log('DB schema query: '.$stm->queryString);
+            $this->log('DB schema query: '.$stm->queryString);
             if ($stm->execute($data) && $t = $stm->fetch(\PDO::FETCH_ASSOC)) {
                 $this->cache['fk'][$table_name][$column_name] = $t;
             }
@@ -110,13 +110,13 @@ class Driver extends \Arch\DB\IDriver
                     . "AND table_name = ?";
             try {
                 $stm = $this->db_pdo->prepare($sql);
-                $this->logger->log('DB query: '.$stm->queryString);
+                $this->log('DB query: '.$stm->queryString);
                 if ($stm->execute($data)) {
                     $this->cache['info'][$table_name] = 
                             $stm->fetchAll(\PDO::FETCH_ASSOC);
                 }
             } catch (\PDOException $e) {
-                $this->logger->log('DB query error: '.$e->getMessage(), 'error');
+                $this->log('DB query error: '.$e->getMessage(), 'error');
             }
         }
         return $this->cache['info'][$table_name];

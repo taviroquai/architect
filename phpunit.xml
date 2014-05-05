@@ -3,6 +3,7 @@
     <testsuites>
         <testsuite name="Architect Test Suite">
             <directory>./Test/</directory>
+            <exclude>./Test/Arch/DB/MySql/</exclude>
         </testsuite>
     </testsuites>
     <filter>
@@ -10,12 +11,13 @@
             <directory suffix=".php">./vendor/</directory>
             <directory suffix=".php">./TestResource/</directory>
             <directory suffix=".php">./theme/</directory>
+            <directory suffix=".php">./Test/Arch/DB/MySql/</directory>
         </blacklist>
     </filter>
     <php>
         <const name="RESOURCE_PATH" value="./TestResource/"/>
-        <const name="DB_DRIVER"     value="mysql" />
-        <const name="DB_DATABASE"   value="test_architect"/>
+        <const name="DB_DRIVER"     value="sqlite" />
+        <const name="DB_DATABASE"   value="./TestResource/db/test.sqlite"/>
         <const name="DB_HOST"       value="localhost"/>
         <const name="DB_USER"       value="root" />
         <const name="DB_PASS"       value="toor" />

@@ -40,11 +40,11 @@ class Driver extends \Arch\DB\IDriver
         if (!isset($this->cache['tables'])) {
             $data = array('table', 'sqlite_sequence');
             $sql = 'SELECT DISTINCT name as name '
-                    . 'FROM '.$this->dbname.'.sqlite_master '
+                    . 'FROM sqlite_master '
                     . 'WHERE type = ? '
                     . 'AND name != ?';
             $stm = $this->db_pdo->prepare($sql);
-            $this->logger->log('DB schema query: '.$stm->queryString);
+            $this->log('DB schema query: '.$stm->queryString);
             $stm->execute($data);
             $this->cache['tables'] = $stm->fetchAll(\PDO::FETCH_ASSOC);
         }
@@ -63,7 +63,7 @@ class Driver extends \Arch\DB\IDriver
             $this->cache['fk'][$table_name][$column_name] = array();
             $sql = "PRAGMA foreign_key_list(`$table_name`)";
             $stm = $this->db_pdo->prepare($sql);
-            $this->logger->log('DB schema query: '.$stm->queryString);
+            $this->log('DB schema query: '.$stm->queryString);
             if ($stm->execute() && $rows = $stm->fetchAll(\PDO::FETCH_ASSOC)) {
                 foreach ($rows as $row) {
                     if ($row['from'] == $column_name) {
@@ -88,13 +88,13 @@ class Driver extends \Arch\DB\IDriver
             $sql = "PRAGMA table_info(`$table_name`)";
             try {
                 $stm = $this->db_pdo->prepare($sql);
-                $this->logger->log('DB query: '.$stm->queryString);
+                $this->log('DB query: '.$stm->queryString);
                 if ($stm->execute()) {
                     $this->cache['info'][$table_name] = 
                             $stm->fetchAll(\PDO::FETCH_ASSOC);
                 }
             } catch (\PDOException $e) {
-                $this->logger->log('DB query error: '.$e->getMessage(), 'error');
+                $this->log('DB query error: '.$e->getMessage(), 'error');
             }
         }
         return $this->cache['info'][$table_name];

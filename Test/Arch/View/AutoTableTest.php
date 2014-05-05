@@ -28,7 +28,7 @@ class AutoTableTest extends \PHPUnit_Framework_TestCase
             'select' => 'test_table1.*'
         );
         
-        $db = new \Arch\DB\MySql\Driver();
+        $db = new \Arch\DB\SQLite\Driver();
         $db->connect(DB_HOST, DB_DATABASE, DB_USER, DB_PASS);
         $view->configure($config, $db);
     }
@@ -54,7 +54,7 @@ class AutoTableTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $db = new \Arch\DB\MySql\Driver();
+        $db = new \Arch\DB\SQLite\Driver();
         $db->connect(DB_HOST, DB_DATABASE, DB_USER, DB_PASS);
         $view->configure($config, $db);
         $pagination = new \Arch\View\Pagination();

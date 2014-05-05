@@ -15,7 +15,8 @@
     "autoload": {
         "psr-0": {
             "Arch": "src/"
-        }
+        },
+        "files": ["aliases.php"]
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.28"

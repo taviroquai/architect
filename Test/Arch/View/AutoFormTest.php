@@ -21,7 +21,7 @@ class AutoFormTest extends \PHPUnit_Framework_TestCase
      */
     public function testToString()
     {
-        $db = new \Arch\DB\MySql\Driver();
+        $db = new \Arch\DB\SQLite\Driver();
         $db->connect(DB_HOST, DB_DATABASE, DB_USER, DB_PASS);
         
         $view = new \Arch\View\AutoForm();

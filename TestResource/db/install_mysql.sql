@@ -1,3 +1,9 @@
+
+DROP TABLE IF EXISTS `test_dummy`;
+DROP TABLE IF EXISTS `test_nmrelation`;
+DROP TABLE IF EXISTS `test_table1`;
+DROP TABLE IF EXISTS `test_table2`;
+
 --
 -- Table `test_table1`
 --

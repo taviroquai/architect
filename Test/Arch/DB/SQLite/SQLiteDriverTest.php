@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Description of database MysqlDriverTest
+ * Description of database SQLiteDriverTest
  *
  * @author mafonso
  */
-class MySqlDriverTest extends \PHPUnit_Framework_TestCase
+class SQLiteDriverTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Data provider
@@ -15,7 +15,7 @@ class MySqlDriverTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array(
-                new \Arch\DB\MySql\Driver(),
+                new \Arch\DB\SQLite\Driver(),
                 DB_DATABASE,
                 DB_HOST,
                 DB_USER,
@@ -26,12 +26,12 @@ class MySqlDriverTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test create MySql driver
+     * Test create SQLite driver
      */
     public function testCreate()
     {
-        $result = new \Arch\DB\MySql\Driver();
-        $this->assertInstanceOf('\Arch\DB\MySql\Driver', $result);
+        $result = new \Arch\DB\SQLite\Driver();
+        $this->assertInstanceOf('\Arch\DB\SQLite\Driver', $result);
     }
     
     /**
@@ -63,7 +63,7 @@ class MySqlDriverTest extends \PHPUnit_Framework_TestCase
     {
         $driver->connect($host, $database, $user, $pass);
         $result = $driver->createTable('test_table1');
-        $this->assertInstanceOf('\Arch\DB\MySql\Table', $result);
+        $this->assertInstanceOf('\Arch\DB\SQLite\Table', $result);
     }
     
     /**
@@ -194,7 +194,7 @@ class MySqlDriverTest extends \PHPUnit_Framework_TestCase
     {
         $driver->connect($host, $database, $user, $pass);
         $driver->setLogger(new \Arch\Logger\File());
-        $result = $driver->install(RESOURCE_PATH.'db/install_mysql.sql');
+        $result = $driver->install(RESOURCE_PATH.'db/install_sqlite.sql');
         $this->assertTrue($result);
     }
 
